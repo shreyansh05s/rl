@@ -397,7 +397,8 @@
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">from</span> <span class="nn">packaging</span> <span class="kn">import</span> <span class="n">version</span>
 
-<span class="kn">from</span> <span class="nn">tensordict</span> <span class="kn">import</span> <span class="n">TensorDictBase</span>
+<span class="kn">from</span> <span class="nn">tensordict</span> <span class="kn">import</span> <span class="n">TensorDict</span><span class="p">,</span> <span class="n">TensorDictBase</span>
+<span class="kn">from</span> <span class="nn">torch.utils._pytree</span> <span class="kn">import</span> <span class="n">tree_map</span>
 
 <span class="kn">from</span> <span class="nn">torchrl._utils</span> <span class="kn">import</span> <span class="n">implement_for</span>
 <span class="kn">from</span> <span class="nn">torchrl.data.tensor_specs</span> <span class="kn">import</span> <span class="p">(</span>
@@ -417,7 +418,7 @@
 <span class="kn">from</span> <span class="nn">torchrl.envs.batched_envs</span> <span class="kn">import</span> <span class="n">CloudpickleWrapper</span>
 <span class="kn">from</span> <span class="nn">torchrl.envs.common</span> <span class="kn">import</span> <span class="n">_EnvPostInit</span>
 
-<span class="kn">from</span> <span class="nn">torchrl.envs.gym_like</span> <span class="kn">import</span> <span class="n">BaseInfoDictReader</span><span class="p">,</span> <span class="n">GymLikeEnv</span>
+<span class="kn">from</span> <span class="nn">torchrl.envs.gym_like</span> <span class="kn">import</span> <span class="n">default_info_dict_reader</span><span class="p">,</span> <span class="n">GymLikeEnv</span>
 
 <span class="kn">from</span> <span class="nn">torchrl.envs.utils</span> <span class="kn">import</span> <span class="n">_classproperty</span>
 
@@ -956,11 +957,11 @@
                     <span class="p">)</span>
                     <span class="n">add_info_dict</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="k">if</span> <span class="n">add_info_dict</span><span class="p">:</span>
-                <span class="c1"># First register the basic info dict reader</span>
-                <span class="n">instance</span><span class="o">.</span><span class="n">auto_register_info_dict</span><span class="p">()</span>
-                <span class="c1"># Make it so that infos are properly cast where they should at done time</span>
-                <span class="n">instance</span><span class="o">.</span><span class="n">set_info_dict_reader</span><span class="p">(</span>
-                    <span class="n">terminal_obs_reader</span><span class="p">(</span><span class="n">instance</span><span class="o">.</span><span class="n">observation_spec</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
+                <span class="c1"># register terminal_obs_reader</span>
+                <span class="n">instance</span><span class="o">.</span><span class="n">auto_register_info_dict</span><span class="p">(</span>
+                    <span class="n">info_dict_reader</span><span class="o">=</span><span class="n">terminal_obs_reader</span><span class="p">(</span>
+                        <span class="n">instance</span><span class="o">.</span><span class="n">observation_spec</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="n">backend</span>
+                    <span class="p">)</span>
                 <span class="p">)</span>
             <span class="k">return</span> <span class="n">TransformedEnv</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">VecGymEnvTransform</span><span class="p">())</span>
         <span class="k">return</span> <span class="n">instance</span>
@@ -1850,7 +1851,7 @@
     <span class="n">_make_specs</span> <span class="o">=</span> <span class="n">set_gym_backend</span><span class="p">(</span><span class="s2">&quot;gymnasium&quot;</span><span class="p">)(</span><span class="n">GymEnv</span><span class="o">.</span><span class="n">_make_specs</span><span class="p">)</span></div>
 
 
-<span class="k">class</span> <span class="nc">terminal_obs_reader</span><span class="p">(</span><span class="n">BaseInfoDictReader</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">terminal_obs_reader</span><span class="p">(</span><span class="n">default_info_dict_reader</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Terminal observation reader for &#39;vectorized&#39; gym environments.</span>
 
 <span class="sd">    When running envs in parallel, Gym(nasium) writes the result of the true call</span>
@@ -1887,11 +1888,11 @@
     <span class="p">}</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observation_spec</span><span class="p">:</span> <span class="n">CompositeSpec</span><span class="p">,</span> <span class="n">backend</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;final&quot;</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_info_spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">(</span>
-            <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">observation_spec</span><span class="o">.</span><span class="n">clone</span><span class="p">()},</span> <span class="n">shape</span><span class="o">=</span><span class="n">observation_spec</span><span class="o">.</span><span class="n">shape</span>
-        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_obs_spec</span> <span class="o">=</span> <span class="n">observation_spec</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">=</span> <span class="n">backend</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_final_validated</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">info_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1905,6 +1906,11 @@
             <span class="c1"># presented as a np.ndarray. The key should be pixels or observation.</span>
             <span class="c1"># We just write that value at its location in the tensor</span>
             <span class="n">tensor</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">as_tensor</span><span class="p">(</span><span class="n">obs</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">tensor</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obs</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+            <span class="c1"># Simplest case: there is one observation,</span>
+            <span class="c1"># presented as a np.ndarray. The key should be pixels or observation.</span>
+            <span class="c1"># We just write that value at its location in the tensor</span>
+            <span class="n">tensor</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">obs</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="n">tensor</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obs</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">obs</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
@@ -1928,36 +1934,54 @@
             <span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">info_dict</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">):</span>
-        <span class="n">terminal_obs</span> <span class="o">=</span> <span class="n">info_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">backend_key</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="p">],</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="n">terminal_info</span> <span class="o">=</span> <span class="n">info_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">backend_info_key</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="p">],</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">terminal_info</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="c1"># terminal_info is a list of items that can be None or not</span>
-            <span class="c1"># If they&#39;re not None, they are a dict of values that we want to put in a root dict</span>
-            <span class="n">keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
-            <span class="k">for</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">terminal_info</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">info</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="k">continue</span>
-                <span class="n">keys</span> <span class="o">=</span> <span class="n">keys</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-            <span class="n">terminal_info</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="n">key</span><span class="p">:</span> <span class="p">[</span><span class="n">info</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">if</span> <span class="n">info</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">info</span> <span class="k">for</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">terminal_info</span><span class="p">]</span>
-                <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span>
-            <span class="p">}</span>
-        <span class="k">else</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">replace_none</span><span class="p">(</span><span class="n">nparray</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nparray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">or</span> <span class="n">nparray</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s2">&quot;O&quot;</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">nparray</span>
+            <span class="n">is_none</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">info</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">nparray</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">is_none</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+                <span class="c1"># Then it is a final observation and we delegate the registration to the appropriate reader</span>
+                <span class="n">nz</span> <span class="o">=</span> <span class="p">(</span><span class="o">~</span><span class="n">is_none</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">zero_like</span> <span class="o">=</span> <span class="n">tree_map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">nparray</span><span class="p">[</span><span class="n">nz</span><span class="p">])</span>
+                <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">is_none</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]:</span>
+                    <span class="n">nparray</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">zero_like</span>
+            <span class="k">return</span> <span class="n">tree_map</span><span class="p">(</span><span class="k">lambda</span> <span class="o">*</span><span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="o">*</span><span class="n">nparray</span><span class="p">)</span>
+
+        <span class="n">info_dict</span> <span class="o">=</span> <span class="n">tree_map</span><span class="p">(</span><span class="n">replace_none</span><span class="p">,</span> <span class="n">info_dict</span><span class="p">)</span>
+        <span class="c1"># convert info_dict to a tensordict</span>
+        <span class="n">info_dict</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="p">(</span><span class="n">info_dict</span><span class="p">)</span>
+        <span class="c1"># get the terminal observation</span>
+        <span class="n">terminal_obs</span> <span class="o">=</span> <span class="n">info_dict</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">backend_key</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="p">],</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="c1"># get the terminal info dict</span>
+        <span class="n">terminal_info</span> <span class="o">=</span> <span class="n">info_dict</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">backend_info_key</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="p">],</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">terminal_info</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">terminal_info</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="n">obs_dict</span> <span class="o">=</span> <span class="n">terminal_info</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="n">info_dict</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_final_validated</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">info_spec</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obs_spec</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">info_spec</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_final_validated</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="n">final_info</span> <span class="o">=</span> <span class="n">terminal_info</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">terminal_obs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">obs_dict</span><span class="p">[</span><span class="s2">&quot;observation&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">terminal_obs</span>
-        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">terminal_obs</span> <span class="ow">in</span> <span class="n">obs_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">final_info</span><span class="p">[</span><span class="s2">&quot;observation&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">terminal_obs</span>
+
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">info_spec</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+
             <span class="n">spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">info_spec</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">key</span><span class="p">]</span>
-            <span class="c1"># for key, item in self.info_spec.items(True, True):</span>
-            <span class="c1">#     key = (key,) if isinstance(key, str) else key</span>
+
             <span class="n">final_obs_buffer</span> <span class="o">=</span> <span class="n">spec</span><span class="o">.</span><span class="n">zero</span><span class="p">()</span>
+            <span class="n">terminal_obs</span> <span class="o">=</span> <span class="n">final_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">terminal_obs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">obs</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">terminal_obs</span><span class="p">):</span>
                     <span class="c1"># writes final_obs inplace with terminal_obs content</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_read_obs</span><span class="p">(</span><span class="n">obs</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">final_obs_buffer</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">i</span><span class="p">)</span>
             <span class="n">tensordict</span><span class="o">.</span><span class="n">set</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">key</span><span class="p">),</span> <span class="n">final_obs_buffer</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">tensordict</span>
+
+    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_final_validated</span> <span class="o">=</span> <span class="kc">False</span>
 
 
 <span class="k">def</span> <span class="nf">_flip_info_tuple</span><span class="p">(</span><span class="n">info</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">]:</span>

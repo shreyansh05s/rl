@@ -587,26 +587,64 @@ to the environment.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="torchrl.envs.GymLikeEnv.auto_register_info_dict">
-<span class="sig-name descname"><span class="pre">auto_register_info_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ignore_private</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/torchrl/envs/gym_like.html#GymLikeEnv.auto_register_info_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.envs.GymLikeEnv.auto_register_info_dict" title="Permalink to this definition">¶</a></dt>
-<dd><p>Automatically registers the info dict.</p>
-<p>It is assumed that all the information contained in the info dict can be registered as numerical values
-within the tensordict.</p>
+<span class="sig-name descname"><span class="pre">auto_register_info_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ignore_private</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info_dict_reader</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">BaseInfoDictReader</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="torchrl.envs.EnvBase.html#torchrl.envs.EnvBase" title="torchrl.envs.common.EnvBase"><span class="pre">EnvBase</span></a></span></span><a class="reference internal" href="../../_modules/torchrl/envs/gym_like.html#GymLikeEnv.auto_register_info_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.envs.GymLikeEnv.auto_register_info_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Automatically registers the info dict and appends <code class="xref py py-class docutils literal notranslate"><span class="pre">TensorDictPrimer</span></code> instances if needed.</p>
+<p>If no info_dict_reader is provided, it is assumed that all the information contained in the info dict can
+be registered as numerical values within the tensordict.</p>
 <p>This method returns a (possibly transformed) environment where we make sure that
 the <a class="reference internal" href="torchrl.envs.utils.check_env_specs.html#torchrl.envs.utils.check_env_specs" title="torchrl.envs.utils.check_env_specs"><code class="xref py py-func docutils literal notranslate"><span class="pre">torchrl.envs.utils.check_env_specs()</span></code></a> succeeds, whether
 the info is filled at reset time.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
 <p>This method requires running a few iterations in the environment to
 manually check that the behaviour matches expectations.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>ignore_private</strong> (<em>bool</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, private infos (starting with
 an underscore) will be ignored. Defaults to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
 </dd>
+<dt class="field-even">Keyword Arguments<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>info_dict_reader</strong> (<em>BaseInfoDictReader</em><em>, </em><em>optional</em>) – the info_dict_reader, if it is known in advance.
+Unlike <a class="reference internal" href="#torchrl.envs.GymLikeEnv.set_info_dict_reader" title="torchrl.envs.GymLikeEnv.set_info_dict_reader"><code class="xref py py-meth docutils literal notranslate"><span class="pre">set_info_dict_reader()</span></code></a>, this method will create the primers necessary to get
+<a class="reference internal" href="torchrl.envs.utils.check_env_specs.html#torchrl.envs.utils.check_env_specs" title="torchrl.envs.utils.check_env_specs"><code class="xref py py-func docutils literal notranslate"><span class="pre">check_env_specs()</span></code></a> to run.</p>
+</dd>
 </dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.envs</span> <span class="kn">import</span> <span class="n">GymEnv</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">env</span> <span class="o">=</span> <span class="n">GymEnv</span><span class="p">(</span><span class="s2">&quot;HalfCheetah-v4&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">env</span><span class="o">.</span><span class="n">register_info_dict</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># registers the info dict reader</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">env</span><span class="o">.</span><span class="n">auto_register_info_dict</span><span class="p">()</span>
+<span class="go">GymEnv(env=HalfCheetah-v4, batch_size=torch.Size([]), device=cpu)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">env</span><span class="o">.</span><span class="n">rollout</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="go">TensorDict(</span>
+<span class="go">    fields={</span>
+<span class="go">        action: Tensor(shape=torch.Size([3, 6]), device=cpu, dtype=torch.float32, is_shared=False),</span>
+<span class="go">        done: Tensor(shape=torch.Size([3, 1]), device=cpu, dtype=torch.bool, is_shared=False),</span>
+<span class="go">        next: TensorDict(</span>
+<span class="go">            fields={</span>
+<span class="go">                done: Tensor(shape=torch.Size([3, 1]), device=cpu, dtype=torch.bool, is_shared=False),</span>
+<span class="go">                observation: Tensor(shape=torch.Size([3, 17]), device=cpu, dtype=torch.float64, is_shared=False),</span>
+<span class="go">                reward: Tensor(shape=torch.Size([3, 1]), device=cpu, dtype=torch.float32, is_shared=False),</span>
+<span class="go">                reward_ctrl: Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float64, is_shared=False),</span>
+<span class="go">                reward_run: Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float64, is_shared=False),</span>
+<span class="go">                terminated: Tensor(shape=torch.Size([3, 1]), device=cpu, dtype=torch.bool, is_shared=False),</span>
+<span class="go">                truncated: Tensor(shape=torch.Size([3, 1]), device=cpu, dtype=torch.bool, is_shared=False),</span>
+<span class="go">                x_position: Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float64, is_shared=False),</span>
+<span class="go">                x_velocity: Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float64, is_shared=False)},</span>
+<span class="go">            batch_size=torch.Size([3]),</span>
+<span class="go">            device=cpu,</span>
+<span class="go">            is_shared=False),</span>
+<span class="go">        observation: Tensor(shape=torch.Size([3, 17]), device=cpu, dtype=torch.float64, is_shared=False),</span>
+<span class="go">        reward_ctrl: Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float64, is_shared=False),</span>
+<span class="go">        reward_run: Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float64, is_shared=False),</span>
+<span class="go">        terminated: Tensor(shape=torch.Size([3, 1]), device=cpu, dtype=torch.bool, is_shared=False),</span>
+<span class="go">        truncated: Tensor(shape=torch.Size([3, 1]), device=cpu, dtype=torch.bool, is_shared=False),</span>
+<span class="go">        x_position: Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float64, is_shared=False),</span>
+<span class="go">        x_velocity: Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float64, is_shared=False)},</span>
+<span class="go">    batch_size=torch.Size([3]),</span>
+<span class="go">    device=cpu,</span>
+<span class="go">    is_shared=False)</span>
 </pre></div>
 </div>
 </dd></dl>

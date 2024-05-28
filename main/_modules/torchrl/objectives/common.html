@@ -404,7 +404,7 @@
 
 
 <span class="k">def</span> <span class="nf">_updater_check_forward_prehook</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">module</span><span class="o">.</span><span class="n">_has_update_associated</span><span class="o">.</span><span class="n">values</span><span class="p">())</span> <span class="ow">and</span> <span class="n">RL_WARNINGS</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">_has_update_associated</span><span class="o">.</span><span class="n">values</span><span class="p">())</span> <span class="ow">and</span> <span class="n">RL_WARNINGS</span><span class="p">:</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
             <span class="n">module</span><span class="o">.</span><span class="n">TARGET_NET_WARNING</span><span class="p">,</span>
             <span class="n">category</span><span class="o">=</span><span class="ne">UserWarning</span><span class="p">,</span>
