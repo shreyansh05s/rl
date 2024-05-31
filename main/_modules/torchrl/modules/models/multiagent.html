@@ -385,6 +385,7 @@
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">import</span> <span class="nn">abc</span>
+<span class="kn">from</span> <span class="nn">textwrap</span> <span class="kn">import</span> <span class="n">indent</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -408,17 +409,26 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">n_agents</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="n">centralised</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
-        <span class="n">share_params</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
-        <span class="n">agent_dim</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">centralized</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">share_params</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">agent_dim</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">vmap_randomness</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;different&quot;</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
+        <span class="c1"># For backward compatibility</span>
+        <span class="n">centralized</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;centralised&quot;</span><span class="p">,</span> <span class="n">centralized</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">centralized</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;centralized arg must be passed.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">share_params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;share_params arg must be passed.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">agent_dim</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;agent_dim arg must be passed.&quot;</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">n_agents</span> <span class="o">=</span> <span class="n">n_agents</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">share_params</span> <span class="o">=</span> <span class="n">share_params</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">centralised</span> <span class="o">=</span> <span class="n">centralised</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">centralized</span> <span class="o">=</span> <span class="n">centralized</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">agent_dim</span> <span class="o">=</span> <span class="n">agent_dim</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_vmap_randomness</span> <span class="o">=</span> <span class="n">vmap_randomness</span>
 
@@ -477,7 +487,7 @@
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pre_forward_check</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
         <span class="c1"># If parameters are not shared, each agent has its own network</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">share_params</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">centralised</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">centralized</span><span class="p">:</span>
                 <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vmap_func_module</span><span class="p">(</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_empty_net</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,),</span> <span class="n">randomness</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">vmap_randomness</span>
                 <span class="p">)(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">,</span> <span class="n">inputs</span><span class="p">)</span>
@@ -494,8 +504,8 @@
             <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">to_module</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_empty_net</span><span class="p">):</span>
                 <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_empty_net</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
 
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">centralised</span><span class="p">:</span>
-                <span class="c1"># If the parameters are shared, and it is centralised, all agents will have the same output</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">centralized</span><span class="p">:</span>
+                <span class="c1"># If the parameters are shared, and it is centralized, all agents will have the same output</span>
                 <span class="c1"># We expand it to maintain the agent dimension, but values will be the same for all agents</span>
                 <span class="n">n_agent_outputs</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
                 <span class="n">output</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">*</span><span class="n">output</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">n_agent_outputs</span><span class="p">)</span>
@@ -511,6 +521,16 @@
             <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">output</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">empty_net</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s2">&quot;_empty_net&quot;</span><span class="p">]</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">to_module</span><span class="p">(</span><span class="n">empty_net</span><span class="p">):</span>
+            <span class="n">module_repr</span> <span class="o">=</span> <span class="n">indent</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">empty_net</span><span class="p">),</span> <span class="mi">4</span> <span class="o">*</span> <span class="s2">&quot; &quot;</span><span class="p">)</span>
+        <span class="n">n_agents</span> <span class="o">=</span> <span class="n">indent</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;n_agents=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_agents</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="mi">4</span> <span class="o">*</span> <span class="s2">&quot; &quot;</span><span class="p">)</span>
+        <span class="n">share_params</span> <span class="o">=</span> <span class="n">indent</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;share_params=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">share_params</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="mi">4</span> <span class="o">*</span> <span class="s2">&quot; &quot;</span><span class="p">)</span>
+        <span class="n">centralized</span> <span class="o">=</span> <span class="n">indent</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;centralized=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">centralized</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="mi">4</span> <span class="o">*</span> <span class="s2">&quot; &quot;</span><span class="p">)</span>
+        <span class="n">agent_dim</span> <span class="o">=</span> <span class="n">indent</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;agent_dim=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">agent_dim</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="mi">4</span> <span class="o">*</span> <span class="s2">&quot; &quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">(</span><span class="se">\n</span><span class="si">{</span><span class="n">module_repr</span><span class="si">}</span><span class="s2">,</span><span class="se">\n</span><span class="si">{</span><span class="n">n_agents</span><span class="si">}</span><span class="s2">,</span><span class="se">\n</span><span class="si">{</span><span class="n">share_params</span><span class="si">}</span><span class="s2">,</span><span class="se">\n</span><span class="si">{</span><span class="n">centralized</span><span class="si">}</span><span class="s2">,</span><span class="se">\n</span><span class="si">{</span><span class="n">agent_dim</span><span class="si">}</span><span class="s2">)&quot;</span>
 
     <span class="k">def</span> <span class="nf">reset_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Resets the parameters of the model.&quot;&quot;&quot;</span>
@@ -543,7 +563,7 @@
 <span class="sd">    If `share_params` is True, the same MLP will be used to make the forward pass for all agents (homogeneous policies).</span>
 <span class="sd">    Otherwise, each agent will use a different MLP to process its input (heterogeneous policies).</span>
 
-<span class="sd">    If `centralised` is True, each agent will use the inputs of all agents to compute its output</span>
+<span class="sd">    If `centralized` is True, each agent will use the inputs of all agents to compute its output</span>
 <span class="sd">    (n_agent_inputs * n_agents will be the number of inputs for one agent).</span>
 <span class="sd">    Otherwise, each agent will only use its data as input.</span>
 
@@ -552,7 +572,7 @@
 <span class="sd">            the number of inputs is lazily instantiated during the first call.</span>
 <span class="sd">        n_agent_outputs (int): number of outputs for each agent.</span>
 <span class="sd">        n_agents (int): number of agents.</span>
-<span class="sd">        centralised (bool): If `centralised` is True, each agent will use the inputs of all agents to compute its output</span>
+<span class="sd">        centralized (bool): If `centralized` is True, each agent will use the inputs of all agents to compute its output</span>
 <span class="sd">            (n_agent_inputs * n_agents will be the number of inputs for one agent).</span>
 <span class="sd">            Otherwise, each agent will only use its data as input.</span>
 <span class="sd">        share_params (bool): If `share_params` is True, the same MLP will be used to make the forward pass</span>
@@ -585,7 +605,7 @@
 <span class="sd">        ...     n_agent_inputs=n_agent_inputs,</span>
 <span class="sd">        ...     n_agent_outputs=n_agent_outputs,</span>
 <span class="sd">        ...     n_agents=n_agents,</span>
-<span class="sd">        ...     centralised=False,</span>
+<span class="sd">        ...     centralized=False,</span>
 <span class="sd">        ...     share_params=True,</span>
 <span class="sd">        ...     depth=2,</span>
 <span class="sd">        ... )</span>
@@ -602,12 +622,12 @@
 <span class="sd">          )</span>
 <span class="sd">        )</span>
 <span class="sd">        &gt;&gt;&gt; assert mlp(obs).shape == (batch, n_agents, n_agent_outputs)</span>
-<span class="sd">        Now let&#39;s instantiate a centralised network shared by all agents (e.g. a centalised value function)</span>
+<span class="sd">        Now let&#39;s instantiate a centralized network shared by all agents (e.g. a centalised value function)</span>
 <span class="sd">        &gt;&gt;&gt; mlp = MultiAgentMLP(</span>
 <span class="sd">        ...     n_agent_inputs=n_agent_inputs,</span>
 <span class="sd">        ...     n_agent_outputs=n_agent_outputs,</span>
 <span class="sd">        ...     n_agents=n_agents,</span>
-<span class="sd">        ...     centralised=True,</span>
+<span class="sd">        ...     centralized=True,</span>
 <span class="sd">        ...     share_params=True,</span>
 <span class="sd">        ...     depth=2,</span>
 <span class="sd">        ... )</span>
@@ -624,16 +644,16 @@
 <span class="sd">          )</span>
 <span class="sd">        )</span>
 <span class="sd">        We can see that the input to the first layer is n_agents * n_agent_inputs,</span>
-<span class="sd">        this is because in the case the net acts as a centralised mlp (like a single huge agent)</span>
+<span class="sd">        this is because in the case the net acts as a centralized mlp (like a single huge agent)</span>
 <span class="sd">        &gt;&gt;&gt; assert mlp(obs).shape == (batch, n_agents, n_agent_outputs)</span>
 <span class="sd">        Outputs will be identical for all agents.</span>
 <span class="sd">        Now we can do both examples just shown but with an independent set of parameters for each agent</span>
-<span class="sd">        Let&#39;s show the centralised=False case.</span>
+<span class="sd">        Let&#39;s show the centralized=False case.</span>
 <span class="sd">        &gt;&gt;&gt; mlp = MultiAgentMLP(</span>
 <span class="sd">        ...     n_agent_inputs=n_agent_inputs,</span>
 <span class="sd">        ...     n_agent_outputs=n_agent_outputs,</span>
 <span class="sd">        ...     n_agents=n_agents,</span>
-<span class="sd">        ...     centralised=False,</span>
+<span class="sd">        ...     centralized=False,</span>
 <span class="sd">        ...     share_params=False,</span>
 <span class="sd">        ...     depth=2,</span>
 <span class="sd">        ... )</span>
@@ -658,8 +678,8 @@
         <span class="n">n_agent_inputs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">n_agent_outputs</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">n_agents</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="n">centralised</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
-        <span class="n">share_params</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+        <span class="n">centralized</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">share_params</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DEVICE_TYPING</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">depth</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">num_cells</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Sequence</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -670,14 +690,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">n_agent_inputs</span> <span class="o">=</span> <span class="n">n_agent_inputs</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_agent_outputs</span> <span class="o">=</span> <span class="n">n_agent_outputs</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">share_params</span> <span class="o">=</span> <span class="n">share_params</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">centralised</span> <span class="o">=</span> <span class="n">centralised</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">centralized</span> <span class="o">=</span> <span class="n">centralized</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">num_cells</span> <span class="o">=</span> <span class="n">num_cells</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">activation_class</span> <span class="o">=</span> <span class="n">activation_class</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">depth</span> <span class="o">=</span> <span class="n">depth</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">n_agents</span><span class="o">=</span><span class="n">n_agents</span><span class="p">,</span>
-            <span class="n">centralised</span><span class="o">=</span><span class="n">centralised</span><span class="p">,</span>
+            <span class="n">centralized</span><span class="o">=</span><span class="n">centralized</span><span class="p">,</span>
             <span class="n">share_params</span><span class="o">=</span><span class="n">share_params</span><span class="p">,</span>
             <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
             <span class="n">agent_dim</span><span class="o">=-</span><span class="mi">2</span><span class="p">,</span>
@@ -691,13 +711,13 @@
                 <span class="sa">f</span><span class="s2">&quot; but got </span><span class="si">{</span><span class="n">inputs</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="p">)</span>
         <span class="c1"># If the model is centralized, agents have full observability</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">centralised</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">centralized</span><span class="p">:</span>
             <span class="n">inputs</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">inputs</span>
 
     <span class="k">def</span> <span class="nf">_build_single_net</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">n_agent_inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_agent_inputs</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">centralised</span> <span class="ow">and</span> <span class="n">n_agent_inputs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">centralized</span> <span class="ow">and</span> <span class="n">n_agent_inputs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">n_agent_inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_agent_inputs</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_agents</span>
         <span class="k">return</span> <span class="n">MLP</span><span class="p">(</span>
             <span class="n">in_features</span><span class="o">=</span><span class="n">n_agent_inputs</span><span class="p">,</span>
@@ -719,7 +739,7 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        n_agents (int): number of agents.</span>
-<span class="sd">        centralised (bool): If ``True``, each agent will use the inputs of all agents to compute its output, resulting in input of shape ``(*B, n_agents * channels, x, y)``. Otherwise, each agent will only use its data as input.</span>
+<span class="sd">        centralized (bool): If ``True``, each agent will use the inputs of all agents to compute its output, resulting in input of shape ``(*B, n_agents * channels, x, y)``. Otherwise, each agent will only use its data as input.</span>
 <span class="sd">        share_params (bool): If ``True``, the same :class:`~torchrl.modules.ConvNet` will be used to make the forward pass</span>
 <span class="sd">            for all agents (homogeneous policies). Otherwise, each agent will use a different :class:`~torchrl.modules.ConvNet` to process</span>
 <span class="sd">            its input (heterogeneous policies).</span>
@@ -748,10 +768,10 @@
 <span class="sd">        &gt;&gt;&gt; n_agents = 7</span>
 <span class="sd">        &gt;&gt;&gt; channels, x, y = 3, 100, 100</span>
 <span class="sd">        &gt;&gt;&gt; obs = torch.randn(*batch, n_agents, channels, x, y)</span>
-<span class="sd">        &gt;&gt;&gt; # First lets consider a centralised network with shared parameters.</span>
+<span class="sd">        &gt;&gt;&gt; # First lets consider a centralized network with shared parameters.</span>
 <span class="sd">        &gt;&gt;&gt; cnn = MultiAgentConvNet(</span>
 <span class="sd">        ...     n_agents,</span>
-<span class="sd">        ...     centralised = True,</span>
+<span class="sd">        ...     centralized = True,</span>
 <span class="sd">        ...     share_params = True</span>
 <span class="sd">        ... )</span>
 <span class="sd">        &gt;&gt;&gt; print(cnn)</span>
@@ -776,10 +796,10 @@
 <span class="sd">        &gt;&gt;&gt; print(all(result[0,0,0] == result[0,0,1]))</span>
 <span class="sd">        True</span>
 
-<span class="sd">        &gt;&gt;&gt; # Alternatively, a local network with parameter sharing (eg. decentralised weight sharing policy)</span>
+<span class="sd">        &gt;&gt;&gt; # Alternatively, a local network with parameter sharing (eg. decentralized weight sharing policy)</span>
 <span class="sd">        &gt;&gt;&gt; cnn = MultiAgentConvNet(</span>
 <span class="sd">        ...     n_agents,</span>
-<span class="sd">        ...     centralised = False,</span>
+<span class="sd">        ...     centralized = False,</span>
 <span class="sd">        ...     share_params = True</span>
 <span class="sd">        ... )</span>
 <span class="sd">        &gt;&gt;&gt; print(cnn)</span>
@@ -805,7 +825,7 @@
 <span class="sd">        &gt;&gt;&gt; # Or multiple local networks identical in structure but with differing weights.</span>
 <span class="sd">        &gt;&gt;&gt; cnn = MultiAgentConvNet(</span>
 <span class="sd">        ...     n_agents,</span>
-<span class="sd">        ...     centralised = False,</span>
+<span class="sd">        ...     centralized = False,</span>
 <span class="sd">        ...     share_params = False</span>
 <span class="sd">        ... )</span>
 <span class="sd">        &gt;&gt;&gt; print(cnn)</span>
@@ -830,7 +850,7 @@
 <span class="sd">        &gt;&gt;&gt; # Or where inputs are shared but not parameters.</span>
 <span class="sd">        &gt;&gt;&gt; cnn = MultiAgentConvNet(</span>
 <span class="sd">        ...     n_agents,</span>
-<span class="sd">        ...     centralised = True,</span>
+<span class="sd">        ...     centralized = True,</span>
 <span class="sd">        ...     share_params = False</span>
 <span class="sd">        ... )</span>
 <span class="sd">        &gt;&gt;&gt; print(cnn)</span>
@@ -856,8 +876,8 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">n_agents</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="n">centralised</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
-        <span class="n">share_params</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+        <span class="n">centralized</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">share_params</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">in_features</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">device</span><span class="p">:</span> <span class="n">DEVICE_TYPING</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -876,7 +896,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">activation_class</span> <span class="o">=</span> <span class="n">activation_class</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">n_agents</span><span class="o">=</span><span class="n">n_agents</span><span class="p">,</span>
-            <span class="n">centralised</span><span class="o">=</span><span class="n">centralised</span><span class="p">,</span>
+            <span class="n">centralized</span><span class="o">=</span><span class="n">centralized</span><span class="p">,</span>
             <span class="n">share_params</span><span class="o">=</span><span class="n">share_params</span><span class="p">,</span>
             <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
             <span class="n">agent_dim</span><span class="o">=-</span><span class="mi">4</span><span class="p">,</span>
@@ -885,7 +905,7 @@
 
     <span class="k">def</span> <span class="nf">_build_single_net</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">in_features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_features</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">centralised</span> <span class="ow">and</span> <span class="n">in_features</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">centralized</span> <span class="ow">and</span> <span class="n">in_features</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">in_features</span> <span class="o">=</span> <span class="n">in_features</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_agents</span>
         <span class="k">return</span> <span class="n">ConvNet</span><span class="p">(</span>
             <span class="n">in_features</span><span class="o">=</span><span class="n">in_features</span><span class="p">,</span>
@@ -907,7 +927,7 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;&quot;&quot;Multi-agent network expects </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_agents</span><span class="si">}</span><span class="s2"> but got </span><span class="si">{</span><span class="n">inputs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;&quot;&quot;</span>
             <span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">centralised</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">centralized</span><span class="p">:</span>
             <span class="c1"># If the model is centralized, agents have full observability</span>
             <span class="n">inputs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="o">-</span><span class="mi">3</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">inputs</span></div>
