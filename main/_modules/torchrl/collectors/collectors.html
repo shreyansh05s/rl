@@ -580,7 +580,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">policy_weights</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">update_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_weights_fn</span><span class="p">())</span></div>
 
     <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">TensorDictBase</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterator</span><span class="p">()</span>
+        <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterator</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">next</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
@@ -733,6 +733,9 @@
 <span class="sd">            a rollout is reached. If no ``&quot;truncated&quot;`` key is found, an exception is raised.</span>
 <span class="sd">            Truncated keys can be set through ``env.add_truncated_keys``.</span>
 <span class="sd">            Defaults to ``False``.</span>
+<span class="sd">        use_buffers (bool, optional): if ``True``, a buffer will be used to stack the data.</span>
+<span class="sd">            This isn&#39;t compatible with environments with dynamic specs. Defaults to ``True``</span>
+<span class="sd">            for envs without dynamic specs, ``False`` for others.</span>
 
 <span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.envs.libs.gym import GymEnv</span>
@@ -821,6 +824,7 @@
         <span class="n">reset_when_done</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">interruptor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">set_truncated</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">use_buffers</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="kn">from</span> <span class="nn">torchrl.envs.batched_envs</span> <span class="kn">import</span> <span class="n">BatchedEnvBase</span>
 
@@ -909,6 +913,9 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">:</span> <span class="n">EnvBase</span> <span class="o">=</span> <span class="n">env</span>
         <span class="k">del</span> <span class="n">env</span>
+        <span class="k">if</span> <span class="n">use_buffers</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">use_buffers</span> <span class="o">=</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">_has_dynamic_specs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_use_buffers</span> <span class="o">=</span> <span class="n">use_buffers</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">closed</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">reset_when_done</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;reset_when_done is deprectated.&quot;</span><span class="p">)</span>
@@ -1007,7 +1014,23 @@
             <span class="n">exploration_type</span> <span class="k">if</span> <span class="n">exploration_type</span> <span class="k">else</span> <span class="n">DEFAULT_EXPLORATION_TYPE</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">return_same_td</span> <span class="o">=</span> <span class="n">return_same_td</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_truncated</span> <span class="o">=</span> <span class="n">set_truncated</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">_make_shuttle</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_buffers</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_final_rollout</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_truncated_keys</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">split_trajs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">split_trajs</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">split_trajs</span> <span class="o">=</span> <span class="n">split_trajs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_exclude_private_keys</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">interruptor</span> <span class="o">=</span> <span class="n">interruptor</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_frames</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_iter</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+
+    <span class="k">def</span> <span class="nf">_make_shuttle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Shuttle is a deviceless tensordict that just carried data from env to policy and policy to env</span>
         <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_shuttle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
@@ -1024,6 +1047,8 @@
             <span class="p">(</span><span class="s2">&quot;collector&quot;</span><span class="p">,</span> <span class="s2">&quot;traj_ids&quot;</span><span class="p">),</span>
             <span class="n">traj_ids</span><span class="p">,</span>
         <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_make_final_rollout</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_final_rollout</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">fake_tensordict</span><span class="p">()</span>
 
@@ -1151,29 +1176,19 @@
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_final_rollout</span><span class="o">.</span><span class="n">refine_names</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="s2">&quot;time&quot;</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">split_trajs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">split_trajs</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">split_trajs</span> <span class="o">=</span> <span class="n">split_trajs</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_exclude_private_keys</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">interruptor</span> <span class="o">=</span> <span class="n">interruptor</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_frames</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_iter</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">set_truncated</span> <span class="o">=</span> <span class="n">set_truncated</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_final_rollout</span><span class="o">.</span><span class="n">names</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;time&quot;</span>
+
+    <span class="k">def</span> <span class="nf">_set_truncated_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_truncated_keys</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_truncated</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span>
-                <span class="n">_ends_with</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s2">&quot;truncated&quot;</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_final_rollout</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-            <span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">_ends_with</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s2">&quot;truncated&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">done_keys</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
                     <span class="s2">&quot;set_truncated was set to True but no truncated key could be found &quot;</span>
                     <span class="s2">&quot;in the environment. Make sure the truncated keys are properly set using &quot;</span>
                     <span class="s2">&quot;`env.add_truncated_keys()` before passing the env to the collector.&quot;</span>
                 <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_truncated_keys</span> <span class="o">=</span> <span class="p">[</span>
-                <span class="n">key</span>
-                <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_final_rollout</span><span class="p">[</span><span class="s2">&quot;next&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">_ends_with</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s2">&quot;truncated&quot;</span><span class="p">)</span>
+                <span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">done_keys</span> <span class="k">if</span> <span class="n">_ends_with</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s2">&quot;truncated&quot;</span><span class="p">)</span>
             <span class="p">]</span>
 
     <span class="nd">@classmethod</span>
@@ -1250,7 +1265,19 @@
                 <span class="k">if</span> <span class="n">tensor</span><span class="o">.</span><span class="n">is_cuda</span><span class="p">:</span>
                     <span class="n">cuda_devices</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tensor</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">_final_rollout</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">cuda_check</span><span class="p">,</span> <span class="n">filter_empty</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_buffers</span><span class="p">:</span>
+                <span class="c1"># This may be a bit dangerous as `torch.device(&quot;cuda&quot;)` may not have a precise</span>
+                <span class="c1"># device associated, whereas `tensor.device` always has</span>
+                <span class="k">for</span> <span class="n">spec</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">specs</span><span class="o">.</span><span class="n">values</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">spec</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;cuda&quot;</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="s2">&quot;:&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">device</span><span class="p">):</span>
+                            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                                <span class="s2">&quot;A cuda spec did not have a device associated. Make sure to &quot;</span>
+                                <span class="s2">&quot;pass `&#39;cuda:device_num&#39;` to each spec device.&quot;</span>
+                            <span class="p">)</span>
+                        <span class="n">cuda_devices</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_final_rollout</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">cuda_check</span><span class="p">,</span> <span class="n">filter_empty</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">device</span> <span class="ow">in</span> <span class="n">cuda_devices</span><span class="p">:</span>
                 <span class="n">streams</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">Stream</span><span class="p">(</span><span class="n">device</span><span class="p">,</span> <span class="n">priority</span><span class="o">=-</span><span class="mi">1</span><span class="p">))</span>
                 <span class="n">events</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">streams</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">record_event</span><span class="p">())</span>
@@ -1342,7 +1369,10 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_shuttle</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">())</span>
 
         <span class="c1"># self._shuttle.fill_((&quot;collector&quot;, &quot;step_count&quot;), 0)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_final_rollout</span><span class="o">.</span><span class="n">fill_</span><span class="p">((</span><span class="s2">&quot;collector&quot;</span><span class="p">,</span> <span class="s2">&quot;traj_ids&quot;</span><span class="p">),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_buffers</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_final_rollout</span><span class="o">.</span><span class="n">fill_</span><span class="p">((</span><span class="s2">&quot;collector&quot;</span><span class="p">,</span> <span class="s2">&quot;traj_ids&quot;</span><span class="p">),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">pass</span>
         <span class="n">tensordicts</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">with</span> <span class="n">set_exploration_type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exploration_type</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frames_per_batch</span><span class="p">):</span>
@@ -1415,35 +1445,49 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">interruptor</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
                     <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">interruptor</span><span class="o">.</span><span class="n">collection_stopped</span><span class="p">()</span>
                 <span class="p">):</span>
-                    <span class="k">try</span><span class="p">:</span>
-                        <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span>
-                            <span class="n">tensordicts</span><span class="p">,</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">_final_rollout</span><span class="o">.</span><span class="n">ndim</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
-                            <span class="n">out</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_final_rollout</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="p">:</span> <span class="n">t</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span>
-                        <span class="p">)</span>
-                    <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">:</span>
-                        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_final_rollout</span><span class="o">.</span><span class="n">unlock_</span><span class="p">():</span>
+                    <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_final_rollout</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_buffers</span><span class="p">:</span>
+                        <span class="k">try</span><span class="p">:</span>
                             <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span>
                                 <span class="n">tensordicts</span><span class="p">,</span>
                                 <span class="bp">self</span><span class="o">.</span><span class="n">_final_rollout</span><span class="o">.</span><span class="n">ndim</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
                                 <span class="n">out</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_final_rollout</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="p">:</span> <span class="n">t</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span>
                             <span class="p">)</span>
+                        <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">:</span>
+                            <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_final_rollout</span><span class="o">.</span><span class="n">unlock_</span><span class="p">():</span>
+                                <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span>
+                                    <span class="n">tensordicts</span><span class="p">,</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">_final_rollout</span><span class="o">.</span><span class="n">ndim</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
+                                    <span class="n">out</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_final_rollout</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="p">:</span> <span class="n">t</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span>
+                                <span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">result</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="o">.</span><span class="n">maybe_dense_stack</span><span class="p">(</span><span class="n">tensordicts</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+                        <span class="k">assert</span> <span class="n">result</span><span class="o">.</span><span class="n">names</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;time&quot;</span>
                     <span class="k">break</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_final_rollout</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span>
-                        <span class="n">tensordicts</span><span class="p">,</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_final_rollout</span><span class="o">.</span><span class="n">ndim</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
-                        <span class="n">out</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_final_rollout</span><span class="p">,</span>
-                    <span class="p">)</span>
-                <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">:</span>
-                    <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_final_rollout</span><span class="o">.</span><span class="n">unlock_</span><span class="p">():</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_final_rollout</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_buffers</span><span class="p">:</span>
+                    <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_final_rollout</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">result</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span>
                             <span class="n">tensordicts</span><span class="p">,</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">_final_rollout</span><span class="o">.</span><span class="n">ndim</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
                             <span class="n">out</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_final_rollout</span><span class="p">,</span>
                         <span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_maybe_set_truncated</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_final_rollout</span><span class="p">)</span></div>
+                        <span class="k">assert</span> <span class="n">result</span><span class="o">.</span><span class="n">names</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;time&quot;</span>
+
+                    <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">:</span>
+                        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_final_rollout</span><span class="o">.</span><span class="n">unlock_</span><span class="p">():</span>
+                            <span class="n">result</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span>
+                                <span class="n">tensordicts</span><span class="p">,</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">_final_rollout</span><span class="o">.</span><span class="n">ndim</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
+                                <span class="n">out</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_final_rollout</span><span class="p">,</span>
+                            <span class="p">)</span>
+                            <span class="k">assert</span> <span class="n">result</span><span class="o">.</span><span class="n">names</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;time&quot;</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">result</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="o">.</span><span class="n">maybe_dense_stack</span><span class="p">(</span><span class="n">tensordicts</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+                    <span class="n">result</span><span class="o">.</span><span class="n">refine_names</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="s2">&quot;time&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_maybe_set_truncated</span><span class="p">(</span><span class="n">result</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_maybe_set_truncated</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final_rollout</span><span class="p">):</span>
         <span class="n">last_step</span> <span class="o">=</span> <span class="p">(</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">),)</span> <span class="o">*</span> <span class="p">(</span><span class="n">final_rollout</span><span class="o">.</span><span class="n">ndim</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,)</span>
@@ -1487,7 +1531,9 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Shuts down all workers and/or closes the local environment.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">closed</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">closed</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shuttle</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_final_rollout</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shuttle</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_buffers</span><span class="p">:</span>
+                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_final_rollout</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">is_closed</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
             <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span>
@@ -1702,6 +1748,9 @@
 <span class="sd">            a rollout is reached. If no ``&quot;truncated&quot;`` key is found, an exception is raised.</span>
 <span class="sd">            Truncated keys can be set through ``env.add_truncated_keys``.</span>
 <span class="sd">            Defaults to ``False``.</span>
+<span class="sd">        use_buffers (bool, optional): if ``True``, a buffer will be used to stack the data.</span>
+<span class="sd">            This isn&#39;t compatible with environments with dynamic specs. Defaults to ``True``</span>
+<span class="sd">            for envs without dynamic specs, ``False`` for others.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -1736,6 +1785,7 @@
         <span class="n">num_sub_threads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
         <span class="n">cat_results</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">set_truncated</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">use_buffers</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="n">exploration_type</span> <span class="o">=</span> <span class="n">_convert_exploration_type</span><span class="p">(</span>
             <span class="n">exploration_mode</span><span class="o">=</span><span class="n">exploration_mode</span><span class="p">,</span> <span class="n">exploration_type</span><span class="o">=</span><span class="n">exploration_type</span>
@@ -1777,6 +1827,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">env_device</span> <span class="o">=</span> <span class="n">env_devices</span>
 
         <span class="k">del</span> <span class="n">storing_device</span><span class="p">,</span> <span class="n">env_device</span><span class="p">,</span> <span class="n">policy_device</span><span class="p">,</span> <span class="n">device</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_use_buffers</span> <span class="o">=</span> <span class="n">use_buffers</span>
 
         <span class="n">_policy_weights_dict</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">_get_weights_fn_dict</span> <span class="o">=</span> <span class="p">{}</span>
@@ -2041,6 +2093,7 @@
                     <span class="s2">&quot;idx&quot;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span>
                     <span class="s2">&quot;interruptor&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">interruptor</span><span class="p">,</span>
                     <span class="s2">&quot;set_truncated&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_truncated</span><span class="p">,</span>
+                    <span class="s2">&quot;use_buffers&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_buffers</span><span class="p">,</span>
                 <span class="p">}</span>
                 <span class="n">proc</span> <span class="o">=</span> <span class="n">_ProcessNoWarn</span><span class="p">(</span>
                     <span class="n">target</span><span class="o">=</span><span class="n">_main_async_collector</span><span class="p">,</span>
@@ -2109,8 +2162,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">queue_out</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
             <span class="k">for</span> <span class="n">pipe</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">pipes</span><span class="p">:</span>
                 <span class="n">pipe</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-                <span class="k">for</span> <span class="n">proc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">procs</span><span class="p">:</span>
-                    <span class="n">proc</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">proc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">procs</span><span class="p">:</span>
+                <span class="n">proc</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
         <span class="k">finally</span><span class="p">:</span>
             <span class="kn">import</span> <span class="nn">torchrl</span>
 
@@ -2435,12 +2488,21 @@
 
             <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span><span class="p">):</span>
                 <span class="n">new_data</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">queue_out</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
-                <span class="k">if</span> <span class="n">j</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="n">data</span><span class="p">,</span> <span class="n">idx</span> <span class="o">=</span> <span class="n">new_data</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">buffers</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
+                <span class="n">use_buffers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_buffers</span>
+                <span class="k">if</span> <span class="n">j</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">use_buffers</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">data</span><span class="p">,</span> <span class="n">idx</span> <span class="o">=</span> <span class="n">new_data</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">buffers</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
+                        <span class="k">if</span> <span class="n">use_buffers</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">j</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_use_buffers</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">use_buffers</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_use_buffers</span> <span class="o">=</span> <span class="kc">True</span>
+                            <span class="n">idx</span> <span class="o">=</span> <span class="n">new_data</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="k">raise</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">idx</span> <span class="o">=</span> <span class="n">new_data</span>
-                    <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">buffers</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
 
                 <span class="k">if</span> <span class="n">preempt</span><span class="p">:</span>
                     <span class="c1"># mask buffers if cat, and create a mask if stack</span>
@@ -2525,16 +2587,27 @@
                         <span class="n">same_device</span> <span class="o">=</span> <span class="n">same_device</span> <span class="ow">and</span> <span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">device</span> <span class="o">==</span> <span class="n">prev_device</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">cat_results</span> <span class="o">==</span> <span class="s2">&quot;stack&quot;</span><span class="p">:</span>
+                <span class="n">stack</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">torch</span><span class="o">.</span><span class="n">stack</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_buffers</span> <span class="k">else</span> <span class="n">TensorDict</span><span class="o">.</span><span class="n">maybe_dense_stack</span>
+                <span class="p">)</span>
                 <span class="k">if</span> <span class="n">same_device</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">out_buffer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">buffers</span><span class="o">.</span><span class="n">values</span><span class="p">()),</span> <span class="mi">0</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">out_buffer</span> <span class="o">=</span> <span class="n">stack</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">buffers</span><span class="o">.</span><span class="n">values</span><span class="p">()),</span> <span class="mi">0</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">out_buffer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">out_buffer</span> <span class="o">=</span> <span class="n">stack</span><span class="p">(</span>
                         <span class="p">[</span><span class="n">item</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">buffers</span><span class="o">.</span><span class="n">values</span><span class="p">()],</span> <span class="mi">0</span>
                     <span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">out_buffer</span><span class="o">.</span><span class="n">set_</span><span class="p">(</span>
-                    <span class="p">(</span><span class="s2">&quot;collector&quot;</span><span class="p">,</span> <span class="s2">&quot;traj_ids&quot;</span><span class="p">),</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">traj_ids_list</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">out_buffer</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
+                    <span class="p">(</span><span class="s2">&quot;collector&quot;</span><span class="p">,</span> <span class="s2">&quot;traj_ids&quot;</span><span class="p">),</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">traj_ids_list</span><span class="p">),</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span>
                 <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_buffers</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">torchrl_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                        <span class="s2">&quot;use_buffer not specified and not yet inferred from data, assuming `True`.&quot;</span>
+                    <span class="p">)</span>
+                <span class="k">elif</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_buffers</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                        <span class="s2">&quot;Cannot concatenate results with use_buffers=False&quot;</span>
+                    <span class="p">)</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">same_device</span><span class="p">:</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">out_buffer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">buffers</span><span class="o">.</span><span class="n">values</span><span class="p">()),</span> <span class="n">cat_results</span><span class="p">)</span>
@@ -2732,13 +2805,25 @@
 
     <span class="k">def</span> <span class="nf">_get_from_queue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">TensorDictBase</span><span class="p">]:</span>
         <span class="n">new_data</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">queue_out</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">j</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">data</span><span class="p">,</span> <span class="n">idx</span> <span class="o">=</span> <span class="n">new_data</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">out_tensordicts</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
+        <span class="n">use_buffers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_buffers</span>
+        <span class="k">if</span> <span class="n">j</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">use_buffers</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">data</span><span class="p">,</span> <span class="n">idx</span> <span class="o">=</span> <span class="n">new_data</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">out_tensordicts</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
+                <span class="k">if</span> <span class="n">use_buffers</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">j</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">use_buffers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_buffers</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">use_buffers</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">use_buffers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_buffers</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="n">idx</span> <span class="o">=</span> <span class="n">new_data</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">idx</span> <span class="o">=</span> <span class="n">new_data</span>
-        <span class="c1"># we clone the data to make sure that we&#39;ll be working with a fixed copy</span>
-        <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_tensordicts</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_tensordicts</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">j</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">use_buffers</span><span class="p">:</span>
+            <span class="c1"># we clone the data to make sure that we&#39;ll be working with a fixed copy</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">idx</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">out</span>
 
     <span class="nd">@property</span>
@@ -2761,7 +2846,6 @@
             <span class="n">_check_for_faulty_process</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">procs</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_iter</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="n">idx</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_from_queue</span><span class="p">()</span>
-
             <span class="n">worker_frames</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">numel</span><span class="p">()</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">split_trajs</span><span class="p">:</span>
                 <span class="n">out</span> <span class="o">=</span> <span class="n">split_trajectories</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;collector&quot;</span><span class="p">)</span>
@@ -3041,6 +3125,7 @@
     <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">VERBOSE</span><span class="p">,</span>
     <span class="n">interruptor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">set_truncated</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">use_buffers</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="n">pipe_parent</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
     <span class="c1"># init variables that will be cleared when closing</span>
@@ -3064,7 +3149,9 @@
         <span class="n">return_same_td</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">interruptor</span><span class="o">=</span><span class="n">interruptor</span><span class="p">,</span>
         <span class="n">set_truncated</span><span class="o">=</span><span class="n">set_truncated</span><span class="p">,</span>
+        <span class="n">use_buffers</span><span class="o">=</span><span class="n">use_buffers</span><span class="p">,</span>
     <span class="p">)</span>
+    <span class="n">use_buffers</span> <span class="o">=</span> <span class="n">inner_collector</span><span class="o">.</span><span class="n">_use_buffers</span>
     <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
         <span class="n">torchrl_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Sync data collector created&quot;</span><span class="p">)</span>
     <span class="n">dc_iter</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">inner_collector</span><span class="p">)</span>
@@ -3125,7 +3212,7 @@
                 <span class="c1"># In that case, we skip the collected trajectory and get the message from main. This is faster than</span>
                 <span class="c1"># sending the trajectory in the queue until timeout when it&#39;s never going to be received.</span>
                 <span class="k">continue</span>
-            <span class="k">if</span> <span class="n">j</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">j</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">use_buffers</span><span class="p">:</span>
                 <span class="n">collected_tensordict</span> <span class="o">=</span> <span class="n">next_data</span>
                 <span class="k">if</span> <span class="p">(</span>
                     <span class="n">storing_device</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
@@ -3134,28 +3221,30 @@
                     <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
                         <span class="sa">f</span><span class="s2">&quot;expected device to be </span><span class="si">{</span><span class="n">storing_device</span><span class="si">}</span><span class="s2"> but got </span><span class="si">{</span><span class="n">collected_tensordict</span><span class="o">.</span><span class="n">device</span><span class="si">}</span><span class="s2">&quot;</span>
                     <span class="p">)</span>
-                <span class="c1"># If policy and env are on cpu, we put in shared mem,</span>
-                <span class="c1"># if policy is on cuda and env on cuda, we are fine with this</span>
-                <span class="c1"># If policy is on cuda and env on cpu (or opposite) we put tensors that</span>
-                <span class="c1"># are on cpu in shared mem.</span>
-                <span class="k">if</span> <span class="n">collected_tensordict</span><span class="o">.</span><span class="n">device</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="c1"># placehoder in case we need different behaviours</span>
-                    <span class="k">if</span> <span class="n">collected_tensordict</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">,</span> <span class="s2">&quot;mps&quot;</span><span class="p">):</span>
-                        <span class="n">collected_tensordict</span><span class="o">.</span><span class="n">share_memory_</span><span class="p">()</span>
-                    <span class="k">elif</span> <span class="n">collected_tensordict</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;cuda&quot;</span><span class="p">:</span>
-                        <span class="n">collected_tensordict</span><span class="o">.</span><span class="n">share_memory_</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">use_buffers</span><span class="p">:</span>
+                    <span class="c1"># If policy and env are on cpu, we put in shared mem,</span>
+                    <span class="c1"># if policy is on cuda and env on cuda, we are fine with this</span>
+                    <span class="c1"># If policy is on cuda and env on cpu (or opposite) we put tensors that</span>
+                    <span class="c1"># are on cpu in shared mem.</span>
+                    <span class="k">if</span> <span class="n">collected_tensordict</span><span class="o">.</span><span class="n">device</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="c1"># placehoder in case we need different behaviours</span>
+                        <span class="k">if</span> <span class="n">collected_tensordict</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">,</span> <span class="s2">&quot;mps&quot;</span><span class="p">):</span>
+                            <span class="n">collected_tensordict</span><span class="o">.</span><span class="n">share_memory_</span><span class="p">()</span>
+                        <span class="k">elif</span> <span class="n">collected_tensordict</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;cuda&quot;</span><span class="p">:</span>
+                            <span class="n">collected_tensordict</span><span class="o">.</span><span class="n">share_memory_</span><span class="p">()</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                                <span class="sa">f</span><span class="s2">&quot;Device </span><span class="si">{</span><span class="n">collected_tensordict</span><span class="o">.</span><span class="n">device</span><span class="si">}</span><span class="s2"> is not supported in multi-collectors yet.&quot;</span>
+                            <span class="p">)</span>
                     <span class="k">else</span><span class="p">:</span>
-                        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
-                            <span class="sa">f</span><span class="s2">&quot;Device </span><span class="si">{</span><span class="n">collected_tensordict</span><span class="o">.</span><span class="n">device</span><span class="si">}</span><span class="s2"> is not supported in multi-collectors yet.&quot;</span>
+                        <span class="c1"># make sure each cpu tensor is shared - assuming non-cpu devices are shared</span>
+                        <span class="n">collected_tensordict</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+                            <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">share_memory_</span><span class="p">()</span>
+                            <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">,</span> <span class="s2">&quot;mps&quot;</span><span class="p">)</span>
+                            <span class="k">else</span> <span class="n">x</span>
                         <span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="c1"># make sure each cpu tensor is shared - assuming non-cpu devices are shared</span>
-                    <span class="n">collected_tensordict</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
-                        <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">share_memory_</span><span class="p">()</span>
-                        <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">,</span> <span class="s2">&quot;mps&quot;</span><span class="p">)</span>
-                        <span class="k">else</span> <span class="n">x</span>
-                    <span class="p">)</span>
                 <span class="n">data</span> <span class="o">=</span> <span class="p">(</span><span class="n">collected_tensordict</span><span class="p">,</span> <span class="n">idx</span><span class="p">)</span>
+                <span class="k">assert</span> <span class="n">collected_tensordict</span><span class="o">.</span><span class="n">names</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;time&quot;</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">next_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">collected_tensordict</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>

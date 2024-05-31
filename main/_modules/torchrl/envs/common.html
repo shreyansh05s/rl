@@ -456,6 +456,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">env_str</span> <span class="o">=</span> <span class="n">env_str</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">batch_locked</span> <span class="o">=</span> <span class="n">batch_locked</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">device_map</span> <span class="o">=</span> <span class="n">device_map</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">has_dynamic_specs</span> <span class="o">=</span> <span class="n">_has_dynamic_specs</span><span class="p">(</span><span class="n">specs</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">tensordict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -727,14 +728,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;_batch_size&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">device</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s2">&quot;_device&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
-            <span class="n">output_spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_output_spec&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">output_spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_output_spec&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">output_spec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s2">&quot;_output_spec&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
                     <span class="n">output_spec</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
                     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
                     <span class="k">else</span> <span class="n">output_spec</span>
                 <span class="p">)</span>
-            <span class="n">input_spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_input_spec&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">input_spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_input_spec&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">input_spec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s2">&quot;_input_spec&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
                     <span class="n">input_spec</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
@@ -856,12 +857,12 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">device</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">:</span>
-        <span class="n">device</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_device&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">device</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_device&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">device</span>
 
     <span class="nd">@device</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">device</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">device</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_device&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">device</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_device&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">device</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s2">&quot;_device&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
             <span class="k">return</span>
@@ -936,7 +937,7 @@
 
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">input_spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_input_spec&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">input_spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_input_spec&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">input_spec</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">input_spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">(</span>
                 <span class="n">full_state_spec</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -996,7 +997,7 @@
 
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">output_spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_output_spec&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">output_spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_output_spec&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">output_spec</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">output_spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">(</span>
                 <span class="n">shape</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span>
@@ -1017,7 +1018,7 @@
 
 <span class="sd">        Keys are sorted by depth in the data tree.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">action_keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_action_keys&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">action_keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_action_keys&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">action_keys</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">action_keys</span>
         <span class="n">keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_spec</span><span class="p">[</span><span class="s2">&quot;full_action_spec&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
@@ -1025,6 +1026,22 @@
             <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;Could not find action spec&quot;</span><span class="p">)</span>
         <span class="n">keys</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">_repr_by_depth</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s2">&quot;_action_keys&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">keys</span>
+        <span class="k">return</span> <span class="n">keys</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">state_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">NestedKey</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The state keys of an environment.</span>
+
+<span class="sd">        By default, there will only be one key named &quot;state&quot;.</span>
+
+<span class="sd">        Keys are sorted by depth in the data tree.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">state_keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_state_keys&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">state_keys</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">state_keys</span>
+        <span class="n">keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_spec</span><span class="p">[</span><span class="s2">&quot;full_state_spec&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="n">keys</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">_repr_by_depth</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s2">&quot;_state_keys&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">keys</span>
         <span class="k">return</span> <span class="n">keys</span>
 
     <span class="nd">@property</span>
@@ -1212,7 +1229,7 @@
 
 <span class="sd">        Keys are sorted by depth in the data tree.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">reward_keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_reward_keys&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">reward_keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_reward_keys&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">reward_keys</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">reward_keys</span>
 
@@ -1408,7 +1425,7 @@
 
 <span class="sd">        Keys are sorted by depth in the data tree.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">done_keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_done_keys&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">done_keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_done_keys&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">done_keys</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">done_keys</span>
         <span class="n">done_keys</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">full_done_spec</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="n">_repr_by_depth</span><span class="p">)</span>
@@ -1763,6 +1780,10 @@
     <span class="k">def</span> <span class="nf">state_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">CompositeSpec</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">input_spec</span><span class="o">.</span><span class="n">unlock_</span><span class="p">()</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="nb">delattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_state_keys&quot;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="k">pass</span>
             <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">input_spec</span><span class="p">[</span><span class="s2">&quot;full_state_spec&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">(</span>
                     <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span>
@@ -2671,6 +2692,10 @@
             <span class="n">shape</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span>
         <span class="p">)</span><span class="o">.</span><span class="n">lock_</span><span class="p">()</span>
 
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">_has_dynamic_specs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_has_dynamic_specs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">specs</span><span class="p">)</span>
+
 <div class="viewcode-block" id="EnvBase.rollout"><a class="viewcode-back" href="../../../reference/generated/torchrl.envs.EnvBase.html#torchrl.envs.EnvBase.rollout">[docs]</a>    <span class="k">def</span> <span class="nf">rollout</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">max_steps</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -2944,9 +2969,19 @@
             <span class="n">tensordicts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rollout_nonstop</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="n">batch_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span> <span class="k">if</span> <span class="n">tensordict</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">batch_size</span>
         <span class="k">if</span> <span class="n">return_contiguous</span><span class="p">:</span>
-            <span class="n">out_td</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">tensordicts</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">batch_size</span><span class="p">),</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">out_td</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">tensordicts</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">batch_size</span><span class="p">),</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">RuntimeError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+                <span class="k">if</span> <span class="p">(</span>
+                    <span class="s2">&quot;The shapes of the tensors to stack is incompatible&quot;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+                    <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_dynamic_specs</span>
+                <span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                        <span class="s2">&quot;The environment specs are dynamic. Call rollout with return_contiguous=False.&quot;</span>
+                    <span class="p">)</span>
+                <span class="k">raise</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">out_td</span> <span class="o">=</span> <span class="n">LazyStackedTensorDict</span><span class="o">.</span><span class="n">lazy_stack</span><span class="p">(</span>
+            <span class="n">out_td</span> <span class="o">=</span> <span class="n">LazyStackedTensorDict</span><span class="o">.</span><span class="n">maybe_dense_stack</span><span class="p">(</span>
                 <span class="n">tensordicts</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">batch_size</span><span class="p">),</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
             <span class="p">)</span>
         <span class="k">if</span> <span class="n">set_truncated</span><span class="p">:</span>
@@ -2979,7 +3014,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">_step_mdp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">step_func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_step_mdp_value&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">step_func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_step_mdp_value&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">step_func</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">step_func</span> <span class="o">=</span> <span class="n">_StepMDP</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exclude_action</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s2">&quot;_step_mdp_value&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">step_func</span>
@@ -3134,7 +3169,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">_simple_done</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">_simple_done</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_simple_done_value&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">_simple_done</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_simple_done_value&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">_simple_done</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">key_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">full_done_spec</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
             <span class="n">_simple_done</span> <span class="o">=</span> <span class="n">key_set</span> <span class="o">==</span> <span class="p">{</span>
@@ -3188,6 +3223,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s2">&quot;_reward_keys&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s2">&quot;_done_keys&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s2">&quot;_action_keys&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s2">&quot;_state_keys&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s2">&quot;_done_keys_group&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></div>
 
     <span class="nd">@property</span>
@@ -3201,7 +3237,7 @@
 
 <span class="sd">        Keys are sorted by depth in the data tree.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">reset_keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_reset_keys&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">reset_keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_reset_keys&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">reset_keys</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">reset_keys</span>
 
@@ -3245,7 +3281,7 @@
 <span class="sd">        inner lists contain the done keys (eg, done and truncated) that can</span>
 <span class="sd">        be read to determine a reset when it is absent.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">done_keys_group</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_done_keys_group&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">done_keys_group</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_done_keys_group&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">done_keys_group</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">done_keys_group</span>
 
@@ -3309,9 +3345,12 @@
         <span class="n">full_done_spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_spec</span><span class="p">[</span><span class="s2">&quot;full_done_spec&quot;</span><span class="p">]</span>
 
         <span class="n">fake_obs</span> <span class="o">=</span> <span class="n">observation_spec</span><span class="o">.</span><span class="n">zero</span><span class="p">()</span>
+        <span class="n">fake_reward</span> <span class="o">=</span> <span class="n">reward_spec</span><span class="o">.</span><span class="n">zero</span><span class="p">()</span>
+        <span class="n">fake_done</span> <span class="o">=</span> <span class="n">full_done_spec</span><span class="o">.</span><span class="n">zero</span><span class="p">()</span>
 
         <span class="n">fake_state</span> <span class="o">=</span> <span class="n">state_spec</span><span class="o">.</span><span class="n">zero</span><span class="p">()</span>
         <span class="n">fake_action</span> <span class="o">=</span> <span class="n">action_spec</span><span class="o">.</span><span class="n">zero</span><span class="p">()</span>
+
         <span class="k">if</span> <span class="nb">any</span><span class="p">(</span>
             <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">LazyStackedTensorDict</span><span class="p">)</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">fake_action</span><span class="o">.</span><span class="n">values</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
         <span class="p">):</span>
@@ -3322,9 +3361,6 @@
         <span class="c1"># the input and output key may match, but the output prevails</span>
         <span class="c1"># Hence we generate the input, and override using the output</span>
         <span class="n">fake_in_out</span> <span class="o">=</span> <span class="n">fake_input</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">fake_obs</span><span class="p">)</span>
-
-        <span class="n">fake_reward</span> <span class="o">=</span> <span class="n">reward_spec</span><span class="o">.</span><span class="n">zero</span><span class="p">()</span>
-        <span class="n">fake_done</span> <span class="o">=</span> <span class="n">full_done_spec</span><span class="o">.</span><span class="n">zero</span><span class="p">()</span>
 
         <span class="n">next_output</span> <span class="o">=</span> <span class="n">fake_obs</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
         <span class="n">next_output</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">fake_reward</span><span class="p">)</span>
@@ -3403,7 +3439,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_init_env</span><span class="p">()</span>  <span class="c1"># runs all the steps to have a ready-to-use env</span>
 
     <span class="k">def</span> <span class="nf">_sync_device</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">sync_func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_sync_device_val&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">sync_func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_sync_device_val&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">sync_func</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">device</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span>
             <span class="k">if</span> <span class="n">device</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="s2">&quot;cuda&quot;</span><span class="p">:</span>
@@ -3520,6 +3556,15 @@
 
 <span class="k">def</span> <span class="nf">_do_nothing</span><span class="p">():</span>
     <span class="k">return</span>
+
+
+<span class="k">def</span> <span class="nf">_has_dynamic_specs</span><span class="p">(</span><span class="n">spec</span><span class="p">:</span> <span class="n">CompositeSpec</span><span class="p">):</span>
+    <span class="kn">from</span> <span class="nn">tensordict.base</span> <span class="kn">import</span> <span class="n">_NESTED_TENSORS_AS_LISTS</span>
+
+    <span class="k">return</span> <span class="nb">any</span><span class="p">(</span>
+        <span class="nb">any</span><span class="p">(</span><span class="n">s</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">spec</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">spec</span> <span class="ow">in</span> <span class="n">spec</span><span class="o">.</span><span class="n">values</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">is_leaf</span><span class="o">=</span><span class="n">_NESTED_TENSORS_AS_LISTS</span><span class="p">)</span>
+    <span class="p">)</span>
 </pre></div>
 
              </article>

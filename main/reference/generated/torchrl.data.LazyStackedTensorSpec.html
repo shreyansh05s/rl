@@ -416,6 +416,13 @@ heterogeneous specs may occur (same semantic but different shape).</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="torchrl.data.LazyStackedTensorSpec.contains">
+<span class="sig-name descname"><span class="pre">contains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#torchrl.data.LazyStackedTensorSpec.contains" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns whether a sample is contained within the space defined by the TensorSpec.</p>
+<p>See <a class="reference internal" href="#torchrl.data.LazyStackedTensorSpec.is_in" title="torchrl.data.LazyStackedTensorSpec.is_in"><code class="xref py py-meth docutils literal notranslate"><span class="pre">is_in()</span></code></a> for more information.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="torchrl.data.LazyStackedTensorSpec.encode">
 <span class="sig-name descname"><span class="pre">encode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.3)"><span class="pre">Tensor</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.3)"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="../../_modules/torchrl/data/tensor_specs.html#LazyStackedTensorSpec.encode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.data.LazyStackedTensorSpec.encode" title="Permalink to this definition">¶</a></dt>
 <dd><p>Encodes a value given the specified spec, and return the corresponding tensor.</p>
@@ -480,7 +487,7 @@ from it if the current dimension is a singleton.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="torchrl.data.LazyStackedTensorSpec.is_in">
-<span class="sig-name descname"><span class="pre">is_in</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../../_modules/torchrl/data/tensor_specs.html#LazyStackedTensorSpec.is_in"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.data.LazyStackedTensorSpec.is_in" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">is_in</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../../_modules/torchrl/data/tensor_specs.html#LazyStackedTensorSpec.is_in"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.data.LazyStackedTensorSpec.is_in" title="Permalink to this definition">¶</a></dt>
 <dd><p>If the value <code class="xref py py-obj docutils literal notranslate"><span class="pre">val</span></code> is in the box defined by the TensorSpec, returns True, otherwise False.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -509,7 +516,7 @@ from it if the current dimension is a singleton.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="torchrl.data.LazyStackedTensorSpec.rand">
 <span class="sig-name descname"><span class="pre">rand</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">TensorDictBase</span></span></span><a class="headerlink" href="#torchrl.data.LazyStackedTensorSpec.rand" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a random tensor in the box. The sampling will be uniform unless the box is unbounded.</p>
+<dd><p>Returns a random tensor in the space defined by the spec. The sampling will be uniform unless the box is unbounded.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>shape</strong> (<em>torch.Size</em>) – shape of the random tensor</p>
@@ -525,6 +532,13 @@ from it if the current dimension is a singleton.</p>
 <span class="sig-name descname"><span class="pre">reshape</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">shape</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#torchrl.data.LazyStackedTensorSpec.reshape" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reshapes a tensorspec.</p>
 <p>Check <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.reshape.html#torch.reshape" title="(in PyTorch v2.3)"><code class="xref py py-func docutils literal notranslate"><span class="pre">reshape()</span></code></a> for more information on this method.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="torchrl.data.LazyStackedTensorSpec.sample">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sample</span></span><a class="headerlink" href="#torchrl.data.LazyStackedTensorSpec.sample" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a random tensor in the space defined by the spec.</p>
+<p>See <a class="reference internal" href="#torchrl.data.LazyStackedTensorSpec.rand" title="torchrl.data.LazyStackedTensorSpec.rand"><code class="xref py py-meth docutils literal notranslate"><span class="pre">rand()</span></code></a> for details.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -560,7 +574,7 @@ Defaults to the value of the <code class="docutils literal notranslate"><span cl
 
 <dl class="py method">
 <dt class="sig sig-object py" id="torchrl.data.LazyStackedTensorSpec.type_check">
-<span class="sig-name descname"><span class="pre">type_check</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.3)"><span class="pre">Tensor</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/torchrl/data/tensor_specs.html#LazyStackedTensorSpec.type_check"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.data.LazyStackedTensorSpec.type_check" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">type_check</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.3)"><span class="pre">torch.Tensor</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">NestedKey</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/torchrl/data/tensor_specs.html#LazyStackedTensorSpec.type_check"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.data.LazyStackedTensorSpec.type_check" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks the input value dtype against the TensorSpec dtype and raises an exception if they don’t match.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>

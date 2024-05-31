@@ -449,6 +449,7 @@ the nested env:</p>
 <span class="go">200</span>
 </pre></div>
 </div>
+<p>If a use-case is not covered by TorchRL, please submit an issue on GitHub.</p>
 </div>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.envs</span> <span class="kn">import</span> <span class="n">GymEnv</span>
@@ -497,6 +498,29 @@ one can swap backend using <code class="xref py py-func docutils literal notrans
 if no other reader is provided. To provide another reader, refer to
 <a class="reference internal" href="torchrl.envs.GymLikeEnv.html#torchrl.envs.GymLikeEnv.set_info_dict_reader" title="torchrl.envs.GymLikeEnv.set_info_dict_reader"><code class="xref py py-meth docutils literal notranslate"><span class="pre">set_info_dict_reader()</span></code></a>. To automatically register the info_dict
 content, refer to <a class="reference internal" href="torchrl.envs.GymLikeEnv.html#torchrl.envs.GymLikeEnv.auto_register_info_dict" title="torchrl.envs.GymLikeEnv.auto_register_info_dict"><code class="xref py py-meth docutils literal notranslate"><span class="pre">torchrl.envs.GymLikeEnv.auto_register_info_dict()</span></code></a>.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Gym spaces are not completely covered.
+The following spaces are accounted for provided that they can be represented by a torch.Tensor, a nested tensor
+and/or within a tensordict:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>spaces.Box</p></li>
+<li><p>spaces.Sequence</p></li>
+<li><p>spaces.Tuple</p></li>
+<li><p>spaces.Discrete</p></li>
+<li><p>spaces.MultiBinary</p></li>
+<li><p>spaces.MultiDiscrete</p></li>
+<li><p>spaces.Dict</p></li>
+</ul>
+</div></blockquote>
+<p>Some considerations should be made when working with gym spaces. For instance, a tuple of spaces
+can only be supported if the spaces are semantically identical (same dtype and same number of dimensions).
+Ragged dimension can be supported through <a class="reference external" href="https://pytorch.org/docs/stable/nested.html#torch.nested.nested_tensor" title="(in PyTorch v2.3)"><code class="xref py py-func docutils literal notranslate"><span class="pre">nested_tensor()</span></code></a>, but then there should be only
+one level of tuple and data should be stacked along the first dimension (as nested_tensors can only be
+stacked along the first dimension).</p>
+<p>Check the example in examples/envs/gym_conversion_examples.py to know more!</p>
 </div>
 </dd></dl>
 

@@ -2651,6 +2651,14 @@ Default: <code class="docutils literal notranslate"><span class="pre">False</spa
 </dd></dl>
 
 <dl class="py property">
+<dt class="sig sig-object py" id="torchrl.envs.EnvBase.state_keys">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">state_keys</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#torchrl.envs.EnvBase.state_keys" title="Permalink to this definition">¶</a></dt>
+<dd><p>The state keys of an environment.</p>
+<p>By default, there will only be one key named “state”.</p>
+<p>Keys are sorted by depth in the data tree.</p>
+</dd></dl>
+
+<dl class="py property">
 <dt class="sig sig-object py" id="torchrl.envs.EnvBase.state_spec">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">state_spec</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="torchrl.data.CompositeSpec.html#torchrl.data.CompositeSpec" title="torchrl.data.tensor_specs.CompositeSpec"><span class="pre">CompositeSpec</span></a></em><a class="headerlink" href="#torchrl.envs.EnvBase.state_spec" title="Permalink to this definition">¶</a></dt>
 <dd><p>State spec.</p>

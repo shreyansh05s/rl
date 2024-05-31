@@ -488,6 +488,13 @@ to the batch-size of the corresponding tensordicts.</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="torchrl.data.CompositeSpec.contains">
+<span class="sig-name descname"><span class="pre">contains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#torchrl.data.CompositeSpec.contains" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns whether a sample is contained within the space defined by the TensorSpec.</p>
+<p>See <a class="reference internal" href="#torchrl.data.CompositeSpec.is_in" title="torchrl.data.CompositeSpec.is_in"><code class="xref py py-meth docutils literal notranslate"><span class="pre">is_in()</span></code></a> for more information.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="torchrl.data.CompositeSpec.empty">
 <span class="sig-name descname"><span class="pre">empty</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/torchrl/data/tensor_specs.html#CompositeSpec.empty"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.data.CompositeSpec.empty" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a spec like self, but with no entries.</p>
@@ -585,7 +592,7 @@ from it if the current dimension is a singleton.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="torchrl.data.CompositeSpec.items">
-<span class="sig-name descname"><span class="pre">items</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">include_nested</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">leaves_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ItemsView</span></span></span><a class="reference internal" href="../../_modules/torchrl/data/tensor_specs.html#CompositeSpec.items"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.data.CompositeSpec.items" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">items</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">include_nested</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">leaves_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_leaf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">type</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">_CompositeSpecItemsView</span></span></span><a class="reference internal" href="../../_modules/torchrl/data/tensor_specs.html#CompositeSpec.items"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.data.CompositeSpec.items" title="Permalink to this definition">¶</a></dt>
 <dd><p>Items of the CompositeSpec.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -601,12 +608,17 @@ will lead to the keys <code class="xref py py-obj docutils literal notranslate">
 Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
 </ul>
 </dd>
+<dt class="field-even">Keyword Arguments<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>is_leaf</strong> (<em>callable</em><em>, </em><em>optional</em>) – reads a type and returns a boolean indicating if that type
+should be seen as a leaf. By default, all non-CompositeSpec nodes are considered as
+leaves.</p>
+</dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="torchrl.data.CompositeSpec.keys">
-<span class="sig-name descname"><span class="pre">keys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">include_nested</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">leaves_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">KeysView</span></span></span><a class="reference internal" href="../../_modules/torchrl/data/tensor_specs.html#CompositeSpec.keys"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.data.CompositeSpec.keys" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">keys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">include_nested</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">leaves_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_leaf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">type</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">_CompositeSpecKeysView</span></span></span><a class="reference internal" href="../../_modules/torchrl/data/tensor_specs.html#CompositeSpec.keys"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.data.CompositeSpec.keys" title="Permalink to this definition">¶</a></dt>
 <dd><p>Keys of the CompositeSpec.</p>
 <p>The keys argument reflect those of <code class="xref py py-class docutils literal notranslate"><span class="pre">tensordict.TensorDict</span></code>.</p>
 <dl class="field-list simple">
@@ -622,6 +634,11 @@ will contain every level of nesting, i.e. a <code class="xref py py-obj docutils
 will lead to the keys <code class="xref py py-obj docutils literal notranslate"><span class="pre">[&quot;next&quot;,</span> <span class="pre">(&quot;next&quot;,</span> <span class="pre">&quot;obs&quot;)]</span></code>.
 Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
 </ul>
+</dd>
+<dt class="field-even">Keyword Arguments<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>is_leaf</strong> (<em>callable</em><em>, </em><em>optional</em>) – reads a type and returns a boolean indicating if that type
+should be seen as a leaf. By default, all non-CompositeSpec nodes are considered as
+leaves.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -685,7 +702,7 @@ in their CompositeSpec parent.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="torchrl.data.CompositeSpec.rand">
 <span class="sig-name descname"><span class="pre">rand</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">TensorDictBase</span></span></span><a class="reference internal" href="../../_modules/torchrl/data/tensor_specs.html#CompositeSpec.rand"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.data.CompositeSpec.rand" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a random tensor in the box. The sampling will be uniform unless the box is unbounded.</p>
+<dd><p>Returns a random tensor in the space defined by the spec. The sampling will be uniform unless the box is unbounded.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>shape</strong> (<em>torch.Size</em>) – shape of the random tensor</p>
@@ -701,6 +718,13 @@ in their CompositeSpec parent.</p>
 <span class="sig-name descname"><span class="pre">reshape</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">shape</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#torchrl.data.CompositeSpec.reshape" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reshapes a tensorspec.</p>
 <p>Check <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.reshape.html#torch.reshape" title="(in PyTorch v2.3)"><code class="xref py py-func docutils literal notranslate"><span class="pre">reshape()</span></code></a> for more information on this method.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="torchrl.data.CompositeSpec.sample">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sample</span></span><a class="headerlink" href="#torchrl.data.CompositeSpec.sample" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a random tensor in the space defined by the spec.</p>
+<p>See <a class="reference internal" href="#torchrl.data.CompositeSpec.rand" title="torchrl.data.CompositeSpec.rand"><code class="xref py py-meth docutils literal notranslate"><span class="pre">rand()</span></code></a> for details.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -767,7 +791,7 @@ otherwise through the <code class="docutils literal notranslate"><span class="pr
 
 <dl class="py method">
 <dt class="sig sig-object py" id="torchrl.data.CompositeSpec.values">
-<span class="sig-name descname"><span class="pre">values</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">include_nested</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">leaves_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ValuesView</span></span></span><a class="reference internal" href="../../_modules/torchrl/data/tensor_specs.html#CompositeSpec.values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.data.CompositeSpec.values" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">values</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">include_nested</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">leaves_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_leaf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">type</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">_CompositeSpecValuesView</span></span></span><a class="reference internal" href="../../_modules/torchrl/data/tensor_specs.html#CompositeSpec.values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.data.CompositeSpec.values" title="Permalink to this definition">¶</a></dt>
 <dd><p>Values of the CompositeSpec.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -782,6 +806,11 @@ will contain every level of nesting, i.e. a <code class="xref py py-obj docutils
 will lead to the keys <code class="xref py py-obj docutils literal notranslate"><span class="pre">[&quot;next&quot;,</span> <span class="pre">(&quot;next&quot;,</span> <span class="pre">&quot;obs&quot;)]</span></code>.
 Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
 </ul>
+</dd>
+<dt class="field-even">Keyword Arguments<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>is_leaf</strong> (<em>callable</em><em>, </em><em>optional</em>) – reads a type and returns a boolean indicating if that type
+should be seen as a leaf. By default, all non-CompositeSpec nodes are considered as
+leaves.</p>
 </dd>
 </dl>
 </dd></dl>

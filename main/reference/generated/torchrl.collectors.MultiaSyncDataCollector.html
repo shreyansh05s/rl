@@ -612,6 +612,9 @@ interoperability with the rest of the library.</p>
 a rollout is reached. If no <code class="docutils literal notranslate"><span class="pre">&quot;truncated&quot;</span></code> key is found, an exception is raised.
 Truncated keys can be set through <code class="docutils literal notranslate"><span class="pre">env.add_truncated_keys</span></code>.
 Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>use_buffers</strong> (<em>bool</em><em>, </em><em>optional</em>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code>, a buffer will be used to stack the data.
+This isn’t compatible with environments with dynamic specs. Defaults to <code class="docutils literal notranslate"><span class="pre">True</span></code>
+for envs without dynamic specs, <code class="docutils literal notranslate"><span class="pre">False</span></code> for others.</p></li>
 </ul>
 </dd>
 </dl>

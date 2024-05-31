@@ -401,7 +401,12 @@
 
 <span class="kn">import</span> <span class="nn">torch</span>
 
-<span class="kn">from</span> <span class="nn">tensordict</span> <span class="kn">import</span> <span class="n">LazyStackedTensorDict</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">,</span> <span class="n">TensorDictBase</span>
+<span class="kn">from</span> <span class="nn">tensordict</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">is_tensor_collection</span><span class="p">,</span>
+    <span class="n">LazyStackedTensorDict</span><span class="p">,</span>
+    <span class="n">TensorDict</span><span class="p">,</span>
+    <span class="n">TensorDictBase</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">tensordict._tensordict</span> <span class="kn">import</span> <span class="n">unravel_key</span>
 <span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">multiprocessing</span> <span class="k">as</span> <span class="n">mp</span>
 <span class="kn">from</span> <span class="nn">torchrl._utils</span> <span class="kn">import</span> <span class="p">(</span>
@@ -412,7 +417,7 @@
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">torchrl.data.tensor_specs</span> <span class="kn">import</span> <span class="n">CompositeSpec</span>
 <span class="kn">from</span> <span class="nn">torchrl.data.utils</span> <span class="kn">import</span> <span class="n">CloudpickleWrapper</span><span class="p">,</span> <span class="n">contains_lazy_spec</span><span class="p">,</span> <span class="n">DEVICE_TYPING</span>
-<span class="kn">from</span> <span class="nn">torchrl.envs.common</span> <span class="kn">import</span> <span class="n">_do_nothing</span><span class="p">,</span> <span class="n">_EnvPostInit</span><span class="p">,</span> <span class="n">EnvBase</span>
+<span class="kn">from</span> <span class="nn">torchrl.envs.common</span> <span class="kn">import</span> <span class="n">_do_nothing</span><span class="p">,</span> <span class="n">_EnvPostInit</span><span class="p">,</span> <span class="n">EnvBase</span><span class="p">,</span> <span class="n">EnvMetaData</span>
 <span class="kn">from</span> <span class="nn">torchrl.envs.env_creator</span> <span class="kn">import</span> <span class="n">get_env_metadata</span>
 
 <span class="c1"># legacy</span>
@@ -494,7 +499,7 @@
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">serial_for_single</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;serial_for_single&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">serial_for_single</span><span class="p">:</span>
-            <span class="n">num_workers</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;num_workers&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">num_workers</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;num_workers&quot;</span><span class="p">)</span>
             <span class="c1"># Remove start method from kwargs</span>
             <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;mp_start_method&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">num_workers</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -559,6 +564,9 @@
 <span class="sd">            Uses the default start method if not indicated (&#39;spawn&#39; by default in</span>
 <span class="sd">            TorchRL if not initiated differently before first import).</span>
 <span class="sd">            To be used only with :class:`~torchrl.envs.ParallelEnv` subclasses.</span>
+<span class="sd">        use_buffers (bool, optional): whether communication between workers should</span>
+<span class="sd">            occur via circular preallocated memory buffers. Defaults to ``True`` unless</span>
+<span class="sd">            one of the environment has dynamic specs.</span>
 
 <span class="sd">    .. note::</span>
 <span class="sd">        One can pass keyword arguments to each sub-environments using the following</span>
@@ -672,6 +680,7 @@
         <span class="n">serial_for_single</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">non_blocking</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">mp_start_method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">use_buffers</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">serial_for_single</span> <span class="o">=</span> <span class="n">serial_for_single</span>
@@ -679,6 +688,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">num_sub_threads</span> <span class="o">=</span> <span class="n">num_sub_threads</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">num_threads</span> <span class="o">=</span> <span class="n">num_threads</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cache_in_keys</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_use_buffers</span> <span class="o">=</span> <span class="n">use_buffers</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_single_task</span> <span class="o">=</span> <span class="nb">callable</span><span class="p">(</span><span class="n">create_env_fn</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">create_env_fn</span><span class="p">))</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">create_env_fn</span><span class="p">):</span>
@@ -739,7 +749,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">_sync_m2w</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
-        <span class="n">sync_func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_sync_m2w_value&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">sync_func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_sync_m2w_value&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">sync_func</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">sync_m2w</span><span class="p">,</span> <span class="n">sync_w2m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_sync_values</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s2">&quot;_sync_m2w_value&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sync_m2w</span>
@@ -749,7 +759,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">_sync_w2m</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
-        <span class="n">sync_func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_sync_w2m_value&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">sync_func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_sync_w2m_value&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">sync_func</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">sync_m2w</span><span class="p">,</span> <span class="n">sync_w2m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_sync_values</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s2">&quot;_sync_m2w_value&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sync_m2w</span>
@@ -759,6 +769,8 @@
 
     <span class="k">def</span> <span class="nf">_find_sync_values</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the m2w and w2m sync values, in that order.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_buffers</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">_do_nothing</span><span class="p">,</span> <span class="n">_do_nothing</span>
         <span class="c1"># Simplest case: everything is on the same device</span>
         <span class="n">worker_device</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shared_tensordict_parent</span><span class="o">.</span><span class="n">device</span>
         <span class="n">self_device</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span>
@@ -830,20 +842,34 @@
         <span class="n">out</span><span class="p">[</span><span class="s2">&quot;_sync_w2m_value&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">return</span> <span class="n">out</span>
 
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">_has_dynamic_specs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_buffers</span>
+
     <span class="k">def</span> <span class="nf">_get_metadata</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">create_env_fn</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Callable</span><span class="p">],</span> <span class="n">create_env_kwargs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">]</span>
     <span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_single_task</span><span class="p">:</span>
             <span class="c1"># if EnvCreator, the metadata are already there</span>
-            <span class="n">meta_data</span> <span class="o">=</span> <span class="n">get_env_metadata</span><span class="p">(</span><span class="n">create_env_fn</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">create_env_kwargs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">meta_data</span><span class="p">:</span> <span class="n">EnvMetaData</span> <span class="o">=</span> <span class="n">get_env_metadata</span><span class="p">(</span>
+                <span class="n">create_env_fn</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">create_env_kwargs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">meta_data</span> <span class="o">=</span> <span class="n">meta_data</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span>
                 <span class="o">*</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span><span class="p">,</span> <span class="o">*</span><span class="n">meta_data</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span>
             <span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_buffers</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">False</span><span class="p">:</span>
+                <span class="n">_use_buffers</span> <span class="o">=</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">has_dynamic_specs</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_buffers</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">_use_buffers</span><span class="p">:</span>
+                    <span class="n">warn</span><span class="p">(</span>
+                        <span class="s2">&quot;A value of use_buffers=True was passed but this is incompatible &quot;</span>
+                        <span class="s2">&quot;with the list of environments provided. Turning use_buffers to False.&quot;</span>
+                    <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_use_buffers</span> <span class="o">=</span> <span class="n">_use_buffers</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">share_individual_td</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">share_individual_td</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">n_tasks</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">create_env_fn</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">meta_data</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">meta_data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">EnvMetaData</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_tasks</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                     <span class="n">get_env_metadata</span><span class="p">(</span><span class="n">create_env_fn</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">create_env_kwargs</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
@@ -858,6 +884,16 @@
                         <span class="s2">&quot;be True to accomodate non-stackable tensors.&quot;</span>
                     <span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">share_individual_td</span> <span class="o">=</span> <span class="n">share_individual_td</span>
+            <span class="n">_use_buffers</span> <span class="o">=</span> <span class="nb">all</span><span class="p">(</span>
+                <span class="ow">not</span> <span class="n">metadata</span><span class="o">.</span><span class="n">has_dynamic_specs</span> <span class="k">for</span> <span class="n">metadata</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">meta_data</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_buffers</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">_use_buffers</span><span class="p">:</span>
+                <span class="n">warn</span><span class="p">(</span>
+                    <span class="s2">&quot;A value of use_buffers=True was passed but this is incompatible &quot;</span>
+                    <span class="s2">&quot;with the list of environments provided. Turning use_buffers to False.&quot;</span>
+                <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_use_buffers</span> <span class="o">=</span> <span class="n">_use_buffers</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_properties</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">update_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -994,6 +1030,8 @@
 
     <span class="k">def</span> <span class="nf">_create_td</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates self.shared_tensordict_parent, a TensorDict used to store the most recent observations.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_buffers</span><span class="p">:</span>
+            <span class="k">return</span>
         <span class="n">shared_tensordict_parent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_env_tensordict</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_env_tensordict</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
@@ -1187,6 +1225,16 @@
             <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s2">&quot;_output_spec&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s2">&quot;_output_spec&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span>
 
+    <span class="k">def</span> <span class="nf">_reset_proc_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">,</span> <span class="n">tensordict_reset</span><span class="p">):</span>
+        <span class="c1"># since we call `reset` directly, all the postproc has been completed</span>
+        <span class="k">if</span> <span class="n">tensordict</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tensordict_reset</span><span class="p">,</span> <span class="n">LazyStackedTensorDict</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span>
+                <span class="n">tensordict</span><span class="p">,</span> <span class="n">LazyStackedTensorDict</span>
+            <span class="p">):</span>
+                <span class="n">tensordict</span> <span class="o">=</span> <span class="n">LazyStackedTensorDict</span><span class="p">(</span><span class="o">*</span><span class="n">tensordict</span><span class="o">.</span><span class="n">unbind</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">_update_during_reset</span><span class="p">(</span><span class="n">tensordict_reset</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">reset_keys</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tensordict_reset</span>
+
 
 <div class="viewcode-block" id="SerialEnv"><a class="viewcode-back" href="../../../reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv">[docs]</a><span class="k">class</span> <span class="nc">SerialEnv</span><span class="p">(</span><span class="n">BatchedEnvBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates a series of environments in the same process.&quot;&quot;&quot;</span>
@@ -1272,14 +1320,20 @@
                 <span class="n">needs_resetting</span> <span class="o">=</span> <span class="n">needs_resetting</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
             <span class="k">elif</span> <span class="ow">not</span> <span class="n">needs_resetting</span><span class="o">.</span><span class="n">ndim</span><span class="p">:</span>
                 <span class="n">needs_resetting</span> <span class="o">=</span> <span class="n">needs_resetting</span><span class="o">.</span><span class="n">expand</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span><span class="p">,))</span>
+            <span class="n">tensordict</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">unbind</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">needs_resetting</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span>
                 <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span><span class="p">,),</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span>
             <span class="p">)</span>
 
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_buffers</span><span class="p">:</span>
+            <span class="n">out_tds</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span>
+
         <span class="n">tds</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">_env</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_envs</span><span class="p">):</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">needs_resetting</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_buffers</span> <span class="ow">and</span> <span class="n">tensordict</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">out_tds</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">tensordict</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">exclude</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_envs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">reset_keys</span><span class="p">)</span>
                 <span class="k">continue</span>
             <span class="k">if</span> <span class="n">tensordict</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">tensordict_</span> <span class="o">=</span> <span class="n">tensordict</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
@@ -1298,24 +1352,44 @@
             <span class="n">tds</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">i</span><span class="p">,</span> <span class="n">tensordict_</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_sync_m2w</span><span class="p">()</span>
-
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">tensordict_</span> <span class="ow">in</span> <span class="n">tds</span><span class="p">:</span>
             <span class="n">_env</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_envs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
             <span class="n">_td</span> <span class="o">=</span> <span class="n">_env</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">tensordict</span><span class="o">=</span><span class="n">tensordict_</span><span class="p">,</span> <span class="o">**</span><span class="n">list_of_kwargs</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">shared_tensordicts</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">update_</span><span class="p">(</span>
-                    <span class="n">_td</span><span class="p">,</span>
-                    <span class="n">keys_to_update</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_selected_reset_keys_filt</span><span class="p">),</span>
-                    <span class="n">non_blocking</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">non_blocking</span><span class="p">,</span>
-                <span class="p">)</span>
-            <span class="k">except</span> <span class="ne">RuntimeError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
-                <span class="k">if</span> <span class="s2">&quot;no_grad mode&quot;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">err</span><span class="p">):</span>
-                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                        <span class="s2">&quot;Cannot update a view of a tensordict when gradients are required. &quot;</span>
-                        <span class="s2">&quot;To collect gradient across sub-environments, please set the &quot;</span>
-                        <span class="s2">&quot;share_individual_td argument to True.&quot;</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_buffers</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">shared_tensordicts</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">update_</span><span class="p">(</span>
+                        <span class="n">_td</span><span class="p">,</span>
+                        <span class="n">keys_to_update</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_selected_reset_keys_filt</span><span class="p">),</span>
+                        <span class="n">non_blocking</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">non_blocking</span><span class="p">,</span>
                     <span class="p">)</span>
-                <span class="k">raise</span>
+                <span class="k">except</span> <span class="ne">RuntimeError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="s2">&quot;no_grad mode&quot;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">err</span><span class="p">):</span>
+                        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                            <span class="s2">&quot;Cannot update a view of a tensordict when gradients are required. &quot;</span>
+                            <span class="s2">&quot;To collect gradient across sub-environments, please set the &quot;</span>
+                            <span class="s2">&quot;share_individual_td argument to True.&quot;</span>
+                        <span class="p">)</span>
+                    <span class="k">raise</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">out_tds</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">_td</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_buffers</span><span class="p">:</span>
+            <span class="c1"># first_non_none = None</span>
+            <span class="c1"># first_none = None</span>
+            <span class="c1"># for i, item in enumerate(out_tds):</span>
+            <span class="c1">#     if item is not None:</span>
+            <span class="c1">#         first_non_none = i</span>
+            <span class="c1">#         if first_none is not None:</span>
+            <span class="c1">#             break</span>
+            <span class="c1">#     else:</span>
+            <span class="c1">#         first_none = i</span>
+            <span class="c1">#         if first_non_none is not None:</span>
+            <span class="c1">#             break</span>
+            <span class="c1"># if first_none is not None:</span>
+            <span class="c1">#     empty_td = out_tds[first_non_none].empty(recurse=True)</span>
+            <span class="c1">#     out_tds = [item if item is not None else empty_td for item in out_tds]</span>
+            <span class="c1">#</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">LazyStackedTensorDict</span><span class="o">.</span><span class="n">maybe_dense_stack</span><span class="p">(</span><span class="n">out_tds</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">result</span>
 
         <span class="n">selected_output_keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selected_reset_keys_filt</span>
         <span class="n">device</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span>
@@ -1339,19 +1413,12 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_sync_w2m</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">out</span>
 
-    <span class="k">def</span> <span class="nf">_reset_proc_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">,</span> <span class="n">tensordict_reset</span><span class="p">):</span>
-        <span class="c1"># since we call `reset` directly, all the postproc has been completed</span>
-        <span class="k">if</span> <span class="n">tensordict</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">_update_during_reset</span><span class="p">(</span><span class="n">tensordict_reset</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">reset_keys</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">tensordict_reset</span>
-
     <span class="nd">@_check_start</span>
     <span class="k">def</span> <span class="nf">_step</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDict</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDict</span><span class="p">:</span>
         <span class="n">tensordict_in</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">clone</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
-        <span class="n">next_td</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shared_tensordict_parent</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;next&quot;</span><span class="p">)</span>
         <span class="n">data_in</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span><span class="p">):</span>
             <span class="c1"># shared_tensordicts are locked, and we need to select the keys since we update in-place.</span>
@@ -1366,13 +1433,21 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_sync_m2w</span><span class="p">()</span>
 
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">_data_in</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">data_in</span><span class="p">):</span>
-            <span class="n">out_td</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_envs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">_step</span><span class="p">(</span><span class="n">_data_in</span><span class="p">)</span>
-            <span class="n">next_td</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">update_</span><span class="p">(</span>
-                <span class="n">out_td</span><span class="p">,</span>
-                <span class="n">keys_to_update</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_env_output_keys</span><span class="p">),</span>
-                <span class="n">non_blocking</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">non_blocking</span><span class="p">,</span>
-            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_buffers</span><span class="p">:</span>
+            <span class="n">next_td</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shared_tensordict_parent</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;next&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">_data_in</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">data_in</span><span class="p">):</span>
+                <span class="n">out_td</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_envs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">_step</span><span class="p">(</span><span class="n">_data_in</span><span class="p">)</span>
+                <span class="n">next_td</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">update_</span><span class="p">(</span>
+                    <span class="n">out_td</span><span class="p">,</span>
+                    <span class="n">keys_to_update</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_env_output_keys</span><span class="p">),</span>
+                    <span class="n">non_blocking</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">non_blocking</span><span class="p">,</span>
+                <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">tds</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">_data_in</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">data_in</span><span class="p">):</span>
+                <span class="n">out_td</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_envs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">_step</span><span class="p">(</span><span class="n">_data_in</span><span class="p">)</span>
+                <span class="n">tds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">out_td</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">LazyStackedTensorDict</span><span class="o">.</span><span class="n">maybe_dense_stack</span><span class="p">(</span><span class="n">tds</span><span class="p">)</span>
 
         <span class="c1"># We must pass a clone of the tensordict, as the values of this tensordict</span>
         <span class="c1"># will be modified in-place at further steps</span>
@@ -1609,7 +1684,10 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">parent_channels</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_workers</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">func</span> <span class="o">=</span> <span class="n">_run_worker_pipe_shared_mem</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_buffers</span><span class="p">:</span>
+            <span class="n">func</span> <span class="o">=</span> <span class="n">_run_worker_pipe_shared_mem</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">func</span> <span class="o">=</span> <span class="n">_run_worker_pipe_direct</span>
         <span class="c1"># We look for cuda tensors through the leaves</span>
         <span class="c1"># because the shared tensordict could be partially on cuda</span>
         <span class="c1"># and some leaves may be inaccessible through get (e.g., LazyStacked)</span>
@@ -1618,7 +1696,8 @@
         <span class="k">def</span> <span class="nf">look_for_cuda</span><span class="p">(</span><span class="n">tensor</span><span class="p">,</span> <span class="n">has_cuda</span><span class="o">=</span><span class="n">has_cuda</span><span class="p">):</span>
             <span class="n">has_cuda</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">has_cuda</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">or</span> <span class="n">tensor</span><span class="o">.</span><span class="n">is_cuda</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">shared_tensordict_parent</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">look_for_cuda</span><span class="p">,</span> <span class="n">filter_empty</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_buffers</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">shared_tensordict_parent</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">look_for_cuda</span><span class="p">,</span> <span class="n">filter_empty</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">has_cuda</span> <span class="o">=</span> <span class="n">has_cuda</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">has_cuda</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">event</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">Event</span><span class="p">()</span>
@@ -1641,15 +1720,20 @@
                         <span class="s2">&quot;child_pipe&quot;</span><span class="p">:</span> <span class="n">child_pipe</span><span class="p">,</span>
                         <span class="s2">&quot;env_fun&quot;</span><span class="p">:</span> <span class="n">env_fun</span><span class="p">,</span>
                         <span class="s2">&quot;env_fun_kwargs&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_env_kwargs</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span>
-                        <span class="s2">&quot;shared_tensordict&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">shared_tensordicts</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span>
-                        <span class="s2">&quot;_selected_input_keys&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selected_input_keys</span><span class="p">,</span>
-                        <span class="s2">&quot;_selected_reset_keys&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selected_reset_keys</span><span class="p">,</span>
-                        <span class="s2">&quot;_selected_step_keys&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selected_step_keys</span><span class="p">,</span>
                         <span class="s2">&quot;has_lazy_inputs&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_lazy_inputs</span><span class="p">,</span>
                         <span class="s2">&quot;num_threads&quot;</span><span class="p">:</span> <span class="n">num_sub_threads</span><span class="p">,</span>
                         <span class="s2">&quot;non_blocking&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">non_blocking</span><span class="p">,</span>
                     <span class="p">}</span>
                 <span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_buffers</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+                        <span class="p">{</span>
+                            <span class="s2">&quot;shared_tensordict&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">shared_tensordicts</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span>
+                            <span class="s2">&quot;_selected_input_keys&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selected_input_keys</span><span class="p">,</span>
+                            <span class="s2">&quot;_selected_reset_keys&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selected_reset_keys</span><span class="p">,</span>
+                            <span class="s2">&quot;_selected_step_keys&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selected_step_keys</span><span class="p">,</span>
+                        <span class="p">}</span>
+                    <span class="p">)</span>
                 <span class="n">process</span> <span class="o">=</span> <span class="n">proc_fun</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">func</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="n">kwargs</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
                 <span class="n">process</span><span class="o">.</span><span class="n">daemon</span> <span class="o">=</span> <span class="kc">True</span>
                 <span class="n">process</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
@@ -1691,11 +1775,40 @@
             <span class="n">event</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_timeout</span><span class="p">)</span>
             <span class="n">event</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
 
+    <span class="k">def</span> <span class="nf">_step_and_maybe_reset_no_buffers</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">TensorDictBase</span><span class="p">,</span> <span class="n">TensorDictBase</span><span class="p">]:</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">_data</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tensordict</span><span class="o">.</span><span class="n">unbind</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parent_channels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">send</span><span class="p">((</span><span class="s2">&quot;step_and_maybe_reset&quot;</span><span class="p">,</span> <span class="n">_data</span><span class="p">))</span>
+
+        <span class="n">results</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span>
+
+        <span class="n">consumed_indices</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">events</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span><span class="p">))</span>
+        <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">consumed_indices</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">events</span><span class="p">):</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_events</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">is_set</span><span class="p">():</span>
+                    <span class="n">results</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent_channels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">recv</span><span class="p">()</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_events</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+                    <span class="n">consumed_indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                    <span class="n">events</span><span class="o">.</span><span class="n">discard</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+
+        <span class="n">out_next</span><span class="p">,</span> <span class="n">out_root</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">future</span> <span class="k">for</span> <span class="n">future</span> <span class="ow">in</span> <span class="n">results</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">TensorDict</span><span class="o">.</span><span class="n">maybe_dense_stack</span><span class="p">(</span><span class="n">out_next</span><span class="p">),</span> <span class="n">TensorDict</span><span class="o">.</span><span class="n">maybe_dense_stack</span><span class="p">(</span>
+            <span class="n">out_root</span>
+        <span class="p">)</span>
+
 <div class="viewcode-block" id="ParallelEnv.step_and_maybe_reset"><a class="viewcode-back" href="../../../reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.step_and_maybe_reset">[docs]</a>    <span class="nd">@torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">()</span>
     <span class="nd">@_check_start</span>
     <span class="k">def</span> <span class="nf">step_and_maybe_reset</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">TensorDictBase</span><span class="p">,</span> <span class="n">TensorDictBase</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_buffers</span><span class="p">:</span>
+            <span class="c1"># Simply dispatch the input to the workers</span>
+            <span class="c1"># return self._step_and_maybe_reset_no_buffers(tensordict)</span>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">step_and_maybe_reset</span><span class="p">(</span><span class="n">tensordict</span><span class="p">)</span>
+
         <span class="c1"># We must use the in_keys and nothing else for the following reasons:</span>
         <span class="c1"># - efficiency: copying all the keys will in practice mean doing a lot</span>
         <span class="c1">#   of writing operations since the input tensordict may (and often will)</span>
@@ -1704,13 +1817,12 @@
         <span class="c1">#   and this transform overrides an observation key (eg, CatFrames)</span>
         <span class="c1">#   the shape, dtype or device may not necessarily match and writing</span>
         <span class="c1">#   the value in-place will fail.</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">shared_tensordict_parent</span><span class="o">.</span><span class="n">update_</span><span class="p">(</span>
             <span class="n">tensordict</span><span class="p">,</span>
             <span class="n">keys_to_update</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_env_input_keys</span><span class="p">,</span>
             <span class="n">non_blocking</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">non_blocking</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="n">next_td_passthrough</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;next&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">next_td_passthrough</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;next&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">next_td_passthrough</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># if we have input &quot;next&quot; data (eg, RNNs which pass the next state)</span>
             <span class="c1"># the sub-envs will need to process them through step_and_maybe_reset.</span>
@@ -1761,9 +1873,23 @@
         <span class="n">tensordict</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;next&quot;</span><span class="p">,</span> <span class="n">next_td</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">tensordict</span><span class="p">,</span> <span class="n">tensordict_</span></div>
 
+    <span class="k">def</span> <span class="nf">_step_no_buffers</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">TensorDictBase</span><span class="p">,</span> <span class="n">TensorDictBase</span><span class="p">]:</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tensordict</span><span class="o">.</span><span class="n">unbind</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parent_channels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">send</span><span class="p">((</span><span class="s2">&quot;step&quot;</span><span class="p">,</span> <span class="n">data</span><span class="p">))</span>
+        <span class="n">out_tds</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">channel</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parent_channels</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_events</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+            <span class="n">td</span> <span class="o">=</span> <span class="n">channel</span><span class="o">.</span><span class="n">recv</span><span class="p">()</span>
+            <span class="n">out_tds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">td</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">LazyStackedTensorDict</span><span class="o">.</span><span class="n">maybe_dense_stack</span><span class="p">(</span><span class="n">out_tds</span><span class="p">)</span>
+
     <span class="nd">@torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">()</span>
     <span class="nd">@_check_start</span>
     <span class="k">def</span> <span class="nf">_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_buffers</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step_no_buffers</span><span class="p">(</span><span class="n">tensordict</span><span class="p">)</span>
         <span class="c1"># We must use the in_keys and nothing else for the following reasons:</span>
         <span class="c1"># - efficiency: copying all the keys will in practice mean doing a lot</span>
         <span class="c1">#   of writing operations since the input tensordict may (and often will)</span>
@@ -1830,14 +1956,42 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_sync_w2m</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">out</span>
 
+    <span class="k">def</span> <span class="nf">_reset_no_buffers</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">,</span>
+        <span class="n">reset_kwargs_list</span><span class="p">,</span>
+        <span class="n">needs_resetting</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">TensorDictBase</span><span class="p">,</span> <span class="n">TensorDictBase</span><span class="p">]:</span>
+        <span class="n">tdunbound</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">tensordict</span><span class="o">.</span><span class="n">unbind</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">is_tensor_collection</span><span class="p">(</span><span class="n">tensordict</span><span class="p">)</span>
+            <span class="k">else</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span>
+        <span class="p">)</span>
+        <span class="n">out_tds</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">reset_kwargs</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">tdunbound</span><span class="p">,</span> <span class="n">reset_kwargs_list</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">needs_resetting</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                <span class="n">out_tds</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">tdunbound</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">exclude</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">reset_keys</span><span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parent_channels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">send</span><span class="p">((</span><span class="s2">&quot;reset&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">reset_kwargs</span><span class="p">)))</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">channel</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parent_channels</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">needs_resetting</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                <span class="k">continue</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_events</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+            <span class="n">td</span> <span class="o">=</span> <span class="n">channel</span><span class="o">.</span><span class="n">recv</span><span class="p">()</span>
+            <span class="n">out_tds</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">td</span>
+        <span class="k">return</span> <span class="n">LazyStackedTensorDict</span><span class="o">.</span><span class="n">maybe_dense_stack</span><span class="p">(</span><span class="n">out_tds</span><span class="p">)</span>
+
     <span class="nd">@torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">()</span>
     <span class="nd">@_check_start</span>
     <span class="k">def</span> <span class="nf">_reset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
+
         <span class="n">list_of_kwargs</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;list_of_kwargs&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">kwargs</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">kwargs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">list_of_kwargs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">and</span> <span class="n">kwargs</span><span class="p">:</span>
             <span class="c1"># this means that kwargs had more than one element and that a list was provided</span>
             <span class="k">for</span> <span class="n">elt</span> <span class="ow">in</span> <span class="n">list_of_kwargs</span><span class="p">:</span>
                 <span class="n">elt</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="n">tensordict</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">needs_resetting</span> <span class="o">=</span> <span class="n">_aggregate_end_of_traj</span><span class="p">(</span>
                 <span class="n">tensordict</span><span class="p">,</span> <span class="n">reset_keys</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">reset_keys</span>
@@ -1852,6 +2006,9 @@
             <span class="n">needs_resetting</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span>
                 <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span><span class="p">,),</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span>
             <span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_buffers</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reset_no_buffers</span><span class="p">(</span><span class="n">tensordict</span><span class="p">,</span> <span class="n">list_of_kwargs</span><span class="p">,</span> <span class="n">needs_resetting</span><span class="p">)</span>
 
         <span class="n">outs</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span><span class="p">):</span>
@@ -1951,8 +2108,8 @@
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_events</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_timeout</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_events</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
-
-            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">shared_tensordicts</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shared_tensordict_parent</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_buffers</span><span class="p">:</span>
+                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">shared_tensordicts</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shared_tensordict_parent</span>
 
             <span class="k">for</span> <span class="n">channel</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent_channels</span><span class="p">:</span>
                 <span class="n">channel</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
@@ -2220,6 +2377,185 @@
                 <span class="n">data</span><span class="p">,</span>
                 <span class="n">next_shared_tensordict</span><span class="p">,</span>
                 <span class="n">root_shared_tensordict</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">mp_event</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+            <span class="n">child_pipe</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="n">torchrl_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">pid</span><span class="si">}</span><span class="s2"> closed&quot;</span><span class="p">)</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
+            <span class="k">break</span>
+
+        <span class="k">elif</span> <span class="n">cmd</span> <span class="o">==</span> <span class="s2">&quot;load_state_dict&quot;</span><span class="p">:</span>
+            <span class="n">env</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="n">mp_event</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+
+        <span class="k">elif</span> <span class="n">cmd</span> <span class="o">==</span> <span class="s2">&quot;state_dict&quot;</span><span class="p">:</span>
+            <span class="n">state_dict</span> <span class="o">=</span> <span class="n">_recursively_strip_locks_from_state_dict</span><span class="p">(</span><span class="n">env</span><span class="o">.</span><span class="n">state_dict</span><span class="p">())</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;state_dict&quot;</span>
+            <span class="n">child_pipe</span><span class="o">.</span><span class="n">send</span><span class="p">((</span><span class="n">msg</span><span class="p">,</span> <span class="n">state_dict</span><span class="p">))</span>
+            <span class="k">del</span> <span class="n">state_dict</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">err_msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">cmd</span><span class="si">}</span><span class="s2"> from env&quot;</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">attr</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">cmd</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">attr</span><span class="p">):</span>
+                    <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="n">data</span>
+                    <span class="n">args_replace</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="k">for</span> <span class="n">_arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">_arg</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">_arg</span> <span class="o">==</span> <span class="s2">&quot;_self&quot;</span><span class="p">:</span>
+                            <span class="k">continue</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">args_replace</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_arg</span><span class="p">)</span>
+                    <span class="n">result</span> <span class="o">=</span> <span class="n">attr</span><span class="p">(</span><span class="o">*</span><span class="n">args_replace</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">result</span> <span class="o">=</span> <span class="n">attr</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;querying </span><span class="si">{</span><span class="n">err_msg</span><span class="si">}</span><span class="s2"> resulted in an error.&quot;</span>
+                <span class="p">)</span> <span class="kn">from</span> <span class="nn">err</span>
+            <span class="k">if</span> <span class="n">cmd</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;to&quot;</span><span class="p">):</span>
+                <span class="n">child_pipe</span><span class="o">.</span><span class="n">send</span><span class="p">((</span><span class="s2">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">cmd</span><span class="p">,</span> <span class="s2">&quot;done&quot;</span><span class="p">]),</span> <span class="n">result</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># don&#39;t send env through pipe</span>
+                <span class="n">child_pipe</span><span class="o">.</span><span class="n">send</span><span class="p">((</span><span class="s2">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">cmd</span><span class="p">,</span> <span class="s2">&quot;done&quot;</span><span class="p">]),</span> <span class="kc">None</span><span class="p">))</span>
+
+
+<span class="k">def</span> <span class="nf">_run_worker_pipe_direct</span><span class="p">(</span>
+    <span class="n">parent_pipe</span><span class="p">:</span> <span class="n">connection</span><span class="o">.</span><span class="n">Connection</span><span class="p">,</span>
+    <span class="n">child_pipe</span><span class="p">:</span> <span class="n">connection</span><span class="o">.</span><span class="n">Connection</span><span class="p">,</span>
+    <span class="n">env_fun</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">EnvBase</span><span class="p">,</span> <span class="n">Callable</span><span class="p">],</span>
+    <span class="n">env_fun_kwargs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+    <span class="n">mp_event</span><span class="p">:</span> <span class="n">mp</span><span class="o">.</span><span class="n">Event</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">non_blocking</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">has_lazy_inputs</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">num_threads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># for fork start method</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">num_threads</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">torch</span><span class="o">.</span><span class="n">set_num_threads</span><span class="p">(</span><span class="n">num_threads</span><span class="p">)</span>
+
+    <span class="n">parent_pipe</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">pid</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">env_fun</span><span class="p">,</span> <span class="n">EnvBase</span><span class="p">):</span>
+        <span class="n">env</span> <span class="o">=</span> <span class="n">env_fun</span><span class="p">(</span><span class="o">**</span><span class="n">env_fun_kwargs</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">env_fun_kwargs</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="s2">&quot;env_fun_kwargs must be empty if an environment is passed to a process.&quot;</span>
+            <span class="p">)</span>
+        <span class="n">env</span> <span class="o">=</span> <span class="n">env_fun</span>
+    <span class="k">del</span> <span class="n">env_fun</span>
+    <span class="k">for</span> <span class="n">spec</span> <span class="ow">in</span> <span class="n">env</span><span class="o">.</span><span class="n">output_spec</span><span class="o">.</span><span class="n">values</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">spec</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;cuda&quot;</span><span class="p">:</span>
+            <span class="n">has_cuda</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">break</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">spec</span> <span class="ow">in</span> <span class="n">env</span><span class="o">.</span><span class="n">input_spec</span><span class="o">.</span><span class="n">values</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">spec</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;cuda&quot;</span><span class="p">:</span>
+                <span class="n">has_cuda</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">break</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">has_cuda</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="n">has_cuda</span><span class="p">:</span>
+        <span class="n">event</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">Event</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">event</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="n">i</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="kn">import</span> <span class="nn">torchrl</span>
+
+    <span class="n">_timeout</span> <span class="o">=</span> <span class="n">torchrl</span><span class="o">.</span><span class="n">_utils</span><span class="o">.</span><span class="n">BATCHED_PIPE_TIMEOUT</span>
+
+    <span class="n">initialized</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="n">child_pipe</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s2">&quot;started&quot;</span><span class="p">)</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">child_pipe</span><span class="o">.</span><span class="n">poll</span><span class="p">(</span><span class="n">_timeout</span><span class="p">):</span>
+                <span class="n">cmd</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">child_pipe</span><span class="o">.</span><span class="n">recv</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TimeoutError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Worker timed out after </span><span class="si">{</span><span class="n">_timeout</span><span class="si">}</span><span class="s2">s, &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;increase timeout if needed throught the BATCHED_PIPE_TIMEOUT environment variable.&quot;</span>
+                <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">EOFError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">EOFError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;proc </span><span class="si">{</span><span class="n">pid</span><span class="si">}</span><span class="s2"> failed, last command: </span><span class="si">{</span><span class="n">cmd</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">err</span>
+        <span class="k">if</span> <span class="n">cmd</span> <span class="o">==</span> <span class="s2">&quot;seed&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">initialized</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;call &#39;init&#39; before closing&quot;</span><span class="p">)</span>
+            <span class="c1"># torch.manual_seed(data)</span>
+            <span class="c1"># np.random.seed(data)</span>
+            <span class="n">new_seed</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">set_seed</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">static_seed</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">child_pipe</span><span class="o">.</span><span class="n">send</span><span class="p">((</span><span class="s2">&quot;seeded&quot;</span><span class="p">,</span> <span class="n">new_seed</span><span class="p">))</span>
+
+        <span class="k">elif</span> <span class="n">cmd</span> <span class="o">==</span> <span class="s2">&quot;init&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="n">torchrl_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;initializing </span><span class="si">{</span><span class="n">pid</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">initialized</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;worker already initialized&quot;</span><span class="p">)</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+
+            <span class="n">initialized</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">elif</span> <span class="n">cmd</span> <span class="o">==</span> <span class="s2">&quot;reset&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="n">torchrl_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;resetting worker </span><span class="si">{</span><span class="n">pid</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">initialized</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;call &#39;init&#39; before resetting&quot;</span><span class="p">)</span>
+            <span class="c1"># we use &#39;data&#39; to pass the keys that we need to pass to reset,</span>
+            <span class="c1"># because passing the entire buffer may have unwanted consequences</span>
+            <span class="n">data</span><span class="p">,</span> <span class="n">reset_kwargs</span> <span class="o">=</span> <span class="n">data</span>
+            <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">data</span><span class="o">.</span><span class="n">_fast_apply</span><span class="p">(</span>
+                    <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;cuda&quot;</span> <span class="k">else</span> <span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">data</span>
+                <span class="p">)</span>
+            <span class="n">cur_td</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span>
+                <span class="n">tensordict</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">reset_kwargs</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">event</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">event</span><span class="o">.</span><span class="n">record</span><span class="p">()</span>
+                <span class="n">event</span><span class="o">.</span><span class="n">synchronize</span><span class="p">()</span>
+            <span class="n">mp_event</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+            <span class="n">child_pipe</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">cur_td</span><span class="p">)</span>
+            <span class="k">del</span> <span class="n">cur_td</span>
+
+        <span class="k">elif</span> <span class="n">cmd</span> <span class="o">==</span> <span class="s2">&quot;step&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">initialized</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;called &#39;init&#39; before step&quot;</span><span class="p">)</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">next_td</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">_step</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">event</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">event</span><span class="o">.</span><span class="n">record</span><span class="p">()</span>
+                <span class="n">event</span><span class="o">.</span><span class="n">synchronize</span><span class="p">()</span>
+            <span class="n">mp_event</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+            <span class="n">child_pipe</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">next_td</span><span class="p">)</span>
+            <span class="k">del</span> <span class="n">next_td</span>
+
+        <span class="k">elif</span> <span class="n">cmd</span> <span class="o">==</span> <span class="s2">&quot;step_and_maybe_reset&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">initialized</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;called &#39;init&#39; before step&quot;</span><span class="p">)</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">_fast_apply</span><span class="p">(</span>
+                <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;cuda&quot;</span> <span class="k">else</span> <span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">data</span>
+            <span class="p">)</span>
+            <span class="n">td</span><span class="p">,</span> <span class="n">root_next_td</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">step_and_maybe_reset</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">event</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">event</span><span class="o">.</span><span class="n">record</span><span class="p">()</span>
+                <span class="n">event</span><span class="o">.</span><span class="n">synchronize</span><span class="p">()</span>
+            <span class="n">child_pipe</span><span class="o">.</span><span class="n">send</span><span class="p">((</span><span class="n">td</span><span class="p">,</span> <span class="n">root_next_td</span><span class="p">))</span>
+            <span class="n">mp_event</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+            <span class="k">del</span> <span class="n">td</span><span class="p">,</span> <span class="n">root_next_td</span>
+
+        <span class="k">elif</span> <span class="n">cmd</span> <span class="o">==</span> <span class="s2">&quot;close&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">initialized</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;call &#39;init&#39; before closing&quot;</span><span class="p">)</span>
+            <span class="n">env</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">del</span> <span class="p">(</span>
+                <span class="n">env</span><span class="p">,</span>
+                <span class="n">data</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="n">mp_event</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
             <span class="n">child_pipe</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>

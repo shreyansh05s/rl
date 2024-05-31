@@ -673,7 +673,6 @@
                 <span class="n">tensordict</span><span class="o">.</span><span class="n">stack_dim</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="k">return</span> <span class="n">out</span>
-
         <span class="n">next_td</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">_get_str</span><span class="p">(</span><span class="s2">&quot;next&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">tensordict</span><span class="p">):</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">keep_other</span><span class="p">:</span>
@@ -686,12 +685,25 @@
                     <span class="n">out</span><span class="p">,</span>
                     <span class="n">_allow_absent_keys</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_allow_absent_keys</span><span class="p">,</span>
                 <span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_grab_and_place</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">keys_from_next</span><span class="p">,</span>
-                <span class="n">next_td</span><span class="p">,</span>
-                <span class="n">out</span><span class="p">,</span>
-                <span class="n">_allow_absent_keys</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_allow_absent_keys</span><span class="p">,</span>
-            <span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">next_td</span><span class="p">,</span> <span class="n">LazyStackedTensorDict</span><span class="p">):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">LazyStackedTensorDict</span><span class="p">):</span>
+                    <span class="n">out</span> <span class="o">=</span> <span class="n">LazyStackedTensorDict</span><span class="p">(</span>
+                        <span class="o">*</span><span class="n">out</span><span class="o">.</span><span class="n">unbind</span><span class="p">(</span><span class="n">next_td</span><span class="o">.</span><span class="n">stack_dim</span><span class="p">),</span> <span class="n">stack_dim</span><span class="o">=</span><span class="n">next_td</span><span class="o">.</span><span class="n">stack_dim</span>
+                    <span class="p">)</span>
+                <span class="k">for</span> <span class="n">_next_td</span><span class="p">,</span> <span class="n">_out</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">next_td</span><span class="o">.</span><span class="n">tensordicts</span><span class="p">,</span> <span class="n">out</span><span class="o">.</span><span class="n">tensordicts</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_grab_and_place</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">keys_from_next</span><span class="p">,</span>
+                        <span class="n">_next_td</span><span class="p">,</span>
+                        <span class="n">_out</span><span class="p">,</span>
+                        <span class="n">_allow_absent_keys</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_allow_absent_keys</span><span class="p">,</span>
+                    <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_grab_and_place</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">keys_from_next</span><span class="p">,</span>
+                    <span class="n">next_td</span><span class="p">,</span>
+                    <span class="n">out</span><span class="p">,</span>
+                    <span class="n">_allow_absent_keys</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_allow_absent_keys</span><span class="p">,</span>
+                <span class="p">)</span>
             <span class="k">return</span> <span class="n">out</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">out</span> <span class="o">=</span> <span class="n">next_td</span><span class="o">.</span><span class="n">empty</span><span class="p">()</span>
@@ -1033,12 +1045,12 @@
 
 <span class="k">def</span> <span class="nf">_per_level_env_check</span><span class="p">(</span><span class="n">data0</span><span class="p">,</span> <span class="n">data1</span><span class="p">,</span> <span class="n">check_dtype</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Checks shape and dtype of two tensordicts, accounting for lazy stacks.&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data0</span><span class="p">,</span> <span class="n">LazyStackedTensorDict</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span>
-        <span class="n">data1</span><span class="p">,</span> <span class="n">LazyStackedTensorDict</span>
-    <span class="p">):</span>
-        <span class="k">if</span> <span class="n">data0</span><span class="o">.</span><span class="n">stack_dim</span> <span class="o">!=</span> <span class="n">data1</span><span class="o">.</span><span class="n">stack_dim</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Stack dimension mismatch: </span><span class="si">{</span><span class="n">data0</span><span class="si">}</span><span class="s2"> vs </span><span class="si">{</span><span class="n">data1</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">_data0</span><span class="p">,</span> <span class="n">_data1</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">data0</span><span class="o">.</span><span class="n">tensordicts</span><span class="p">,</span> <span class="n">data1</span><span class="o">.</span><span class="n">tensordicts</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data0</span><span class="p">,</span> <span class="n">LazyStackedTensorDict</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">_data0</span><span class="p">,</span> <span class="n">_data1</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">data0</span><span class="o">.</span><span class="n">tensordicts</span><span class="p">,</span> <span class="n">data1</span><span class="o">.</span><span class="n">unbind</span><span class="p">(</span><span class="n">data0</span><span class="o">.</span><span class="n">stack_dim</span><span class="p">)):</span>
+            <span class="n">_per_level_env_check</span><span class="p">(</span><span class="n">_data0</span><span class="p">,</span> <span class="n">_data1</span><span class="p">,</span> <span class="n">check_dtype</span><span class="o">=</span><span class="n">check_dtype</span><span class="p">)</span>
+        <span class="k">return</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data1</span><span class="p">,</span> <span class="n">LazyStackedTensorDict</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">_data0</span><span class="p">,</span> <span class="n">_data1</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">data0</span><span class="o">.</span><span class="n">unbind</span><span class="p">(</span><span class="n">data1</span><span class="o">.</span><span class="n">stack_dim</span><span class="p">),</span> <span class="n">data1</span><span class="o">.</span><span class="n">tensordicts</span><span class="p">):</span>
             <span class="n">_per_level_env_check</span><span class="p">(</span><span class="n">_data0</span><span class="p">,</span> <span class="n">_data1</span><span class="p">,</span> <span class="n">check_dtype</span><span class="o">=</span><span class="n">check_dtype</span><span class="p">)</span>
         <span class="k">return</span>
     <span class="k">else</span><span class="p">:</span>
@@ -1128,19 +1140,32 @@
 <span class="s2">    - List of keys present in fake but not in real: </span><span class="si">{</span><span class="n">fake_tensordict_keys</span><span class="o">-</span><span class="n">real_tensordict_keys</span><span class="si">}</span><span class="s2">.</span>
 <span class="s2">&quot;&quot;&quot;</span>
         <span class="p">)</span>
-    <span class="k">if</span> <span class="p">(</span>
-        <span class="n">fake_tensordict_select</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-        <span class="o">!=</span> <span class="n">real_tensordict_select</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-    <span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
-        <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span>
-            <span class="s2">&quot;zeroing the two tensordicts did not make them identical. &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;Check for discrepancies:</span><span class="se">\n</span><span class="s2">Fake=</span><span class="se">\n</span><span class="si">{</span><span class="n">fake_tensordict</span><span class="si">}</span><span class="se">\n</span><span class="s2">Real=</span><span class="se">\n</span><span class="si">{</span><span class="n">real_tensordict</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="p">)</span>
-
-    <span class="c1"># Checks shapes and eventually dtypes of keys at all nesting levels</span>
-    <span class="n">_per_level_env_check</span><span class="p">(</span>
-        <span class="n">fake_tensordict_select</span><span class="p">,</span> <span class="n">real_tensordict_select</span><span class="p">,</span> <span class="n">check_dtype</span><span class="o">=</span><span class="n">check_dtype</span>
+    <span class="n">zeroing_err_msg</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">&quot;zeroing the two tensordicts did not make them identical. &quot;</span>
+        <span class="s2">&quot;Check for discrepancies:</span><span class="se">\n</span><span class="s2">Fake=</span><span class="se">\n</span><span class="si">{fake_tensordict}</span><span class="se">\n</span><span class="s2">Real=</span><span class="se">\n</span><span class="si">{real_tensordict}</span><span class="s2">&quot;</span>
     <span class="p">)</span>
+    <span class="kn">from</span> <span class="nn">torchrl.envs.common</span> <span class="kn">import</span> <span class="n">_has_dynamic_specs</span>
+
+    <span class="k">if</span> <span class="n">_has_dynamic_specs</span><span class="p">(</span><span class="n">env</span><span class="o">.</span><span class="n">specs</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">real</span><span class="p">,</span> <span class="n">fake</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">real_tensordict</span><span class="o">.</span><span class="n">unbind</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">fake_tensordict</span><span class="o">.</span><span class="n">unbind</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)):</span>
+            <span class="n">fake</span> <span class="o">=</span> <span class="n">fake</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">expand_as</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="n">real</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">real</span><span class="p">)</span> <span class="o">!=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">fake</span><span class="p">))</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+                <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="n">zeroing_err_msg</span><span class="p">)</span>
+
+            <span class="c1"># Checks shapes and eventually dtypes of keys at all nesting levels</span>
+            <span class="n">_per_level_env_check</span><span class="p">(</span><span class="n">fake</span><span class="p">,</span> <span class="n">real</span><span class="p">,</span> <span class="n">check_dtype</span><span class="o">=</span><span class="n">check_dtype</span><span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">fake_tensordict_select</span><span class="p">)</span>
+            <span class="o">!=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">real_tensordict_select</span><span class="p">)</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="n">zeroing_err_msg</span><span class="p">)</span>
+
+        <span class="c1"># Checks shapes and eventually dtypes of keys at all nesting levels</span>
+        <span class="n">_per_level_env_check</span><span class="p">(</span>
+            <span class="n">fake_tensordict_select</span><span class="p">,</span> <span class="n">real_tensordict_select</span><span class="p">,</span> <span class="n">check_dtype</span><span class="o">=</span><span class="n">check_dtype</span>
+        <span class="p">)</span>
 
     <span class="c1"># Check specs</span>
     <span class="n">last_td</span> <span class="o">=</span> <span class="n">real_tensordict</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
@@ -1165,7 +1190,7 @@
         <span class="k">if</span> <span class="n">spec</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="n">env</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">env</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
         <span class="n">td</span> <span class="o">=</span> <span class="n">last_td</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="o">*</span><span class="n">spec</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">spec</span><span class="o">.</span><span class="n">is_in</span><span class="p">(</span><span class="n">td</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">spec</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">td</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;spec check failed at root for spec </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">spec</span><span class="si">}</span><span class="s2"> and data </span><span class="si">{</span><span class="n">td</span><span class="si">}</span><span class="s2">.&quot;</span>
             <span class="p">)</span>
@@ -1177,7 +1202,7 @@
         <span class="k">if</span> <span class="n">spec</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="n">env</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">env</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
         <span class="n">td</span> <span class="o">=</span> <span class="n">last_td</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;next&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="o">*</span><span class="n">spec</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">spec</span><span class="o">.</span><span class="n">is_in</span><span class="p">(</span><span class="n">td</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">spec</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">td</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;spec check failed at root for spec </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">spec</span><span class="si">}</span><span class="s2"> and data </span><span class="si">{</span><span class="n">td</span><span class="si">}</span><span class="s2">.&quot;</span>
             <span class="p">)</span>
@@ -1749,7 +1774,13 @@
                 <span class="n">reset</span> <span class="o">=</span> <span class="n">reset</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
             <span class="n">reset</span> <span class="o">=</span> <span class="n">reset</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
             <span class="c1"># node.update(node.where(~reset, other=node_reset, pad=0))</span>
+
             <span class="n">node</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="o">~</span><span class="n">reset</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="n">node_reset</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">node</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="c1"># node = node.clone()</span>
+            <span class="c1"># idx = reset.nonzero(as_tuple=True)[0]</span>
+            <span class="c1"># node[idx].update(node_reset[idx])</span>
+            <span class="c1"># node[&quot;done&quot;] = torch.zeros((*node.shape, 1), dtype=torch.bool)</span>
+
     <span class="k">return</span> <span class="n">tensordict</span>
 
 

@@ -407,6 +407,7 @@
     <span class="n">BoundedTensorSpec</span><span class="p">,</span>
     <span class="n">CompositeSpec</span><span class="p">,</span>
     <span class="n">DiscreteTensorSpec</span><span class="p">,</span>
+    <span class="n">LazyStackedTensorSpec</span><span class="p">,</span>
     <span class="n">MultiDiscreteTensorSpec</span><span class="p">,</span>
     <span class="n">MultiOneHotDiscreteTensorSpec</span><span class="p">,</span>
     <span class="n">OneHotDiscreteTensorSpec</span><span class="p">,</span>
@@ -625,8 +626,8 @@
         <span class="p">)</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">batch_size</span><span class="p">)</span>
     <span class="n">gym_spaces</span> <span class="o">=</span> <span class="n">gym_backend</span><span class="p">(</span><span class="s2">&quot;spaces&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">gym_spaces</span><span class="o">.</span><span class="n">tuple</span><span class="o">.</span><span class="n">Tuple</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span>
-            <span class="p">[</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">LazyStackedTensorSpec</span><span class="p">(</span>
+            <span class="o">*</span><span class="p">[</span>
                 <span class="n">_gym_to_torchrl_spec_transform</span><span class="p">(</span>
                     <span class="n">s</span><span class="p">,</span>
                     <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
@@ -635,8 +636,9 @@
                 <span class="p">)</span>
                 <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">spec</span>
             <span class="p">],</span>
-            <span class="mi">0</span><span class="p">,</span>
+            <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
         <span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">gym_spaces</span><span class="o">.</span><span class="n">discrete</span><span class="o">.</span><span class="n">Discrete</span><span class="p">):</span>
         <span class="n">action_space_cls</span> <span class="o">=</span> <span class="p">(</span>
             <span class="n">DiscreteTensorSpec</span>
@@ -653,6 +655,23 @@
         <span class="k">return</span> <span class="n">BinaryDiscreteTensorSpec</span><span class="p">(</span>
             <span class="n">spec</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy_to_torch_dtype_dict</span><span class="p">[</span><span class="n">spec</span><span class="o">.</span><span class="n">dtype</span><span class="p">]</span>
         <span class="p">)</span>
+    <span class="c1"># a spec type cannot be a string, so we&#39;re sure that versions of gym that don&#39;t have Sequence will just skip through this</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">gym_spaces</span><span class="p">,</span> <span class="s2">&quot;Sequence&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="s2">&quot;stack&quot;</span><span class="p">):</span>
+            <span class="c1"># gym does not have a stack attribute in sequence</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;gymnasium should be used whenever a Sequence is present, as it needs to be stacked. &quot;</span>
+                <span class="s2">&quot;If you need the gym backend at all price, please raise an issue on the TorchRL GitHub repository.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="s2">&quot;stack&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Sequence spaces must have the stack argument set to ``True``. &quot;</span>
+            <span class="p">)</span>
+        <span class="n">space</span> <span class="o">=</span> <span class="n">spec</span><span class="o">.</span><span class="n">feature_space</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">_gym_to_torchrl_spec_transform</span><span class="p">(</span><span class="n">space</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">make_neg_dim</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">out</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">gym_spaces</span><span class="o">.</span><span class="n">multi_discrete</span><span class="o">.</span><span class="n">MultiDiscrete</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">nvec</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">nvec</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">dtype</span> <span class="o">=</span> <span class="p">(</span>
@@ -798,6 +817,15 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">gym_spaces</span> <span class="o">=</span> <span class="n">gym_backend</span><span class="p">(</span><span class="s2">&quot;spaces&quot;</span><span class="p">)</span>
     <span class="n">shape</span> <span class="o">=</span> <span class="n">spec</span><span class="o">.</span><span class="n">shape</span>
+    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">s</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">spec</span><span class="o">.</span><span class="n">shape</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">spec</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">spec</span> <span class="o">=</span> <span class="n">spec</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
+            <span class="n">spec</span> <span class="o">=</span> <span class="n">spec</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">gym_spaces</span><span class="o">.</span><span class="n">Sequence</span><span class="p">(</span><span class="n">_torchrl_to_gym_spec_transform</span><span class="p">(</span><span class="n">spec</span><span class="p">),</span> <span class="n">stack</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">gym_spaces</span><span class="o">.</span><span class="n">Tuple</span><span class="p">(</span>
+                <span class="nb">tuple</span><span class="p">(</span><span class="n">_torchrl_to_gym_spec_transform</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span> <span class="k">for</span> <span class="n">spec</span> <span class="ow">in</span> <span class="n">spec</span><span class="o">.</span><span class="n">unbind</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+            <span class="p">)</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">MultiDiscreteTensorSpec</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">_multidiscrete_convert</span><span class="p">(</span><span class="n">gym_spaces</span><span class="p">,</span> <span class="n">spec</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">MultiOneHotDiscreteTensorSpec</span><span class="p">):</span>
@@ -1050,6 +1078,28 @@
 <span class="sd">        if no other reader is provided. To provide another reader, refer to</span>
 <span class="sd">        :meth:`~.set_info_dict_reader`. To automatically register the info_dict</span>
 <span class="sd">        content, refer to :meth:`torchrl.envs.GymLikeEnv.auto_register_info_dict`.</span>
+<span class="sd">        For parallel (Vectorized) environments, the info dictionary reader is automatically set and should</span>
+<span class="sd">        not be set manually.</span>
+
+<span class="sd">    .. note:: Gym spaces are not completely covered.</span>
+<span class="sd">        The following spaces are accounted for provided that they can be represented by a torch.Tensor, a nested tensor</span>
+<span class="sd">        and/or within a tensordict:</span>
+
+<span class="sd">          - spaces.Box</span>
+<span class="sd">          - spaces.Sequence</span>
+<span class="sd">          - spaces.Tuple</span>
+<span class="sd">          - spaces.Discrete</span>
+<span class="sd">          - spaces.MultiBinary</span>
+<span class="sd">          - spaces.MultiDiscrete</span>
+<span class="sd">          - spaces.Dict</span>
+
+<span class="sd">        Some considerations should be made when working with gym spaces. For instance, a tuple of spaces</span>
+<span class="sd">        can only be supported if the spaces are semantically identical (same dtype and same number of dimensions).</span>
+<span class="sd">        Ragged dimension can be supported through :func:`~torch.nested.nested_tensor`, but then there should be only</span>
+<span class="sd">        one level of tuple and data should be stacked along the first dimension (as nested_tensors can only be</span>
+<span class="sd">        stacked along the first dimension).</span>
+
+<span class="sd">        Check the example in examples/envs/gym_conversion_examples.py to know more!</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -1435,6 +1485,12 @@
 
     <span class="nd">@implement_for</span><span class="p">(</span><span class="s2">&quot;gym&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;0.26&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">_reset_output_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reset_data</span><span class="p">):</span>  <span class="c1"># noqa: F811</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="nb">isinstance</span><span class="p">(</span><span class="n">reset_data</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">reset_data</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+            <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">reset_data</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nb">dict</span><span class="p">)</span>
+        <span class="p">):</span>
+            <span class="k">return</span> <span class="n">reset_data</span>
         <span class="k">return</span> <span class="n">reset_data</span><span class="p">,</span> <span class="kc">None</span>
 
     <span class="nd">@implement_for</span><span class="p">(</span><span class="s2">&quot;gym&quot;</span><span class="p">,</span> <span class="s2">&quot;0.26&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
@@ -1621,6 +1677,9 @@
 <span class="sd">            &gt;&gt;&gt; print(env.spec.max_episode_steps)</span>
 <span class="sd">            200</span>
 
+
+<span class="sd">        If a use-case is not covered by TorchRL, please submit an issue on GitHub.</span>
+
 <span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.envs import GymEnv</span>
 <span class="sd">        &gt;&gt;&gt; env = GymEnv(&quot;Pendulum-v1&quot;)</span>
@@ -1664,6 +1723,26 @@
 <span class="sd">        if no other reader is provided. To provide another reader, refer to</span>
 <span class="sd">        :meth:`~.set_info_dict_reader`. To automatically register the info_dict</span>
 <span class="sd">        content, refer to :meth:`torchrl.envs.GymLikeEnv.auto_register_info_dict`.</span>
+
+<span class="sd">    .. note:: Gym spaces are not completely covered.</span>
+<span class="sd">        The following spaces are accounted for provided that they can be represented by a torch.Tensor, a nested tensor</span>
+<span class="sd">        and/or within a tensordict:</span>
+
+<span class="sd">          - spaces.Box</span>
+<span class="sd">          - spaces.Sequence</span>
+<span class="sd">          - spaces.Tuple</span>
+<span class="sd">          - spaces.Discrete</span>
+<span class="sd">          - spaces.MultiBinary</span>
+<span class="sd">          - spaces.MultiDiscrete</span>
+<span class="sd">          - spaces.Dict</span>
+
+<span class="sd">        Some considerations should be made when working with gym spaces. For instance, a tuple of spaces</span>
+<span class="sd">        can only be supported if the spaces are semantically identical (same dtype and same number of dimensions).</span>
+<span class="sd">        Ragged dimension can be supported through :func:`~torch.nested.nested_tensor`, but then there should be only</span>
+<span class="sd">        one level of tuple and data should be stacked along the first dimension (as nested_tensors can only be</span>
+<span class="sd">        stacked along the first dimension).</span>
+
+<span class="sd">        Check the example in examples/envs/gym_conversion_examples.py to know more!</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
