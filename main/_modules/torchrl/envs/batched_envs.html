@@ -568,6 +568,8 @@
 <span class="sd">            occur via circular preallocated memory buffers. Defaults to ``True`` unless</span>
 <span class="sd">            one of the environment has dynamic specs.</span>
 
+<span class="sd">              .. note:: Learn more about dynamic specs and environments :ref:`here &lt;dynamic_envs&gt;`.</span>
+
 <span class="sd">    .. note::</span>
 <span class="sd">        One can pass keyword arguments to each sub-environments using the following</span>
 <span class="sd">        technique: every keyword argument in :meth:`~.reset` will be passed to each</span>
@@ -1373,21 +1375,6 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">out_tds</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">_td</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_buffers</span><span class="p">:</span>
-            <span class="c1"># first_non_none = None</span>
-            <span class="c1"># first_none = None</span>
-            <span class="c1"># for i, item in enumerate(out_tds):</span>
-            <span class="c1">#     if item is not None:</span>
-            <span class="c1">#         first_non_none = i</span>
-            <span class="c1">#         if first_none is not None:</span>
-            <span class="c1">#             break</span>
-            <span class="c1">#     else:</span>
-            <span class="c1">#         first_none = i</span>
-            <span class="c1">#         if first_non_none is not None:</span>
-            <span class="c1">#             break</span>
-            <span class="c1"># if first_none is not None:</span>
-            <span class="c1">#     empty_td = out_tds[first_non_none].empty(recurse=True)</span>
-            <span class="c1">#     out_tds = [item if item is not None else empty_td for item in out_tds]</span>
-            <span class="c1">#</span>
             <span class="n">result</span> <span class="o">=</span> <span class="n">LazyStackedTensorDict</span><span class="o">.</span><span class="n">maybe_dense_stack</span><span class="p">(</span><span class="n">out_tds</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">result</span>
 

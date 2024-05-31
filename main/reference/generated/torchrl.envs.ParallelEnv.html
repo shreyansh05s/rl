@@ -450,9 +450,16 @@ This option has no effect with <a class="reference internal" href="torchrl.envs.
 Uses the default start method if not indicated (‘spawn’ by default in
 TorchRL if not initiated differently before first import).
 To be used only with <a class="reference internal" href="#torchrl.envs.ParallelEnv" title="torchrl.envs.ParallelEnv"><code class="xref py py-class docutils literal notranslate"><span class="pre">ParallelEnv</span></code></a> subclasses.</p></li>
-<li><p><strong>use_buffers</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether communication between workers should
+<li><p><strong>use_buffers</strong> (<em>bool</em><em>, </em><em>optional</em>) – <p>whether communication between workers should
 occur via circular preallocated memory buffers. Defaults to <code class="docutils literal notranslate"><span class="pre">True</span></code> unless
-one of the environment has dynamic specs.</p></li>
+one of the environment has dynamic specs.</p>
+<blockquote>
+<div><div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Learn more about dynamic specs and environments <a class="reference internal" href="../envs.html#dynamic-envs"><span class="std std-ref">here</span></a>.</p>
+</div>
+</div></blockquote>
+</p></li>
 </ul>
 </dd>
 </dl>

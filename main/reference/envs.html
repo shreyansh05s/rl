@@ -924,6 +924,114 @@ observation of an episode should be replaced with some placeholder or not.</p>
 </pre></div>
 </div>
 </section>
+<section id="dynamic-specs">
+<h2>Dynamic Specs<a class="headerlink" href="#dynamic-specs" title="Permalink to this heading">¶</a></h2>
+<p id="dynamic-envs">Running environments in parallel is usually done via the creation of memory buffers used to pass information from one
+process to another. In some cases, it may be impossible to forecast whether and environment will or will not have
+consistent inputs or outputs during a rollout, as their shape may be variable. We refer to this as dynamic specs.</p>
+<p>TorchRL is capable of handling dynamic specs, but the batched environments and collectors will need to be made
+aware of this feature. Note that, in practice, this is detected automatically.</p>
+<p>To indicate that a tensor will have a variable size along a dimension, one can set the size value as <code class="docutils literal notranslate"><span class="pre">-1</span></code> for the
+desired dimensions. Because the data cannot be stacked contiguously, calls to <code class="docutils literal notranslate"><span class="pre">env.rollout</span></code> need to be made with
+the <code class="docutils literal notranslate"><span class="pre">return_contiguous=False</span></code> argument.
+Here is a working example:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.envs</span> <span class="kn">import</span> <span class="n">EnvBase</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.data</span> <span class="kn">import</span> <span class="n">UnboundedContinuousTensorSpec</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">,</span> <span class="n">BoundedTensorSpec</span><span class="p">,</span> <span class="n">BinaryDiscreteTensorSpec</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">tensordict</span> <span class="kn">import</span> <span class="n">TensorDict</span><span class="p">,</span> <span class="n">TensorDictBase</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">EnvWithDynamicSpec</span><span class="p">(</span><span class="n">EnvBase</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_count</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+<span class="gp">... </span>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">batch_size</span><span class="o">=</span><span class="p">())</span>
+<span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">observation_spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">(</span>
+<span class="gp">... </span>            <span class="n">observation</span><span class="o">=</span><span class="n">UnboundedContinuousTensorSpec</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span>
+<span class="gp">... </span>        <span class="p">)</span>
+<span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">action_spec</span> <span class="o">=</span> <span class="n">BoundedTensorSpec</span><span class="p">(</span><span class="n">low</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,))</span>
+<span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">full_done_spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">(</span>
+<span class="gp">... </span>            <span class="n">done</span><span class="o">=</span><span class="n">BinaryDiscreteTensorSpec</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">),</span>
+<span class="gp">... </span>            <span class="n">terminated</span><span class="o">=</span><span class="n">BinaryDiscreteTensorSpec</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">),</span>
+<span class="gp">... </span>            <span class="n">truncated</span><span class="o">=</span><span class="n">BinaryDiscreteTensorSpec</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">),</span>
+<span class="gp">... </span>        <span class="p">)</span>
+<span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">reward_spec</span> <span class="o">=</span> <span class="n">UnboundedContinuousTensorSpec</span><span class="p">((</span><span class="mi">1</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
+<span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">max_count</span> <span class="o">=</span> <span class="n">max_count</span>
+<span class="gp">...</span>
+<span class="gp">... </span>    <span class="k">def</span> <span class="nf">_reset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="gp">... </span>        <span class="n">data</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="p">(</span>
+<span class="gp">... </span>            <span class="p">{</span>
+<span class="gp">... </span>                <span class="s2">&quot;observation&quot;</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">full</span><span class="p">(</span>
+<span class="gp">... </span>                    <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+<span class="gp">... </span>                    <span class="bp">self</span><span class="o">.</span><span class="n">count</span><span class="p">,</span>
+<span class="gp">... </span>                    <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">observation_spec</span><span class="p">[</span><span class="s2">&quot;observation&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
+<span class="gp">... </span>                <span class="p">)</span>
+<span class="gp">... </span>            <span class="p">}</span>
+<span class="gp">... </span>        <span class="p">)</span>
+<span class="gp">... </span>        <span class="n">data</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">done_spec</span><span class="o">.</span><span class="n">zero</span><span class="p">())</span>
+<span class="gp">... </span>        <span class="k">return</span> <span class="n">data</span>
+<span class="gp">...</span>
+<span class="gp">... </span>    <span class="k">def</span> <span class="nf">_step</span><span class="p">(</span>
+<span class="gp">... </span>        <span class="bp">self</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
+<span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+<span class="gp">... </span>        <span class="n">done</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_count</span>
+<span class="gp">... </span>        <span class="n">observation</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="p">(</span>
+<span class="gp">... </span>            <span class="p">{</span>
+<span class="gp">... </span>                <span class="s2">&quot;observation&quot;</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">full</span><span class="p">(</span>
+<span class="gp">... </span>                    <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+<span class="gp">... </span>                    <span class="bp">self</span><span class="o">.</span><span class="n">count</span><span class="p">,</span>
+<span class="gp">... </span>                    <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">observation_spec</span><span class="p">[</span><span class="s2">&quot;observation&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
+<span class="gp">... </span>                <span class="p">)</span>
+<span class="gp">... </span>            <span class="p">}</span>
+<span class="gp">... </span>        <span class="p">)</span>
+<span class="gp">... </span>        <span class="n">done</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">full_done_spec</span><span class="o">.</span><span class="n">zero</span><span class="p">()</span> <span class="o">|</span> <span class="n">done</span>
+<span class="gp">... </span>        <span class="n">reward</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">full_reward_spec</span><span class="o">.</span><span class="n">zero</span><span class="p">()</span>
+<span class="gp">... </span>        <span class="k">return</span> <span class="n">observation</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">done</span><span class="p">)</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">reward</span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="gp">... </span>    <span class="k">def</span> <span class="nf">_set_seed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seed</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]):</span>
+<span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">manual_seed</span> <span class="o">=</span> <span class="n">seed</span>
+<span class="gp">... </span>        <span class="k">return</span> <span class="n">seed</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">env</span> <span class="o">=</span> <span class="n">EnvWithDynamicSpec</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">env</span><span class="o">.</span><span class="n">rollout</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">return_contiguous</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+<span class="go">LazyStackedTensorDict(</span>
+<span class="go">    fields={</span>
+<span class="go">        action: Tensor(shape=torch.Size([5, 2]), device=cpu, dtype=torch.float32, is_shared=False),</span>
+<span class="go">        done: Tensor(shape=torch.Size([5, 1]), device=cpu, dtype=torch.bool, is_shared=False),</span>
+<span class="go">        next: LazyStackedTensorDict(</span>
+<span class="go">            fields={</span>
+<span class="go">                done: Tensor(shape=torch.Size([5, 1]), device=cpu, dtype=torch.bool, is_shared=False),</span>
+<span class="go">                observation: Tensor(shape=torch.Size([5, 3, -1, 2]), device=cpu, dtype=torch.float32, is_shared=False),</span>
+<span class="go">                reward: Tensor(shape=torch.Size([5, 1]), device=cpu, dtype=torch.float32, is_shared=False),</span>
+<span class="go">                terminated: Tensor(shape=torch.Size([5, 1]), device=cpu, dtype=torch.bool, is_shared=False),</span>
+<span class="go">                truncated: Tensor(shape=torch.Size([5, 1]), device=cpu, dtype=torch.bool, is_shared=False)},</span>
+<span class="go">            exclusive_fields={</span>
+<span class="go">            },</span>
+<span class="go">            batch_size=torch.Size([5]),</span>
+<span class="go">            device=None,</span>
+<span class="go">            is_shared=False,</span>
+<span class="go">            stack_dim=0),</span>
+<span class="go">        observation: Tensor(shape=torch.Size([5, 3, -1, 2]), device=cpu, dtype=torch.float32, is_shared=False),</span>
+<span class="go">        terminated: Tensor(shape=torch.Size([5, 1]), device=cpu, dtype=torch.bool, is_shared=False),</span>
+<span class="go">        truncated: Tensor(shape=torch.Size([5, 1]), device=cpu, dtype=torch.bool, is_shared=False)},</span>
+<span class="go">    exclusive_fields={</span>
+<span class="go">    },</span>
+<span class="go">    batch_size=torch.Size([5]),</span>
+<span class="go">    device=None,</span>
+<span class="go">    is_shared=False,</span>
+<span class="go">    stack_dim=0)</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The absence of memory buffers in <a class="reference internal" href="generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv" title="torchrl.envs.ParallelEnv"><code class="xref py py-class docutils literal notranslate"><span class="pre">ParallelEnv</span></code></a> and in data collectors can impact</p>
+</div>
+<p>performance of these classes dramatically. Any such usage should be carefully benchmarked against a plain execution on
+a single process, as serializing and deserializing large numbers of tensors can be very expensive.</p>
+<p>Currently, <a class="reference internal" href="generated/torchrl.envs.utils.check_env_specs.html#torchrl.envs.utils.check_env_specs" title="torchrl.envs.utils.check_env_specs"><code class="xref py py-func docutils literal notranslate"><span class="pre">check_env_specs()</span></code></a> will pass for dynamic specs where a shape varies along some
+dimensions, but not when a key is present during a step and absent during others, or when the number of dimensions
+varies.</p>
+</section>
 <section id="transforms">
 <h2>Transforms<a class="headerlink" href="#transforms" title="Permalink to this heading">¶</a></h2>
 <p id="id2">In most cases, the raw output of an environment must be treated before being passed to another object (such as a
@@ -1564,6 +1672,7 @@ the following function will return <code class="docutils literal notranslate"><s
 <li><a class="reference internal" href="#vectorized-envs">Vectorized envs</a></li>
 <li><a class="reference internal" href="#multi-agent-environments">Multi-agent environments</a></li>
 <li><a class="reference internal" href="#auto-resetting-envs">Auto-resetting Envs</a></li>
+<li><a class="reference internal" href="#dynamic-specs">Dynamic Specs</a></li>
 <li><a class="reference internal" href="#transforms">Transforms</a><ul>
 <li><a class="reference internal" href="#cloning-transforms">Cloning transforms</a></li>
 </ul>
