@@ -1247,10 +1247,10 @@
             <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_size</span><span class="p">,</span> <span class="o">*</span><span class="n">data_shape</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">is_tensor_collection</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
-            <span class="n">out</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">max_size_along_dim0</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">max_size_along_dim0</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
             <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
             <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">zero_</span><span class="p">()</span>
-            <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># if Tensor, we just create a MemoryMappedTensor of the desired shape, device and dtype</span>
             <span class="n">out</span> <span class="o">=</span> <span class="n">tree_map</span><span class="p">(</span>
