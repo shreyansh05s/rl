@@ -1564,12 +1564,9 @@
             <span class="n">out_of_traj</span> <span class="o">=</span> <span class="n">relative_starts</span> <span class="o">+</span> <span class="n">seq_length</span> <span class="o">&gt;</span> <span class="n">lengths</span><span class="p">[</span><span class="n">traj_idx</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">out_of_traj</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
                 <span class="c1"># a negative start means sampling fewer elements</span>
-                <span class="c1"># print(&#39;seq_length before&#39;, seq_length)</span>
-                <span class="c1"># print(&#39;relative_starts&#39;, relative_starts)</span>
                 <span class="n">seq_length</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span>
                     <span class="n">seq_length</span><span class="p">,</span> <span class="n">lengths</span><span class="p">[</span><span class="n">traj_idx</span><span class="p">]</span> <span class="o">-</span> <span class="n">relative_starts</span>
                 <span class="p">)</span>
-                <span class="c1"># print(&#39;seq_length after&#39;, seq_length)</span>
 
         <span class="n">starts</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span>
             <span class="p">[</span>
@@ -1592,18 +1589,11 @@
                 <span class="n">truncated</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">num_slices</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">truncated</span><span class="p">[</span><span class="n">seq_length</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
-            <span class="c1"># a traj is terminated if the stop index along col 0 (time)</span>
-            <span class="c1"># equates start + traj length - 1</span>
-            <span class="n">traj_terminated</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="n">stop_idx</span><span class="p">[</span><span class="n">traj_idx</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">start_idx</span><span class="p">[</span><span class="n">traj_idx</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">seq_length</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="n">terminated</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="p">(</span><span class="n">index</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="n">stop_idx</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+                <span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
             <span class="p">)</span>
-            <span class="n">terminated</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">truncated</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">traj_terminated</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">seq_length</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
-                    <span class="n">terminated</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">num_slices</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)[</span><span class="n">traj_terminated</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">terminated</span><span class="p">[(</span><span class="n">seq_length</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)[</span><span class="n">traj_terminated</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">1</span>
-            <span class="n">truncated</span> <span class="o">=</span> <span class="n">truncated</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">terminated</span>
             <span class="n">done</span> <span class="o">=</span> <span class="n">terminated</span> <span class="o">|</span> <span class="n">truncated</span>
             <span class="k">return</span> <span class="n">index</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">)</span><span class="o">.</span><span class="n">unbind</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="p">{</span>
                 <span class="n">truncated_key</span><span class="p">:</span> <span class="n">truncated</span><span class="p">,</span>
@@ -2044,13 +2034,43 @@
 
         <span class="k">if</span> <span class="p">(</span><span class="n">lengths</span> <span class="o">&lt;</span> <span class="n">seq_length</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">strict_length</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                    <span class="s2">&quot;Some stored trajectories have a length shorter than the slice that was asked for. &quot;</span>
-                    <span class="s2">&quot;Create the sampler with `strict_length=False` to allow shorter trajectories to appear &quot;</span>
-                    <span class="s2">&quot;in you batch.&quot;</span>
-                <span class="p">)</span>
-            <span class="c1"># make seq_length a tensor with values clamped by lengths</span>
-            <span class="n">seq_length</span> <span class="o">=</span> <span class="n">lengths</span><span class="p">[</span><span class="n">traj_idx</span><span class="p">]</span><span class="o">.</span><span class="n">clamp_max</span><span class="p">(</span><span class="n">seq_length</span><span class="p">)</span>
+                <span class="n">idx</span> <span class="o">=</span> <span class="n">lengths</span> <span class="o">&gt;=</span> <span class="n">seq_length</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">idx</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Did not find a single trajectory with sufficient length (length range: </span><span class="si">{</span><span class="n">lengths</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="n">lengths</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="si">}</span><span class="s2"> / required=</span><span class="si">{</span><span class="n">seq_length</span><span class="si">}</span><span class="s2">)).&quot;</span>
+                    <span class="p">)</span>
+                <span class="k">if</span> <span class="p">(</span>
+                    <span class="nb">isinstance</span><span class="p">(</span><span class="n">seq_length</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span>
+                    <span class="ow">and</span> <span class="n">seq_length</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">lengths</span><span class="o">.</span><span class="n">shape</span>
+                <span class="p">):</span>
+                    <span class="n">seq_length</span> <span class="o">=</span> <span class="n">seq_length</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+                <span class="n">lengths_idx</span> <span class="o">=</span> <span class="n">lengths</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+                <span class="n">start_idx</span> <span class="o">=</span> <span class="n">start_idx</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+                <span class="n">stop_idx</span> <span class="o">=</span> <span class="n">stop_idx</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+
+                <span class="c1"># Here we must filter out the indices that correspond to trajectories</span>
+                <span class="c1"># we don&#39;t want to keep. That could potentially lead to an empty sample.</span>
+                <span class="c1"># The difficulty with this adjustment is that traj_idx points to a full</span>
+                <span class="c1"># sequences of lengths, but we filter out part of it so we must</span>
+                <span class="c1"># convert traj_idx to a boolean mask, index this mask with the</span>
+                <span class="c1"># valid indices and then recover the nonzero.</span>
+                <span class="n">idx_mask</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+                <span class="n">idx_mask</span><span class="p">[</span><span class="n">traj_idx</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">traj_idx</span> <span class="o">=</span> <span class="n">idx_mask</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">traj_idx</span><span class="o">.</span><span class="n">numel</span><span class="p">():</span>
+                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                        <span class="s2">&quot;None of the provided indices pointed to a trajectory of &quot;</span>
+                        <span class="s2">&quot;sufficient length. Consider using strict_length=False for the &quot;</span>
+                        <span class="s2">&quot;sampler instead.&quot;</span>
+                    <span class="p">)</span>
+                <span class="n">num_slices</span> <span class="o">=</span> <span class="n">traj_idx</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">del</span> <span class="n">idx</span>
+                <span class="n">lengths</span> <span class="o">=</span> <span class="n">lengths_idx</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">num_slices</span> <span class="o">=</span> <span class="n">traj_idx</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+                <span class="c1"># make seq_length a tensor with values clamped by lengths</span>
+                <span class="n">seq_length</span> <span class="o">=</span> <span class="n">lengths</span><span class="p">[</span><span class="n">traj_idx</span><span class="p">]</span><span class="o">.</span><span class="n">clamp_max</span><span class="p">(</span><span class="n">seq_length</span><span class="p">)</span>
 
         <span class="c1"># build a list of index that we don&#39;t want to sample: all the steps at a `seq_length` distance of</span>
         <span class="c1"># the end the trajectory, with the end of trajectory (`stop_idx`) included</span>
@@ -2075,7 +2095,7 @@
             <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="k">if</span> <span class="n">storage</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="c1"># convert the 2d index into a flat one to accomodate the _sum_tree</span>
+            <span class="c1"># convert the 2d index into a flat one to accommodate the _sum_tree</span>
             <span class="n">preceding_stop_idx</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">as_tensor</span><span class="p">(</span>
                 <span class="n">np</span><span class="o">.</span><span class="n">ravel_multi_index</span><span class="p">(</span>
                     <span class="nb">tuple</span><span class="p">(</span><span class="n">preceding_stop_idx</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">numpy</span><span class="p">()),</span> <span class="n">storage</span><span class="o">.</span><span class="n">shape</span>
@@ -2109,42 +2129,10 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;Number of indices is expected to match the batch size (</span><span class="si">{</span><span class="n">index</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> != </span><span class="si">{</span><span class="n">batch_size</span><span class="si">}</span><span class="s2">).&quot;</span>
             <span class="p">)</span>
-
-        <span class="c1"># if self.truncated_key is not None:</span>
-        <span class="c1">#     truncated_key = self.truncated_key</span>
-        <span class="c1">#     done_key = _replace_last(truncated_key, &quot;done&quot;)</span>
-        <span class="c1">#     terminated_key = _replace_last(truncated_key, &quot;terminated&quot;)</span>
-        <span class="c1">#</span>
-        <span class="c1">#     truncated = torch.zeros(</span>
-        <span class="c1">#         (index.shape[0], 1), dtype=torch.bool, device=index.device</span>
-        <span class="c1">#     )</span>
-        <span class="c1">#     if isinstance(seq_length, int):</span>
-        <span class="c1">#         truncated.view(num_slices, -1)[:, -1] = 1</span>
-        <span class="c1">#     else:</span>
-        <span class="c1">#         truncated[seq_length.cumsum(0) - 1] = 1</span>
-        <span class="c1">#     # a traj is terminated if the stop index along col 0 (time)</span>
-        <span class="c1">#     # equates start + traj length - 1</span>
-        <span class="c1">#     traj_terminated = (</span>
-        <span class="c1">#         stop_idx[traj_idx, 0] == start_idx[traj_idx, 0] + seq_length - 1</span>
-        <span class="c1">#     )</span>
-        <span class="c1">#     terminated = torch.zeros_like(truncated)</span>
-        <span class="c1">#     if traj_terminated.any():</span>
-        <span class="c1">#         if isinstance(seq_length, int):</span>
-        <span class="c1">#             truncated.view(num_slices, -1)[traj_terminated] = 1</span>
-        <span class="c1">#         else:</span>
-        <span class="c1">#             truncated[(seq_length.cumsum(0) - 1)[traj_terminated]] = 1</span>
-        <span class="c1">#     truncated = truncated &amp; ~terminated</span>
-        <span class="c1">#     done = terminated | truncated</span>
-        <span class="c1">#     return index.to(torch.long).unbind(-1), {</span>
-        <span class="c1">#         truncated_key: truncated,</span>
-        <span class="c1">#         done_key: done,</span>
-        <span class="c1">#         terminated_key: terminated,</span>
-        <span class="c1">#     }</span>
-
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">truncated_key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="c1"># TODO: fix this part</span>
             <span class="c1"># following logics borrowed from SliceSampler</span>
             <span class="n">truncated_key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">truncated_key</span>
+
             <span class="n">done_key</span> <span class="o">=</span> <span class="n">_replace_last</span><span class="p">(</span><span class="n">truncated_key</span><span class="p">,</span> <span class="s2">&quot;done&quot;</span><span class="p">)</span>
             <span class="n">terminated_key</span> <span class="o">=</span> <span class="n">_replace_last</span><span class="p">(</span><span class="n">truncated_key</span><span class="p">,</span> <span class="s2">&quot;terminated&quot;</span><span class="p">)</span>
 
@@ -2155,18 +2143,12 @@
                 <span class="n">truncated</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">num_slices</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">truncated</span><span class="p">[</span><span class="n">seq_length</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
-            <span class="n">traj_terminated</span> <span class="o">=</span> <span class="n">stop_idx</span><span class="p">[</span><span class="n">traj_idx</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="p">(</span>
-                <span class="n">start_idx</span><span class="p">[</span><span class="n">traj_idx</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">seq_length</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="n">terminated</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="p">(</span><span class="n">index</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="n">stop_idx</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+                <span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
             <span class="p">)</span>
-            <span class="n">terminated</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">truncated</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">traj_terminated</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">seq_length</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
-                    <span class="n">terminated</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">num_slices</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)[</span><span class="n">traj_terminated</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">terminated</span><span class="p">[(</span><span class="n">seq_length</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)[</span><span class="n">traj_terminated</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">1</span>
-            <span class="n">truncated</span> <span class="o">=</span> <span class="n">truncated</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">terminated</span>
             <span class="n">done</span> <span class="o">=</span> <span class="n">terminated</span> <span class="o">|</span> <span class="n">truncated</span>
-
             <span class="n">info</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
                 <span class="p">{</span>
                     <span class="n">truncated_key</span><span class="p">:</span> <span class="n">truncated</span><span class="p">,</span>
@@ -2174,6 +2156,7 @@
                     <span class="n">terminated_key</span><span class="p">:</span> <span class="n">terminated</span><span class="p">,</span>
                 <span class="p">}</span>
             <span class="p">)</span>
+            <span class="k">return</span> <span class="n">index</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">)</span><span class="o">.</span><span class="n">unbind</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">info</span>
         <span class="k">return</span> <span class="n">index</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">)</span><span class="o">.</span><span class="n">unbind</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">info</span>
 
     <span class="k">def</span> <span class="nf">_empty</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

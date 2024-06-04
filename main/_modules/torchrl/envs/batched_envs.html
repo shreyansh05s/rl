@@ -1237,6 +1237,12 @@
             <span class="k">return</span> <span class="n">_update_during_reset</span><span class="p">(</span><span class="n">tensordict_reset</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">reset_keys</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">tensordict_reset</span>
 
+    <span class="k">def</span> <span class="nf">add_truncated_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+            <span class="s2">&quot;Cannot add truncated keys to a batched environment. Please add these entries to &quot;</span>
+            <span class="s2">&quot;the nested environments by calling sub_env.add_truncated_keys()&quot;</span>
+        <span class="p">)</span>
+
 
 <div class="viewcode-block" id="SerialEnv"><a class="viewcode-back" href="../../../reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv">[docs]</a><span class="k">class</span> <span class="nc">SerialEnv</span><span class="p">(</span><span class="n">BatchedEnvBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates a series of environments in the same process.&quot;&quot;&quot;</span>
