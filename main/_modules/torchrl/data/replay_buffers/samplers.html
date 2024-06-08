@@ -680,6 +680,9 @@
 <span class="sd">        reduction (str, optional): the reduction method for multidimensional</span>
 <span class="sd">            tensordicts (ie stored trajectory). Can be one of &quot;max&quot;, &quot;min&quot;,</span>
 <span class="sd">            &quot;median&quot; or &quot;mean&quot;.</span>
+<span class="sd">        max_priority_within_buffer (bool, optional): if ``True``, the max-priority</span>
+<span class="sd">            is tracked within the buffer. When ``False``, the max-priority tracks</span>
+<span class="sd">            the maximum value since the instantiation of the sampler.</span>
 
 <span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.data.replay_buffers import ReplayBuffer, LazyTensorStorage, PrioritizedSampler</span>
@@ -736,6 +739,7 @@
         <span class="n">eps</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-8</span><span class="p">,</span>
         <span class="n">dtype</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">float</span><span class="p">,</span>
         <span class="n">reduction</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;max&quot;</span><span class="p">,</span>
+        <span class="n">max_priority_within_buffer</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">alpha</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
@@ -750,6 +754,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_eps</span> <span class="o">=</span> <span class="n">eps</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reduction</span> <span class="o">=</span> <span class="n">reduction</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">dtype</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_max_priority_within_buffer</span> <span class="o">=</span> <span class="n">max_priority_within_buffer</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_init</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -778,14 +783,62 @@
             <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;dtype </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="si">}</span><span class="s2"> not supported by PrioritizedSampler&quot;</span>
             <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_max_priority</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_max_priority</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">_empty</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_init</span><span class="p">()</span>
 
     <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">_max_priority</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">max_priority_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_max_priority&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">max_priority_index</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">max_priority_index</span>
+
+    <span class="nd">@_max_priority</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">_max_priority</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s2">&quot;_max_priority&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="k">def</span> <span class="nf">_maybe_erase_max_priority</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_priority_within_buffer</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">max_priority_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_priority</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">max_priority_index</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="k">def</span> <span class="nf">check_index</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span> <span class="n">max_priority_index</span><span class="o">=</span><span class="n">max_priority_index</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+                <span class="c1"># index can be 1d or 2d</span>
+                <span class="k">if</span> <span class="n">index</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">is_overwritten</span> <span class="o">=</span> <span class="p">(</span><span class="n">index</span> <span class="o">==</span> <span class="n">max_priority_index</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">is_overwritten</span> <span class="o">=</span> <span class="p">(</span><span class="n">index</span> <span class="o">==</span> <span class="n">max_priority_index</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+                <span class="n">is_overwritten</span> <span class="o">=</span> <span class="n">index</span> <span class="o">==</span> <span class="n">max_priority_index</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="nb">slice</span><span class="p">):</span>
+                <span class="c1"># This won&#39;t work if called recursively</span>
+                <span class="n">is_overwritten</span> <span class="o">=</span> <span class="n">max_priority_index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span>
+                    <span class="n">index</span><span class="o">.</span><span class="n">indices</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_max_capacity</span><span class="p">)</span>
+                <span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+                <span class="n">is_overwritten</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">max_priority_index</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">is_overwritten</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">mpi</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">max_priority_index</span><span class="p">):</span>
+                        <span class="n">is_overwritten</span> <span class="o">&amp;=</span> <span class="n">check_index</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">mpi</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;index of type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">index</span><span class="p">)</span><span class="si">}</span><span class="s2"> is not recognized.&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">is_overwritten</span>
+
+        <span class="n">is_overwritten</span> <span class="o">=</span> <span class="n">check_index</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">is_overwritten</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_max_priority</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">default_priority</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_max_priority</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eps</span><span class="p">)</span> <span class="o">**</span> <span class="bp">self</span><span class="o">.</span><span class="n">_alpha</span>
+        <span class="n">mp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_priority</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">mp</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">mp</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">mp</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eps</span><span class="p">)</span> <span class="o">**</span> <span class="bp">self</span><span class="o">.</span><span class="n">_alpha</span>
 
     <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">storage</span><span class="p">:</span> <span class="n">Storage</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">storage</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -824,11 +877,13 @@
 
         <span class="k">return</span> <span class="n">index</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;_weight&quot;</span><span class="p">:</span> <span class="n">weight</span><span class="p">}</span>
 
-    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">|</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_maybe_erase_max_priority</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">extend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">extend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_maybe_erase_max_priority</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
 
 <div class="viewcode-block" id="PrioritizedSampler.update_priority"><a class="viewcode-back" href="../../../../reference/generated/torchrl.data.replay_buffers.PrioritizedSampler.html#torchrl.data.replay_buffers.PrioritizedSampler.update_priority">[docs]</a>    <span class="nd">@torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">update_priority</span><span class="p">(</span>
@@ -896,7 +951,10 @@
                 <span class="k">if</span> <span class="n">priority</span><span class="o">.</span><span class="n">ndim</span><span class="p">:</span>
                     <span class="n">priority</span> <span class="o">=</span> <span class="n">priority</span><span class="p">[</span><span class="n">valid_index</span><span class="p">]</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_max_priority</span> <span class="o">=</span> <span class="n">priority</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">.</span><span class="n">clamp_min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_max_priority</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+        <span class="n">max_p</span><span class="p">,</span> <span class="n">max_p_idx</span> <span class="o">=</span> <span class="n">priority</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">max_priority</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_priority</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">max_priority</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">max_p</span> <span class="o">&gt;</span> <span class="n">max_priority</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_max_priority</span> <span class="o">=</span> <span class="p">(</span><span class="n">max_p</span><span class="p">,</span> <span class="n">max_p_idx</span><span class="p">)</span>
         <span class="n">priority</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="n">priority</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_alpha</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_sum_tree</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">priority</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_min_tree</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">priority</span></div>
@@ -1965,6 +2023,10 @@
 <span class="sd">            that at least `slice_len - i` samples will be gathered for each sampled trajectory.</span>
 <span class="sd">            Using tuples allows a fine grained control over the span on the left (beginning</span>
 <span class="sd">            of the stored trajectory) and on the right (end of the stored trajectory).</span>
+<span class="sd">        max_priority_within_buffer (bool, optional): if ``True``, the max-priority</span>
+<span class="sd">            is tracked within the buffer. When ``False``, the max-priority tracks</span>
+<span class="sd">            the maximum value since the instantiation of the sampler.</span>
+<span class="sd">            Defaults to ``False``.</span>
 
 <span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; import torch</span>
@@ -2023,6 +2085,7 @@
         <span class="n">strict_length</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="nb">compile</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">span</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">|</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">bool</span> <span class="o">|</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span> <span class="o">|</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">max_priority_within_buffer</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="n">SliceSampler</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
@@ -2046,6 +2109,7 @@
             <span class="n">eps</span><span class="o">=</span><span class="n">eps</span><span class="p">,</span>
             <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span>
             <span class="n">reduction</span><span class="o">=</span><span class="n">reduction</span><span class="p">,</span>
+            <span class="n">max_priority_within_buffer</span><span class="o">=</span><span class="n">max_priority_within_buffer</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">span</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
             <span class="c1"># Span left is hard to achieve because we need to sample &#39;negative&#39; starts, but to sample</span>
