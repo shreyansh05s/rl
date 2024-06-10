@@ -408,8 +408,10 @@
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">import</span> <span class="nn">contextlib</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
 
 <span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">operator</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">typing</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
@@ -999,6 +1001,14 @@
     <span class="n">_shift</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">_is_full</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">None</span>
 
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">torch</span><span class="p">,</span> <span class="s2">&quot;_nested_compute_contiguous_strides_offsets&quot;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Unsupported torch version </span><span class="si">{</span><span class="n">torch</span><span class="o">.</span><span class="n">__version__</span><span class="si">}</span><span class="s2">. &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;torch&gt;=2.4 is required for </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> to be used.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="n">data</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">)</span>
 
@@ -1351,6 +1361,67 @@
         <span class="n">slice1</span> <span class="o">=</span> <span class="n">out</span><span class="p">[:</span><span class="o">-</span><span class="n">slice0_shift</span><span class="p">]</span>
         <span class="n">slice1</span><span class="o">.</span><span class="n">copy_</span><span class="p">(</span><span class="n">source1</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">out</span>
+
+
+<span class="c1"># Copy-paste of unravel-index for PT 2.0</span>
+<span class="k">def</span> <span class="nf">_unravel_index</span><span class="p">(</span>
+    <span class="n">indices</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">shape</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Tensor</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+    <span class="n">res_tensor</span> <span class="o">=</span> <span class="n">_unravel_index_impl</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">res_tensor</span><span class="o">.</span><span class="n">unbind</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_unravel_index_impl</span><span class="p">(</span>
+    <span class="n">indices</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">shape</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">SymInt</span><span class="p">)):</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">([</span><span class="n">shape</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+
+    <span class="n">coefs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+        <span class="nb">reversed</span><span class="p">(</span>
+            <span class="nb">list</span><span class="p">(</span>
+                <span class="n">itertools</span><span class="o">.</span><span class="n">accumulate</span><span class="p">(</span>
+                    <span class="nb">reversed</span><span class="p">(</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">+</span> <span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">([</span><span class="mi">1</span><span class="p">])),</span> <span class="n">func</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">mul</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">indices</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">floor_divide</span><span class="p">(</span>
+        <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">coefs</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">indices</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+    <span class="p">)</span> <span class="o">%</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">indices</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+
+
+<span class="nd">@implement_for</span><span class="p">(</span><span class="s2">&quot;torch&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;2.2&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">unravel_index</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">shape</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A version-compatible wrapper around torch.unravel_index.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_unravel_index</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span>
+
+
+<span class="nd">@implement_for</span><span class="p">(</span><span class="s2">&quot;torch&quot;</span><span class="p">,</span> <span class="s2">&quot;2.2&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">unravel_index</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">shape</span><span class="p">):</span>  <span class="c1"># noqa: F811</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A version-compatible wrapper around torch.unravel_index.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">unravel_index</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span>
+
+
+<span class="nd">@implement_for</span><span class="p">(</span><span class="s2">&quot;torch&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;2.3&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">tree_iter</span><span class="p">(</span><span class="n">pytree</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A version-compatible wrapper around tree_iter.&quot;&quot;&quot;</span>
+    <span class="n">flat_tree</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">_pytree</span><span class="o">.</span><span class="n">tree_flatten</span><span class="p">(</span><span class="n">pytree</span><span class="p">)</span>
+    <span class="k">yield from</span> <span class="n">flat_tree</span>
+
+
+<span class="nd">@implement_for</span><span class="p">(</span><span class="s2">&quot;torch&quot;</span><span class="p">,</span> <span class="s2">&quot;2.3&quot;</span><span class="p">,</span> <span class="s2">&quot;2.4&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">tree_iter</span><span class="p">(</span><span class="n">pytree</span><span class="p">):</span>  <span class="c1"># noqa: F811</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A version-compatible wrapper around tree_iter.&quot;&quot;&quot;</span>
+    <span class="k">yield from</span> <span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">_pytree</span><span class="o">.</span><span class="n">tree_leaves</span><span class="p">(</span><span class="n">pytree</span><span class="p">)</span>
+
+
+<span class="nd">@implement_for</span><span class="p">(</span><span class="s2">&quot;torch&quot;</span><span class="p">,</span> <span class="s2">&quot;2.4&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">tree_iter</span><span class="p">(</span><span class="n">pytree</span><span class="p">):</span>  <span class="c1"># noqa: F811</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A version-compatible wrapper around tree_iter.&quot;&quot;&quot;</span>
+    <span class="k">yield from</span> <span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">_pytree</span><span class="o">.</span><span class="n">tree_iter</span><span class="p">(</span><span class="n">pytree</span><span class="p">)</span>
 </pre></div>
 
              </article>

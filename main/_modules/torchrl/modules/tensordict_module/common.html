@@ -847,7 +847,7 @@
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">module</span><span class="p">:</span> <span class="n">TensorDictModuleBase</span><span class="p">,</span> <span class="n">vmap_dim</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">_has_functorch</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">&quot;VmapModule requires torch&gt;=1.13.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">&quot;VmapModule requires torch&gt;=2.0.&quot;</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">in_keys</span> <span class="o">=</span> <span class="n">module</span><span class="o">.</span><span class="n">in_keys</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">out_keys</span> <span class="o">=</span> <span class="n">module</span><span class="o">.</span><span class="n">out_keys</span>
