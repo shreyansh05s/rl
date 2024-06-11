@@ -4381,6 +4381,10 @@
                 <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;The CompositeSpec instance with keys </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span><span class="si">}</span><span class="s2"> does not have a &#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&#39; key.&quot;</span>
                 <span class="p">)</span>
+            <span class="k">except</span> <span class="ne">RuntimeError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Encoding key </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> raised a RuntimeError. Scroll up to know more.&quot;</span>
+                <span class="p">)</span> <span class="kn">from</span> <span class="nn">err</span>
         <span class="k">return</span> <span class="n">out</span></div>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
