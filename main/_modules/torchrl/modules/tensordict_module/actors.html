@@ -413,6 +413,7 @@
 
 <span class="kn">from</span> <span class="nn">tensordict</span> <span class="kn">import</span> <span class="n">TensorDictBase</span><span class="p">,</span> <span class="n">unravel_key</span>
 <span class="kn">from</span> <span class="nn">tensordict.nn</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">CompositeDistribution</span><span class="p">,</span>
     <span class="n">dispatch</span><span class="p">,</span>
     <span class="n">TensorDictModule</span><span class="p">,</span>
     <span class="n">TensorDictModuleBase</span><span class="p">,</span>
@@ -576,6 +577,14 @@
 <span class="sd">            A :class:`torch.distributions.Distribution` class to</span>
 <span class="sd">            be used for sampling.</span>
 <span class="sd">            Default is :class:`tensordict.nn.distributions.Delta`.</span>
+
+<span class="sd">            .. note:: if ``distribution_class`` is of type :class:`~tensordict.nn.distributions.CompositeDistribution`,</span>
+<span class="sd">                the keys will be inferred from the ``distribution_map`` / ``name_map`` keyword arguments of that</span>
+<span class="sd">                distribution. If this distribution is used with another constructor (e.g.,  partial or lambda function)</span>
+<span class="sd">                then the out_keys will need to be provided explicitly.</span>
+<span class="sd">                Note also that actions will __not__ be prefixed with an ``&quot;action&quot;`` key, see the example below</span>
+<span class="sd">                on how this can be  achieved with a ``ProbabilisticActor``.</span>
+
 <span class="sd">        distribution_kwargs (dict, optional): keyword-only argument.</span>
 <span class="sd">            Keyword-argument pairs to be passed to the distribution.</span>
 <span class="sd">        return_log_prob (bool, optional): keyword-only argument.</span>
@@ -678,6 +687,75 @@
 <span class="sd">            device=None,</span>
 <span class="sd">            is_shared=False)</span>
 
+<span class="sd">    Using a probabilistic actor with a composite distribution can be achieved using the following</span>
+<span class="sd">    example code:</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; import torch</span>
+<span class="sd">        &gt;&gt;&gt; from tensordict import TensorDict</span>
+<span class="sd">        &gt;&gt;&gt; from tensordict.nn import CompositeDistribution</span>
+<span class="sd">        &gt;&gt;&gt; from tensordict.nn import TensorDictModule</span>
+<span class="sd">        &gt;&gt;&gt; from torch import distributions as d</span>
+<span class="sd">        &gt;&gt;&gt; from torch import nn</span>
+<span class="sd">        &gt;&gt;&gt;</span>
+<span class="sd">        &gt;&gt;&gt; from torchrl.modules import ProbabilisticActor</span>
+<span class="sd">        &gt;&gt;&gt;</span>
+<span class="sd">        &gt;&gt;&gt;</span>
+<span class="sd">        &gt;&gt;&gt; class Module(nn.Module):</span>
+<span class="sd">        ...     def forward(self, x):</span>
+<span class="sd">        ...         return x[..., :3], x[..., 3:6], x[..., 6:]</span>
+<span class="sd">        ...</span>
+<span class="sd">        &gt;&gt;&gt;</span>
+<span class="sd">        &gt;&gt;&gt; module = TensorDictModule(Module(),</span>
+<span class="sd">        ...                           in_keys=[&quot;x&quot;],</span>
+<span class="sd">        ...                           out_keys=[</span>
+<span class="sd">        ...                               (&quot;params&quot;, &quot;normal&quot;, &quot;loc&quot;), (&quot;params&quot;, &quot;normal&quot;, &quot;scale&quot;), (&quot;params&quot;, &quot;categ&quot;, &quot;logits&quot;)</span>
+<span class="sd">        ...                           ])</span>
+<span class="sd">        &gt;&gt;&gt; actor = ProbabilisticActor(module,</span>
+<span class="sd">        ...                            in_keys=[&quot;params&quot;],</span>
+<span class="sd">        ...                            distribution_class=CompositeDistribution,</span>
+<span class="sd">        ...                            distribution_kwargs={&quot;distribution_map&quot;: {&quot;normal&quot;: d.Normal, &quot;categ&quot;: d.Categorical},</span>
+<span class="sd">        ...                                                 &quot;name_map&quot;: {&quot;normal&quot;: (&quot;action&quot;, &quot;normal&quot;),</span>
+<span class="sd">        ...                                                              &quot;categ&quot;: (&quot;action&quot;, &quot;categ&quot;)}}</span>
+<span class="sd">        ...                            )</span>
+<span class="sd">        &gt;&gt;&gt; print(actor.out_keys)</span>
+<span class="sd">        [(&#39;params&#39;, &#39;normal&#39;, &#39;loc&#39;), (&#39;params&#39;, &#39;normal&#39;, &#39;scale&#39;), (&#39;params&#39;, &#39;categ&#39;, &#39;logits&#39;), (&#39;action&#39;, &#39;normal&#39;), (&#39;action&#39;, &#39;categ&#39;)]</span>
+<span class="sd">        &gt;&gt;&gt;</span>
+<span class="sd">        &gt;&gt;&gt; data = TensorDict({&quot;x&quot;: torch.rand(10)}, [])</span>
+<span class="sd">        &gt;&gt;&gt; module(data)</span>
+<span class="sd">        &gt;&gt;&gt; print(actor(data))</span>
+<span class="sd">        TensorDict(</span>
+<span class="sd">            fields={</span>
+<span class="sd">                action: TensorDict(</span>
+<span class="sd">                    fields={</span>
+<span class="sd">                        categ: Tensor(shape=torch.Size([]), device=cpu, dtype=torch.int64, is_shared=False),</span>
+<span class="sd">                        normal: Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float32, is_shared=False)},</span>
+<span class="sd">                    batch_size=torch.Size([]),</span>
+<span class="sd">                    device=None,</span>
+<span class="sd">                    is_shared=False),</span>
+<span class="sd">                params: TensorDict(</span>
+<span class="sd">                    fields={</span>
+<span class="sd">                        categ: TensorDict(</span>
+<span class="sd">                            fields={</span>
+<span class="sd">                                logits: Tensor(shape=torch.Size([4]), device=cpu, dtype=torch.float32, is_shared=False)},</span>
+<span class="sd">                            batch_size=torch.Size([]),</span>
+<span class="sd">                            device=None,</span>
+<span class="sd">                            is_shared=False),</span>
+<span class="sd">                        normal: TensorDict(</span>
+<span class="sd">                            fields={</span>
+<span class="sd">                                loc: Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float32, is_shared=False),</span>
+<span class="sd">                                scale: Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float32, is_shared=False)},</span>
+<span class="sd">                            batch_size=torch.Size([]),</span>
+<span class="sd">                            device=None,</span>
+<span class="sd">                            is_shared=False)},</span>
+<span class="sd">                    batch_size=torch.Size([]),</span>
+<span class="sd">                    device=None,</span>
+<span class="sd">                    is_shared=False),</span>
+<span class="sd">                x: Tensor(shape=torch.Size([10]), device=cpu, dtype=torch.float32, is_shared=False)},</span>
+<span class="sd">            batch_size=torch.Size([]),</span>
+<span class="sd">            device=None,</span>
+<span class="sd">            is_shared=False)</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
@@ -689,8 +767,22 @@
         <span class="n">spec</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TensorSpec</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
+        <span class="n">distribution_class</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;distribution_class&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">out_keys</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">out_keys</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;action&quot;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">distribution_class</span> <span class="ow">is</span> <span class="n">CompositeDistribution</span><span class="p">:</span>
+                <span class="k">if</span> <span class="s2">&quot;distribution_map&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;distribution_kwargs&quot;</span><span class="p">,</span> <span class="p">{}):</span>
+                    <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
+                        <span class="s2">&quot;&#39;distribution_map&#39; must be provided within &quot;</span>
+                        <span class="s2">&quot;distribution_kwargs whenever the distribution is of type CompositeDistribution.&quot;</span>
+                    <span class="p">)</span>
+                <span class="n">distribution_map</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;distribution_kwargs&quot;</span><span class="p">][</span><span class="s2">&quot;distribution_map&quot;</span><span class="p">]</span>
+                <span class="n">name_map</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;distribution_kwargs&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name_map&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">name_map</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">out_keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">name_map</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">out_keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">distribution_map</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">out_keys</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;action&quot;</span><span class="p">]</span>
         <span class="k">if</span> <span class="p">(</span>
             <span class="nb">len</span><span class="p">(</span><span class="n">out_keys</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
             <span class="ow">and</span> <span class="n">spec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
