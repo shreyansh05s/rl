@@ -862,8 +862,18 @@
         <span class="k">if</span> <span class="n">_storage_shape</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">_storage_shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="c1"># iterate over data and allocate</span>
             <span class="k">if</span> <span class="n">out</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># out = TensorDict(batch_size=_storage_shape)</span>
+                <span class="c1"># for i in range(out.ndim):</span>
+                <span class="c1">#     if i &gt;= 2:</span>
+                <span class="c1">#         # FLattening the lazy stack will make the data unavailable - we need to find a way to make this</span>
+                <span class="c1">#         # possible.</span>
+                <span class="c1">#         raise RuntimeError(</span>
+                <span class="c1">#             &quot;Checkpointing an uninitialized buffer with more than 2 dimensions is currently not supported. &quot;</span>
+                <span class="c1">#             &quot;Please file an issue on GitHub to ask for this feature!&quot;</span>
+                <span class="c1">#         )</span>
+                <span class="c1">#     out = LazyStackedTensorDict(*out.unbind(i), stack_dim=i)</span>
                 <span class="n">out</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="p">(</span><span class="n">batch_size</span><span class="o">=</span><span class="n">_storage_shape</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">out</span><span class="o">.</span><span class="n">ndim</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">out</span><span class="o">.</span><span class="n">ndim</span><span class="p">):</span>
                     <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
                         <span class="c1"># FLattening the lazy stack will make the data unavailable - we need to find a way to make this</span>
                         <span class="c1"># possible.</span>
@@ -871,7 +881,11 @@
                             <span class="s2">&quot;Checkpointing an uninitialized buffer with more than 2 dimensions is currently not supported. &quot;</span>
                             <span class="s2">&quot;Please file an issue on GitHub to ask for this feature!&quot;</span>
                         <span class="p">)</span>
-                    <span class="n">out</span> <span class="o">=</span> <span class="n">LazyStackedTensorDict</span><span class="p">(</span><span class="o">*</span><span class="n">out</span><span class="o">.</span><span class="n">unbind</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="n">stack_dim</span><span class="o">=</span><span class="n">i</span><span class="p">)</span>
+                    <span class="n">out_list</span> <span class="o">=</span> <span class="p">[</span>
+                        <span class="n">out</span><span class="o">.</span><span class="n">_get_sub_tensordict</span><span class="p">((</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">),)</span> <span class="o">*</span> <span class="n">i</span> <span class="o">+</span> <span class="p">(</span><span class="n">j</span><span class="p">,))</span>
+                        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">out</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                    <span class="p">]</span>
+                    <span class="n">out</span> <span class="o">=</span> <span class="n">LazyStackedTensorDict</span><span class="p">(</span><span class="o">*</span><span class="n">out_list</span><span class="p">,</span> <span class="n">stack_dim</span><span class="o">=</span><span class="n">i</span><span class="p">)</span>
 
             <span class="c1"># Create a function that reads slices of the input data</span>
             <span class="k">with</span> <span class="n">out</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="n">out</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">2</span> <span class="k">else</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">nullcontext</span><span class="p">(</span>
