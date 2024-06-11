@@ -444,6 +444,10 @@
 <div class="viewcode-block" id="Sampler"><a class="viewcode-back" href="../../../../reference/generated/torchrl.data.replay_buffers.Sampler.html#torchrl.data.replay_buffers.Sampler">[docs]</a><span class="k">class</span> <span class="nc">Sampler</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A generic sampler base class for composable Replay Buffers.&quot;&quot;&quot;</span>
 
+    <span class="c1"># Some samplers - mainly those without replacement -</span>
+    <span class="c1"># need to keep track of the number of remaining batches</span>
+    <span class="n">_remaining_batches</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">iinfo</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">)</span>
+
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">storage</span><span class="p">:</span> <span class="n">Storage</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]:</span>
         <span class="o">...</span>
@@ -576,7 +580,7 @@
             <span class="n">metadata</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_get_sample_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">storage</span><span class="p">:</span> <span class="n">Storage</span><span class="p">,</span> <span class="n">len_storage</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_get_sample_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">storage</span><span class="p">:</span> <span class="n">Storage</span><span class="p">,</span> <span class="n">len_storage</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">storage</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">device</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample_list</span><span class="o">.</span><span class="n">device</span>
         <span class="k">else</span><span class="p">:</span>
@@ -587,10 +591,18 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">_sample_list</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">len_storage</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_sample_list</span> <span class="o">=</span> <span class="n">_sample_list</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">drop_last</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_remaining_batches</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample_list</span><span class="o">.</span><span class="n">numel</span><span class="p">()</span> <span class="o">//</span> <span class="n">batch_size</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_remaining_batches</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sample_list</span><span class="o">.</span><span class="n">numel</span><span class="p">()</span> <span class="o">//</span> <span class="o">-</span><span class="n">batch_size</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_single_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">len_storage</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">):</span>
         <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample_list</span><span class="p">[:</span><span class="n">batch_size</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_sample_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample_list</span><span class="p">[</span><span class="n">batch_size</span><span class="p">:]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">drop_last</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_remaining_batches</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample_list</span><span class="o">.</span><span class="n">numel</span><span class="p">()</span> <span class="o">//</span> <span class="n">batch_size</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_remaining_batches</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sample_list</span><span class="o">.</span><span class="n">numel</span><span class="p">()</span> <span class="o">//</span> <span class="o">-</span><span class="n">batch_size</span><span class="p">)</span>
 
         <span class="c1"># check if we have enough elements for one more batch, assuming same batch size</span>
         <span class="c1"># will be used each time sample is called</span>
@@ -598,7 +610,9 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">drop_last</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sample_list</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">batch_size</span>
         <span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">ran_out</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_get_sample_list</span><span class="p">(</span><span class="n">storage</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">len_storage</span><span class="o">=</span><span class="n">len_storage</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_get_sample_list</span><span class="p">(</span>
+                <span class="n">storage</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">len_storage</span><span class="o">=</span><span class="n">len_storage</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span>
+            <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">ran_out</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">return</span> <span class="n">index</span>
@@ -615,7 +629,7 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">len_storage</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;An empty storage was passed&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">len_storage</span> <span class="o">!=</span> <span class="n">len_storage</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_get_sample_list</span><span class="p">(</span><span class="n">storage</span><span class="p">,</span> <span class="n">len_storage</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_get_sample_list</span><span class="p">(</span><span class="n">storage</span><span class="p">,</span> <span class="n">len_storage</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">len_storage</span> <span class="o">&lt;</span> <span class="n">batch_size</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">drop_last</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;The batch size (</span><span class="si">{</span><span class="n">batch_size</span><span class="si">}</span><span class="s2">) is greater than the storage capacity (</span><span class="si">{</span><span class="n">len_storage</span><span class="si">}</span><span class="s2">). &quot;</span>
