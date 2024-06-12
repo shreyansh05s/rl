@@ -458,6 +458,11 @@ will preallocate the storage for you after they’ve been extended the first tim
 <span class="gp">&gt;&gt;&gt; </span><span class="n">rb</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="mi">30</span><span class="p">,</span> <span class="kc">None</span><span class="p">])</span>  <span class="c1"># element [1] is an int, [2] is None</span>
 </pre></div>
 </div>
+<p>The main entry points to write onto a buffer are <a class="reference internal" href="generated/torchrl.data.ReplayBuffer.html#torchrl.data.ReplayBuffer.add" title="torchrl.data.ReplayBuffer.add"><code class="xref py py-meth docutils literal notranslate"><span class="pre">add()</span></code></a> and
+<a class="reference internal" href="generated/torchrl.data.ReplayBuffer.html#torchrl.data.ReplayBuffer.extend" title="torchrl.data.ReplayBuffer.extend"><code class="xref py py-meth docutils literal notranslate"><span class="pre">extend()</span></code></a>.
+One can also use <code class="xref py py-meth docutils literal notranslate"><span class="pre">__setitem__()</span></code>, in which case the data is written
+where indicated without updating the length or cursor of the buffer. This can be useful when sampling
+items from the buffer and them updating their values in-place afterwards.</p>
 <p>Using a <a class="reference internal" href="generated/torchrl.data.replay_buffers.TensorStorage.html#torchrl.data.replay_buffers.TensorStorage" title="torchrl.data.replay_buffers.TensorStorage"><code class="xref py py-class docutils literal notranslate"><span class="pre">TensorStorage</span></code></a> we tell our RB that
 we want the storage to be contiguous, which is by far more efficient but also
 more restrictive:</p>
