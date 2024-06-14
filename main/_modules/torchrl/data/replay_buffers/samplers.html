@@ -1470,7 +1470,9 @@
                             <span class="s2">&quot;Could not get a tensordict out of the storage, which is required for SliceSampler to compute the trajectories.&quot;</span>
                         <span class="p">)</span>
                 <span class="n">vals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_start_stop_traj</span><span class="p">(</span>
-                    <span class="n">trajectory</span><span class="o">=</span><span class="n">trajectory</span><span class="p">,</span> <span class="n">at_capacity</span><span class="o">=</span><span class="n">storage</span><span class="o">.</span><span class="n">_is_full</span>
+                    <span class="n">trajectory</span><span class="o">=</span><span class="n">trajectory</span><span class="p">,</span>
+                    <span class="n">at_capacity</span><span class="o">=</span><span class="n">storage</span><span class="o">.</span><span class="n">_is_full</span><span class="p">,</span>
+                    <span class="n">cursor</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">storage</span><span class="p">,</span> <span class="s2">&quot;_last_cursor&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
                 <span class="p">)</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache_values</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s2">&quot;stop-and-length&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">vals</span>
@@ -2205,7 +2207,7 @@
             <span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_preceding_stop_idx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">storage</span><span class="p">,</span> <span class="n">lengths</span><span class="p">,</span> <span class="n">seq_length</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_preceding_stop_idx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">storage</span><span class="p">,</span> <span class="n">lengths</span><span class="p">,</span> <span class="n">seq_length</span><span class="p">,</span> <span class="n">start_idx</span><span class="p">):</span>
         <span class="n">preceding_stop_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;preceding_stop_idx&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">preceding_stop_idx</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">preceding_stop_idx</span>
@@ -2230,6 +2232,13 @@
             <span class="c1"># Mask the rightmost values of that padded tensor</span>
             <span class="n">preceding_stop_idx</span> <span class="o">=</span> <span class="n">pad</span><span class="p">[:,</span> <span class="o">-</span><span class="n">seq_length</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">span_right</span> <span class="p">:]</span>
         <span class="n">preceding_stop_idx</span> <span class="o">=</span> <span class="n">preceding_stop_idx</span><span class="p">[</span><span class="n">preceding_stop_idx</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">storage</span><span class="o">.</span><span class="n">_is_full</span><span class="p">:</span>
+            <span class="n">preceding_stop_idx</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">preceding_stop_idx</span>
+                <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">ravel_multi_index</span><span class="p">(</span>
+                    <span class="nb">tuple</span><span class="p">(</span><span class="n">start_idx</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()),</span> <span class="n">storage</span><span class="o">.</span><span class="n">_total_shape</span>
+                <span class="p">)</span>
+            <span class="p">)</span> <span class="o">%</span> <span class="n">storage</span><span class="o">.</span><span class="n">_total_shape</span><span class="o">.</span><span class="n">numel</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache_values</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s2">&quot;preceding_stop_idx&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">preceding_stop_idx</span>
         <span class="k">return</span> <span class="n">preceding_stop_idx</span>
@@ -2240,7 +2249,9 @@
         <span class="n">start_idx</span><span class="p">,</span> <span class="n">stop_idx</span><span class="p">,</span> <span class="n">lengths</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_stop_and_length</span><span class="p">(</span><span class="n">storage</span><span class="p">)</span>
         <span class="n">seq_length</span><span class="p">,</span> <span class="n">num_slices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_adjusted_batch_size</span><span class="p">(</span><span class="n">batch_size</span><span class="p">)</span>
 
-        <span class="n">preceding_stop_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_preceding_stop_idx</span><span class="p">(</span><span class="n">storage</span><span class="p">,</span> <span class="n">lengths</span><span class="p">,</span> <span class="n">seq_length</span><span class="p">)</span>
+        <span class="n">preceding_stop_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_preceding_stop_idx</span><span class="p">(</span>
+            <span class="n">storage</span><span class="p">,</span> <span class="n">lengths</span><span class="p">,</span> <span class="n">seq_length</span><span class="p">,</span> <span class="n">start_idx</span>
+        <span class="p">)</span>
         <span class="k">if</span> <span class="n">storage</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="c1"># we need to convert indices of the permuted, flatten storage to indices in a flatten storage (not permuted)</span>
             <span class="c1"># This is because the lengths come as they would for a permuted storage</span>
@@ -2253,12 +2264,14 @@
             <span class="p">)</span>
 
         <span class="c1"># force to not sample index at the end of a trajectory</span>
+        <span class="n">vals</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sum_tree</span><span class="p">[</span><span class="n">preceding_stop_idx</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_sum_tree</span><span class="p">[</span><span class="n">preceding_stop_idx</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()]</span> <span class="o">=</span> <span class="mf">0.0</span>
         <span class="c1"># and no need to update self._min_tree</span>
 
         <span class="n">starts</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="n">PrioritizedSampler</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">storage</span><span class="o">=</span><span class="n">storage</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span> <span class="o">//</span> <span class="n">seq_length</span>
         <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sum_tree</span><span class="p">[</span><span class="n">preceding_stop_idx</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()]</span> <span class="o">=</span> <span class="n">vals</span>
         <span class="c1"># We must truncate the seq_length if (1) not strict length or (2) span[1]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">span</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">strict_length</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">starts</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
@@ -2268,7 +2281,13 @@
             <span class="c1"># Find the stop that comes after the start index</span>
             <span class="c1"># say start_tensor has shape [N, X] and stop_idx has shape [M, X]</span>
             <span class="c1"># diff will have shape [M, N, X]</span>
-            <span class="n">diff</span> <span class="o">=</span> <span class="n">stop_idx</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">starts_tensor</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">stop_idx_corr</span> <span class="o">=</span> <span class="n">stop_idx</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
+            <span class="n">stop_idx_corr</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+                <span class="n">stop_idx</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">start_idx</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span>
+                <span class="n">stop_idx</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">storage</span><span class="o">.</span><span class="n">_len_along_dim0</span><span class="p">,</span>
+                <span class="n">stop_idx</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span>
+            <span class="p">)</span>
+            <span class="n">diff</span> <span class="o">=</span> <span class="n">stop_idx_corr</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">starts_tensor</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
             <span class="c1"># filter out all items that don&#39;t belong to the same dim in the storage</span>
             <span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">diff</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">:]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
             <span class="n">diff</span> <span class="o">=</span> <span class="n">diff</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span>
@@ -2278,7 +2297,7 @@
             <span class="n">diff</span><span class="p">[</span><span class="n">diff</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">diff</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span>
             <span class="c1"># Take the arg min along dim 0 (thereby reducing dim M)</span>
             <span class="n">idx</span> <span class="o">=</span> <span class="n">diff</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-            <span class="n">stops</span> <span class="o">=</span> <span class="n">stop_idx</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="n">stops</span> <span class="o">=</span> <span class="n">stop_idx_corr</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
             <span class="c1"># TODO: here things may not work bc we could have spanning trajs,</span>
             <span class="c1">#  though I cannot show that it breaks in the tests</span>
             <span class="k">if</span> <span class="n">starts_tensor</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
