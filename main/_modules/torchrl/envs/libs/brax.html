@@ -405,6 +405,7 @@
 <span class="c1"># This source code is licensed under the MIT license found in the</span>
 <span class="c1"># LICENSE file in the root directory of this source tree.</span>
 <span class="kn">import</span> <span class="nn">importlib.util</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
 
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
@@ -604,6 +605,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_seed_calls_reset</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_categorical_action_encoding</span> <span class="o">=</span> <span class="n">categorical_action_encoding</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;No device is set for env </span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">. &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Setting a device in Brax wrapped environments is strongly recommended.&quot;</span>
+            <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_check_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">):</span>
         <span class="n">brax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lib</span>
@@ -1059,10 +1065,12 @@
 
         <span class="c1"># call vjp to get gradients</span>
         <span class="n">grad_state</span><span class="p">,</span> <span class="n">grad_action</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">vjp_fn</span><span class="p">(</span><span class="n">grad_next_state_flat</span><span class="p">)</span>
+        <span class="c1"># assert grad_action.device == ctx.env.device</span>
 
         <span class="c1"># reshape batch size</span>
         <span class="n">grad_state</span> <span class="o">=</span> <span class="n">_tree_reshape</span><span class="p">(</span><span class="n">grad_state</span><span class="p">,</span> <span class="n">ctx</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span>
         <span class="n">grad_action</span> <span class="o">=</span> <span class="n">_tree_reshape</span><span class="p">(</span><span class="n">grad_action</span><span class="p">,</span> <span class="n">ctx</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span>
+        <span class="c1"># assert grad_action.device == ctx.env.device</span>
 
         <span class="c1"># convert ndarrays to tensors</span>
         <span class="n">grad_state_qp</span> <span class="o">=</span> <span class="n">_object_to_tensordict</span><span class="p">(</span>
@@ -1070,12 +1078,13 @@
             <span class="n">device</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
             <span class="n">batch_size</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="n">grad_action</span> <span class="o">=</span> <span class="n">_ndarray_to_tensor</span><span class="p">(</span><span class="n">grad_action</span><span class="p">)</span>
+        <span class="n">grad_action</span> <span class="o">=</span> <span class="n">_ndarray_to_tensor</span><span class="p">(</span><span class="n">grad_action</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
         <span class="n">grad_state_qp</span> <span class="o">=</span> <span class="p">{</span>
             <span class="n">key</span><span class="p">:</span> <span class="n">val</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">none_keys</span> <span class="k">else</span> <span class="kc">None</span>
             <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">grad_state_qp</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
         <span class="p">}</span>
-        <span class="k">return</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">grad_action</span><span class="p">,</span> <span class="o">*</span><span class="n">grad_state_qp</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+        <span class="n">grads</span> <span class="o">=</span> <span class="p">(</span><span class="n">grad_action</span><span class="p">,</span> <span class="o">*</span><span class="n">grad_state_qp</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+        <span class="k">return</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">grads</span><span class="p">)</span>
 </pre></div>
 
              </article>
