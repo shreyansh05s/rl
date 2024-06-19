@@ -448,6 +448,8 @@ It is locked and should not be modified directly.</p></li>
 all the output keys (<code class="xref py py-obj docutils literal notranslate"><span class="pre">&quot;full_observation_spec&quot;</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">&quot;full_reward_spec&quot;</span></code> and <code class="xref py py-obj docutils literal notranslate"><span class="pre">&quot;full_done_spec&quot;</span></code>).
 It is locked and should not be modified directly.</p></li>
 </ul>
+<p>If the environment carries non-tensor data, a <a class="reference internal" href="generated/torchrl.data.NonTensorSpec.html#torchrl.data.NonTensorSpec" title="torchrl.data.NonTensorSpec"><code class="xref py py-class docutils literal notranslate"><span class="pre">NonTensorSpec</span></code></a>
+instance can be used.</p>
 <p>Importantly, the environment spec shapes should contain the batch size, e.g.
 an environment with <code class="xref py py-obj docutils literal notranslate"><span class="pre">env.batch_size</span> <span class="pre">==</span> <span class="pre">torch.Size([4])</span></code> should have
 an <code class="xref py py-obj docutils literal notranslate"><span class="pre">env.action_spec</span></code> with shape <code class="xref py py-obj docutils literal notranslate"><span class="pre">torch.Size([4,</span> <span class="pre">action_size])</span></code>.

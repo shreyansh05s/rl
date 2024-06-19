@@ -491,7 +491,7 @@ This class can be safely used with offline RL sota-implementations.</p>
 instance of <a class="reference internal" href="torchrl.envs.EnvBase.html#torchrl.envs.EnvBase" title="torchrl.envs.EnvBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">EnvBase</span></code></a>.</p></li>
 <li><p><strong>policy</strong> (<em>Callable</em>) – <p>Policy to be executed in the environment.
 Must accept <code class="xref py py-class docutils literal notranslate"><span class="pre">tensordict.tensordict.TensorDictBase</span></code> object as input.
-If <code class="docutils literal notranslate"><span class="pre">None</span></code> is provided, the policy used will be a
+If <code class="docutils literal notranslate"><span class="pre">None</span></code> is provided (default), the policy used will be a
 <code class="xref py py-class docutils literal notranslate"><span class="pre">RandomPolicy</span></code> instance with the environment
 <code class="docutils literal notranslate"><span class="pre">action_spec</span></code>.
 Accepted policies are usually subclasses of <code class="xref py py-class docutils literal notranslate"><span class="pre">TensorDictModuleBase</span></code>.
