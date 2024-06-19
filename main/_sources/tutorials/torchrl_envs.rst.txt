@@ -216,7 +216,7 @@ uniformly distributed) numbers in that space:
  .. code-block:: none
 
     random action: 
-     tensor([0.7312])
+     tensor([1.4781])
 
 
 
@@ -709,7 +709,7 @@ argument that allows the user to quickly ask for image-based environments:
  .. code-block:: none
 
 
-    <matplotlib.image.AxesImage object at 0x7fc1538afb80>
+    <matplotlib.image.AxesImage object at 0x7f8ef6ace4f0>
 
 
 
@@ -797,13 +797,13 @@ Some environments only come in image-based format
         env = GymEnv("ALE/Pong-v5")
       File "/pytorch/rl/torchrl/envs/libs/gym.py", line 572, in __call__
         instance: GymWrapper = super().__call__(*args, **kwargs)
-      File "/pytorch/rl/torchrl/envs/common.py", line 176, in __call__
+      File "/pytorch/rl/torchrl/envs/common.py", line 177, in __call__
         instance: EnvBase = super().__call__(*args, **kwargs)
       File "/pytorch/rl/torchrl/envs/libs/gym.py", line 1372, in __init__
         super().__init__(**kwargs)
       File "/pytorch/rl/torchrl/envs/libs/gym.py", line 785, in __init__
         super().__init__(**kwargs)
-      File "/pytorch/rl/torchrl/envs/common.py", line 3057, in __init__
+      File "/pytorch/rl/torchrl/envs/common.py", line 3058, in __init__
         self._env = self._build_env(**kwargs)  # writes the self._env attribute
       File "/pytorch/rl/torchrl/envs/libs/gym.py", line 1424, in _build_env
         env = self.lib.make(env_name, **kwargs)
@@ -1441,9 +1441,9 @@ This small difference will usually be absored throughout training.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (1 minutes 41.886 seconds)
+   **Total running time of the script:** (1 minutes 34.101 seconds)
 
-**Estimated memory usage:**  4285 MB
+**Estimated memory usage:**  2537 MB
 
 
 .. _sphx_glr_download_tutorials_torchrl_envs.py:
