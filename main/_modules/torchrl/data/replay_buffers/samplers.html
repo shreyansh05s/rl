@@ -877,6 +877,15 @@
             <span class="n">index</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
         <span class="n">index</span><span class="o">.</span><span class="n">clamp_max_</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">storage</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
         <span class="n">weight</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">as_tensor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sum_tree</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
+        <span class="c1"># get indices where weight is 0</span>
+        <span class="n">zero_weight</span> <span class="o">=</span> <span class="n">weight</span> <span class="o">==</span> <span class="mi">0</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">index</span>
+        <span class="k">while</span> <span class="n">zero_weight</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">zero_weight</span><span class="p">,</span> <span class="n">index</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">index</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Failed to find a suitable index&quot;</span><span class="p">)</span>
+            <span class="n">zero_weight</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">as_tensor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sum_tree</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
+            <span class="n">zero_weight</span> <span class="o">=</span> <span class="n">weight</span> <span class="o">==</span> <span class="mi">0</span>
 
         <span class="c1"># Importance sampling weight formula:</span>
         <span class="c1">#   w_i = (p_i / sum(p) * N) ^ (-beta)</span>
