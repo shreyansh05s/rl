@@ -518,9 +518,9 @@ See <a class="reference internal" href="torchrl.collectors.utils.split_trajector
 information.
 Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
 <li><p><strong>exploration_type</strong> (<em>ExplorationType</em><em>, </em><em>optional</em>) – interaction mode to be used when
-collecting data. Must be one of <code class="docutils literal notranslate"><span class="pre">torchrl.envs.utils.ExplorationType.RANDOM</span></code>,
-<code class="docutils literal notranslate"><span class="pre">torchrl.envs.utils.ExplorationType.MODE</span></code> or <code class="docutils literal notranslate"><span class="pre">torchrl.envs.utils.ExplorationType.MEAN</span></code>.
-Defaults to <code class="docutils literal notranslate"><span class="pre">torchrl.envs.utils.ExplorationType.RANDOM</span></code>.</p></li>
+collecting data. Must be one of <code class="docutils literal notranslate"><span class="pre">torchrl.envs.utils.ExplorationType.DETERMINISTIC</span></code>,
+<code class="docutils literal notranslate"><span class="pre">torchrl.envs.utils.ExplorationType.RANDOM</span></code>, <code class="docutils literal notranslate"><span class="pre">torchrl.envs.utils.ExplorationType.MODE</span></code>
+or <code class="docutils literal notranslate"><span class="pre">torchrl.envs.utils.ExplorationType.MEAN</span></code>.</p></li>
 <li><p><strong>collector_class</strong> (<a class="reference internal" href="torchrl.data.MultiStep.html#torchrl.data.MultiStep.type" title="torchrl.data.MultiStep.type"><em>type</em></a><em> or </em><em>str</em><em>, </em><em>optional</em>) – a collector class for the remote node. Can be
 <a class="reference internal" href="torchrl.collectors.SyncDataCollector.html#torchrl.collectors.SyncDataCollector" title="torchrl.collectors.SyncDataCollector"><code class="xref py py-class docutils literal notranslate"><span class="pre">SyncDataCollector</span></code></a>,
 <a class="reference internal" href="torchrl.collectors.MultiSyncDataCollector.html#torchrl.collectors.MultiSyncDataCollector" title="torchrl.collectors.MultiSyncDataCollector"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiSyncDataCollector</span></code></a>,

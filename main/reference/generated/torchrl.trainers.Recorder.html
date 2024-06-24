@@ -436,13 +436,13 @@ instance used for</p>
 <p>Given that this instance is supposed to both explore and render
 the performance of the policy, it should be possible to turn off
 the explorative behaviour by calling the
-<cite>set_exploration_type(ExplorationType.MODE)</cite> context manager.</p>
+<cite>set_exploration_type(ExplorationType.DETERMINISTIC)</cite> context manager.</p>
 </p></li>
 <li><p><strong>environment</strong> (<a class="reference internal" href="torchrl.envs.EnvBase.html#torchrl.envs.EnvBase" title="torchrl.envs.EnvBase"><em>EnvBase</em></a>) – An environment instance to be used
 for testing.</p></li>
 <li><p><strong>exploration_type</strong> (<em>ExplorationType</em><em>, </em><em>optional</em>) – exploration mode to use for the
 policy. By default, no exploration is used and the value used is
-ExplorationType.MODE. Set to ExplorationType.RANDOM to enable exploration</p></li>
+<code class="docutils literal notranslate"><span class="pre">ExplorationType.DETERMINISTIC</span></code>. Set to <code class="docutils literal notranslate"><span class="pre">ExplorationType.RANDOM</span></code> to enable exploration</p></li>
 <li><p><strong>log_keys</strong> (<em>sequence of str</em><em> or </em><em>tuples</em><em> or </em><em>str</em><em>, </em><em>optional</em>) – keys to read in the tensordict
 for logging. Defaults to <code class="docutils literal notranslate"><span class="pre">[(&quot;next&quot;,</span> <span class="pre">&quot;reward&quot;)]</span></code>.</p></li>
 <li><p><strong>out_keys</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>str</em><em>]</em><em>, </em><em>optional</em>) – a dictionary mapping the <code class="docutils literal notranslate"><span class="pre">log_keys</span></code>

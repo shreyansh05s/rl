@@ -430,7 +430,7 @@ The value estimator can be changed using the <a class="reference internal" href=
 </dd>
 </dl>
 <p>By default, the forward method is always decorated with a
-gh <code class="xref py py-class docutils literal notranslate"><span class="pre">torchrl.envs.ExplorationType.MODE</span></code></p>
+gh <code class="xref py py-class docutils literal notranslate"><span class="pre">torchrl.envs.ExplorationType.MEAN</span></code></p>
 <p>To utilize the ability configuring the tensordict keys via
 <a class="reference internal" href="#torchrl.objectives.LossModule.set_keys" title="torchrl.objectives.LossModule.set_keys"><code class="xref py py-meth docutils literal notranslate"><span class="pre">set_keys()</span></code></a> a subclass must define an _AcceptedKeys dataclass.
 This dataclass should include all keys that are intended to be configurable.
@@ -449,6 +449,16 @@ forwarding any altered tensordict keys to the underlying value_estimator.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">loss</span> <span class="o">=</span> <span class="n">MyLoss</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">loss</span><span class="o">.</span><span class="n">set_keys</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="s2">&quot;action2&quot;</span><span class="p">)</span>
 </pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When a policy that is wrapped or augmented with an exploration module is passed
+to the loss, we want to deactivate the exploration through <code class="docutils literal notranslate"><span class="pre">set_exploration_mode(&lt;mode&gt;)</span></code> where
+<code class="docutils literal notranslate"><span class="pre">&lt;mode&gt;</span></code> is either <code class="docutils literal notranslate"><span class="pre">ExplorationType.MEAN</span></code>, <code class="docutils literal notranslate"><span class="pre">ExplorationType.MODE</span></code> or
+<code class="docutils literal notranslate"><span class="pre">ExplorationType.DETERMINISTIC</span></code>. The default value is <code class="docutils literal notranslate"><span class="pre">DETERMINISTIC</span></code> and it is set
+through the <code class="docutils literal notranslate"><span class="pre">deterministic_sampling_mode</span></code> loss attribute. If another
+exploration mode is required (or if <code class="docutils literal notranslate"><span class="pre">DETERMINISTIC</span></code> is not available), one can
+change the value of this attribute which will change the mode.</p>
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="torchrl.objectives.LossModule.convert_to_functional">

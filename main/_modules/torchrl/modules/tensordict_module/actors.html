@@ -558,10 +558,12 @@
 <span class="sd">            method. Default is ``False``.</span>
 <span class="sd">        default_interaction_type (str, optional): keyword-only argument.</span>
 <span class="sd">            Default method to be used to retrieve</span>
-<span class="sd">            the output value. Should be one of: &#39;InteractionType.MODE&#39;,</span>
+<span class="sd">            the output value. Should be one of: &#39;InteractionType.MODE&#39;, &#39;InteractionType.DETERMINISTIC&#39;,</span>
 <span class="sd">            &#39;InteractionType.MEDIAN&#39;, &#39;InteractionType.MEAN&#39; or</span>
 <span class="sd">            &#39;InteractionType.RANDOM&#39; (in which case the value is sampled</span>
-<span class="sd">            randomly from the distribution). Defaults to is &#39;InteractionType.MODE&#39;.</span>
+<span class="sd">            randomly from the distribution).</span>
+<span class="sd">            TorchRL&#39;s ``ExplorationType`` class is a proxy to ``InteractionType``.</span>
+<span class="sd">            Defaults to is &#39;InteractionType.DETERMINISTIC&#39;.</span>
 
 <span class="sd">            .. note:: When a sample is drawn, the :class:`ProbabilisticActor` instance will</span>
 <span class="sd">              first look for the interaction mode dictated by the</span>

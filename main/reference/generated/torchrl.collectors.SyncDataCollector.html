@@ -515,9 +515,9 @@ See <a class="reference internal" href="torchrl.collectors.utils.split_trajector
 information.
 Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
 <li><p><strong>exploration_type</strong> (<em>ExplorationType</em><em>, </em><em>optional</em>) – interaction mode to be used when
-collecting data. Must be one of <code class="docutils literal notranslate"><span class="pre">torchrl.envs.utils.ExplorationType.RANDOM</span></code>,
-<code class="docutils literal notranslate"><span class="pre">torchrl.envs.utils.ExplorationType.MODE</span></code> or <code class="docutils literal notranslate"><span class="pre">torchrl.envs.utils.ExplorationType.MEAN</span></code>.
-Defaults to <code class="docutils literal notranslate"><span class="pre">torchrl.envs.utils.ExplorationType.RANDOM</span></code>.</p></li>
+collecting data. Must be one of <code class="docutils literal notranslate"><span class="pre">torchrl.envs.utils.ExplorationType.DETERMINISTIC</span></code>,
+<code class="docutils literal notranslate"><span class="pre">torchrl.envs.utils.ExplorationType.RANDOM</span></code>, <code class="docutils literal notranslate"><span class="pre">torchrl.envs.utils.ExplorationType.MODE</span></code>
+or <code class="docutils literal notranslate"><span class="pre">torchrl.envs.utils.ExplorationType.MEAN</span></code>.</p></li>
 <li><p><strong>return_same_td</strong> (<em>bool</em><em>, </em><em>optional</em>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code>, the same TensorDict
 will be returned at each iteration, with its values
 updated. This feature should be used cautiously: if the same

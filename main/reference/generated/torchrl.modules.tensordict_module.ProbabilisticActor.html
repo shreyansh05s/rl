@@ -443,10 +443,12 @@ desired space using the <code class="xref py py-obj docutils literal notranslate
 method. Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
 <li><p><strong>default_interaction_type</strong> (<em>str</em><em>, </em><em>optional</em>) – <p>keyword-only argument.
 Default method to be used to retrieve
-the output value. Should be one of: ‘InteractionType.MODE’,
+the output value. Should be one of: ‘InteractionType.MODE’, ‘InteractionType.DETERMINISTIC’,
 ‘InteractionType.MEDIAN’, ‘InteractionType.MEAN’ or
 ‘InteractionType.RANDOM’ (in which case the value is sampled
-randomly from the distribution). Defaults to is ‘InteractionType.MODE’.</p>
+randomly from the distribution).
+TorchRL’s <code class="docutils literal notranslate"><span class="pre">ExplorationType</span></code> class is a proxy to <code class="docutils literal notranslate"><span class="pre">InteractionType</span></code>.
+Defaults to is ‘InteractionType.DETERMINISTIC’.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>When a sample is drawn, the <a class="reference internal" href="#torchrl.modules.tensordict_module.ProbabilisticActor" title="torchrl.modules.tensordict_module.ProbabilisticActor"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProbabilisticActor</span></code></a> instance will
