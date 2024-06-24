@@ -638,7 +638,7 @@ Here are examples of using a replaybuffer with tensordicts.
  .. code-block:: none
 
 
-    tensor([0, 0])
+    tensor([0, 1])
 
 
 
@@ -668,8 +668,8 @@ Here are examples of using a replaybuffer with tensordicts.
 
  .. code-block:: none
 
-    0 0.28791671991348267
-    1 1.0
+    0 0.06984967738389969
+    1 0.28791671991348267
     2 0.0
 
 
@@ -1558,9 +1558,9 @@ Specialized Classes
     Traceback (most recent call last):
       File "/pytorch/rl/docs/source/reference/generated/tutorials/torchrl_demo.py", line 622, in <module>
         td_module(td)
-      File "/pytorch/rl/env/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1657, in _wrapped_call_impl
+      File "/pytorch/rl/env/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1566, in _wrapped_call_impl
         return self._call_impl(*args, **kwargs)
-      File "/pytorch/rl/env/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1675, in _call_impl
+      File "/pytorch/rl/env/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1575, in _call_impl
         return forward_call(*args, **kwargs)
       File "/pytorch/rl/env/lib/python3.8/site-packages/tensordict/nn/common.py", line 289, in wrapper
         return func(_self, tensordict, *args, **kwargs)
@@ -1570,9 +1570,9 @@ Specialized Classes
         return func(_self, tensordict, *args, **kwargs)
       File "/pytorch/rl/env/lib/python3.8/site-packages/tensordict/nn/probabilistic.py", line 640, in forward
         return self.module[-1](tensordict_out, _requires_sample=self._requires_sample)
-      File "/pytorch/rl/env/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1657, in _wrapped_call_impl
+      File "/pytorch/rl/env/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1566, in _wrapped_call_impl
         return self._call_impl(*args, **kwargs)
-      File "/pytorch/rl/env/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1675, in _call_impl
+      File "/pytorch/rl/env/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1575, in _call_impl
         return forward_call(*args, **kwargs)
       File "/pytorch/rl/env/lib/python3.8/site-packages/tensordict/nn/common.py", line 289, in wrapper
         return func(_self, tensordict, *args, **kwargs)
@@ -1918,9 +1918,9 @@ The library is on PyPI: *pip install torchrl*
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (3 minutes 23.220 seconds)
+   **Total running time of the script:** (3 minutes 32.562 seconds)
 
-**Estimated memory usage:**  2691 MB
+**Estimated memory usage:**  4442 MB
 
 
 .. _sphx_glr_download_tutorials_torchrl_demo.py:
