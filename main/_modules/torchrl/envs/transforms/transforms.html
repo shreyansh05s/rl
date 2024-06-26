@@ -2856,6 +2856,9 @@
 
 <span class="sd">            as it is done for standardization. Default is `False`.</span>
 
+<span class="sd">        eps (float, optional): epsilon increment for the scale in the ``standard_normal`` case.</span>
+<span class="sd">            Defaults to ``1e-6`` if not recoverable directly from the scale dtype.</span>
+
 <span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; torch.set_default_tensor_type(torch.DoubleTensor)</span>
 <span class="sd">        &gt;&gt;&gt; r = torch.randn(100, 3)*torch.randn(3) + torch.randn(3)</span>
@@ -2897,6 +2900,7 @@
         <span class="n">in_keys_inv</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">NestedKey</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">out_keys_inv</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">NestedKey</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">standard_normal</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">eps</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="k">if</span> <span class="n">in_keys</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
@@ -2919,7 +2923,13 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">standard_normal</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
             <span class="n">standard_normal</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">as_tensor</span><span class="p">(</span><span class="n">standard_normal</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">&quot;standard_normal&quot;</span><span class="p">,</span> <span class="n">standard_normal</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">eps</span> <span class="o">=</span> <span class="mf">1e-6</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eps</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">eps</span>
+            <span class="k">if</span> <span class="n">eps</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="n">torch</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">scale</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">scale</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="ow">and</span> <span class="n">scale</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">is_floating_point</span>
+            <span class="k">else</span> <span class="mf">1e-6</span>
+        <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">loc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">loc</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
             <span class="n">loc</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">loc</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">get_default_dtype</span><span class="p">())</span>
@@ -5217,7 +5227,10 @@
 <span class="sd">    processes that share the same reference.</span>
 
 <span class="sd">    To use VecNorm at inference time and avoid updating the values with the new</span>
-<span class="sd">    observations, one should substitute this layer by `vecnorm.to_observation_norm()`.</span>
+<span class="sd">    observations, one should substitute this layer by :meth:`~.to_observation_norm`.</span>
+<span class="sd">    This will provide a static version of `VecNorm` which will not be updated</span>
+<span class="sd">    when the source transform is updated.</span>
+<span class="sd">    To get a frozen copy of the VecNorm layer, see :meth:`~.frozen_copy`.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        in_keys (sequence of NestedKey, optional): keys to be updated.</span>
@@ -5299,6 +5312,35 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">decay</span> <span class="o">=</span> <span class="n">decay</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">shapes</span> <span class="o">=</span> <span class="n">shapes</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">eps</span> <span class="o">=</span> <span class="n">eps</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frozen</span> <span class="o">=</span> <span class="kc">False</span>
+
+<div class="viewcode-block" id="VecNorm.freeze"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.VecNorm.html#torchrl.envs.transforms.VecNorm.freeze">[docs]</a>    <span class="k">def</span> <span class="nf">freeze</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">VecNorm</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Freezes the VecNorm, avoiding the stats to be updated when called.</span>
+
+<span class="sd">        See :meth:`~.unfreeze`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frozen</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="VecNorm.unfreeze"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.VecNorm.html#torchrl.envs.transforms.VecNorm.unfreeze">[docs]</a>    <span class="k">def</span> <span class="nf">unfreeze</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">VecNorm</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Unfreezes the VecNorm.</span>
+
+<span class="sd">        See :meth:`~.freeze`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frozen</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="VecNorm.frozen_copy"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.VecNorm.html#torchrl.envs.transforms.VecNorm.frozen_copy">[docs]</a>    <span class="k">def</span> <span class="nf">frozen_copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a copy of the Transform that keeps track of the stats but does not update them.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_td</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="s2">&quot;Make sure the VecNorm has been initialized before creating a frozen copy.&quot;</span>
+            <span class="p">)</span>
+        <span class="n">clone</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
+        <span class="c1"># replace values</span>
+        <span class="n">clone</span><span class="o">.</span><span class="n">_td</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_td</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="c1"># freeze</span>
+        <span class="k">return</span> <span class="n">clone</span><span class="o">.</span><span class="n">freeze</span><span class="p">()</span></div>
 
     <span class="k">def</span> <span class="nf">_reset</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">,</span> <span class="n">tensordict_reset</span><span class="p">:</span> <span class="n">TensorDictBase</span>
@@ -5382,52 +5424,78 @@
             <span class="k">pass</span>
 
     <span class="k">def</span> <span class="nf">_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="c1"># TODO: we should revert this and have _td be like: TensorDict{&quot;sum&quot;: ..., &quot;ssq&quot;: ..., &quot;count&quot;...})</span>
+        <span class="c1">#  to facilitate the computation of the stats using TD internals.</span>
+        <span class="c1">#  Moreover, _td can be locked so these ops will be very fast on CUDA.</span>
         <span class="n">_sum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_td</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">_append_last</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s2">&quot;_sum&quot;</span><span class="p">))</span>
         <span class="n">_ssq</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_td</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">_append_last</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s2">&quot;_ssq&quot;</span><span class="p">))</span>
         <span class="n">_count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_td</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">_append_last</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s2">&quot;_count&quot;</span><span class="p">))</span>
 
         <span class="n">value_sum</span> <span class="o">=</span> <span class="n">_sum_left</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">_sum</span><span class="p">)</span>
-        <span class="n">_sum</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">decay</span>
-        <span class="n">_sum</span> <span class="o">+=</span> <span class="n">value_sum</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_td</span><span class="o">.</span><span class="n">set_</span><span class="p">(</span>
-            <span class="n">_append_last</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s2">&quot;_sum&quot;</span><span class="p">),</span>
-            <span class="n">_sum</span><span class="p">,</span>
-        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">frozen</span><span class="p">:</span>
+            <span class="n">_sum</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">decay</span>
+            <span class="n">_sum</span> <span class="o">+=</span> <span class="n">value_sum</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_td</span><span class="o">.</span><span class="n">set_</span><span class="p">(</span>
+                <span class="n">_append_last</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s2">&quot;_sum&quot;</span><span class="p">),</span>
+                <span class="n">_sum</span><span class="p">,</span>
+            <span class="p">)</span>
 
         <span class="n">_ssq</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_td</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">_append_last</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s2">&quot;_ssq&quot;</span><span class="p">))</span>
         <span class="n">value_ssq</span> <span class="o">=</span> <span class="n">_sum_left</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">_ssq</span><span class="p">)</span>
-        <span class="n">_ssq</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">decay</span>
-        <span class="n">_ssq</span> <span class="o">+=</span> <span class="n">value_ssq</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_td</span><span class="o">.</span><span class="n">set_</span><span class="p">(</span>
-            <span class="n">_append_last</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s2">&quot;_ssq&quot;</span><span class="p">),</span>
-            <span class="n">_ssq</span><span class="p">,</span>
-        <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">frozen</span><span class="p">:</span>
+            <span class="n">_ssq</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">decay</span>
+            <span class="n">_ssq</span> <span class="o">+=</span> <span class="n">value_ssq</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_td</span><span class="o">.</span><span class="n">set_</span><span class="p">(</span>
+                <span class="n">_append_last</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s2">&quot;_ssq&quot;</span><span class="p">),</span>
+                <span class="n">_ssq</span><span class="p">,</span>
+            <span class="p">)</span>
 
         <span class="n">_count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_td</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">_append_last</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s2">&quot;_count&quot;</span><span class="p">))</span>
-        <span class="n">_count</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">decay</span>
-        <span class="n">_count</span> <span class="o">+=</span> <span class="n">N</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_td</span><span class="o">.</span><span class="n">set_</span><span class="p">(</span>
-            <span class="n">_append_last</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s2">&quot;_count&quot;</span><span class="p">),</span>
-            <span class="n">_count</span><span class="p">,</span>
-        <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">frozen</span><span class="p">:</span>
+            <span class="n">_count</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">decay</span>
+            <span class="n">_count</span> <span class="o">+=</span> <span class="n">N</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_td</span><span class="o">.</span><span class="n">set_</span><span class="p">(</span>
+                <span class="n">_append_last</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s2">&quot;_count&quot;</span><span class="p">),</span>
+                <span class="n">_count</span><span class="p">,</span>
+            <span class="p">)</span>
 
         <span class="n">mean</span> <span class="o">=</span> <span class="n">_sum</span> <span class="o">/</span> <span class="n">_count</span>
         <span class="n">std</span> <span class="o">=</span> <span class="p">(</span><span class="n">_ssq</span> <span class="o">/</span> <span class="n">_count</span> <span class="o">-</span> <span class="n">mean</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span><span class="o">.</span><span class="n">clamp_min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">eps</span><span class="p">)</span><span class="o">.</span><span class="n">sqrt</span><span class="p">()</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">value</span> <span class="o">-</span> <span class="n">mean</span><span class="p">)</span> <span class="o">/</span> <span class="n">std</span><span class="o">.</span><span class="n">clamp_min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">eps</span><span class="p">)</span>
 
 <div class="viewcode-block" id="VecNorm.to_observation_norm"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.VecNorm.html#torchrl.envs.transforms.VecNorm.to_observation_norm">[docs]</a>    <span class="k">def</span> <span class="nf">to_observation_norm</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Compose</span><span class="p">,</span> <span class="n">ObservationNorm</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Converts VecNorm into an ObservationNorm class that can be used at inference time.&quot;&quot;&quot;</span>
-        <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">key_out</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">in_keys</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_keys</span><span class="p">):</span>
-            <span class="n">_sum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_td</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">_append_last</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s2">&quot;_sum&quot;</span><span class="p">))</span>
-            <span class="n">_ssq</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_td</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">_append_last</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s2">&quot;_ssq&quot;</span><span class="p">))</span>
-            <span class="n">_count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_td</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">_append_last</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s2">&quot;_count&quot;</span><span class="p">))</span>
-            <span class="n">mean</span> <span class="o">=</span> <span class="n">_sum</span> <span class="o">/</span> <span class="n">_count</span>
-            <span class="n">std</span> <span class="o">=</span> <span class="p">(</span><span class="n">_ssq</span> <span class="o">/</span> <span class="n">_count</span> <span class="o">-</span> <span class="n">mean</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span><span class="o">.</span><span class="n">clamp_min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">eps</span><span class="p">)</span><span class="o">.</span><span class="n">sqrt</span><span class="p">()</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Converts VecNorm into an ObservationNorm class that can be used at inference time.</span>
 
+<span class="sd">        The :class:`~torchrl.envs.ObservationNorm` layer can be updated using the :meth:`~torch.nn.Module.state_dict`</span>
+<span class="sd">        API.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; from torchrl.envs import GymEnv, VecNorm</span>
+<span class="sd">            &gt;&gt;&gt; vecnorm = VecNorm(in_keys=[&quot;observation&quot;])</span>
+<span class="sd">            &gt;&gt;&gt; train_env = GymEnv(&quot;CartPole-v1&quot;, device=None).append_transform(</span>
+<span class="sd">            ...     vecnorm)</span>
+<span class="sd">            &gt;&gt;&gt;</span>
+<span class="sd">            &gt;&gt;&gt; r = train_env.rollout(4)</span>
+<span class="sd">            &gt;&gt;&gt;</span>
+<span class="sd">            &gt;&gt;&gt; eval_env = GymEnv(&quot;CartPole-v1&quot;).append_transform(</span>
+<span class="sd">            ...     vecnorm.to_observation_norm())</span>
+<span class="sd">            &gt;&gt;&gt; print(eval_env.transform.loc, eval_env.transform.scale)</span>
+<span class="sd">            &gt;&gt;&gt;</span>
+<span class="sd">            &gt;&gt;&gt; r = train_env.rollout(4)</span>
+<span class="sd">            &gt;&gt;&gt; # Update entries with state_dict</span>
+<span class="sd">            &gt;&gt;&gt; eval_env.transform.load_state_dict(</span>
+<span class="sd">            ...     vecnorm.to_observation_norm().state_dict())</span>
+<span class="sd">            &gt;&gt;&gt; print(eval_env.transform.loc, eval_env.transform.scale)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">loc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">loc</span>
+        <span class="n">scale</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">key_out</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">in_keys</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_keys</span><span class="p">):</span>
             <span class="n">_out</span> <span class="o">=</span> <span class="n">ObservationNorm</span><span class="p">(</span>
-                <span class="n">loc</span><span class="o">=</span><span class="n">mean</span><span class="p">,</span>
-                <span class="n">scale</span><span class="o">=</span><span class="n">std</span><span class="p">,</span>
+                <span class="n">loc</span><span class="o">=</span><span class="n">loc</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">),</span>
+                <span class="n">scale</span><span class="o">=</span><span class="n">scale</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">),</span>
                 <span class="n">standard_normal</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                 <span class="n">in_keys</span><span class="o">=</span><span class="n">key</span><span class="p">,</span>
                 <span class="n">out_keys</span><span class="o">=</span><span class="n">key_out</span><span class="p">,</span>
@@ -5436,6 +5504,49 @@
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">in_keys</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">Compose</span><span class="p">(</span><span class="o">*</span><span class="n">out</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">_out</span></div>
+
+    <span class="k">def</span> <span class="nf">_get_loc_scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loc_only</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">scale_only</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="n">loc</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">scale</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_keys</span><span class="p">:</span>
+            <span class="n">_sum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_td</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">_append_last</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s2">&quot;_sum&quot;</span><span class="p">))</span>
+            <span class="n">_ssq</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_td</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">_append_last</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s2">&quot;_ssq&quot;</span><span class="p">))</span>
+            <span class="n">_count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_td</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">_append_last</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s2">&quot;_count&quot;</span><span class="p">))</span>
+            <span class="n">loc</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">_sum</span> <span class="o">/</span> <span class="n">_count</span>
+            <span class="n">scale</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">_ssq</span> <span class="o">/</span> <span class="n">_count</span> <span class="o">-</span> <span class="n">loc</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span><span class="o">.</span><span class="n">clamp_min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">eps</span><span class="p">)</span><span class="o">.</span><span class="n">sqrt</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">scale_only</span><span class="p">:</span>
+            <span class="n">loc</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="p">(</span><span class="n">loc</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">loc</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">loc_only</span><span class="p">:</span>
+            <span class="n">scale</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="p">(</span><span class="n">scale</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">scale</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">loc</span><span class="p">,</span> <span class="n">scale</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">standard_normal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Whether the affine transform given by `loc` and `scale` follows the standard normal equation.</span>
+
+<span class="sd">        Similar to :class:`~torchrl.envs.ObservationNorm` standard_normal attribute.</span>
+
+<span class="sd">        Always returns ``True``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">loc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a TensorDict with the loc to be used for an affine transform.&quot;&quot;&quot;</span>
+        <span class="c1"># We can&#39;t cache that value bc the summary stats could be updated by a different process</span>
+        <span class="n">loc</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_loc_scale</span><span class="p">(</span><span class="n">loc_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">loc</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">scale</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a TensorDict with the scale to be used for an affine transform.&quot;&quot;&quot;</span>
+        <span class="c1"># We can&#39;t cache that value bc the summary stats could be updated by a different process</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">scale</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_loc_scale</span><span class="p">(</span><span class="n">scale_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">scale</span>
 
 <div class="viewcode-block" id="VecNorm.build_td_for_shared_vecnorm"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.VecNorm.html#torchrl.envs.transforms.VecNorm.build_td_for_shared_vecnorm">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">build_td_for_shared_vecnorm</span><span class="p">(</span>

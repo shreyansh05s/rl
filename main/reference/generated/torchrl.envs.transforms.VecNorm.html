@@ -422,7 +422,10 @@ TensorDictBase instance that is placed in shared memory: if so, every time
 the normalization layer is queried it will update the values for all
 processes that share the same reference.</p>
 <p>To use VecNorm at inference time and avoid updating the values with the new
-observations, one should substitute this layer by <cite>vecnorm.to_observation_norm()</cite>.</p>
+observations, one should substitute this layer by <a class="reference internal" href="#torchrl.envs.transforms.VecNorm.to_observation_norm" title="torchrl.envs.transforms.VecNorm.to_observation_norm"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_observation_norm()</span></code></a>.
+This will provide a static version of <cite>VecNorm</cite> which will not be updated
+when the source transform is updated.
+To get a frozen copy of the VecNorm layer, see <a class="reference internal" href="#torchrl.envs.transforms.VecNorm.frozen_copy" title="torchrl.envs.transforms.VecNorm.frozen_copy"><code class="xref py py-meth docutils literal notranslate"><span class="pre">frozen_copy()</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -508,6 +511,19 @@ will be placed in shared memory.</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="torchrl.envs.transforms.VecNorm.freeze">
+<span class="sig-name descname"><span class="pre">freeze</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#torchrl.envs.transforms.VecNorm" title="torchrl.envs.transforms.transforms.VecNorm"><span class="pre">VecNorm</span></a></span></span><a class="reference internal" href="../../_modules/torchrl/envs/transforms/transforms.html#VecNorm.freeze"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.envs.transforms.VecNorm.freeze" title="Permalink to this definition">¶</a></dt>
+<dd><p>Freezes the VecNorm, avoiding the stats to be updated when called.</p>
+<p>See <a class="reference internal" href="#torchrl.envs.transforms.VecNorm.unfreeze" title="torchrl.envs.transforms.VecNorm.unfreeze"><code class="xref py py-meth docutils literal notranslate"><span class="pre">unfreeze()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="torchrl.envs.transforms.VecNorm.frozen_copy">
+<span class="sig-name descname"><span class="pre">frozen_copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/torchrl/envs/transforms/transforms.html#VecNorm.frozen_copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.envs.transforms.VecNorm.frozen_copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a copy of the Transform that keeps track of the stats but does not update them.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="torchrl.envs.transforms.VecNorm.get_extra_state">
 <span class="sig-name descname"><span class="pre">get_extra_state</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">OrderedDict</span></span></span><a class="reference internal" href="../../_modules/torchrl/envs/transforms/transforms.html#VecNorm.get_extra_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.envs.transforms.VecNorm.get_extra_state" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return any extra state to include in the module’s state_dict.</p>
@@ -528,6 +544,18 @@ their serialized pickled form changes.</p>
 </dl>
 </dd></dl>
 
+<dl class="py property">
+<dt class="sig sig-object py" id="torchrl.envs.transforms.VecNorm.loc">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">loc</span></span><a class="headerlink" href="#torchrl.envs.transforms.VecNorm.loc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a TensorDict with the loc to be used for an affine transform.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="torchrl.envs.transforms.VecNorm.scale">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">scale</span></span><a class="headerlink" href="#torchrl.envs.transforms.VecNorm.scale" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a TensorDict with the scale to be used for an affine transform.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="torchrl.envs.transforms.VecNorm.set_extra_state">
 <span class="sig-name descname"><span class="pre">set_extra_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">OrderedDict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/torchrl/envs/transforms/transforms.html#VecNorm.set_extra_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.envs.transforms.VecNorm.set_extra_state" title="Permalink to this definition">¶</a></dt>
@@ -543,10 +571,39 @@ found within the <cite>state_dict</cite>. Implement this function and a correspo
 </dl>
 </dd></dl>
 
+<dl class="py property">
+<dt class="sig sig-object py" id="torchrl.envs.transforms.VecNorm.standard_normal">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">standard_normal</span></span><a class="headerlink" href="#torchrl.envs.transforms.VecNorm.standard_normal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether the affine transform given by <cite>loc</cite> and <cite>scale</cite> follows the standard normal equation.</p>
+<p>Similar to <code class="xref py py-class docutils literal notranslate"><span class="pre">ObservationNorm</span></code> standard_normal attribute.</p>
+<p>Always returns <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="torchrl.envs.transforms.VecNorm.to_observation_norm">
 <span class="sig-name descname"><span class="pre">to_observation_norm</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="torchrl.envs.transforms.Compose.html#torchrl.envs.transforms.Compose" title="torchrl.envs.transforms.transforms.Compose"><span class="pre">Compose</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="torchrl.envs.transforms.ObservationNorm.html#torchrl.envs.transforms.ObservationNorm" title="torchrl.envs.transforms.transforms.ObservationNorm"><span class="pre">ObservationNorm</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/torchrl/envs/transforms/transforms.html#VecNorm.to_observation_norm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.envs.transforms.VecNorm.to_observation_norm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts VecNorm into an ObservationNorm class that can be used at inference time.</p>
+<p>The <code class="xref py py-class docutils literal notranslate"><span class="pre">ObservationNorm</span></code> layer can be updated using the <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module.state_dict" title="(in PyTorch v2.3)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">state_dict()</span></code></a>
+API.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.envs</span> <span class="kn">import</span> <span class="n">GymEnv</span><span class="p">,</span> <span class="n">VecNorm</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">vecnorm</span> <span class="o">=</span> <span class="n">VecNorm</span><span class="p">(</span><span class="n">in_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;observation&quot;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">train_env</span> <span class="o">=</span> <span class="n">GymEnv</span><span class="p">(</span><span class="s2">&quot;CartPole-v1&quot;</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">append_transform</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">vecnorm</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">train_env</span><span class="o">.</span><span class="n">rollout</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">eval_env</span> <span class="o">=</span> <span class="n">GymEnv</span><span class="p">(</span><span class="s2">&quot;CartPole-v1&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">append_transform</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">vecnorm</span><span class="o">.</span><span class="n">to_observation_norm</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">eval_env</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">loc</span><span class="p">,</span> <span class="n">eval_env</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">scale</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">train_env</span><span class="o">.</span><span class="n">rollout</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Update entries with state_dict</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">eval_env</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">vecnorm</span><span class="o">.</span><span class="n">to_observation_norm</span><span class="p">()</span><span class="o">.</span><span class="n">state_dict</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">eval_env</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">loc</span><span class="p">,</span> <span class="n">eval_env</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">scale</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -561,6 +618,13 @@ found within the <cite>state_dict</cite>. Implement this function and a correspo
 <dd class="field-even"><p>expected spec after the transform</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="torchrl.envs.transforms.VecNorm.unfreeze">
+<span class="sig-name descname"><span class="pre">unfreeze</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#torchrl.envs.transforms.VecNorm" title="torchrl.envs.transforms.transforms.VecNorm"><span class="pre">VecNorm</span></a></span></span><a class="reference internal" href="../../_modules/torchrl/envs/transforms/transforms.html#VecNorm.unfreeze"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.envs.transforms.VecNorm.unfreeze" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unfreezes the VecNorm.</p>
+<p>See <a class="reference internal" href="#torchrl.envs.transforms.VecNorm.freeze" title="torchrl.envs.transforms.VecNorm.freeze"><code class="xref py py-meth docutils literal notranslate"><span class="pre">freeze()</span></code></a>.</p>
 </dd></dl>
 
 </dd></dl>
