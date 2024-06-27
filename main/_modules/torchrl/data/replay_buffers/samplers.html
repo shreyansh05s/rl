@@ -465,6 +465,9 @@
         <span class="o">*</span><span class="p">,</span>
         <span class="n">storage</span><span class="p">:</span> <span class="n">Storage</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Calling update_priority() on a sampler </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> that is not prioritized. Make sure this is the indented behaviour.&quot;</span>
+        <span class="p">)</span>
         <span class="k">return</span>
 
     <span class="k">def</span> <span class="nf">mark_update</span><span class="p">(</span>
