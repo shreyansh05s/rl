@@ -735,7 +735,8 @@ If <code class="docutils literal notranslate"><span class="pre">True</span></cod
 <li><p><strong>num_threads</strong> (<em>int</em><em>, </em><em>optional</em>) – the number of threads used to write the memmap
 tensors. Defaults to <cite>0</cite>.</p></li>
 <li><p><strong>return_early</strong> (<em>bool</em><em>, </em><em>optional</em>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code> and <code class="docutils literal notranslate"><span class="pre">num_threads&gt;0</span></code>,
-the method will return a future of the tensordict.</p></li>
+the method will return a future of the tensordict. The resulting
+tensordict can be queried using <cite>future.result()</cite>.</p></li>
 <li><p><strong>share_non_tensor</strong> (<em>bool</em><em>, </em><em>optional</em>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code>, the non-tensor data will be
 shared between the processes and writing operation (such as inplace update
 or set) on any of the workers within a single node will update the value

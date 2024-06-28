@@ -436,6 +436,7 @@
     <span class="n">prefix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">trajectory_key</span><span class="p">:</span> <span class="n">NestedKey</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">done_key</span><span class="p">:</span> <span class="n">NestedKey</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">as_nested</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A util function for trajectory separation.</span>
 
@@ -446,6 +447,8 @@
 <span class="sd">    Args:</span>
 <span class="sd">        rollout_tensordict (TensorDictBase): a rollout with adjacent trajectories</span>
 <span class="sd">            along the last dimension.</span>
+
+<span class="sd">    Keyword Args:</span>
 <span class="sd">        prefix (NestedKey, optional): the prefix used to read and write meta-data,</span>
 <span class="sd">            such as ``&quot;traj_ids&quot;`` (the optional integer id of each trajectory)</span>
 <span class="sd">            and the ``&quot;mask&quot;`` entry indicating which data are valid and which</span>
@@ -458,6 +461,19 @@
 <span class="sd">            to ``(prefix, &quot;traj_ids&quot;)``.</span>
 <span class="sd">        done_key (NestedKey, optional): the key pointing to the ``&quot;done&quot;&quot;`` signal,</span>
 <span class="sd">            if the trajectory could not be directly recovered. Defaults to ``&quot;done&quot;``.</span>
+<span class="sd">        as_nested (bool or torch.layout, optional): whether to return the results as nested</span>
+<span class="sd">            tensors. Defaults to ``False``. If a ``torch.layout`` is provided, it will be used</span>
+<span class="sd">            to construct the nested tensor, otherwise the default layout will be used.</span>
+
+<span class="sd">            .. note:: Using ``split_trajectories(tensordict, as_nested=True).to_padded_tensor(mask=mask_key)``</span>
+<span class="sd">                should result in the exact same result as ``as_nested=False``. Since this is an experimental</span>
+<span class="sd">                feature and relies on nested_tensors, which API may change in the future, we made this</span>
+<span class="sd">                an optional feature. The runtime should be faster with ``as_nested=True``.</span>
+
+<span class="sd">            .. note:: Providing a layout lets the user control whether the nested tensor is to be used</span>
+<span class="sd">                with ``torch.strided`` or ``torch.jagged`` layout. While the former has slightly more</span>
+<span class="sd">                capabilities at the time of writing, the second will be the main focus of the PyTorch team</span>
+<span class="sd">                in the future due to its better compatibility with :func:`~torch.compile`.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        A new tensordict with a leading dimension corresponding to the trajectory.</span>
@@ -494,7 +510,7 @@
 <span class="sd">            batch_size=torch.Size([2, 10]),</span>
 <span class="sd">            device=None,</span>
 <span class="sd">            is_shared=False)</span>
-<span class="sd">        &gt;&gt;&gt; # check that split_trajectory got the trajectories right with the done signal</span>
+<span class="sd">        &gt;&gt;&gt; # check that split_trajectories got the trajectories right with the done signal</span>
 <span class="sd">        &gt;&gt;&gt; assert (data_split[&quot;traj_ids&quot;] == data_split[&quot;trajectory&quot;]).all()</span>
 <span class="sd">        &gt;&gt;&gt; print(data_split[&quot;mask&quot;])</span>
 <span class="sd">        tensor([[ True,  True,  True,  True,  True,  True,  True,  True,  True,  True],</span>
@@ -573,7 +589,39 @@
             <span class="n">rollout_tensordict</span> <span class="o">=</span> <span class="n">rollout_tensordict</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">rollout_tensordict</span>
 
-    <span class="n">out_splits</span> <span class="o">=</span> <span class="n">rollout_tensordict</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">splits</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">out_splits</span> <span class="o">=</span> <span class="n">rollout_tensordict</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">as_nested</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">torch</span><span class="p">,</span> <span class="s2">&quot;_nested_compute_contiguous_strides_offsets&quot;</span><span class="p">):</span>
+
+            <span class="k">def</span> <span class="nf">nest</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">):</span>
+                <span class="c1"># Convert splits into shapes</span>
+                <span class="n">shape</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([[</span><span class="nb">int</span><span class="p">(</span><span class="n">split</span><span class="p">),</span> <span class="o">*</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:]]</span> <span class="k">for</span> <span class="n">split</span> <span class="ow">in</span> <span class="n">splits</span><span class="p">])</span>
+                <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">_nested_view_from_buffer</span><span class="p">(</span>
+                    <span class="n">x</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span>
+                    <span class="n">shape</span><span class="p">,</span>
+                    <span class="o">*</span><span class="n">torch</span><span class="o">.</span><span class="n">_nested_compute_contiguous_strides_offsets</span><span class="p">(</span><span class="n">shape</span><span class="p">),</span>
+                <span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">out_splits</span><span class="o">.</span><span class="n">_fast_apply</span><span class="p">(</span>
+                <span class="n">nest</span><span class="p">,</span>
+                <span class="n">batch_size</span><span class="o">=</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">splits</span><span class="p">),</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">out_splits</span> <span class="o">=</span> <span class="n">out_splits</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">splits</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+            <span class="n">layout</span> <span class="o">=</span> <span class="n">as_nested</span> <span class="k">if</span> <span class="n">as_nested</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">bool</span> <span class="k">else</span> <span class="kc">None</span>
+
+            <span class="k">def</span> <span class="nf">nest</span><span class="p">(</span><span class="o">*</span><span class="n">x</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">nested</span><span class="o">.</span><span class="n">nested_tensor</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">out_splits</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">_fast_apply</span><span class="p">(</span>
+                <span class="n">nest</span><span class="p">,</span>
+                <span class="o">*</span><span class="n">out_splits</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span>
+                <span class="n">batch_size</span><span class="o">=</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">out_splits</span><span class="p">),</span> <span class="o">*</span><span class="n">out_splits</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">batch_size</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+            <span class="p">)</span>
+
+    <span class="n">out_splits</span> <span class="o">=</span> <span class="n">out_splits</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">splits</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">out_split</span> <span class="ow">in</span> <span class="n">out_splits</span><span class="p">:</span>
         <span class="n">out_split</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>

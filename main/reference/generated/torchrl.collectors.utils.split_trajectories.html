@@ -412,15 +412,17 @@
 <h1>split_trajectories<a class="headerlink" href="#split-trajectories" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="torchrl.collectors.utils.split_trajectories">
-<span class="sig-prename descclassname"><span class="pre">torchrl.collectors.utils.</span></span><span class="sig-name descname"><span class="pre">split_trajectories</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rollout_tensordict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TensorDictBase</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trajectory_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">NestedKey</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">done_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">NestedKey</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">TensorDictBase</span></span></span><a class="reference internal" href="../../_modules/torchrl/collectors/utils.html#split_trajectories"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.collectors.utils.split_trajectories" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">torchrl.collectors.utils.</span></span><span class="sig-name descname"><span class="pre">split_trajectories</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rollout_tensordict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TensorDictBase</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trajectory_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">NestedKey</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">done_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">NestedKey</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_nested</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">TensorDictBase</span></span></span><a class="reference internal" href="../../_modules/torchrl/collectors/utils.html#split_trajectories"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.collectors.utils.split_trajectories" title="Permalink to this definition">¶</a></dt>
 <dd><p>A util function for trajectory separation.</p>
 <p>Takes a tensordict with a key traj_ids that indicates the id of each trajectory.</p>
 <p>From there, builds a B x T x … zero-padded tensordict with B batches on max duration T</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>rollout_tensordict</strong> (<em>TensorDictBase</em>) – a rollout with adjacent trajectories
-along the last dimension.</p></li>
+<dd class="field-odd"><p><strong>rollout_tensordict</strong> (<em>TensorDictBase</em>) – a rollout with adjacent trajectories
+along the last dimension.</p>
+</dd>
+<dt class="field-even">Keyword Arguments<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
 <li><p><strong>prefix</strong> (<em>NestedKey</em><em>, </em><em>optional</em>) – the prefix used to read and write meta-data,
 such as <code class="docutils literal notranslate"><span class="pre">&quot;traj_ids&quot;</span></code> (the optional integer id of each trajectory)
 and the <code class="docutils literal notranslate"><span class="pre">&quot;mask&quot;</span></code> entry indicating which data are valid and which
@@ -433,10 +435,28 @@ ids. Supersedes <code class="docutils literal notranslate"><span class="pre">don
 to <code class="docutils literal notranslate"><span class="pre">(prefix,</span> <span class="pre">&quot;traj_ids&quot;)</span></code>.</p></li>
 <li><p><strong>done_key</strong> (<em>NestedKey</em><em>, </em><em>optional</em>) – the key pointing to the <code class="docutils literal notranslate"><span class="pre">&quot;done&quot;&quot;</span></code> signal,
 if the trajectory could not be directly recovered. Defaults to <code class="docutils literal notranslate"><span class="pre">&quot;done&quot;</span></code>.</p></li>
+<li><p><strong>as_nested</strong> (<em>bool</em><em> or </em><a class="reference external" href="https://pytorch.org/docs/stable/tensor_attributes.html#torch.layout" title="(in PyTorch v2.3)"><em>torch.layout</em></a><em>, </em><em>optional</em>) – <p>whether to return the results as nested
+tensors. Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code>. If a <code class="docutils literal notranslate"><span class="pre">torch.layout</span></code> is provided, it will be used
+to construct the nested tensor, otherwise the default layout will be used.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Using <code class="docutils literal notranslate"><span class="pre">split_trajectories(tensordict,</span> <span class="pre">as_nested=True).to_padded_tensor(mask=mask_key)</span></code>
+should result in the exact same result as <code class="docutils literal notranslate"><span class="pre">as_nested=False</span></code>. Since this is an experimental
+feature and relies on nested_tensors, which API may change in the future, we made this
+an optional feature. The runtime should be faster with <code class="docutils literal notranslate"><span class="pre">as_nested=True</span></code>.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Providing a layout lets the user control whether the nested tensor is to be used
+with <code class="docutils literal notranslate"><span class="pre">torch.strided</span></code> or <code class="docutils literal notranslate"><span class="pre">torch.jagged</span></code> layout. While the former has slightly more
+capabilities at the time of writing, the second will be the main focus of the PyTorch team
+in the future due to its better compatibility with <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.compile.html#torch.compile" title="(in PyTorch v2.3)"><code class="xref py py-func docutils literal notranslate"><span class="pre">compile()</span></code></a>.</p>
+</div>
+</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A new tensordict with a leading dimension corresponding to the trajectory.
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A new tensordict with a leading dimension corresponding to the trajectory.
 A <code class="docutils literal notranslate"><span class="pre">&quot;mask&quot;</span></code> boolean entry sharing the <code class="docutils literal notranslate"><span class="pre">trajectory_key</span></code> prefix
 and the tensordict shape is also added. It indicated the valid elements of the tensordict,
 as well as a <code class="docutils literal notranslate"><span class="pre">&quot;traj_ids&quot;</span></code> entry if <code class="docutils literal notranslate"><span class="pre">trajectory_key</span></code> could not be found.</p>
@@ -471,7 +491,7 @@ as well as a <code class="docutils literal notranslate"><span class="pre">&quot;
 <span class="go">    batch_size=torch.Size([2, 10]),</span>
 <span class="go">    device=None,</span>
 <span class="go">    is_shared=False)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># check that split_trajectory got the trajectories right with the done signal</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># check that split_trajectories got the trajectories right with the done signal</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="p">(</span><span class="n">data_split</span><span class="p">[</span><span class="s2">&quot;traj_ids&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">data_split</span><span class="p">[</span><span class="s2">&quot;trajectory&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">data_split</span><span class="p">[</span><span class="s2">&quot;mask&quot;</span><span class="p">])</span>
 <span class="go">tensor([[ True,  True,  True,  True,  True,  True,  True,  True,  True,  True],</span>
