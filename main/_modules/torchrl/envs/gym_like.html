@@ -745,8 +745,9 @@
                     <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">TensorDict</span><span class="p">(</span><span class="n">obs_dict</span><span class="p">,</span> <span class="p">[])</span><span class="o">.</span><span class="n">items</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
                 <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">tensordict_out</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="p">(</span>
-                <span class="n">obs_dict</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">tensordict</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">_run_checks</span><span class="o">=</span><span class="kc">False</span>
+            <span class="n">tensordict_out</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="o">.</span><span class="n">_new_unsafe</span><span class="p">(</span>
+                <span class="n">obs_dict</span><span class="p">,</span>
+                <span class="n">batch_size</span><span class="o">=</span><span class="n">tensordict</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">tensordict_out</span> <span class="o">=</span> <span class="n">tensordict_out</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">non_blocking</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -779,10 +780,9 @@
 
         <span class="n">source</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_obs</span><span class="p">(</span><span class="n">obs</span><span class="p">)</span>
 
-        <span class="n">tensordict_out</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="p">(</span>
+        <span class="n">tensordict_out</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="o">.</span><span class="n">_new_unsafe</span><span class="p">(</span>
             <span class="n">source</span><span class="o">=</span><span class="n">source</span><span class="p">,</span>
             <span class="n">batch_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span>
-            <span class="n">_run_checks</span><span class="o">=</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">validated</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">info_dict_reader</span> <span class="ow">and</span> <span class="n">info</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">info_dict_reader</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">info_dict_reader</span><span class="p">:</span>

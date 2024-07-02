@@ -1034,7 +1034,7 @@
     <span class="nd">@property</span>
     <span class="nd">@_cache_values</span>
     <span class="k">def</span> <span class="nf">_cached_target_params_actor_value</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">TensorDict</span><span class="p">(</span>
+        <span class="k">return</span> <span class="n">TensorDict</span><span class="o">.</span><span class="n">_new_unsafe</span><span class="p">(</span>
             <span class="p">{</span>
                 <span class="s2">&quot;module&quot;</span><span class="p">:</span> <span class="p">{</span>
                     <span class="s2">&quot;0&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_actor_network_params</span><span class="p">,</span>
@@ -1042,7 +1042,6 @@
                 <span class="p">}</span>
             <span class="p">},</span>
             <span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">([]),</span>
-            <span class="n">_run_checks</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_qvalue_v1_loss</span><span class="p">(</span>

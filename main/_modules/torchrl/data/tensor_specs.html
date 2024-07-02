@@ -4384,7 +4384,7 @@
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">vals</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">):</span>
             <span class="n">out</span> <span class="o">=</span> <span class="n">vals</span><span class="o">.</span><span class="n">empty</span><span class="p">()</span>  <span class="c1"># create and empty tensordict similar to vals</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">out</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="p">({},</span> <span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">([]),</span> <span class="n">_run_checks</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="o">.</span><span class="n">_new_unsafe</span><span class="p">({},</span> <span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">([]))</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">vals</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">item</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
@@ -4449,13 +4449,12 @@
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">item</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">TensorDict</span><span class="p">(</span>
+        <span class="c1"># No need to run checks since we know Composite is compliant with</span>
+        <span class="c1"># TensorDict requirements</span>
+        <span class="k">return</span> <span class="n">TensorDict</span><span class="o">.</span><span class="n">_new_unsafe</span><span class="p">(</span>
             <span class="n">_dict</span><span class="p">,</span>
             <span class="n">batch_size</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">([</span><span class="o">*</span><span class="n">shape</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">]),</span>
             <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_device</span><span class="p">,</span>
-            <span class="c1"># No need to run checks since we know Composite is compliant with</span>
-            <span class="c1"># TensorDict requirements</span>
-            <span class="n">_run_checks</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="CompositeSpec.keys"><a class="viewcode-back" href="../../../reference/generated/torchrl.data.CompositeSpec.html#torchrl.data.CompositeSpec.keys">[docs]</a>    <span class="k">def</span> <span class="nf">keys</span><span class="p">(</span>

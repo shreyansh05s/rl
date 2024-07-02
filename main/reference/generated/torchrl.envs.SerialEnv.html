@@ -2587,6 +2587,48 @@ used for another environment if created concomitantly to this environment.</p>
 </dl>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="torchrl.envs.SerialEnv.set_submodule">
+<span class="sig-name descname"><span class="pre">set_submodule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch v2.3)"><span class="pre">Module</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#torchrl.envs.SerialEnv.set_submodule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the submodule given by <code class="docutils literal notranslate"><span class="pre">target</span></code> if it exists, otherwise throw an error.</p>
+<p>For example, let’s say you have an <code class="docutils literal notranslate"><span class="pre">nn.Module</span></code> <code class="docutils literal notranslate"><span class="pre">A</span></code> that
+looks like this:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>A(
+    (net_b): Module(
+        (net_c): Module(
+            (conv): Conv2d(16, 33, kernel_size=(3, 3), stride=(2, 2))
+        )
+        (linear): Linear(in_features=100, out_features=200, bias=True)
+    )
+)
+</pre></div>
+</div>
+<p>(The diagram shows an <code class="docutils literal notranslate"><span class="pre">nn.Module</span></code> <code class="docutils literal notranslate"><span class="pre">A</span></code>. <code class="docutils literal notranslate"><span class="pre">A</span></code> has a nested
+submodule <code class="docutils literal notranslate"><span class="pre">net_b</span></code>, which itself has two submodules <code class="docutils literal notranslate"><span class="pre">net_c</span></code>
+and <code class="docutils literal notranslate"><span class="pre">linear</span></code>. <code class="docutils literal notranslate"><span class="pre">net_c</span></code> then has a submodule <code class="docutils literal notranslate"><span class="pre">conv</span></code>.)</p>
+<p>To overide the <code class="docutils literal notranslate"><span class="pre">Conv2d</span></code> with a new submodule <code class="docutils literal notranslate"><span class="pre">Linear</span></code>, you
+would call
+<code class="docutils literal notranslate"><span class="pre">set_submodule(&quot;net_b.net_c.conv&quot;,</span> <span class="pre">nn.Linear(33,</span> <span class="pre">16))</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target</strong> – The fully-qualified string name of the submodule
+to look for. (See above example for how to specify a
+fully-qualified string.)</p></li>
+<li><p><strong>module</strong> – The module to set the submodule to.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ValueError</strong> – If the target string is empty</p></li>
+<li><p><strong>AttributeError</strong> – If the target string references an invalid
+    path or resolves to something that is not an
+    <code class="docutils literal notranslate"><span class="pre">nn.Module</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="torchrl.envs.SerialEnv.shape">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">shape</span></span><a class="headerlink" href="#torchrl.envs.SerialEnv.shape" title="Permalink to this definition">¶</a></dt>
