@@ -10,7 +10,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Computation times &mdash; torchrl main documentation</title>
+  <title>Customising Video Renders &mdash; torchrl main documentation</title>
   
 
   
@@ -26,19 +26,20 @@
 
   
 
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <!-- <link rel="stylesheet" href="_static/pygments.css" type="text/css" /> -->
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/sg_gallery.css" type="text/css" />
-  <link rel="stylesheet" href="_static/sg_gallery-binder.css" type="text/css" />
-  <link rel="stylesheet" href="_static/sg_gallery-dataframe.css" type="text/css" />
-  <link rel="stylesheet" href="_static/sg_gallery-rendered-html.css" type="text/css" />
-  <link rel="stylesheet" href="_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!-- <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" /> -->
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/sg_gallery.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/sg_gallery-binder.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/sg_gallery-dataframe.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/sg_gallery-rendered-html.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" type="text/css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css" type="text/css" />
-  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
-    <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
+  <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="prev" title="Versioning Issues" href="VERSIONING_ISSUES.html" />
   <!-- Google Tag Manager -->
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -49,16 +50,16 @@
   
 
   
-  <script src="_static/js/modernizr.min.js"></script>
+  <script src="../../../_static/js/modernizr.min.js"></script>
 
   <!-- Preload the theme fonts -->
 
-<link rel="preload" href="_static/fonts/FreightSans/freight-sans-book.woff2" as="font" type="font/woff2" crossorigin="anonymous">
-<link rel="preload" href="_static/fonts/FreightSans/freight-sans-medium.woff2" as="font" type="font/woff2" crossorigin="anonymous">
-<link rel="preload" href="_static/fonts/IBMPlexMono/IBMPlexMono-Medium.woff2" as="font" type="font/woff2" crossorigin="anonymous">
-<link rel="preload" href="_static/fonts/FreightSans/freight-sans-bold.woff2" as="font" type="font/woff2" crossorigin="anonymous">
-<link rel="preload" href="_static/fonts/FreightSans/freight-sans-medium-italic.woff2" as="font" type="font/woff2" crossorigin="anonymous">
-<link rel="preload" href="_static/fonts/IBMPlexMono/IBMPlexMono-SemiBold.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="../../../_static/fonts/FreightSans/freight-sans-book.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="../../../_static/fonts/FreightSans/freight-sans-medium.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="../../../_static/fonts/IBMPlexMono/IBMPlexMono-Medium.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="../../../_static/fonts/FreightSans/freight-sans-bold.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="../../../_static/fonts/FreightSans/freight-sans-medium-italic.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="../../../_static/fonts/IBMPlexMono/IBMPlexMono-SemiBold.woff2" as="font" type="font/woff2" crossorigin="anonymous">
 
 <!-- Preload the katex fonts -->
 
@@ -269,7 +270,7 @@
           <div class="pytorch-left-menu-search">
             
     <div class="version">
-      <a href="../versions.html"><span style="font-size:110%">main (0.4.0) &#x25BC</span></a>
+      <a href="../../../../versions.html"><span style="font-size:110%">main (0.4.0) &#x25BC</span></a>
     </div>
     
 
@@ -278,7 +279,7 @@
 
 
 <div role="search">
-  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
     <input type="text" name="q" placeholder="Search Docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
@@ -294,36 +295,36 @@
             
             
               <ul>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/getting-started-0.html">Get started with Environments, TED and transforms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/getting-started-1.html">Get started with TorchRL’s modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/getting-started-2.html">Getting started with model optimization</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/getting-started-3.html">Get started with data collection and storage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/getting-started-4.html">Get started with logging</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/getting-started-5.html">Get started with your own first training loop</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/getting-started-0.html">Get started with Environments, TED and transforms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/getting-started-1.html">Get started with TorchRL’s modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/getting-started-2.html">Getting started with model optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/getting-started-3.html">Get started with data collection and storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/getting-started-4.html">Get started with logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/getting-started-5.html">Get started with your own first training loop</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/coding_ppo.html">Reinforcement Learning (PPO) with TorchRL Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/pendulum.html">Pendulum: Writing your environment and transforms with TorchRL</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/torchrl_demo.html">Introduction to TorchRL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/coding_ppo.html">Reinforcement Learning (PPO) with TorchRL Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/pendulum.html">Pendulum: Writing your environment and transforms with TorchRL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/torchrl_demo.html">Introduction to TorchRL</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/multiagent_ppo.html">Multi-Agent Reinforcement Learning (PPO) with TorchRL Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/torchrl_envs.html">TorchRL envs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/pretrained_models.html">Using pretrained models</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/dqn_with_rnn.html">Recurrent DQN: Training recurrent policies</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/rb_tutorial.html">Using Replay Buffers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/multiagent_ppo.html">Multi-Agent Reinforcement Learning (PPO) with TorchRL Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/torchrl_envs.html">TorchRL envs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/pretrained_models.html">Using pretrained models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/dqn_with_rnn.html">Recurrent DQN: Training recurrent policies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/rb_tutorial.html">Using Replay Buffers</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/multiagent_competitive_ddpg.html">Competitive Multi-Agent Reinforcement Learning (DDPG) with TorchRL Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/multi_task.html">Task-specific policy in multi-task environments</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/coding_ddpg.html">TorchRL objectives: Coding a DDPG loss</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/coding_dqn.html">TorchRL trainer: A DQN example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/multiagent_competitive_ddpg.html">Competitive Multi-Agent Reinforcement Learning (DDPG) with TorchRL Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/multi_task.html">Task-specific policy in multi-task environments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/coding_ddpg.html">TorchRL objectives: Coding a DDPG loss</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/coding_dqn.html">TorchRL trainer: A DQN example</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="reference/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">API Reference</a></li>
 </ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="reference/knowledge_base.html">Knowledge Base</a></li>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../../knowledge_base.html">Knowledge Base</a></li>
 </ul>
 
             
@@ -356,7 +357,7 @@
   <ul class="pytorch-breadcrumbs">
     
       <li>
-        <a href="index.html">
+        <a href="../../../index.html">
           
             Docs
           
@@ -364,13 +365,15 @@
       </li>
 
         
-      <li>Computation times</li>
+          <li><a href="../../knowledge_base.html">Knowledge Base</a> &gt;</li>
+        
+      <li>Customising Video Renders</li>
     
     
       <li class="pytorch-breadcrumbs-aside">
         
             
-            <a href="_sources/sg_execution_times.rst.txt" rel="nofollow"><img src="_static/images/view-page-source-icon.svg"></a>
+            <a href="../../../_sources/reference/generated/knowledge_base/VIDEO_CUSTOMISATION.rst.txt" rel="nofollow"><img src="../../../_static/images/view-page-source-icon.svg"></a>
           
         
       </li>
@@ -402,104 +405,63 @@
             <div role="main" class="main-content" itemscope="itemscope" itemtype="http://schema.org/Article">
              <article itemprop="articleBody" id="pytorch-article" class="pytorch-article">
               
-  <section id="computation-times">
-<span id="sphx-glr-sg-execution-times"></span><h1>Computation times<a class="headerlink" href="#computation-times" title="Permalink to this heading">¶</a></h1>
-<p><strong>28:38.829</strong> total execution time for 18 files <strong>from all galleries</strong>:</p>
-<div class="docutils container">
-<style scoped>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet" />
-<link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
-</style>
-<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-<script type="text/javascript" class="init">
-$(document).ready( function () {
-    $('table.sg-datatable').DataTable({order: [[1, 'desc']]});
-} );
-</script><table class="table table-striped sg-datatable docutils # Necessary for the generated by autosummary to look decent align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p>Example</p></th>
-<th class="head"><p>Time</p></th>
-<th class="head"><p>Mem (MB)</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><a class="reference internal" href="tutorials/torchrl_demo.html#sphx-glr-tutorials-torchrl-demo-py"><span class="std std-ref">Introduction to TorchRL</span></a> (<code class="docutils literal notranslate"><span class="pre">reference/generated/tutorials/torchrl_demo.py</span></code>)</p></td>
-<td><p>04:31.465</p></td>
-<td><p>15.6</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="tutorials/rb_tutorial.html#sphx-glr-tutorials-rb-tutorial-py"><span class="std std-ref">Using Replay Buffers</span></a> (<code class="docutils literal notranslate"><span class="pre">reference/generated/tutorials/rb_tutorial.py</span></code>)</p></td>
-<td><p>03:01.597</p></td>
-<td><p>146.2</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="tutorials/pendulum.html#sphx-glr-tutorials-pendulum-py"><span class="std std-ref">Pendulum: Writing your environment and transforms with TorchRL</span></a> (<code class="docutils literal notranslate"><span class="pre">reference/generated/tutorials/pendulum.py</span></code>)</p></td>
-<td><p>02:44.238</p></td>
-<td><p>7.9</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="tutorials/coding_dqn.html#sphx-glr-tutorials-coding-dqn-py"><span class="std std-ref">TorchRL trainer: A DQN example</span></a> (<code class="docutils literal notranslate"><span class="pre">reference/generated/tutorials/coding_dqn.py</span></code>)</p></td>
-<td><p>02:41.794</p></td>
-<td><p>707.0</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="tutorials/dqn_with_rnn.html#sphx-glr-tutorials-dqn-with-rnn-py"><span class="std std-ref">Recurrent DQN: Training recurrent policies</span></a> (<code class="docutils literal notranslate"><span class="pre">reference/generated/tutorials/dqn_with_rnn.py</span></code>)</p></td>
-<td><p>02:20.753</p></td>
-<td><p>1633.1</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="tutorials/multiagent_ppo.html#sphx-glr-tutorials-multiagent-ppo-py"><span class="std std-ref">Multi-Agent Reinforcement Learning (PPO) with TorchRL Tutorial</span></a> (<code class="docutils literal notranslate"><span class="pre">reference/generated/tutorials/multiagent_ppo.py</span></code>)</p></td>
-<td><p>02:08.800</p></td>
-<td><p>11.3</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="tutorials/coding_ddpg.html#sphx-glr-tutorials-coding-ddpg-py"><span class="std std-ref">TorchRL objectives: Coding a DDPG loss</span></a> (<code class="docutils literal notranslate"><span class="pre">reference/generated/tutorials/coding_ddpg.py</span></code>)</p></td>
-<td><p>01:54.363</p></td>
-<td><p>20.1</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="tutorials/torchrl_envs.html#sphx-glr-tutorials-torchrl-envs-py"><span class="std std-ref">TorchRL envs</span></a> (<code class="docutils literal notranslate"><span class="pre">reference/generated/tutorials/torchrl_envs.py</span></code>)</p></td>
-<td><p>01:39.241</p></td>
-<td><p>4208.3</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="tutorials/multiagent_competitive_ddpg.html#sphx-glr-tutorials-multiagent-competitive-ddpg-py"><span class="std std-ref">Competitive Multi-Agent Reinforcement Learning (DDPG) with TorchRL Tutorial</span></a> (<code class="docutils literal notranslate"><span class="pre">reference/generated/tutorials/multiagent_competitive_ddpg.py</span></code>)</p></td>
-<td><p>01:33.719</p></td>
-<td><p>11.7</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="tutorials/coding_ppo.html#sphx-glr-tutorials-coding-ppo-py"><span class="std std-ref">Reinforcement Learning (PPO) with TorchRL Tutorial</span></a> (<code class="docutils literal notranslate"><span class="pre">reference/generated/tutorials/coding_ppo.py</span></code>)</p></td>
-<td><p>01:28.823</p></td>
-<td><p>9.7</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="tutorials/pretrained_models.html#sphx-glr-tutorials-pretrained-models-py"><span class="std std-ref">Using pretrained models</span></a> (<code class="docutils literal notranslate"><span class="pre">reference/generated/tutorials/pretrained_models.py</span></code>)</p></td>
-<td><p>00:54.466</p></td>
-<td><p>3578.0</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="tutorials/multi_task.html#sphx-glr-tutorials-multi-task-py"><span class="std std-ref">Task-specific policy in multi-task environments</span></a> (<code class="docutils literal notranslate"><span class="pre">reference/generated/tutorials/multi_task.py</span></code>)</p></td>
-<td><p>00:49.667</p></td>
-<td><p>9.0</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="tutorials/getting-started-1.html#sphx-glr-tutorials-getting-started-1-py"><span class="std std-ref">Get started with TorchRL’s modules</span></a> (<code class="docutils literal notranslate"><span class="pre">reference/generated/tutorials/getting-started-1.py</span></code>)</p></td>
-<td><p>00:47.694</p></td>
-<td><p>8.0</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="tutorials/getting-started-0.html#sphx-glr-tutorials-getting-started-0-py"><span class="std std-ref">Get started with Environments, TED and transforms</span></a> (<code class="docutils literal notranslate"><span class="pre">reference/generated/tutorials/getting-started-0.py</span></code>)</p></td>
-<td><p>00:43.427</p></td>
-<td><p>9.5</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="tutorials/getting-started-2.html#sphx-glr-tutorials-getting-started-2-py"><span class="std std-ref">Getting started with model optimization</span></a> (<code class="docutils literal notranslate"><span class="pre">reference/generated/tutorials/getting-started-2.py</span></code>)</p></td>
-<td><p>00:23.664</p></td>
-<td><p>27.6</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="tutorials/getting-started-5.html#sphx-glr-tutorials-getting-started-5-py"><span class="std std-ref">Get started with your own first training loop</span></a> (<code class="docutils literal notranslate"><span class="pre">reference/generated/tutorials/getting-started-5.py</span></code>)</p></td>
-<td><p>00:22.251</p></td>
-<td><p>12.0</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="tutorials/getting-started-3.html#sphx-glr-tutorials-getting-started-3-py"><span class="std std-ref">Get started with data collection and storage</span></a> (<code class="docutils literal notranslate"><span class="pre">reference/generated/tutorials/getting-started-3.py</span></code>)</p></td>
-<td><p>00:19.048</p></td>
-<td><p>28.0</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="tutorials/getting-started-4.html#sphx-glr-tutorials-getting-started-4-py"><span class="std std-ref">Get started with logging</span></a> (<code class="docutils literal notranslate"><span class="pre">reference/generated/tutorials/getting-started-4.py</span></code>)</p></td>
-<td><p>00:13.817</p></td>
-<td><p>43.9</p></td>
-</tr>
-</tbody>
-</table>
+  <section id="customising-video-renders">
+<h1>Customising Video Renders<a class="headerlink" href="#customising-video-renders" title="Permalink to this heading">¶</a></h1>
+<section id="tweaking-video-rendering-settings">
+<h2>Tweaking Video Rendering Settings<a class="headerlink" href="#tweaking-video-rendering-settings" title="Permalink to this heading">¶</a></h2>
+<p>TorchRL relies heavily on the <a class="reference external" href="https://pytorch.org/vision/main/io.html">torchvision.io</a>
+and <a class="reference external" href="https://github.com/PyAV-Org/PyAV">PyAV</a> modules for its video logging
+capabilities. Though these libraries are quite convenient and powerful, it is
+not easy to access the variety of knobs and settings at your disposal.</p>
+<p>This guide hopes to clarify what appear to be the general principles behind
+customising video rendering, and show you how you can manually adjust your
+rollouts’ rendering settings to your liking.</p>
+</section>
+<section id="general-principles">
+<h2>General Principles<a class="headerlink" href="#general-principles" title="Permalink to this heading">¶</a></h2>
+<p>Ultimately, <a class="reference external" href="https://pytorch.org/vision/main/io.html">torchvision.io</a> and
+<a class="reference external" href="https://github.com/PyAV-Org/PyAV">PyAV</a> make calls to <a class="reference external" href="https://ffmpeg.org/">FFmpeg</a>
+libraries in order to render videos.</p>
+<p>In other words:</p>
+<ul class="simple">
+<li><p>Whatever can be fed into <a class="reference external" href="https://ffmpeg.org/">FFmpeg</a>, we can also feed
+into TorchRL’s <code class="docutils literal notranslate"><span class="pre">Loggers</span></code>.</p></li>
+<li><p>For any custom settings we wish to use, we must reference them from
+<a class="reference external" href="https://trac.ffmpeg.org/">FFmpeg’s documentation</a></p></li>
+</ul>
+</section>
+<section id="video-rendering-customization-example">
+<h2>Video Rendering Customization Example<a class="headerlink" href="#video-rendering-customization-example" title="Permalink to this heading">¶</a></h2>
+<p>Suppose the following snippet gave us extremely blurry videos, even though
+we provided it clear, frame-by-frame images to stitch together:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">torchrl.envs</span> <span class="kn">import</span> <span class="n">GymEnv</span><span class="p">,</span> <span class="n">TransformedEnv</span>
+<span class="kn">from</span> <span class="nn">torchrl.record</span> <span class="kn">import</span> <span class="n">CSVLogger</span><span class="p">,</span> <span class="n">VideoRecorder</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">CSVLogger</span><span class="p">(</span><span class="n">exp_name</span><span class="o">=</span><span class="s2">&quot;my_exp&quot;</span><span class="p">)</span>
+<span class="n">env</span> <span class="o">=</span> <span class="n">GymEnv</span><span class="p">(</span><span class="s2">&quot;CartPole-v1&quot;</span><span class="p">,</span> <span class="n">from_pixels</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">pixels_only</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="n">recorder</span> <span class="o">=</span> <span class="n">VideoRecorder</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="s2">&quot;my_video&quot;</span><span class="p">)</span>
+<span class="n">record_env</span> <span class="o">=</span> <span class="n">TransformedEnv</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">recorder</span><span class="p">)</span>
+<span class="n">rollout</span> <span class="o">=</span> <span class="n">record_env</span><span class="o">.</span><span class="n">rollout</span><span class="p">(</span><span class="n">max_steps</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">recorder</span><span class="o">.</span><span class="n">dump</span><span class="p">()</span>
+</pre></div>
 </div>
+<p>Since TorchRL’s default video codec is <a class="reference external" href="https://trac.ffmpeg.org/wiki/Encode/H.264">H264</a>,
+the settings that we must change should be in there.</p>
+<p>For the purposes of this example, let us choose a
+<a class="reference external" href="https://trac.ffmpeg.org/wiki/Encode/H.264#crf">Constant Rate Factor (CRF)</a> of
+<code class="docutils literal notranslate"><span class="pre">17</span></code> and a <a class="reference external" href="https://trac.ffmpeg.org/wiki/Encode/H.264#Preset">preset</a> of <code class="docutils literal notranslate"><span class="pre">slow</span></code>,
+as advised by the documentation.</p>
+<p>We can improve the video quality by appending all our desired settings
+(as keyword arguments) to <code class="docutils literal notranslate"><span class="pre">recorder</span></code> like so:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># The arguments&#39; types don&#39;t appear to matter too much, as long as they are</span>
+<span class="c1"># appropriate for Python.</span>
+<span class="c1"># For example, this would work as well:</span>
+<span class="c1"># logger = CSVLogger(exp_name=&quot;my_exp&quot;, crf=17, preset=&quot;slow&quot;)</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">CSVLogger</span><span class="p">(</span><span class="n">exp_name</span><span class="o">=</span><span class="s2">&quot;my_exp&quot;</span><span class="p">,</span> <span class="n">crf</span><span class="o">=</span><span class="s2">&quot;17&quot;</span><span class="p">,</span> <span class="n">preset</span><span class="o">=</span><span class="s2">&quot;slow&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
 </section>
 
 
@@ -507,6 +469,13 @@ $(document).ready( function () {
              
             </div>
             <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="VERSIONING_ISSUES.html" class="btn btn-neutral" title="Versioning Issues" accesskey="p" rel="prev"><img src="../../../_static/images/chevron-right-orange.svg" class="previous-page"> Previous</a>
+      
+    </div>
   
 
   
@@ -538,7 +507,12 @@ $(document).ready( function () {
           <div class="pytorch-right-menu" id="pytorch-right-menu">
             <div class="pytorch-side-scroll" id="pytorch-side-scroll-right">
               <ul>
-<li><a class="reference internal" href="#">Computation times</a></li>
+<li><a class="reference internal" href="#">Customising Video Renders</a><ul>
+<li><a class="reference internal" href="#tweaking-video-rendering-settings">Tweaking Video Rendering Settings</a></li>
+<li><a class="reference internal" href="#general-principles">General Principles</a></li>
+<li><a class="reference internal" href="#video-rendering-customization-example">Video Rendering Customization Example</a></li>
+</ul>
+</li>
 </ul>
 
             </div>
@@ -553,21 +527,21 @@ $(document).ready( function () {
   
 
      
-       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-         <script src="_static/jquery.js"></script>
-         <script src="_static/underscore.js"></script>
-         <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-         <script src="_static/doctools.js"></script>
-         <script src="_static/design-tabs.js"></script>
+       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+         <script src="../../../_static/jquery.js"></script>
+         <script src="../../../_static/underscore.js"></script>
+         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+         <script src="../../../_static/doctools.js"></script>
+         <script src="../../../_static/design-tabs.js"></script>
      
 
   
 
-  <script type="text/javascript" src="_static/js/vendor/popper.min.js"></script>
-  <script type="text/javascript" src="_static/js/vendor/bootstrap.min.js"></script>
+  <script type="text/javascript" src="../../../_static/js/vendor/popper.min.js"></script>
+  <script type="text/javascript" src="../../../_static/js/vendor/bootstrap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
-  <script type="text/javascript" src="_static/js/theme.js"></script>
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
   <script type="text/javascript">
       jQuery(function () {
@@ -720,7 +694,7 @@ $(document).ready( function () {
   <div class="cookie-banner-wrapper">
   <div class="container">
     <p class="gdpr-notice">To analyze traffic and optimize your experience, we serve cookies on this site. By clicking or navigating, you agree to allow our usage of cookies. As the current maintainers of this site, Facebook’s Cookies Policy applies. Learn more, including about available controls: <a href="https://www.facebook.com/policies/cookies/">Cookies Policy</a>.</p>
-    <img class="close-button" src="_static/images/pytorch-x.svg">
+    <img class="close-button" src="../../../_static/images/pytorch-x.svg">
   </div>
 </div>
 
@@ -853,7 +827,7 @@ $(document).ready( function () {
 
   <!-- End Mobile Menu -->
 
-  <script type="text/javascript" src="_static/js/vendor/anchor.min.js"></script>
+  <script type="text/javascript" src="../../../_static/js/vendor/anchor.min.js"></script>
 
   <script type="text/javascript">
     $(document).ready(function() {

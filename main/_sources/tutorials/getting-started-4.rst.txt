@@ -58,7 +58,7 @@ mostly be interchangeable, their instantiation can differ.
 
 Usually, building a logger requires
 at least an experiment name and possibly a logging directory and other
-hyperapameters.
+hyperparameters.
 
 
 .. GENERATED FROM PYTHON SOURCE LINES 45-50
@@ -98,7 +98,7 @@ reward, loss value or time elapsed for executing a piece of code.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 59-74
+.. GENERATED FROM PYTHON SOURCE LINES 59-77
 
 Recording videos
 ----------------
@@ -110,13 +110,16 @@ rendering and recording videos isn't too difficult.
 
 Let's first see how we can create a Gym environment that outputs images
 alongside its observations. :class:`~torchrl.envs.GymEnv` accept two keywords
-for this purpose: ``from_pixels=True`` will make the env ``step`` function
+for this purpose:
+- ``from_pixels=True`` will make the env ``step`` function
 write a ``"pixels"`` entry containing the images corresponding to your
-observations, and the ``pixels_only=False`` will indicate that you want the
+observations, and
+
+- ``pixels_only=False`` will indicate that you want the
 observations to be returned as well.
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 74-83
+.. GENERATED FROM PYTHON SOURCE LINES 77-86
 
 .. code-block:: Python
 
@@ -165,7 +168,7 @@ observations to be returned as well.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 84-89
+.. GENERATED FROM PYTHON SOURCE LINES 87-92
 
 We now have built an environment that renders images with its observations.
 To record videos, we will need to combine that environment with a recorder
@@ -173,7 +176,7 @@ and the logger (the logger providing the backend to save the video).
 This will happen within a transformed environment, like the one we saw in
 the :ref:`first tutorial <gs_env_ted>`.
 
-.. GENERATED FROM PYTHON SOURCE LINES 89-95
+.. GENERATED FROM PYTHON SOURCE LINES 92-98
 
 .. code-block:: Python
 
@@ -190,13 +193,13 @@ the :ref:`first tutorial <gs_env_ted>`.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 96-99
+.. GENERATED FROM PYTHON SOURCE LINES 99-102
 
 When running this environment, all the ``"pixels"`` entries will be saved in
-a local buffer and dumped in a video on demand (it is important that you
-call this method when appropriate):
+a local buffer (i.e. RAM) and dumped in a video on demand (to prevent excessive
+RAM usage, you are advised to call this method whenever appropriate!):
 
-.. GENERATED FROM PYTHON SOURCE LINES 99-104
+.. GENERATED FROM PYTHON SOURCE LINES 102-107
 
 .. code-block:: Python
 
@@ -212,10 +215,12 @@ call this method when appropriate):
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 105-112
+.. GENERATED FROM PYTHON SOURCE LINES 108-117
 
 In this specific case, the video format can be chosen when instantiating
 the CSVLogger.
+
+(If you want to customise how your video is recorded, have a look at :ref:`our knowledge base <ref_knowledge_base>`.)
 
 This is all we wanted to cover in the getting started tutorial.
 You should now be ready to code your
@@ -225,9 +230,9 @@ You should now be ready to code your
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 13.867 seconds)
+   **Total running time of the script:** (0 minutes 13.817 seconds)
 
-**Estimated memory usage:**  40 MB
+**Estimated memory usage:**  44 MB
 
 
 .. _sphx_glr_download_tutorials_getting-started-4.py:

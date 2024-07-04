@@ -453,6 +453,18 @@
         <span class="n">fd</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">add_video</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">vid_tensor</span><span class="p">,</span> <span class="n">global_step</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Writes a video on a file on disk.</span>
+
+<span class="sd">        The video format can be one of</span>
+<span class="sd">          - `&quot;pt&quot;`: uses :func:`~torch.save` to save the video tensor);</span>
+<span class="sd">          - `&quot;memmap&quot;`: saved the file as memory-mapped array (reading this file will require</span>
+<span class="sd">            the dtype and shape to be known at read time);</span>
+<span class="sd">          - `&quot;mp4&quot;`: saves the file as an `.mp4` file using torchvision :func:`~torchvision.io.write_video`</span>
+<span class="sd">            API. Any ``kwargs`` passed to ``add_video`` will be transmitted to ``write_video``.</span>
+<span class="sd">            These include ``preset``, ``crf`` and others.</span>
+<span class="sd">            See ffmpeg&#39;s doc (https://trac.ffmpeg.org/wiki/Encode/H.264) for some more information of the video format options.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">global_step</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">global_step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">videos_counter</span><span class="p">[</span><span class="n">tag</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">videos_counter</span><span class="p">[</span><span class="n">tag</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
@@ -488,7 +500,8 @@
                 <span class="n">vid_tensor</span> <span class="o">=</span> <span class="n">vid_tensor</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">vid_tensor</span><span class="o">.</span><span class="n">ndim</span> <span class="o">-</span> <span class="mi">4</span><span class="p">)</span>
             <span class="n">vid_tensor</span> <span class="o">=</span> <span class="n">vid_tensor</span><span class="o">.</span><span class="n">permute</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
             <span class="n">vid_tensor</span> <span class="o">=</span> <span class="n">vid_tensor</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="o">*</span><span class="n">vid_tensor</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="mi">3</span><span class="p">)</span>
-            <span class="n">torchvision</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">write_video</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">vid_tensor</span><span class="p">,</span> <span class="n">fps</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">video_fps</span><span class="p">)</span>
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;fps&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">video_fps</span><span class="p">)</span>
+            <span class="n">torchvision</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">write_video</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">vid_tensor</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;Unknown video format </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">video_format</span><span class="si">}</span><span class="s2">. Must be one of &#39;pt&#39;, &#39;memmap&#39; or &#39;mp4&#39;.&quot;</span>
@@ -524,7 +537,7 @@
 <span class="sd">        exp_name (str): The name of the experiment.</span>
 <span class="sd">        log_dir (str or Path, optional): where the experiment should be saved.</span>
 <span class="sd">            Defaults to ``&lt;cur_dir&gt;/csv_logs``.</span>
-<span class="sd">        video_format (str, optional): how videos should be saved. Must be one of</span>
+<span class="sd">        video_format (str, optional): how videos should be saved when calling :meth:`~torchrl.record.loggers.csv.CSVExperiment.add_video`. Must be one of</span>
 <span class="sd">            ``&quot;pt&quot;`` (video saved as a `video_&lt;tag&gt;_&lt;step&gt;.pt` file with torch.save),</span>
 <span class="sd">            ``&quot;memmap&quot;`` (video saved as a `video_&lt;tag&gt;_&lt;step&gt;.memmap` file with :class:`~tensordict.MemoryMappedTensor`),</span>
 <span class="sd">            ``&quot;mp4&quot;`` (video saved as a `video_&lt;tag&gt;_&lt;step&gt;.mp4` file, requires torchvision to be installed).</span>
@@ -565,12 +578,18 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">add_scalar</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">global_step</span><span class="o">=</span><span class="n">step</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">log_video</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">video</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">step</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Log videos inputs to a .pt file.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Log videos inputs to a .pt (or other format) file.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            name (str): The name of the video.</span>
 <span class="sd">            video (Tensor): The video to be logged.</span>
 <span class="sd">            step (int, optional): The step at which the video is logged. Defaults to None.</span>
+<span class="sd">            **kwargs: other kwargs passed to the underlying video logger.</span>
+
+<span class="sd">        .. note:: If the video format is `mp4`, many more arguments can be passed to the :meth:`~torchvision.io.write_video`</span>
+<span class="sd">            function.</span>
+<span class="sd">            For more information on video logging with :class:`~torchrl.record.loggers.csv.CSVLogger`,</span>
+<span class="sd">            see the :meth:`~torchrl.record.loggers.csv.CSVExperiment.add_video` documentation.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># check for correct format of the video tensor ((N), T, C, H, W)</span>
         <span class="c1"># check that the color channel (C) is either 1 or 3</span>
