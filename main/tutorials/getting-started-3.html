@@ -666,8 +666,8 @@ simplicity. Try it out for yourself: build a buffer and indicate its
 batch-size in the constructor, then try to iterate over it. This is
 equivalent to calling <code class="docutils literal notranslate"><span class="pre">rb.sample()</span></code> within a loop!</p></li>
 </ul>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 18.932 seconds)</p>
-<p><strong>Estimated memory usage:</strong>  27 MB</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 19.136 seconds)</p>
+<p><strong>Estimated memory usage:</strong>  28 MB</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-tutorials-getting-started-3-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/5cb0ffc0980a276546c9aeed94b0aa13/getting-started-3.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">getting-started-3.ipynb</span></code></a></p>
@@ -773,7 +773,7 @@ equivalent to calling <code class="docutils literal notranslate"><span class="pr
 	  if (downloadNote.length >= 1) {
 	      var tutorialUrl = $("#tutorial-type").text();
 	      var githubLink = "https://github.com/pytorch/rl/blob/main/tutorials/sphinx-tutorials/"  + tutorialUrl + ".py",
-		  notebookLink = $(".reference.download")[1].href,
+		  notebookLink = $(".sphx-glr-download-jupyter").find(".download.reference")[0].href,
 		  notebookDownloadPath = notebookLink.split('_downloads')[1],
 		  colabLink = "https://colab.research.google.com/github/pytorch/rl/blob/gh-pages/main/_downloads" + notebookDownloadPath;
 
