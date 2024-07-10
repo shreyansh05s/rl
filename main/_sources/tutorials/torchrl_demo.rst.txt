@@ -638,7 +638,7 @@ Here are examples of using a replaybuffer with tensordicts.
  .. code-block:: none
 
 
-    tensor([0, 0])
+    tensor([1, 0])
 
 
 
@@ -669,7 +669,7 @@ Here are examples of using a replaybuffer with tensordicts.
  .. code-block:: none
 
     0 0.28791671991348267
-    1 1.0
+    1 0.06984967738389969
     2 0.0
 
 
@@ -727,13 +727,13 @@ Envs
                     terminated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
                     truncated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False)},
                 batch_size=torch.Size([]),
-                device=cpu,
+                device=None,
                 is_shared=False),
             observation: Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float32, is_shared=False),
             terminated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
             truncated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False)},
         batch_size=torch.Size([]),
-        device=cpu,
+        device=None,
         is_shared=False)
 
 
@@ -768,7 +768,7 @@ Changing environments config
             terminated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
             truncated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False)},
         batch_size=torch.Size([]),
-        device=cpu,
+        device=None,
         is_shared=False)
 
 
@@ -815,7 +815,7 @@ Changing environments config
 
 
     TransformedEnv(
-        env=GymEnv(env=Pendulum-v1, batch_size=torch.Size([]), device=cpu),
+        env=GymEnv(env=Pendulum-v1, batch_size=torch.Size([]), device=None),
         transform=Compose(
                 NoopResetEnv(noops=3, random=True),
                 ToTensorImage(keys=['pixels']),
@@ -856,7 +856,7 @@ Transforms
 
 
     TransformedEnv(
-        env=GymEnv(env=Pendulum-v1, batch_size=torch.Size([]), device=cpu),
+        env=GymEnv(env=Pendulum-v1, batch_size=torch.Size([]), device=None),
         transform=Compose(
                 NoopResetEnv(noops=3, random=True),
                 ToTensorImage(keys=['pixels']),
@@ -888,7 +888,7 @@ Transforms
             terminated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
             truncated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False)},
         batch_size=torch.Size([]),
-        device=cpu,
+        device=None,
         is_shared=False)
 
 
@@ -910,13 +910,13 @@ Transforms
  .. code-block:: none
 
     env:  TransformedEnv(
-        env=GymEnv(env=Pendulum-v1, batch_size=torch.Size([]), device=cpu),
+        env=GymEnv(env=Pendulum-v1, batch_size=torch.Size([]), device=None),
         transform=Compose(
                 NoopResetEnv(noops=3, random=True),
                 ToTensorImage(keys=['pixels']),
                 ObservationNorm(loc=2.0000, scale=1.0000, keys=['pixels'])))
     last transform parent:  TransformedEnv(
-        env=GymEnv(env=Pendulum-v1, batch_size=torch.Size([]), device=cpu),
+        env=GymEnv(env=Pendulum-v1, batch_size=torch.Size([]), device=None),
         transform=Compose(
                 NoopResetEnv(noops=3, random=True),
                 ToTensorImage(keys=['pixels'])))
@@ -965,7 +965,7 @@ Vectorized Environments
             terminated: Tensor(shape=torch.Size([4, 1]), device=cpu, dtype=torch.bool, is_shared=False),
             truncated: Tensor(shape=torch.Size([4, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
         batch_size=torch.Size([4]),
-        device=cpu,
+        device=None,
         is_shared=False)
 
 
@@ -1713,7 +1713,7 @@ Using Environments and Modules
                     terminated: Tensor(shape=torch.Size([100, 1]), device=cpu, dtype=torch.bool, is_shared=False),
                     truncated: Tensor(shape=torch.Size([100, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
                 batch_size=torch.Size([100]),
-                device=cpu,
+                device=None,
                 is_shared=False),
             observation: Tensor(shape=torch.Size([100, 3]), device=cpu, dtype=torch.float32, is_shared=False),
             terminated: Tensor(shape=torch.Size([100, 1]), device=cpu, dtype=torch.bool, is_shared=False),
@@ -1768,13 +1768,13 @@ Using Environments and Modules
                     terminated: Tensor(shape=torch.Size([100, 1]), device=cpu, dtype=torch.bool, is_shared=False),
                     truncated: Tensor(shape=torch.Size([100, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
                 batch_size=torch.Size([100]),
-                device=cpu,
+                device=None,
                 is_shared=False),
             observation: Tensor(shape=torch.Size([100, 3]), device=cpu, dtype=torch.float32, is_shared=False),
             terminated: Tensor(shape=torch.Size([100, 1]), device=cpu, dtype=torch.bool, is_shared=False),
             truncated: Tensor(shape=torch.Size([100, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
         batch_size=torch.Size([100]),
-        device=cpu,
+        device=None,
         is_shared=False)
 
 
@@ -1920,28 +1920,28 @@ Sync data collector
 
     TensorDict(
         fields={
-            action: Tensor(shape=torch.Size([6, 10, 1]), device=cpu, dtype=torch.float32, is_shared=False),
+            action: Tensor(shape=torch.Size([2, 3, 10, 1]), device=cpu, dtype=torch.float32, is_shared=False),
             collector: TensorDict(
                 fields={
-                    traj_ids: Tensor(shape=torch.Size([6, 10]), device=cpu, dtype=torch.int64, is_shared=False)},
-                batch_size=torch.Size([6, 10]),
+                    traj_ids: Tensor(shape=torch.Size([2, 3, 10]), device=cpu, dtype=torch.int64, is_shared=False)},
+                batch_size=torch.Size([2, 3, 10]),
                 device=cpu,
                 is_shared=False),
-            done: Tensor(shape=torch.Size([6, 10, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+            done: Tensor(shape=torch.Size([2, 3, 10, 1]), device=cpu, dtype=torch.bool, is_shared=False),
             next: TensorDict(
                 fields={
-                    done: Tensor(shape=torch.Size([6, 10, 1]), device=cpu, dtype=torch.bool, is_shared=False),
-                    observation: Tensor(shape=torch.Size([6, 10, 3]), device=cpu, dtype=torch.float32, is_shared=False),
-                    reward: Tensor(shape=torch.Size([6, 10, 1]), device=cpu, dtype=torch.float32, is_shared=False),
-                    terminated: Tensor(shape=torch.Size([6, 10, 1]), device=cpu, dtype=torch.bool, is_shared=False),
-                    truncated: Tensor(shape=torch.Size([6, 10, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
-                batch_size=torch.Size([6, 10]),
+                    done: Tensor(shape=torch.Size([2, 3, 10, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+                    observation: Tensor(shape=torch.Size([2, 3, 10, 3]), device=cpu, dtype=torch.float32, is_shared=False),
+                    reward: Tensor(shape=torch.Size([2, 3, 10, 1]), device=cpu, dtype=torch.float32, is_shared=False),
+                    terminated: Tensor(shape=torch.Size([2, 3, 10, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+                    truncated: Tensor(shape=torch.Size([2, 3, 10, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
+                batch_size=torch.Size([2, 3, 10]),
                 device=cpu,
                 is_shared=False),
-            observation: Tensor(shape=torch.Size([6, 10, 3]), device=cpu, dtype=torch.float32, is_shared=False),
-            terminated: Tensor(shape=torch.Size([6, 10, 1]), device=cpu, dtype=torch.bool, is_shared=False),
-            truncated: Tensor(shape=torch.Size([6, 10, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
-        batch_size=torch.Size([6, 10]),
+            observation: Tensor(shape=torch.Size([2, 3, 10, 3]), device=cpu, dtype=torch.float32, is_shared=False),
+            terminated: Tensor(shape=torch.Size([2, 3, 10, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+            truncated: Tensor(shape=torch.Size([2, 3, 10, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
+        batch_size=torch.Size([2, 3, 10]),
         device=cpu,
         is_shared=False)
     3
@@ -2176,9 +2176,9 @@ The library is on PyPI: *pip install torchrl*
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (4 minutes 18.762 seconds)
+   **Total running time of the script:** (4 minutes 22.794 seconds)
 
-**Estimated memory usage:**  16 MB
+**Estimated memory usage:**  15 MB
 
 
 .. _sphx_glr_download_tutorials_torchrl_demo.py:

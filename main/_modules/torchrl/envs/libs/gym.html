@@ -268,7 +268,7 @@
           <div class="pytorch-left-menu-search">
             
     <div class="version">
-      <a href="../../../../../versions.html"><span style="font-size:110%">main (0.4.0) &#x25BC</span></a>
+      <a href="../../../../../versions.html"><span style="font-size:110%">main (0.5.0) &#x25BC</span></a>
     </div>
     
 
@@ -429,7 +429,6 @@
     <span class="n">BoundedTensorSpec</span><span class="p">,</span>
     <span class="n">CompositeSpec</span><span class="p">,</span>
     <span class="n">DiscreteTensorSpec</span><span class="p">,</span>
-    <span class="n">LazyStackedTensorSpec</span><span class="p">,</span>
     <span class="n">MultiDiscreteTensorSpec</span><span class="p">,</span>
     <span class="n">MultiOneHotDiscreteTensorSpec</span><span class="p">,</span>
     <span class="n">OneHotDiscreteTensorSpec</span><span class="p">,</span>
@@ -648,8 +647,8 @@
         <span class="p">)</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">batch_size</span><span class="p">)</span>
     <span class="n">gym_spaces</span> <span class="o">=</span> <span class="n">gym_backend</span><span class="p">(</span><span class="s2">&quot;spaces&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">gym_spaces</span><span class="o">.</span><span class="n">tuple</span><span class="o">.</span><span class="n">Tuple</span><span class="p">):</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="n">LazyStackedTensorSpec</span><span class="p">(</span>
-            <span class="o">*</span><span class="p">[</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span>
+            <span class="p">[</span>
                 <span class="n">_gym_to_torchrl_spec_transform</span><span class="p">(</span>
                     <span class="n">s</span><span class="p">,</span>
                     <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>

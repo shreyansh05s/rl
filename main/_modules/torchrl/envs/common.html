@@ -268,7 +268,7 @@
           <div class="pytorch-left-menu-search">
             
     <div class="version">
-      <a href="../../../../versions.html"><span style="font-size:110%">main (0.4.0) &#x25BC</span></a>
+      <a href="../../../../versions.html"><span style="font-size:110%">main (0.5.0) &#x25BC</span></a>
     </div>
     
 
@@ -417,7 +417,6 @@
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
 <span class="kn">from</span> <span class="nn">tensordict</span> <span class="kn">import</span> <span class="n">LazyStackedTensorDict</span><span class="p">,</span> <span class="n">TensorDictBase</span><span class="p">,</span> <span class="n">unravel_key</span>
-<span class="kn">from</span> <span class="nn">tensordict.base</span> <span class="kn">import</span> <span class="n">NO_DEFAULT</span>
 <span class="kn">from</span> <span class="nn">tensordict.utils</span> <span class="kn">import</span> <span class="n">NestedKey</span>
 <span class="kn">from</span> <span class="nn">torchrl._utils</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">_ends_with</span><span class="p">,</span>
@@ -3422,21 +3421,11 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
-        <span class="n">device</span><span class="p">:</span> <span class="n">DEVICE_TYPING</span> <span class="o">=</span> <span class="n">NO_DEFAULT</span><span class="p">,</span>
+        <span class="n">device</span><span class="p">:</span> <span class="n">DEVICE_TYPING</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">batch_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">allow_done_after_reset</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-        <span class="k">if</span> <span class="n">device</span> <span class="ow">is</span> <span class="n">NO_DEFAULT</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="s2">&quot;Your wrapper was not given a device. Currently, this &quot;</span>
-                <span class="s2">&quot;value will default to &#39;cpu&#39;. From v0.5 it will &quot;</span>
-                <span class="s2">&quot;default to `None`. With a device of None, no device casting &quot;</span>
-                <span class="s2">&quot;is performed and the resulting tensordicts are deviceless. &quot;</span>
-                <span class="s2">&quot;Please set your device accordingly.&quot;</span><span class="p">,</span>
-                <span class="n">category</span><span class="o">=</span><span class="ne">DeprecationWarning</span><span class="p">,</span>
-            <span class="p">)</span>
-            <span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
             <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span>

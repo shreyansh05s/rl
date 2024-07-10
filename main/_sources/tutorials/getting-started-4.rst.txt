@@ -140,8 +140,6 @@ observations to be returned as well.
 
  .. code-block:: none
 
-    /pytorch/rl/torchrl/envs/common.py:3029: DeprecationWarning: Your wrapper was not given a device. Currently, this value will default to 'cpu'. From v0.5 it will default to `None`. With a device of None, no device casting is performed and the resulting tensordicts are deviceless. Please set your device accordingly.
-      warnings.warn(
     TensorDict(
         fields={
             action: Tensor(shape=torch.Size([3, 2]), device=cpu, dtype=torch.int64, is_shared=False),
@@ -155,14 +153,14 @@ observations to be returned as well.
                     terminated: Tensor(shape=torch.Size([3, 1]), device=cpu, dtype=torch.bool, is_shared=False),
                     truncated: Tensor(shape=torch.Size([3, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
                 batch_size=torch.Size([3]),
-                device=cpu,
+                device=None,
                 is_shared=False),
             observation: Tensor(shape=torch.Size([3, 4]), device=cpu, dtype=torch.float32, is_shared=False),
             pixels: Tensor(shape=torch.Size([3, 400, 600, 3]), device=cpu, dtype=torch.uint8, is_shared=False),
             terminated: Tensor(shape=torch.Size([3, 1]), device=cpu, dtype=torch.bool, is_shared=False),
             truncated: Tensor(shape=torch.Size([3, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
         batch_size=torch.Size([3]),
-        device=cpu,
+        device=None,
         is_shared=False)
 
 
@@ -230,9 +228,9 @@ You should now be ready to code your
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 13.748 seconds)
+   **Total running time of the script:** (0 minutes 13.802 seconds)
 
-**Estimated memory usage:**  47 MB
+**Estimated memory usage:**  40 MB
 
 
 .. _sphx_glr_download_tutorials_getting-started-4.py:

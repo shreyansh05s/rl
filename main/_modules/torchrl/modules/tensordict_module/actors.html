@@ -268,7 +268,7 @@
           <div class="pytorch-left-menu-search">
             
     <div class="version">
-      <a href="../../../../../versions.html"><span style="font-size:110%">main (0.4.0) &#x25BC</span></a>
+      <a href="../../../../../versions.html"><span style="font-size:110%">main (0.5.0) &#x25BC</span></a>
     </div>
     
 
@@ -406,7 +406,6 @@
 <span class="c1"># LICENSE file in the root directory of this source tree.</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">torch</span>
@@ -1324,10 +1323,9 @@
         <span class="n">out_keys</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">NestedKey</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">action_space</span><span class="p">,</span> <span class="n">TensorSpec</span><span class="p">):</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="s2">&quot;Using specs in action_space will be deprecated in v0.4.0,&quot;</span>
-                <span class="s2">&quot; please use the &#39;spec&#39; argument if you want to provide an action spec&quot;</span><span class="p">,</span>
-                <span class="n">category</span><span class="o">=</span><span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="s2">&quot;Using specs in action_space is deprecated. &quot;</span>
+                <span class="s2">&quot;Please use the &#39;spec&#39; argument if you want to provide an action spec&quot;</span>
             <span class="p">)</span>
         <span class="n">action_space</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">_process_action_space_spec</span><span class="p">(</span><span class="n">action_space</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
@@ -1538,10 +1536,9 @@
         <span class="n">action_mask_key</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">NestedKey</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">action_space</span><span class="p">,</span> <span class="n">TensorSpec</span><span class="p">):</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="s2">&quot;Using specs in action_space will be deprecated v0.4.0,&quot;</span>
-                <span class="s2">&quot; please use the &#39;spec&#39; argument if you want to provide an action spec&quot;</span><span class="p">,</span>
-                <span class="n">category</span><span class="o">=</span><span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="s2">&quot;Using specs in action_space is deprecated.&quot;</span>
+                <span class="s2">&quot;Please use the &#39;spec&#39; argument if you want to provide an action spec&quot;</span>
             <span class="p">)</span>
         <span class="n">action_space</span><span class="p">,</span> <span class="n">spec</span> <span class="o">=</span> <span class="n">_process_action_space_spec</span><span class="p">(</span><span class="n">action_space</span><span class="p">,</span> <span class="n">spec</span><span class="p">)</span>
 

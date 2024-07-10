@@ -268,7 +268,7 @@
           <div class="pytorch-left-menu-search">
             
     <div class="version">
-      <a href="../../../../versions.html"><span style="font-size:110%">main (0.4.0) &#x25BC</span></a>
+      <a href="../../../../versions.html"><span style="font-size:110%">main (0.5.0) &#x25BC</span></a>
     </div>
     
 
@@ -808,17 +808,16 @@
             <span class="k">return</span> <span class="n">_do_nothing</span><span class="p">,</span> <span class="n">_do_nothing</span>
 
         <span class="k">if</span> <span class="n">worker_device</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">worker_not_main</span> <span class="o">=</span> <span class="p">[</span><span class="kc">False</span><span class="p">]</span>
+            <span class="n">worker_not_main</span> <span class="o">=</span> <span class="kc">False</span>
 
-            <span class="k">def</span> <span class="nf">find_all_worker_devices</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">worker_not_main</span><span class="o">=</span><span class="n">worker_not_main</span><span class="p">):</span>
+            <span class="k">def</span> <span class="nf">find_all_worker_devices</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
+                <span class="k">nonlocal</span> <span class="n">worker_not_main</span>
                 <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="s2">&quot;device&quot;</span><span class="p">):</span>
-                    <span class="n">worker_not_main</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">worker_not_main</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">or</span> <span class="p">(</span>
-                        <span class="n">item</span><span class="o">.</span><span class="n">device</span> <span class="o">!=</span> <span class="n">self_device</span>
-                    <span class="p">)</span>
+                    <span class="n">worker_not_main</span> <span class="o">=</span> <span class="n">worker_not_main</span> <span class="ow">or</span> <span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">device</span> <span class="o">!=</span> <span class="n">self_device</span><span class="p">)</span>
 
             <span class="k">for</span> <span class="n">td</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">shared_tensordicts</span><span class="p">:</span>
                 <span class="n">td</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">find_all_worker_devices</span><span class="p">,</span> <span class="n">filter_empty</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">worker_not_main</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">worker_not_main</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">():</span>
                     <span class="n">worker_device</span> <span class="o">=</span> <span class="p">(</span>
                         <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cuda&quot;</span><span class="p">)</span>
@@ -833,6 +832,8 @@
                     <span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Did not find a valid worker device&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">worker_device</span> <span class="o">=</span> <span class="n">self_device</span>
 
         <span class="k">if</span> <span class="p">(</span>
             <span class="n">worker_device</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
@@ -862,6 +863,7 @@
             <span class="ow">and</span> <span class="n">self_device</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;mps&quot;</span>
         <span class="p">):</span>
             <span class="k">return</span> <span class="n">_mps_sync</span><span class="p">(</span><span class="n">self_device</span><span class="p">),</span> <span class="n">_mps_sync</span><span class="p">(</span><span class="n">self_device</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_do_nothing</span><span class="p">,</span> <span class="n">_do_nothing</span>
 
     <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">out</span> <span class="o">=</span> <span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>

@@ -271,7 +271,7 @@
           <div class="pytorch-left-menu-search">
             
     <div class="version">
-      <a href="../../versions.html"><span style="font-size:110%">main (0.4.0) &#x25BC</span></a>
+      <a href="../../versions.html"><span style="font-size:110%">main (0.5.0) &#x25BC</span></a>
     </div>
     
 
@@ -486,10 +486,6 @@ backend API allows. Here’s an example using gym:</p>
 <span class="n">env</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">GymEnv</span></a><span class="p">(</span><span class="s2">&quot;Pendulum-v1&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>/pytorch/rl/torchrl/envs/common.py:3029: DeprecationWarning: Your wrapper was not given a device. Currently, this value will default to &#39;cpu&#39;. From v0.5 it will default to `None`. With a device of None, no device casting is performed and the resulting tensordicts are deviceless. Please set your device accordingly.
-  warnings.warn(
-</pre></div>
-</div>
 </section>
 <section id="running-an-environment">
 <h2>Running an environment<a class="headerlink" href="#running-an-environment" title="Permalink to this heading">¶</a></h2>
@@ -520,7 +516,7 @@ looks like:</p>
         terminated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
         truncated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False)},
     batch_size=torch.Size([]),
-    device=cpu,
+    device=None,
     is_shared=False)
 </pre></div>
 </div>
@@ -537,7 +533,7 @@ looks like:</p>
         terminated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
         truncated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False)},
     batch_size=torch.Size([]),
-    device=cpu,
+    device=None,
     is_shared=False)
 </pre></div>
 </div>
@@ -548,7 +544,7 @@ dictionary:</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">reset_with_action</span><span class="p">[</span><span class="s2">&quot;action&quot;</span><span class="p">])</span>
 </pre></div>
 </div>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>tensor([0.5477])
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>tensor([-1.9538])
 </pre></div>
 </div>
 <p>We now need to pass this action tp the environment.
@@ -571,13 +567,13 @@ Multi-Agent RL or stateless environments:</p>
                 terminated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
                 truncated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False)},
             batch_size=torch.Size([]),
-            device=cpu,
+            device=None,
             is_shared=False),
         observation: Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float32, is_shared=False),
         terminated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
         truncated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False)},
     batch_size=torch.Size([]),
-    device=cpu,
+    device=None,
     is_shared=False)
 </pre></div>
 </div>
@@ -608,7 +604,7 @@ the Markov Decision Process, or MDP.</p>
         terminated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
         truncated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False)},
     batch_size=torch.Size([]),
-    device=cpu,
+    device=None,
     is_shared=False)
 </pre></div>
 </div>
@@ -635,13 +631,13 @@ allows you to run them in a closed loop at will:</p>
                 terminated: Tensor(shape=torch.Size([10, 1]), device=cpu, dtype=torch.bool, is_shared=False),
                 truncated: Tensor(shape=torch.Size([10, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
             batch_size=torch.Size([10]),
-            device=cpu,
+            device=None,
             is_shared=False),
         observation: Tensor(shape=torch.Size([10, 3]), device=cpu, dtype=torch.float32, is_shared=False),
         terminated: Tensor(shape=torch.Size([10, 1]), device=cpu, dtype=torch.bool, is_shared=False),
         truncated: Tensor(shape=torch.Size([10, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
     batch_size=torch.Size([10]),
-    device=cpu,
+    device=None,
     is_shared=False)
 </pre></div>
 </div>
@@ -666,13 +662,13 @@ environment, you can index the tensordict like you would index a tensor:</p>
                 terminated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
                 truncated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False)},
             batch_size=torch.Size([]),
-            device=cpu,
+            device=None,
             is_shared=False),
         observation: Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float32, is_shared=False),
         terminated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
         truncated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False)},
     batch_size=torch.Size([]),
-    device=cpu,
+    device=None,
     is_shared=False)
 </pre></div>
 </div>
@@ -722,14 +718,14 @@ The complete list of transforms can be found
                 terminated: Tensor(shape=torch.Size([10, 1]), device=cpu, dtype=torch.bool, is_shared=False),
                 truncated: Tensor(shape=torch.Size([10, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
             batch_size=torch.Size([10]),
-            device=cpu,
+            device=None,
             is_shared=False),
         observation: Tensor(shape=torch.Size([10, 3]), device=cpu, dtype=torch.float32, is_shared=False),
         step_count: Tensor(shape=torch.Size([10, 1]), device=cpu, dtype=torch.int64, is_shared=False),
         terminated: Tensor(shape=torch.Size([10, 1]), device=cpu, dtype=torch.bool, is_shared=False),
         truncated: Tensor(shape=torch.Size([10, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
     batch_size=torch.Size([10]),
-    device=cpu,
+    device=None,
     is_shared=False)
 </pre></div>
 </div>
@@ -787,7 +783,7 @@ the info dictionaries through
 to control the gym backend thanks to
 <a class="reference internal" href="../reference/generated/torchrl.envs.set_gym_backend.html#torchrl.envs.set_gym_backend" title="torchrl.envs.set_gym_backend"><code class="xref py py-func docutils literal notranslate"><span class="pre">set_gym_backend()</span></code></a>.</p></li>
 </ul>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 43.331 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 43.378 seconds)</p>
 <p><strong>Estimated memory usage:</strong>  9 MB</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-tutorials-getting-started-0-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">

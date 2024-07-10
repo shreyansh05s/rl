@@ -91,13 +91,6 @@ backend API allows. Here's an example using gym:
 
 
 
-.. rst-class:: sphx-glr-script-out
-
- .. code-block:: none
-
-    /pytorch/rl/torchrl/envs/common.py:3029: DeprecationWarning: Your wrapper was not given a device. Currently, this value will default to 'cpu'. From v0.5 it will default to `None`. With a device of None, no device casting is performed and the resulting tensordicts are deviceless. Please set your device accordingly.
-      warnings.warn(
-
 
 
 
@@ -147,7 +140,7 @@ looks like:
             terminated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
             truncated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False)},
         batch_size=torch.Size([]),
-        device=cpu,
+        device=None,
         is_shared=False)
 
 
@@ -180,7 +173,7 @@ Now let's take a random action in the action space. First, sample the action:
             terminated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
             truncated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False)},
         batch_size=torch.Size([]),
-        device=cpu,
+        device=None,
         is_shared=False)
 
 
@@ -209,7 +202,7 @@ dictionary:
 
  .. code-block:: none
 
-    tensor([0.5477])
+    tensor([-1.9538])
 
 
 
@@ -249,13 +242,13 @@ Multi-Agent RL or stateless environments:
                     terminated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
                     truncated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False)},
                 batch_size=torch.Size([]),
-                device=cpu,
+                device=None,
                 is_shared=False),
             observation: Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float32, is_shared=False),
             terminated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
             truncated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False)},
         batch_size=torch.Size([]),
-        device=cpu,
+        device=None,
         is_shared=False)
 
 
@@ -305,7 +298,7 @@ the Markov Decision Process, or MDP.
             terminated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
             truncated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False)},
         batch_size=torch.Size([]),
-        device=cpu,
+        device=None,
         is_shared=False)
 
 
@@ -352,13 +345,13 @@ allows you to run them in a closed loop at will:
                     terminated: Tensor(shape=torch.Size([10, 1]), device=cpu, dtype=torch.bool, is_shared=False),
                     truncated: Tensor(shape=torch.Size([10, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
                 batch_size=torch.Size([10]),
-                device=cpu,
+                device=None,
                 is_shared=False),
             observation: Tensor(shape=torch.Size([10, 3]), device=cpu, dtype=torch.float32, is_shared=False),
             terminated: Tensor(shape=torch.Size([10, 1]), device=cpu, dtype=torch.bool, is_shared=False),
             truncated: Tensor(shape=torch.Size([10, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
         batch_size=torch.Size([10]),
-        device=cpu,
+        device=None,
         is_shared=False)
 
 
@@ -400,13 +393,13 @@ environment, you can index the tensordict like you would index a tensor:
                     terminated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
                     truncated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False)},
                 batch_size=torch.Size([]),
-                device=cpu,
+                device=None,
                 is_shared=False),
             observation: Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float32, is_shared=False),
             terminated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
             truncated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False)},
         batch_size=torch.Size([]),
-        device=cpu,
+        device=None,
         is_shared=False)
 
 
@@ -481,14 +474,14 @@ The transform is integrated with the environment through a
                     terminated: Tensor(shape=torch.Size([10, 1]), device=cpu, dtype=torch.bool, is_shared=False),
                     truncated: Tensor(shape=torch.Size([10, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
                 batch_size=torch.Size([10]),
-                device=cpu,
+                device=None,
                 is_shared=False),
             observation: Tensor(shape=torch.Size([10, 3]), device=cpu, dtype=torch.float32, is_shared=False),
             step_count: Tensor(shape=torch.Size([10, 1]), device=cpu, dtype=torch.int64, is_shared=False),
             terminated: Tensor(shape=torch.Size([10, 1]), device=cpu, dtype=torch.bool, is_shared=False),
             truncated: Tensor(shape=torch.Size([10, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
         batch_size=torch.Size([10]),
-        device=cpu,
+        device=None,
         is_shared=False)
 
 
@@ -572,7 +565,7 @@ To explore further what TorchRL's environments can do, go and check:
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 43.331 seconds)
+   **Total running time of the script:** (0 minutes 43.378 seconds)
 
 **Estimated memory usage:**  9 MB
 

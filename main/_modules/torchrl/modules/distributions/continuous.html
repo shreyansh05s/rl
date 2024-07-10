@@ -268,7 +268,7 @@
           <div class="pytorch-left-menu-search">
             
     <div class="version">
-      <a href="../../../../../versions.html"><span style="font-size:110%">main (0.4.0) &#x25BC</span></a>
+      <a href="../../../../../versions.html"><span style="font-size:110%">main (0.5.0) &#x25BC</span></a>
     </div>
     
 
@@ -883,9 +883,10 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">mode</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-            <span class="s2">&quot;This computation of the mode is based on the first-order Taylor expansion &quot;</span>
-            <span class="s2">&quot;of the transform around the normal mean value, which can be inaccurate. &quot;</span>
+            <span class="s2">&quot;This computation of the mode is based on an inaccurate estimation of the mode &quot;</span>
+            <span class="s2">&quot;given the base_dist mode. &quot;</span>
             <span class="s2">&quot;To use a more stable implementation of the mode, use dist.get_mode() method instead. &quot;</span>
+            <span class="s2">&quot;To silence this warning, consider using the DETERMINISTIC exploration_type.&quot;</span>
             <span class="s2">&quot;This implementation will be removed in v0.6.&quot;</span><span class="p">,</span>
             <span class="n">category</span><span class="o">=</span><span class="ne">DeprecationWarning</span><span class="p">,</span>
         <span class="p">)</span>

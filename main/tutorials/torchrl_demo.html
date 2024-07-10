@@ -271,7 +271,7 @@
           <div class="pytorch-left-menu-search">
             
     <div class="version">
-      <a href="../../versions.html"><span style="font-size:110%">main (0.4.0) &#x25BC</span></a>
+      <a href="../../versions.html"><span style="font-size:110%">main (0.5.0) &#x25BC</span></a>
     </div>
     
 
@@ -700,7 +700,7 @@ TensorDict(
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">tensordict_sample</span><span class="p">[</span><span class="s2">&quot;index&quot;</span><span class="p">]</span>
 </pre></div>
 </div>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>tensor([0, 0])
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>tensor([1, 0])
 </pre></div>
 </div>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">tensordict_sample</span><span class="p">[</span><span class="s2">&quot;td_error&quot;</span><span class="p">]</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.rand.html#torch.rand" title="torch.rand" class="sphx-glr-backref-module-torch sphx-glr-backref-type-py-function"><span class="n">torch</span><span class="o">.</span><span class="n">rand</span></a><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
@@ -718,7 +718,7 @@ TensorDict(
 </pre></div>
 </div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>0 0.28791671991348267
-1 1.0
+1 0.06984967738389969
 2 0.0
 </pre></div>
 </div>
@@ -749,13 +749,13 @@ TensorDict(
                 terminated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
                 truncated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False)},
             batch_size=torch.Size([]),
-            device=cpu,
+            device=None,
             is_shared=False),
         observation: Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float32, is_shared=False),
         terminated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
         truncated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False)},
     batch_size=torch.Size([]),
-    device=cpu,
+    device=None,
     is_shared=False)
 </pre></div>
 </div>
@@ -773,7 +773,7 @@ TensorDict(
         terminated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
         truncated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False)},
     batch_size=torch.Size([]),
-    device=cpu,
+    device=None,
     is_shared=False)
 </pre></div>
 </div>
@@ -795,7 +795,7 @@ TensorDict(
 </pre></div>
 </div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>TransformedEnv(
-    env=GymEnv(env=Pendulum-v1, batch_size=torch.Size([]), device=cpu),
+    env=GymEnv(env=Pendulum-v1, batch_size=torch.Size([]), device=None),
     transform=Compose(
             NoopResetEnv(noops=3, random=True),
             ToTensorImage(keys=[&#39;pixels&#39;]),
@@ -820,7 +820,7 @@ TensorDict(
 </pre></div>
 </div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>TransformedEnv(
-    env=GymEnv(env=Pendulum-v1, batch_size=torch.Size([]), device=cpu),
+    env=GymEnv(env=Pendulum-v1, batch_size=torch.Size([]), device=None),
     transform=Compose(
             NoopResetEnv(noops=3, random=True),
             ToTensorImage(keys=[&#39;pixels&#39;]),
@@ -838,7 +838,7 @@ TensorDict(
         terminated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
         truncated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False)},
     batch_size=torch.Size([]),
-    device=cpu,
+    device=None,
     is_shared=False)
 </pre></div>
 </div>
@@ -847,13 +847,13 @@ TensorDict(
 </pre></div>
 </div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>env:  TransformedEnv(
-    env=GymEnv(env=Pendulum-v1, batch_size=torch.Size([]), device=cpu),
+    env=GymEnv(env=Pendulum-v1, batch_size=torch.Size([]), device=None),
     transform=Compose(
             NoopResetEnv(noops=3, random=True),
             ToTensorImage(keys=[&#39;pixels&#39;]),
             ObservationNorm(loc=2.0000, scale=1.0000, keys=[&#39;pixels&#39;])))
 last transform parent:  TransformedEnv(
-    env=GymEnv(env=Pendulum-v1, batch_size=torch.Size([]), device=cpu),
+    env=GymEnv(env=Pendulum-v1, batch_size=torch.Size([]), device=None),
     transform=Compose(
             NoopResetEnv(noops=3, random=True),
             ToTensorImage(keys=[&#39;pixels&#39;])))
@@ -885,7 +885,7 @@ last transform parent:  TransformedEnv(
         terminated: Tensor(shape=torch.Size([4, 1]), device=cpu, dtype=torch.bool, is_shared=False),
         truncated: Tensor(shape=torch.Size([4, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
     batch_size=torch.Size([4]),
-    device=cpu,
+    device=None,
     is_shared=False)
 </pre></div>
 </div>
@@ -1357,7 +1357,7 @@ TensorDict(
                 terminated: Tensor(shape=torch.Size([100, 1]), device=cpu, dtype=torch.bool, is_shared=False),
                 truncated: Tensor(shape=torch.Size([100, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
             batch_size=torch.Size([100]),
-            device=cpu,
+            device=None,
             is_shared=False),
         observation: Tensor(shape=torch.Size([100, 3]), device=cpu, dtype=torch.float32, is_shared=False),
         terminated: Tensor(shape=torch.Size([100, 1]), device=cpu, dtype=torch.bool, is_shared=False),
@@ -1398,13 +1398,13 @@ TensorDict(
                 terminated: Tensor(shape=torch.Size([100, 1]), device=cpu, dtype=torch.bool, is_shared=False),
                 truncated: Tensor(shape=torch.Size([100, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
             batch_size=torch.Size([100]),
-            device=cpu,
+            device=None,
             is_shared=False),
         observation: Tensor(shape=torch.Size([100, 3]), device=cpu, dtype=torch.float32, is_shared=False),
         terminated: Tensor(shape=torch.Size([100, 1]), device=cpu, dtype=torch.bool, is_shared=False),
         truncated: Tensor(shape=torch.Size([100, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
     batch_size=torch.Size([100]),
-    device=cpu,
+    device=None,
     is_shared=False)
 </pre></div>
 </div>
@@ -1470,28 +1470,28 @@ We use a SerialEnv for simplicity, but for larger jobs a ParallelEnv would be be
 </div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>TensorDict(
     fields={
-        action: Tensor(shape=torch.Size([6, 10, 1]), device=cpu, dtype=torch.float32, is_shared=False),
+        action: Tensor(shape=torch.Size([2, 3, 10, 1]), device=cpu, dtype=torch.float32, is_shared=False),
         collector: TensorDict(
             fields={
-                traj_ids: Tensor(shape=torch.Size([6, 10]), device=cpu, dtype=torch.int64, is_shared=False)},
-            batch_size=torch.Size([6, 10]),
+                traj_ids: Tensor(shape=torch.Size([2, 3, 10]), device=cpu, dtype=torch.int64, is_shared=False)},
+            batch_size=torch.Size([2, 3, 10]),
             device=cpu,
             is_shared=False),
-        done: Tensor(shape=torch.Size([6, 10, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+        done: Tensor(shape=torch.Size([2, 3, 10, 1]), device=cpu, dtype=torch.bool, is_shared=False),
         next: TensorDict(
             fields={
-                done: Tensor(shape=torch.Size([6, 10, 1]), device=cpu, dtype=torch.bool, is_shared=False),
-                observation: Tensor(shape=torch.Size([6, 10, 3]), device=cpu, dtype=torch.float32, is_shared=False),
-                reward: Tensor(shape=torch.Size([6, 10, 1]), device=cpu, dtype=torch.float32, is_shared=False),
-                terminated: Tensor(shape=torch.Size([6, 10, 1]), device=cpu, dtype=torch.bool, is_shared=False),
-                truncated: Tensor(shape=torch.Size([6, 10, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
-            batch_size=torch.Size([6, 10]),
+                done: Tensor(shape=torch.Size([2, 3, 10, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+                observation: Tensor(shape=torch.Size([2, 3, 10, 3]), device=cpu, dtype=torch.float32, is_shared=False),
+                reward: Tensor(shape=torch.Size([2, 3, 10, 1]), device=cpu, dtype=torch.float32, is_shared=False),
+                terminated: Tensor(shape=torch.Size([2, 3, 10, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+                truncated: Tensor(shape=torch.Size([2, 3, 10, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
+            batch_size=torch.Size([2, 3, 10]),
             device=cpu,
             is_shared=False),
-        observation: Tensor(shape=torch.Size([6, 10, 3]), device=cpu, dtype=torch.float32, is_shared=False),
-        terminated: Tensor(shape=torch.Size([6, 10, 1]), device=cpu, dtype=torch.bool, is_shared=False),
-        truncated: Tensor(shape=torch.Size([6, 10, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
-    batch_size=torch.Size([6, 10]),
+        observation: Tensor(shape=torch.Size([2, 3, 10, 3]), device=cpu, dtype=torch.float32, is_shared=False),
+        terminated: Tensor(shape=torch.Size([2, 3, 10, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+        truncated: Tensor(shape=torch.Size([2, 3, 10, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
+    batch_size=torch.Size([2, 3, 10]),
     device=cpu,
     is_shared=False)
 3
@@ -1649,8 +1649,8 @@ Since the library is nascent, it is a great time for you to shape it the way you
 <section id="installing-the-library">
 <h2>Installing the Library<a class="headerlink" href="#installing-the-library" title="Permalink to this heading">¶</a></h2>
 <p>The library is on PyPI: <em>pip install torchrl</em></p>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (4 minutes 18.762 seconds)</p>
-<p><strong>Estimated memory usage:</strong>  16 MB</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (4 minutes 22.794 seconds)</p>
+<p><strong>Estimated memory usage:</strong>  15 MB</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-tutorials-torchrl-demo-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/36fe09d5d4546649ee1a029c7144936e/torchrl_demo.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">torchrl_demo.ipynb</span></code></a></p>

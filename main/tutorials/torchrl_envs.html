@@ -271,7 +271,7 @@
           <div class="pytorch-left-menu-search">
             
     <div class="version">
-      <a href="../../versions.html"><span style="font-size:110%">main (0.4.0) &#x25BC</span></a>
+      <a href="../../versions.html"><span style="font-size:110%">main (0.5.0) &#x25BC</span></a>
     </div>
     
 
@@ -491,7 +491,7 @@ Reward and action do not have this restriction:</p>
             high=Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float32, contiguous=True)),
         device=cpu,
         dtype=torch.float32,
-        domain=continuous), device=cpu, shape=torch.Size([]))
+        domain=continuous), device=None, shape=torch.Size([]))
 Env action_spec:
  BoundedTensorSpec(
     shape=torch.Size([1]),
@@ -529,7 +529,7 @@ projected action:
 </pre></div>
 </div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>random action:
- tensor([0.4948])
+ tensor([-0.7658])
 </pre></div>
 </div>
 <p>Out of these specs, the <code class="docutils literal notranslate"><span class="pre">done_spec</span></code> deserves a special attention. In TorchRL,
@@ -561,7 +561,7 @@ these three signals:</p>
         space=DiscreteBox(n=2),
         device=cpu,
         dtype=torch.bool,
-        domain=discrete), device=cpu, shape=torch.Size([]))
+        domain=discrete), device=None, shape=torch.Size([]))
 </pre></div>
 </div>
 <p>Envs are also packed with an <code class="docutils literal notranslate"><span class="pre">env.state_spec</span></code> attribute of type
@@ -591,7 +591,7 @@ and (3) <code class="docutils literal notranslate"><span class="pre">step</span>
         terminated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
         truncated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False)},
     batch_size=torch.Size([]),
-    device=cpu,
+    device=None,
     is_shared=False)
 </pre></div>
 </div>
@@ -624,13 +624,13 @@ we can just generate a random action:</p>
                 terminated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
                 truncated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False)},
             batch_size=torch.Size([]),
-            device=cpu,
+            device=None,
             is_shared=False),
         observation: Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float32, is_shared=False),
         terminated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
         truncated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False)},
     batch_size=torch.Size([]),
-    device=cpu,
+    device=None,
     is_shared=False)
 </pre></div>
 </div>
@@ -650,10 +650,10 @@ done via the simple shortcut.</p>
                 terminated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
                 truncated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False)},
             batch_size=torch.Size([]),
-            device=cpu,
+            device=None,
             is_shared=False)},
     batch_size=torch.Size([]),
-    device=cpu,
+    device=None,
     is_shared=False)
 </pre></div>
 </div>
@@ -684,7 +684,7 @@ it returns a new tensordict updated such that <em>t &lt; -t’</em>:</p>
         terminated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
         truncated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False)},
     batch_size=torch.Size([]),
-    device=cpu,
+    device=None,
     is_shared=False)
 tensor(True)
 </pre></div>
@@ -730,13 +730,13 @@ easily for a given number of steps:</p>
                 terminated: Tensor(shape=torch.Size([20, 1]), device=cpu, dtype=torch.bool, is_shared=False),
                 truncated: Tensor(shape=torch.Size([20, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
             batch_size=torch.Size([20]),
-            device=cpu,
+            device=None,
             is_shared=False),
         observation: Tensor(shape=torch.Size([20, 3]), device=cpu, dtype=torch.float32, is_shared=False),
         terminated: Tensor(shape=torch.Size([20, 1]), device=cpu, dtype=torch.bool, is_shared=False),
         truncated: Tensor(shape=torch.Size([20, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
     batch_size=torch.Size([20]),
-    device=cpu,
+    device=None,
     is_shared=False)
 </pre></div>
 </div>
@@ -772,7 +772,7 @@ and return the result of the truncated chain.</p>
         terminated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
         truncated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False)},
     batch_size=torch.Size([]),
-    device=cpu,
+    device=None,
     is_shared=False)
 </pre></div>
 </div>
@@ -792,7 +792,7 @@ argument that allows the user to quickly ask for image-based environments:</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">tensordict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;pixels&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">numpy</span><span class="p">())</span>
 </pre></div>
 </div>
-<img src="../_images/sphx_glr_torchrl_envs_001.png" srcset="../_images/sphx_glr_torchrl_envs_001.png" alt="torchrl envs" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.image.AxesImage object at 0x7fcbd2449f70&gt;
+<img src="../_images/sphx_glr_torchrl_envs_001.png" srcset="../_images/sphx_glr_torchrl_envs_001.png" alt="torchrl envs" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.image.AxesImage object at 0x7f9f90414820&gt;
 </pre></div>
 </div>
 <p>Let’s have a look at what the tensordict contains:</p>
@@ -806,7 +806,7 @@ argument that allows the user to quickly ask for image-based environments:</p>
         terminated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
         truncated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False)},
     batch_size=torch.Size([]),
-    device=cpu,
+    device=None,
     is_shared=False)
 </pre></div>
 </div>
@@ -832,17 +832,17 @@ gym environment step method).</p>
 <div class="sphx-glr-script-out highlight-pytb notranslate"><div class="highlight"><pre><span></span><span class="gt">Traceback (most recent call last):</span>
   File <span class="nb">&quot;/pytorch/rl/docs/source/reference/generated/tutorials/torchrl_envs.py&quot;</span>, line <span class="m">275</span>, in <span class="n">&lt;module&gt;</span>
 <span class="w">    </span><span class="n">env</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">GymEnv</span></a><span class="p">(</span><span class="s2">&quot;ALE/Pong-v5&quot;</span><span class="p">)</span>
-  File <span class="nb">&quot;/pytorch/rl/torchrl/envs/libs/gym.py&quot;</span>, line <span class="m">572</span>, in <span class="n">__call__</span>
+  File <span class="nb">&quot;/pytorch/rl/torchrl/envs/libs/gym.py&quot;</span>, line <span class="m">571</span>, in <span class="n">__call__</span>
 <span class="w">    </span><span class="n">instance</span><span class="p">:</span> <span class="n">GymWrapper</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-  File <span class="nb">&quot;/pytorch/rl/torchrl/envs/common.py&quot;</span>, line <span class="m">177</span>, in <span class="n">__call__</span>
+  File <span class="nb">&quot;/pytorch/rl/torchrl/envs/common.py&quot;</span>, line <span class="m">176</span>, in <span class="n">__call__</span>
 <span class="w">    </span><span class="n">instance</span><span class="p">:</span> <span class="n">EnvBase</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-  File <span class="nb">&quot;/pytorch/rl/torchrl/envs/libs/gym.py&quot;</span>, line <span class="m">1372</span>, in <span class="n">__init__</span>
+  File <span class="nb">&quot;/pytorch/rl/torchrl/envs/libs/gym.py&quot;</span>, line <span class="m">1371</span>, in <span class="n">__init__</span>
 <span class="w">    </span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-  File <span class="nb">&quot;/pytorch/rl/torchrl/envs/libs/gym.py&quot;</span>, line <span class="m">785</span>, in <span class="n">__init__</span>
+  File <span class="nb">&quot;/pytorch/rl/torchrl/envs/libs/gym.py&quot;</span>, line <span class="m">784</span>, in <span class="n">__init__</span>
 <span class="w">    </span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-  File <span class="nb">&quot;/pytorch/rl/torchrl/envs/common.py&quot;</span>, line <span class="m">3058</span>, in <span class="n">__init__</span>
+  File <span class="nb">&quot;/pytorch/rl/torchrl/envs/common.py&quot;</span>, line <span class="m">3047</span>, in <span class="n">__init__</span>
 <span class="w">    </span><span class="bp">self</span><span class="o">.</span><span class="n">_env</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_env</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>  <span class="c1"># writes the self._env attribute</span>
-  File <span class="nb">&quot;/pytorch/rl/torchrl/envs/libs/gym.py&quot;</span>, line <span class="m">1424</span>, in <span class="n">_build_env</span>
+  File <span class="nb">&quot;/pytorch/rl/torchrl/envs/libs/gym.py&quot;</span>, line <span class="m">1423</span>, in <span class="n">_build_env</span>
 <span class="w">    </span><span class="n">env</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lib</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="n">env_name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
   File <span class="nb">&quot;/pytorch/rl/env/lib/python3.8/site-packages/gym/envs/registration.py&quot;</span>, line <span class="m">569</span>, in <span class="n">make</span>
 <span class="w">    </span><span class="n">_check_version_exists</span><span class="p">(</span><span class="n">ns</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">version</span><span class="p">)</span>
@@ -1276,8 +1276,8 @@ This small difference will usually be absored throughout training.</p>
 <span class="k">del</span> <span class="n">env</span>
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (1 minutes 32.596 seconds)</p>
-<p><strong>Estimated memory usage:</strong>  2464 MB</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (1 minutes 34.324 seconds)</p>
+<p><strong>Estimated memory usage:</strong>  2776 MB</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-tutorials-torchrl-envs-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/3cb02b3346194d0f8cfea19dd5243c89/torchrl_envs.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">torchrl_envs.ipynb</span></code></a></p>
