@@ -521,20 +521,20 @@ hook is executed every 10 calls to <code class="docutils literal notranslate"><s
 <section id="checkpointing">
 <h2>Checkpointing<a class="headerlink" href="#checkpointing" title="Permalink to this heading">¶</a></h2>
 <p>The trainer class and hooks support checkpointing, which can be achieved either
-using the <code class="docutils literal notranslate"><span class="pre">torchsnapshot</span> <span class="pre">&lt;https://github.com/pytorch/torchsnapshot/&gt;``_</span> <span class="pre">backend</span> <span class="pre">or</span>
-<span class="pre">the</span> <span class="pre">regular</span> <span class="pre">torch</span> <span class="pre">backend.</span> <span class="pre">This</span> <span class="pre">can</span> <span class="pre">be</span> <span class="pre">controlled</span> <span class="pre">via</span> <span class="pre">the</span> <span class="pre">global</span> <span class="pre">variable</span> <span class="pre">``CKPT_BACKEND</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ CKPT_BACKEND=torch python script.py
+using the <a class="reference external" href="https://github.com/pytorch/torchsnapshot/">torchsnapshot</a> backend or
+the regular torch backend. This can be controlled via the global variable <code class="docutils literal notranslate"><span class="pre">CKPT_BACKEND</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ CKPT_BACKEND=torchsnapshot python script.py
 </pre></div>
 </div>
-<p>which defaults to <code class="docutils literal notranslate"><span class="pre">torchsnapshot</span></code>. The advantage of torchsnapshot over pytorch
+<p><code class="docutils literal notranslate"><span class="pre">CKPT_BACKEND</span></code> defaults to <code class="docutils literal notranslate"><span class="pre">torch</span></code>. The advantage of torchsnapshot over pytorch
 is that it is a more flexible API, which supports distributed checkpointing and
 also allows users to load tensors from a file stored on disk to a tensor with a
 physical storage (which pytorch currently does not support). This allows, for instance,
 to load tensors from and to a replay buffer that would otherwise not fit in memory.</p>
-<p>When building a trainer, one can provide a file path where the checkpoints are to
+<p>When building a trainer, one can provide a path where the checkpoints are to
 be written. With the <code class="docutils literal notranslate"><span class="pre">torchsnapshot</span></code> backend, a directory path is expected,
 whereas the <code class="docutils literal notranslate"><span class="pre">torch</span></code> backend expects a file path (typically a  <code class="docutils literal notranslate"><span class="pre">.pt</span></code> file).</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">filepath</span> <span class="o">=</span> <span class="s2">&quot;path/to/dir/&quot;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">filepath</span> <span class="o">=</span> <span class="s2">&quot;path/to/dir/or/file&quot;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">trainer</span> <span class="o">=</span> <span class="n">Trainer</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="n">collector</span><span class="o">=</span><span class="n">collector</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">total_frames</span><span class="o">=</span><span class="n">total_frames</span><span class="p">,</span>

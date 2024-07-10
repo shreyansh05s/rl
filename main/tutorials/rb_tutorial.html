@@ -646,8 +646,8 @@ samples: a= tensor([[ 4,  5,  6,  7],
 </pre></div>
 </div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>The buffer has 3 elements
-the &#39;a&#39; tensor is stored in /pytorch/rl/docs/source/reference/generated/tutorials/&lt;TemporaryDirectory &#39;/tmp/tmpil2igxhh&#39;&gt;/a.memmap
-the (&#39;b&#39;, &#39;c&#39;) tensor is stored in /pytorch/rl/docs/source/reference/generated/tutorials/&lt;TemporaryDirectory &#39;/tmp/tmpil2igxhh&#39;&gt;/b/c.memmap
+the &#39;a&#39; tensor is stored in /pytorch/rl/docs/source/reference/generated/tutorials/&lt;TemporaryDirectory &#39;/tmp/tmpyugqebxv&#39;&gt;/a.memmap
+the (&#39;b&#39;, &#39;c&#39;) tensor is stored in /pytorch/rl/docs/source/reference/generated/tutorials/&lt;TemporaryDirectory &#39;/tmp/tmpyugqebxv&#39;&gt;/b/c.memmap
 </pre></div>
 </div>
 </section>
@@ -1066,7 +1066,7 @@ the priority signal should be fetched:</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">sample</span><span class="p">[</span><span class="s2">&quot;index&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">numpy</span><span class="p">())</span>
 </pre></div>
 </div>
-<img src="../_images/sphx_glr_rb_tutorial_001.png" srcset="../_images/sphx_glr_rb_tutorial_001.png" alt="rb tutorial" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>(array([144.,  55., 140.,  64., 132.,  62., 118.,  73., 121., 115.]), array([ 0. ,  1.5,  3. ,  4.5,  6. ,  7.5,  9. , 10.5, 12. , 13.5, 15. ]), &lt;BarContainer object of 10 artists&gt;)
+<img src="../_images/sphx_glr_rb_tutorial_001.png" srcset="../_images/sphx_glr_rb_tutorial_001.png" alt="rb tutorial" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>(array([133.,  59., 152.,  59., 121.,  70., 121.,  65., 123., 121.]), array([ 0. ,  1.5,  3. ,  4.5,  6. ,  7.5,  9. , 10.5, 12. , 13.5, 15. ]), &lt;BarContainer object of 10 artists&gt;)
 </pre></div>
 </div>
 <p>Once we have worked with our sample, we update the priority key using
@@ -1086,7 +1086,7 @@ sampled items:</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">sample</span><span class="p">[</span><span class="s2">&quot;index&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">numpy</span><span class="p">())</span>
 </pre></div>
 </div>
-<img src="../_images/sphx_glr_rb_tutorial_002.png" srcset="../_images/sphx_glr_rb_tutorial_002.png" alt="rb tutorial" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>(array([207., 121., 170.,  94., 154.,  59.,  86.,  45.,  61.,  27.]), array([ 0. ,  1.5,  3. ,  4.5,  6. ,  7.5,  9. , 10.5, 12. , 13.5, 15. ]), &lt;BarContainer object of 10 artists&gt;)
+<img src="../_images/sphx_glr_rb_tutorial_002.png" srcset="../_images/sphx_glr_rb_tutorial_002.png" alt="rb tutorial" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>(array([202., 102., 190.,  76., 142.,  58., 119.,  35.,  66.,  34.]), array([ 0. ,  1.5,  3. ,  4.5,  6. ,  7.5,  9. , 10.5, 12. , 13.5, 15. ]), &lt;BarContainer object of 10 artists&gt;)
 </pre></div>
 </div>
 </section>
@@ -1462,8 +1462,8 @@ which are based on our Replay Buffer API;</p></li>
 such as <code class="xref py py-class docutils literal notranslate"><span class="pre">TensorDictMaxValueWriter</span></code>.</p></li>
 <li><p>Check how to checkpoint ReplayBuffers in <a class="reference internal" href="../reference/data.html#checkpoint-rb"><span class="std std-ref">the doc</span></a>.</p></li>
 </ul>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (3 minutes 3.051 seconds)</p>
-<p><strong>Estimated memory usage:</strong>  132 MB</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (3 minutes 1.815 seconds)</p>
+<p><strong>Estimated memory usage:</strong>  146 MB</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-tutorials-rb-tutorial-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/c64b1e484ba3e0219549719cc3c37479/rb_tutorial.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">rb_tutorial.ipynb</span></code></a></p>
