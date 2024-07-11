@@ -653,6 +653,31 @@ indicated key.</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="torchrl.data.BinaryDiscreteTensorSpec.update_mask">
+<span class="sig-name descname"><span class="pre">update_mask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mask</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#torchrl.data.BinaryDiscreteTensorSpec.update_mask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets a mask to prevent some of the possible outcomes when a sample is taken.</p>
+<p>The mask can also be set during initialization of the spec.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mask</strong> (<a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.3)"><em>torch.Tensor</em></a><em> or </em><em>None</em>) – boolean mask. If None, the mask is
+disabled. Otherwise, the shape of the mask must be expandable to
+the shape of the equivalent one-hot spec. <code class="docutils literal notranslate"><span class="pre">False</span></code> masks an
+outcome and <code class="docutils literal notranslate"><span class="pre">True</span></code> leaves the outcome unmasked. If all of the
+possible outcomes are masked, then an error is raised when a
+sample is taken.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mask</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span> <span class="o">=</span> <span class="n">DiscreteTensorSpec</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="p">(</span><span class="mi">10</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">int64</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># One of the three possible outcomes is masked</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span><span class="o">.</span><span class="n">rand</span><span class="p">()</span>
+<span class="go">tensor([0, 2, 2, 0, 2, 0, 2, 2, 0, 2])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="torchrl.data.BinaryDiscreteTensorSpec.view">
 <span class="sig-name descname"><span class="pre">view</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">shape</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#torchrl.data.BinaryDiscreteTensorSpec.view" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reshapes a tensorspec.</p>

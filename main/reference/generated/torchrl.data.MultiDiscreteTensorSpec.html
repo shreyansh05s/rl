@@ -426,6 +426,8 @@ the tensors.</p></li>
 <li><p><strong>dtype</strong> (<em>str</em><em> or </em><a class="reference external" href="https://pytorch.org/docs/stable/tensor_attributes.html#torch.dtype" title="(in PyTorch v2.3)"><em>torch.dtype</em></a><em>, </em><em>optional</em>) – dtype of the tensors.</p></li>
 <li><p><strong>remove_singleton</strong> (<em>bool</em><em>, </em><em>optional</em>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code>, singleton samples (of size [1])
 will be squeezed. Defaults to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>mask</strong> (<a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.3)"><em>torch.Tensor</em></a><em> or </em><em>None</em>) – mask some of the possible outcomes when a
+sample is taken. See <a class="reference internal" href="#torchrl.data.MultiDiscreteTensorSpec.update_mask" title="torchrl.data.MultiDiscreteTensorSpec.update_mask"><code class="xref py py-meth docutils literal notranslate"><span class="pre">update_mask()</span></code></a> for more information.</p></li>
 </ul>
 </dd>
 </dl>
@@ -657,6 +659,38 @@ indicated key.</p></li>
 <span class="sig-name descname"><span class="pre">unflatten</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sizes</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#torchrl.data.MultiDiscreteTensorSpec.unflatten" title="Permalink to this definition">¶</a></dt>
 <dd><p>Unflattens a tensorspec.</p>
 <p>Check <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.unflatten.html#torch.unflatten" title="(in PyTorch v2.3)"><code class="xref py py-func docutils literal notranslate"><span class="pre">unflatten()</span></code></a> for more information on this method.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="torchrl.data.MultiDiscreteTensorSpec.update_mask">
+<span class="sig-name descname"><span class="pre">update_mask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mask</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/torchrl/data/tensor_specs.html#MultiDiscreteTensorSpec.update_mask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.data.MultiDiscreteTensorSpec.update_mask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets a mask to prevent some of the possible outcomes when a sample is taken.</p>
+<p>The mask can also be set during initialization of the spec.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mask</strong> (<a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.3)"><em>torch.Tensor</em></a><em> or </em><em>None</em>) – boolean mask. If None, the mask is
+disabled. Otherwise, the shape of the mask must be expandable to
+the shape of the equivalent one-hot spec. <code class="docutils literal notranslate"><span class="pre">False</span></code> masks an
+outcome and <code class="docutils literal notranslate"><span class="pre">True</span></code> leaves the outcome unmasked. If all of the
+possible outcomes are masked, then an error is raised when a
+sample is taken.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mask</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span>
+<span class="gp">... </span>                     <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span> <span class="o">=</span> <span class="n">MultiDiscreteTensorSpec</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">int64</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># All but one of the three possible outcomes for the first</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># group are masked, but neither of the two possible</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># outcomes for the second group are masked.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span><span class="o">.</span><span class="n">rand</span><span class="p">()</span>
+<span class="go">tensor([[2, 1],</span>
+<span class="go">        [2, 0],</span>
+<span class="go">        [2, 1],</span>
+<span class="go">        [2, 1],</span>
+<span class="go">        [2, 0]])</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py method">

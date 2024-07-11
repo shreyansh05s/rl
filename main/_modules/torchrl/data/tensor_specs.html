@@ -1728,6 +1728,8 @@
 <span class="sd">            discrete outcomes are sampled from an arbitrary set, whose</span>
 <span class="sd">            elements will be mapped in a register to a series of unique</span>
 <span class="sd">            one-hot binary vectors).</span>
+<span class="sd">        mask (torch.Tensor or None): mask some of the possible outcomes when a</span>
+<span class="sd">            sample is taken. See :meth:`~.update_mask` for more information.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -1769,7 +1771,26 @@
     <span class="k">def</span> <span class="nf">n</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">n</span>
 
-    <span class="k">def</span> <span class="nf">update_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mask</span><span class="p">):</span>
+<div class="viewcode-block" id="OneHotDiscreteTensorSpec.update_mask"><a class="viewcode-back" href="../../../reference/generated/torchrl.data.OneHotDiscreteTensorSpec.html#torchrl.data.OneHotDiscreteTensorSpec.update_mask">[docs]</a>    <span class="k">def</span> <span class="nf">update_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mask</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets a mask to prevent some of the possible outcomes when a sample is taken.</span>
+
+<span class="sd">        The mask can also be set during initialization of the spec.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            mask (torch.Tensor or None): boolean mask. If None, the mask is</span>
+<span class="sd">                disabled. Otherwise, the shape of the mask must be expandable to</span>
+<span class="sd">                the shape of the spec. ``False`` masks an outcome and ``True``</span>
+<span class="sd">                leaves the outcome unmasked. If all of the possible outcomes are</span>
+<span class="sd">                masked, then an error is raised when a sample is taken.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; mask = torch.tensor([True, False, False])</span>
+<span class="sd">            &gt;&gt;&gt; ts = OneHotDiscreteTensorSpec(3, (2, 3,), dtype=torch.int64, mask=mask)</span>
+<span class="sd">            &gt;&gt;&gt; # All but one of the three possible outcomes are masked</span>
+<span class="sd">            &gt;&gt;&gt; ts.rand()</span>
+<span class="sd">            tensor([[1, 0, 0],</span>
+<span class="sd">                    [1, 0, 0]])</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">mask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">mask</span> <span class="o">=</span> <span class="n">mask</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_safe_shape</span><span class="p">)</span>
@@ -1777,7 +1798,7 @@
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Cannot expand mask to the desired shape.&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">err</span>
             <span class="k">if</span> <span class="n">mask</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Only boolean masks are accepted.&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">mask</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">mask</span></div>
 
     <span class="k">def</span> <span class="nf">to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dest</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">DEVICE_TYPING</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">CompositeSpec</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">dest</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -2918,6 +2939,8 @@
 <span class="sd">        device (str, int or torch.device, optional): device of</span>
 <span class="sd">            the tensors.</span>
 <span class="sd">        dtype (str or torch.dtype, optional): dtype of the tensors.</span>
+<span class="sd">        mask (torch.Tensor or None): mask some of the possible outcomes when a</span>
+<span class="sd">            sample is taken. See :meth:`~.update_mask` for more information.</span>
 
 <span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; ts = MultiOneHotDiscreteTensorSpec((3,2,3))</span>
@@ -2965,7 +2988,29 @@
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update_mask</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">update_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mask</span><span class="p">):</span>
+<div class="viewcode-block" id="MultiOneHotDiscreteTensorSpec.update_mask"><a class="viewcode-back" href="../../../reference/generated/torchrl.data.MultiOneHotDiscreteTensorSpec.html#torchrl.data.MultiOneHotDiscreteTensorSpec.update_mask">[docs]</a>    <span class="k">def</span> <span class="nf">update_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mask</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets a mask to prevent some of the possible outcomes when a sample is taken.</span>
+
+<span class="sd">        The mask can also be set during initialization of the spec.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            mask (torch.Tensor or None): boolean mask. If None, the mask is</span>
+<span class="sd">                disabled. Otherwise, the shape of the mask must be expandable to</span>
+<span class="sd">                the shape of the spec. ``False`` masks an outcome and ``True``</span>
+<span class="sd">                leaves the outcome unmasked. If all of the possible outcomes are</span>
+<span class="sd">                masked, then an error is raised when a sample is taken.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; mask = torch.tensor([True, False, False,</span>
+<span class="sd">            ...                      True, True])</span>
+<span class="sd">            &gt;&gt;&gt; ts = MultiOneHotDiscreteTensorSpec((3, 2), (2, 5), dtype=torch.int64, mask=mask)</span>
+<span class="sd">            &gt;&gt;&gt; # All but one of the three possible outcomes for the first</span>
+<span class="sd">            &gt;&gt;&gt; # one-hot group are masked, but neither of the two possible</span>
+<span class="sd">            &gt;&gt;&gt; # outcomes for the second one-hot group are masked.</span>
+<span class="sd">            &gt;&gt;&gt; ts.rand()</span>
+<span class="sd">            tensor([[1, 0, 0, 0, 1],</span>
+<span class="sd">                    [1, 0, 0, 1, 0]])</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">mask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">mask</span> <span class="o">=</span> <span class="n">mask</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_safe_shape</span><span class="p">)</span>
@@ -2973,7 +3018,7 @@
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Cannot expand mask to the desired shape.&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">err</span>
             <span class="k">if</span> <span class="n">mask</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Only boolean masks are accepted.&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">mask</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">mask</span></div>
 
     <span class="k">def</span> <span class="nf">to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dest</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">DEVICE_TYPING</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">CompositeSpec</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dest</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">dtype</span><span class="p">):</span>
@@ -3302,6 +3347,8 @@
 <span class="sd">        shape: (torch.Size, optional): shape of the variable, default is &quot;torch.Size([])&quot;.</span>
 <span class="sd">        device (str, int or torch.device, optional): device of the tensors.</span>
 <span class="sd">        dtype (str or torch.dtype, optional): dtype of the tensors.</span>
+<span class="sd">        mask (torch.Tensor or None): mask some of the possible outcomes when a</span>
+<span class="sd">            sample is taken. See :meth:`~.update_mask` for more information.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -3334,7 +3381,26 @@
     <span class="k">def</span> <span class="nf">n</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">n</span>
 
-    <span class="k">def</span> <span class="nf">update_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mask</span><span class="p">):</span>
+<div class="viewcode-block" id="DiscreteTensorSpec.update_mask"><a class="viewcode-back" href="../../../reference/generated/torchrl.data.DiscreteTensorSpec.html#torchrl.data.DiscreteTensorSpec.update_mask">[docs]</a>    <span class="k">def</span> <span class="nf">update_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mask</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets a mask to prevent some of the possible outcomes when a sample is taken.</span>
+
+<span class="sd">        The mask can also be set during initialization of the spec.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            mask (torch.Tensor or None): boolean mask. If None, the mask is</span>
+<span class="sd">                disabled. Otherwise, the shape of the mask must be expandable to</span>
+<span class="sd">                the shape of the equivalent one-hot spec. ``False`` masks an</span>
+<span class="sd">                outcome and ``True`` leaves the outcome unmasked. If all of the</span>
+<span class="sd">                possible outcomes are masked, then an error is raised when a</span>
+<span class="sd">                sample is taken.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; mask = torch.tensor([True, False, True])</span>
+<span class="sd">            &gt;&gt;&gt; ts = DiscreteTensorSpec(3, (10,), dtype=torch.int64, mask=mask)</span>
+<span class="sd">            &gt;&gt;&gt; # One of the three possible outcomes is masked</span>
+<span class="sd">            &gt;&gt;&gt; ts.rand()</span>
+<span class="sd">            tensor([0, 2, 2, 0, 2, 0, 2, 2, 0, 2])</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">mask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">mask</span> <span class="o">=</span> <span class="n">mask</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">_remove_neg_shapes</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">n</span><span class="p">))</span>
@@ -3342,7 +3408,7 @@
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Cannot expand mask to the desired shape.&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">err</span>
             <span class="k">if</span> <span class="n">mask</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Only boolean masks are accepted.&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">mask</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">mask</span></div>
 
 <div class="viewcode-block" id="DiscreteTensorSpec.rand"><a class="viewcode-back" href="../../../reference/generated/torchrl.data.DiscreteTensorSpec.html#torchrl.data.DiscreteTensorSpec.rand">[docs]</a>    <span class="k">def</span> <span class="nf">rand</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">shape</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -3717,6 +3783,8 @@
 <span class="sd">        dtype (str or torch.dtype, optional): dtype of the tensors.</span>
 <span class="sd">        remove_singleton (bool, optional): if ``True``, singleton samples (of size [1])</span>
 <span class="sd">            will be squeezed. Defaults to ``True``.</span>
+<span class="sd">        mask (torch.Tensor or None): mask some of the possible outcomes when a</span>
+<span class="sd">            sample is taken. See :meth:`~.update_mask` for more information.</span>
 
 <span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; ts = MultiDiscreteTensorSpec((3, 2, 3))</span>
@@ -3762,7 +3830,33 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">update_mask</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">remove_singleton</span> <span class="o">=</span> <span class="n">remove_singleton</span>
 
-    <span class="k">def</span> <span class="nf">update_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mask</span><span class="p">):</span>
+<div class="viewcode-block" id="MultiDiscreteTensorSpec.update_mask"><a class="viewcode-back" href="../../../reference/generated/torchrl.data.MultiDiscreteTensorSpec.html#torchrl.data.MultiDiscreteTensorSpec.update_mask">[docs]</a>    <span class="k">def</span> <span class="nf">update_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mask</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets a mask to prevent some of the possible outcomes when a sample is taken.</span>
+
+<span class="sd">        The mask can also be set during initialization of the spec.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            mask (torch.Tensor or None): boolean mask. If None, the mask is</span>
+<span class="sd">                disabled. Otherwise, the shape of the mask must be expandable to</span>
+<span class="sd">                the shape of the equivalent one-hot spec. ``False`` masks an</span>
+<span class="sd">                outcome and ``True`` leaves the outcome unmasked. If all of the</span>
+<span class="sd">                possible outcomes are masked, then an error is raised when a</span>
+<span class="sd">                sample is taken.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; mask = torch.tensor([False, False, True,</span>
+<span class="sd">            ...                      True, True])</span>
+<span class="sd">            &gt;&gt;&gt; ts = MultiDiscreteTensorSpec((3, 2), (5, 2,), dtype=torch.int64, mask=mask)</span>
+<span class="sd">            &gt;&gt;&gt; # All but one of the three possible outcomes for the first</span>
+<span class="sd">            &gt;&gt;&gt; # group are masked, but neither of the two possible</span>
+<span class="sd">            &gt;&gt;&gt; # outcomes for the second group are masked.</span>
+<span class="sd">            &gt;&gt;&gt; ts.rand()</span>
+<span class="sd">            tensor([[2, 1],</span>
+<span class="sd">                    [2, 0],</span>
+<span class="sd">                    [2, 1],</span>
+<span class="sd">                    [2, 1],</span>
+<span class="sd">                    [2, 0]])</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">mask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">mask</span> <span class="o">=</span> <span class="n">mask</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">_remove_neg_shapes</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">mask</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
@@ -3770,7 +3864,7 @@
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Cannot expand mask to the desired shape.&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">err</span>
             <span class="k">if</span> <span class="n">mask</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Only boolean masks are accepted.&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">mask</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">mask</span></div>
 
     <span class="k">def</span> <span class="nf">to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dest</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">DEVICE_TYPING</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">CompositeSpec</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dest</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">dtype</span><span class="p">):</span>
