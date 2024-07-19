@@ -10,7 +10,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>AdditiveGaussianWrapper &mdash; torchrl main documentation</title>
+  <title>OrnsteinUhlenbeckProcessModule &mdash; torchrl main documentation</title>
   
 
   
@@ -39,8 +39,8 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="EGreedyModule" href="torchrl.modules.tensordict_module.EGreedyModule.html" />
-    <link rel="prev" title="AdditiveGaussianModule" href="torchrl.modules.tensordict_module.AdditiveGaussianModule.html" />
+    <link rel="next" title="OrnsteinUhlenbeckProcessWrapper" href="torchrl.modules.tensordict_module.OrnsteinUhlenbeckProcessWrapper.html" />
+    <link rel="prev" title="EGreedyWrapper" href="torchrl.modules.tensordict_module.EGreedyWrapper.html" />
   <!-- Google Tag Manager -->
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -370,13 +370,13 @@
         
           <li><a href="../modules.html">torchrl.modules package</a> &gt;</li>
         
-      <li>AdditiveGaussianWrapper</li>
+      <li>OrnsteinUhlenbeckProcessModule</li>
     
     
       <li class="pytorch-breadcrumbs-aside">
         
             
-            <a href="../../_sources/reference/generated/torchrl.modules.tensordict_module.AdditiveGaussianWrapper.rst.txt" rel="nofollow"><img src="../../_static/images/view-page-source-icon.svg"></a>
+            <a href="../../_sources/reference/generated/torchrl.modules.tensordict_module.OrnsteinUhlenbeckProcessModule.rst.txt" rel="nofollow"><img src="../../_static/images/view-page-source-icon.svg"></a>
           
         
       </li>
@@ -408,51 +408,98 @@
             <div role="main" class="main-content" itemscope="itemscope" itemtype="http://schema.org/Article">
              <article itemprop="articleBody" id="pytorch-article" class="pytorch-article">
               
-  <section id="additivegaussianwrapper">
-<h1>AdditiveGaussianWrapper<a class="headerlink" href="#additivegaussianwrapper" title="Permalink to this heading">¶</a></h1>
+  <section id="ornsteinuhlenbeckprocessmodule">
+<h1>OrnsteinUhlenbeckProcessModule<a class="headerlink" href="#ornsteinuhlenbeckprocessmodule" title="Permalink to this heading">¶</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="torchrl.modules.tensordict_module.AdditiveGaussianWrapper">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">torchrl.modules.tensordict_module.</span></span><span class="sig-name descname"><span class="pre">AdditiveGaussianWrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/torchrl/modules/tensordict_module/exploration.html#AdditiveGaussianWrapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.modules.tensordict_module.AdditiveGaussianWrapper" title="Permalink to this definition">¶</a></dt>
-<dd><p>Additive Gaussian PO wrapper.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>policy</strong> (<em>TensorDictModule</em>) – a policy.</p>
-</dd>
-<dt class="field-even">Keyword Arguments<span class="colon">:</span></dt>
-<dd class="field-even"><ul class="simple">
-<li><p><strong>sigma_init</strong> (<em>scalar</em><em>, </em><em>optional</em>) – initial epsilon value.
-default: 1.0</p></li>
-<li><p><strong>sigma_end</strong> (<em>scalar</em><em>, </em><em>optional</em>) – final epsilon value.
-default: 0.1</p></li>
-<li><p><strong>annealing_num_steps</strong> (<em>int</em><em>, </em><em>optional</em>) – number of steps it will take for
-sigma to reach the <code class="xref py py-obj docutils literal notranslate"><span class="pre">sigma_end</span></code> value.</p></li>
-<li><p><strong>mean</strong> (<a class="reference internal" href="torchrl.data.MultiStep.html#torchrl.data.MultiStep.float" title="torchrl.data.MultiStep.float"><em>float</em></a><em>, </em><em>optional</em>) – mean of each output element’s normal distribution.</p></li>
-<li><p><strong>std</strong> (<a class="reference internal" href="torchrl.data.MultiStep.html#torchrl.data.MultiStep.float" title="torchrl.data.MultiStep.float"><em>float</em></a><em>, </em><em>optional</em>) – standard deviation of each output element’s normal distribution.</p></li>
-<li><p><strong>action_key</strong> (<em>NestedKey</em><em>, </em><em>optional</em>) – if the policy module has more than one output key,
-its output spec will be of type CompositeSpec. One needs to know where to
-find the action spec.
-Default is “action”.</p></li>
-<li><p><strong>spec</strong> (<a class="reference internal" href="torchrl.data.TensorSpec.html#torchrl.data.TensorSpec" title="torchrl.data.TensorSpec"><em>TensorSpec</em></a><em>, </em><em>optional</em>) – if provided, the sampled action will be
-projected onto the valid action space once explored. If not provided,
-the exploration wrapper will attempt to recover it from the policy.</p></li>
-<li><p><strong>safe</strong> (<em>boolean</em><em>, </em><em>optional</em>) – if False, the TensorSpec can be None. If it
-is set to False but the spec is passed, the projection will still
-happen.
-Default is True.</p></li>
-</ul>
-</dd>
-</dl>
+<dt class="sig sig-object py" id="torchrl.modules.tensordict_module.OrnsteinUhlenbeckProcessModule">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">torchrl.modules.tensordict_module.</span></span><span class="sig-name descname"><span class="pre">OrnsteinUhlenbeckProcessModule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/torchrl/modules/tensordict_module/exploration.html#OrnsteinUhlenbeckProcessModule"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.modules.tensordict_module.OrnsteinUhlenbeckProcessModule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ornstein-Uhlenbeck exploration policy module.</p>
+<p>Presented in “CONTINUOUS CONTROL WITH DEEP REINFORCEMENT LEARNING”, <a class="reference external" href="https://arxiv.org/pdf/1509.02971.pdf">https://arxiv.org/pdf/1509.02971.pdf</a>.</p>
+<p>The OU exploration is to be used with continuous control policies and introduces a auto-correlated exploration
+noise. This enables a sort of ‘structured’ exploration.</p>
+<p>Noise equation:</p>
+<div class="math notranslate nohighlight">
+\[noise_t = noise_{t-1} + \theta * (mu - noise_{t-1}) * dt + \sigma_t * \sqrt{dt} * W\]</div>
+<p>Sigma equation:</p>
+<div class="math notranslate nohighlight">
+\[\sigma_t = max(\sigma^{min, (-(\sigma_{t-1} - \sigma^{min}) / (n^{\text{steps annealing}}) * n^{\text{steps}} + \sigma))\]</div>
+<p>To keep track of the steps and noise from sample to sample, an <code class="xref py py-obj docutils literal notranslate"><span class="pre">&quot;ou_prev_noise{id}&quot;</span></code> and <code class="xref py py-obj docutils literal notranslate"><span class="pre">&quot;ou_steps{id}&quot;</span></code> keys
+will be written in the input/output tensordict. It is expected that the tensordict will be zeroed at reset,
+indicating that a new trajectory is being collected. If not, and is the same tensordict is used for consecutive
+trajectories, the step count will keep on increasing across rollouts. Note that the collector classes take care of
+zeroing the tensordict at reset time.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Once an environment has been wrapped in <a class="reference internal" href="#torchrl.modules.tensordict_module.AdditiveGaussianWrapper" title="torchrl.modules.tensordict_module.AdditiveGaussianWrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">AdditiveGaussianWrapper</span></code></a>, it is
-crucial to incorporate a call to <a class="reference internal" href="#torchrl.modules.tensordict_module.AdditiveGaussianWrapper.step" title="torchrl.modules.tensordict_module.AdditiveGaussianWrapper.step"><code class="xref py py-meth docutils literal notranslate"><span class="pre">step()</span></code></a> in the training loop
+<p>It is
+crucial to incorporate a call to <a class="reference internal" href="#torchrl.modules.tensordict_module.OrnsteinUhlenbeckProcessModule.step" title="torchrl.modules.tensordict_module.OrnsteinUhlenbeckProcessModule.step"><code class="xref py py-meth docutils literal notranslate"><span class="pre">step()</span></code></a> in the training loop
 to update the exploration factor.
 Since it is not easy to capture this omission no warning or exception
 will be raised if this is ommitted!</p>
 </div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>spec</strong> (<a class="reference internal" href="torchrl.data.TensorSpec.html#torchrl.data.TensorSpec" title="torchrl.data.TensorSpec"><em>TensorSpec</em></a>) – the spec used for sampling actions. The sampled
+action will be projected onto the valid action space once explored.</p></li>
+<li><p><strong>eps_init</strong> (<em>scalar</em>) – initial epsilon value, determining the amount of noise to be added.
+default: 1.0</p></li>
+<li><p><strong>eps_end</strong> (<em>scalar</em>) – final epsilon value, determining the amount of noise to be added.
+default: 0.1</p></li>
+<li><p><strong>annealing_num_steps</strong> (<em>int</em>) – number of steps it will take for epsilon to reach the eps_end value.
+default: 1000</p></li>
+<li><p><strong>theta</strong> (<em>scalar</em>) – theta factor in the noise equation
+default: 0.15</p></li>
+<li><p><strong>mu</strong> (<em>scalar</em>) – OU average (mu in the noise equation).
+default: 0.0</p></li>
+<li><p><strong>sigma</strong> (<em>scalar</em>) – sigma value in the sigma equation.
+default: 0.2</p></li>
+<li><p><strong>dt</strong> (<em>scalar</em>) – dt in the noise equation.
+default: 0.01</p></li>
+<li><p><strong>x0</strong> (<em>Tensor</em><em>, </em><em>ndarray</em><em>, </em><em>optional</em>) – initial value of the process.
+default: 0.0</p></li>
+<li><p><strong>sigma_min</strong> (<em>number</em><em>, </em><em>optional</em>) – sigma_min in the sigma equation.
+default: None</p></li>
+<li><p><strong>n_steps_annealing</strong> (<em>int</em>) – number of steps for the sigma annealing.
+default: 1000</p></li>
+</ul>
+</dd>
+<dt class="field-even">Keyword Arguments<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>action_key</strong> (<em>NestedKey</em><em>, </em><em>optional</em>) – key of the action to be modified.
+default: “action”</p></li>
+<li><p><strong>is_init_key</strong> (<em>NestedKey</em><em>, </em><em>optional</em>) – key where to find the is_init flag used to reset the noise steps.
+default: “is_init”</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">tensordict</span> <span class="kn">import</span> <span class="n">TensorDict</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">tensordict.nn</span> <span class="kn">import</span> <span class="n">TensorDictSequential</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.data</span> <span class="kn">import</span> <span class="n">BoundedTensorSpec</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.modules</span> <span class="kn">import</span> <span class="n">OrnsteinUhlenbeckProcessModule</span><span class="p">,</span> <span class="n">Actor</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">spec</span> <span class="o">=</span> <span class="n">BoundedTensorSpec</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">([</span><span class="mi">4</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">module</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">policy</span> <span class="o">=</span> <span class="n">Actor</span><span class="p">(</span><span class="n">module</span><span class="o">=</span><span class="n">module</span><span class="p">,</span> <span class="n">spec</span><span class="o">=</span><span class="n">spec</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ou</span> <span class="o">=</span> <span class="n">OrnsteinUhlenbeckProcessModule</span><span class="p">(</span><span class="n">spec</span><span class="o">=</span><span class="n">spec</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">explorative_policy</span> <span class="o">=</span> <span class="n">TensorDictSequential</span><span class="p">(</span><span class="n">policy</span><span class="p">,</span> <span class="n">ou</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">td</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="p">({</span><span class="s2">&quot;observation&quot;</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">4</span><span class="p">)},</span> <span class="n">batch_size</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">explorative_policy</span><span class="p">(</span><span class="n">td</span><span class="p">))</span>
+<span class="go">TensorDict(</span>
+<span class="go">    fields={</span>
+<span class="go">        _ou_prev_noise: Tensor(shape=torch.Size([10, 4]), device=cpu, dtype=torch.float32, is_shared=False),</span>
+<span class="go">        _ou_steps: Tensor(shape=torch.Size([10]), device=cpu, dtype=torch.int64, is_shared=False),</span>
+<span class="go">        action: Tensor(shape=torch.Size([10, 4]), device=cpu, dtype=torch.float32, is_shared=False),</span>
+<span class="go">        observation: Tensor(shape=torch.Size([10, 4]), device=cpu, dtype=torch.float32, is_shared=False)},</span>
+<span class="go">    batch_size=torch.Size([10]),</span>
+<span class="go">    device=None,</span>
+<span class="go">    is_shared=False)</span>
+</pre></div>
+</div>
 <dl class="py method">
-<dt class="sig sig-object py" id="torchrl.modules.tensordict_module.AdditiveGaussianWrapper.forward">
-<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensordict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TensorDictBase</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">TensorDictBase</span></span></span><a class="reference internal" href="../../_modules/torchrl/modules/tensordict_module/exploration.html#AdditiveGaussianWrapper.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.modules.tensordict_module.AdditiveGaussianWrapper.forward" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="torchrl.modules.tensordict_module.OrnsteinUhlenbeckProcessModule.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensordict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TensorDictBase</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">TensorDictBase</span></span></span><a class="reference internal" href="../../_modules/torchrl/modules/tensordict_module/exploration.html#OrnsteinUhlenbeckProcessModule.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.modules.tensordict_module.OrnsteinUhlenbeckProcessModule.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Define the computation performed at every call.</p>
 <p>Should be overridden by all subclasses.</p>
 <div class="admonition note">
@@ -465,13 +512,12 @@ registered hooks while the latter silently ignores them.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="torchrl.modules.tensordict_module.AdditiveGaussianWrapper.step">
-<span class="sig-name descname"><span class="pre">step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frames</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/torchrl/modules/tensordict_module/exploration.html#AdditiveGaussianWrapper.step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.modules.tensordict_module.AdditiveGaussianWrapper.step" title="Permalink to this definition">¶</a></dt>
-<dd><p>A step of sigma decay.</p>
-<p>After self.annealing_num_steps, this function is a no-op.</p>
+<dt class="sig sig-object py" id="torchrl.modules.tensordict_module.OrnsteinUhlenbeckProcessModule.step">
+<span class="sig-name descname"><span class="pre">step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frames</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/torchrl/modules/tensordict_module/exploration.html#OrnsteinUhlenbeckProcessModule.step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.modules.tensordict_module.OrnsteinUhlenbeckProcessModule.step" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the eps noise factor.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>frames</strong> (<em>int</em>) – number of frames since last step.</p>
+<dd class="field-odd"><p><strong>frames</strong> (<em>int</em>) – number of frames of the current batch (corresponding to the number of updates to be made).</p>
 </dd>
 </dl>
 </dd></dl>
@@ -488,10 +534,10 @@ registered hooks while the latter silently ignores them.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="torchrl.modules.tensordict_module.EGreedyModule.html" class="btn btn-neutral float-right" title="EGreedyModule" accesskey="n" rel="next">Next <img src="../../_static/images/chevron-right-orange.svg" class="next-page"></a>
+        <a href="torchrl.modules.tensordict_module.OrnsteinUhlenbeckProcessWrapper.html" class="btn btn-neutral float-right" title="OrnsteinUhlenbeckProcessWrapper" accesskey="n" rel="next">Next <img src="../../_static/images/chevron-right-orange.svg" class="next-page"></a>
       
       
-        <a href="torchrl.modules.tensordict_module.AdditiveGaussianModule.html" class="btn btn-neutral" title="AdditiveGaussianModule" accesskey="p" rel="prev"><img src="../../_static/images/chevron-right-orange.svg" class="previous-page"> Previous</a>
+        <a href="torchrl.modules.tensordict_module.EGreedyWrapper.html" class="btn btn-neutral" title="EGreedyWrapper" accesskey="p" rel="prev"><img src="../../_static/images/chevron-right-orange.svg" class="previous-page"> Previous</a>
       
     </div>
   
@@ -525,7 +571,7 @@ registered hooks while the latter silently ignores them.</p>
           <div class="pytorch-right-menu" id="pytorch-right-menu">
             <div class="pytorch-side-scroll" id="pytorch-side-scroll-right">
               <ul>
-<li><a class="reference internal" href="#">AdditiveGaussianWrapper</a></li>
+<li><a class="reference internal" href="#">OrnsteinUhlenbeckProcessModule</a></li>
 </ul>
 
             </div>
@@ -547,6 +593,7 @@ registered hooks while the latter silently ignores them.</p>
          <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
          <script src="../../_static/doctools.js"></script>
          <script src="../../_static/design-tabs.js"></script>
+         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
      
 
   
