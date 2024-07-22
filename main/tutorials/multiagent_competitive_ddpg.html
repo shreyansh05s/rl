@@ -543,7 +543,7 @@ to render and visualize your own trained policy before and after the training pr
 <span class="p">)</span>
 
 <span class="kn">from</span> <span class="nn">torchrl.modules</span> <span class="kn">import</span> <span class="p">(</span>
-    <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">AdditiveGaussianWrapper</span></a><span class="p">,</span>
+    <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">AdditiveGaussianModule</span></a><span class="p">,</span>
     <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">MultiAgentMLP</span></a><span class="p">,</span>
     <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">ProbabilisticActor</span></a><span class="p">,</span>
     <a href="https://pytorch.org/docs/stable/distributions.html#torch.distributions.transformed_distribution.TransformedDistribution" title="torch.distributions.transformed_distribution.TransformedDistribution" class="sphx-glr-backref-module-torch-distributions-transformed_distribution sphx-glr-backref-type-py-class"><span class="n">TanhDelta</span></a><span class="p">,</span>
@@ -990,20 +990,23 @@ the <code class="xref py py-class docutils literal notranslate"><span class="pre
 <p><strong>Third</strong>: Exploration</p>
 <p>Since the DDPG policy is deterministic, we need a way to perform exploration during collection.</p>
 <p>For this purpose, we need to append an exploration layer to our policies before passing them to the collector.
-In this case we use a <code class="xref py py-class docutils literal notranslate"><span class="pre">AdditiveGaussianWrapper</span></code>, which adds gaussian noise to our action
+In this case we use a <code class="xref py py-class docutils literal notranslate"><span class="pre">AdditiveGaussianModule</span></code>, which adds gaussian noise to our action
 (and clamps it if the noise makes the action out of bounds).</p>
 <p>This exploration wrapper uses a <code class="docutils literal notranslate"><span class="pre">sigma</span></code> parameter which is multiplied by the noise to determine its magnitude.
 Sigma can be annealed throughout training to reduce exploration.
 Sigma will go from <code class="docutils literal notranslate"><span class="pre">sigma_init</span></code> to <code class="docutils literal notranslate"><span class="pre">sigma_end</span></code> in <code class="docutils literal notranslate"><span class="pre">annealing_num_steps</span></code>.</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">exploration_policies</span> <span class="o">=</span> <span class="p">{}</span>
 <span class="k">for</span> <span class="n">group</span><span class="p">,</span> <span class="n">_agents</span> <span class="ow">in</span> <span class="n">env</span><span class="o">.</span><span class="n">group_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-    <span class="n">exploration_policy</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">AdditiveGaussianWrapper</span></a><span class="p">(</span>
+    <span class="n">exploration_policy</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">TensorDictSequential</span></a><span class="p">(</span>
         <span class="n">policies</span><span class="p">[</span><span class="n">group</span><span class="p">],</span>
-        <span class="n">annealing_num_steps</span><span class="o">=</span><span class="n">total_frames</span>
-        <span class="o">//</span> <span class="mi">2</span><span class="p">,</span>  <span class="c1"># Number of frames after which sigma is sigma_end</span>
-        <span class="n">action_key</span><span class="o">=</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="s2">&quot;action&quot;</span><span class="p">),</span>
-        <span class="n">sigma_init</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span>  <span class="c1"># Initial value of the sigma</span>
-        <span class="n">sigma_end</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>  <span class="c1"># Final value of the sigma</span>
+        <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">AdditiveGaussianModule</span></a><span class="p">(</span>
+            <span class="n">spec</span><span class="o">=</span><span class="n">policies</span><span class="p">[</span><span class="n">group</span><span class="p">]</span><span class="o">.</span><span class="n">spec</span><span class="p">,</span>
+            <span class="n">annealing_num_steps</span><span class="o">=</span><span class="n">total_frames</span>
+            <span class="o">//</span> <span class="mi">2</span><span class="p">,</span>  <span class="c1"># Number of frames after which sigma is sigma_end</span>
+            <span class="n">action_key</span><span class="o">=</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="s2">&quot;action&quot;</span><span class="p">),</span>
+            <span class="n">sigma_init</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span>  <span class="c1"># Initial value of the sigma</span>
+            <span class="n">sigma_end</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>  <span class="c1"># Final value of the sigma</span>
+        <span class="p">),</span>
     <span class="p">)</span>
     <span class="n">exploration_policies</span><span class="p">[</span><span class="n">group</span><span class="p">]</span> <span class="o">=</span> <span class="n">exploration_policy</span>
 </pre></div>
@@ -1377,17 +1380,14 @@ The steps include:</p>
     <span class="n">pbar</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>episode_reward_mean_adversary = 0, episode_reward_mean_agent = 0:   0%|          | 0/10 [00:00&lt;?, ?it/s]
-episode_reward_mean_adversary = 1.0, episode_reward_mean_agent = -1.0:  10%|█         | 1/10 [00:02&lt;00:25,  2.85s/it]
-episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  20%|██        | 2/10 [00:05&lt;00:23,  2.93s/it]
-episode_reward_mean_adversary = 1.0, episode_reward_mean_agent = -1.0:  30%|███       | 3/10 [00:08&lt;00:20,  2.96s/it]
-episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  40%|████      | 4/10 [00:11&lt;00:17,  2.98s/it]
-episode_reward_mean_adversary = 2.0, episode_reward_mean_agent = -2.0:  50%|█████     | 5/10 [00:14&lt;00:14,  2.98s/it]
-episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  60%|██████    | 6/10 [00:17&lt;00:11,  2.96s/it]
-episode_reward_mean_adversary = 2.0, episode_reward_mean_agent = -2.0:  70%|███████   | 7/10 [00:19&lt;00:08,  2.69s/it]
-episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  80%|████████  | 8/10 [00:22&lt;00:05,  2.51s/it]
-episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  90%|█████████ | 9/10 [00:24&lt;00:02,  2.40s/it]
-episode_reward_mean_adversary = 1.0, episode_reward_mean_agent = -1.0: 100%|██████████| 10/10 [00:26&lt;00:00,  2.29s/it]
+<div class="sphx-glr-script-out highlight-pytb notranslate"><div class="highlight"><pre><span></span><span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;/pytorch/rl/docs/source/reference/generated/tutorials/multiagent_competitive_ddpg.py&quot;</span>, line <span class="m">820</span>, in <span class="n">&lt;module&gt;</span>
+<span class="w">    </span><span class="n">exploration_policies</span><span class="p">[</span><span class="n">group</span><span class="p">]</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">current_frames</span><span class="p">)</span>
+  File <span class="nb">&quot;/pytorch/rl/env/lib/python3.8/site-packages/tensordict/nn/common.py&quot;</span>, line <span class="m">1297</span>, in <span class="n">__getattr__</span>
+<span class="w">    </span><span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__getattr__</span><span class="p">(</span><span class="s2">&quot;module&quot;</span><span class="p">),</span> <span class="n">name</span><span class="p">)</span>
+  File <span class="nb">&quot;/pytorch/rl/env/lib/python3.8/site-packages/torch/nn/modules/module.py&quot;</span>, line <span class="m">1895</span>, in <span class="n">__getattr__</span>
+<span class="w">    </span><span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
+<span class="gr">AttributeError</span>: <span class="n">&#39;ModuleList&#39; object has no attribute &#39;step&#39;</span>
 </pre></div>
 </div>
 </section>
@@ -1411,7 +1411,7 @@ proceed with the rest of the screen.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<img src="../_images/sphx_glr_multiagent_competitive_ddpg_001.png" srcset="../_images/sphx_glr_multiagent_competitive_ddpg_001.png" alt="multiagent competitive ddpg" class = "sphx-glr-single-img"/></section>
+</section>
 <section id="render">
 <h2>Render<a class="headerlink" href="#render" title="Permalink to this heading">¶</a></h2>
 <p><em>Rendering instruction are for VMAS</em>, aka when running with <code class="docutils literal notranslate"><span class="pre">use_vmas=True</span></code>.</p>
@@ -1473,14 +1473,17 @@ Here are a few videos of some possible scenarios you can try in VMAS.</p>
 <p><span class="caption-text">Scenarios available in <a class="reference external" href="https://github.com/proroklab/VectorizedMultiAgentSimulator">VMAS</a></span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (1 minutes 31.916 seconds)</p>
-<p><strong>Estimated memory usage:</strong>  12 MB</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 58.060 seconds)</p>
+<p><strong>Estimated memory usage:</strong>  3003 MB</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-tutorials-multiagent-competitive-ddpg-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/f3b53654a2b96b82010dd96f73ff5151/multiagent_competitive_ddpg.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">multiagent_competitive_ddpg.ipynb</span></code></a></p>
 </div>
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/d30bb6552cc07dec0f1da33382d3fa02/multiagent_competitive_ddpg.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">multiagent_competitive_ddpg.py</span></code></a></p>
+</div>
+<div class="sphx-glr-download sphx-glr-download-zip docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/5128e829b7152f5a40050c479b691f69/multiagent_competitive_ddpg.zip"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">zipped:</span> <span class="pre">multiagent_competitive_ddpg.zip</span></code></a></p>
 </div>
 </div>
 <p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>

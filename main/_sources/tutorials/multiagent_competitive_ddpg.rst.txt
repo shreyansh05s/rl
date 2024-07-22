@@ -148,7 +148,7 @@ Import our dependencies:
     )
 
     from torchrl.modules import (
-        AdditiveGaussianWrapper,
+        AdditiveGaussianModule,
         MultiAgentMLP,
         ProbabilisticActor,
         TanhDelta,
@@ -793,7 +793,7 @@ the :class:`TensorDictModule` above) has to end with the
 Since the DDPG policy is deterministic, we need a way to perform exploration during collection.
 
 For this purpose, we need to append an exploration layer to our policies before passing them to the collector.
-In this case we use a :class:`~torchrl.modules.AdditiveGaussianWrapper`, which adds gaussian noise to our action
+In this case we use a :class:`~torchrl.modules.AdditiveGaussianModule`, which adds gaussian noise to our action
 (and clamps it if the noise makes the action out of bounds).
 
 This exploration wrapper uses a ``sigma`` parameter which is multiplied by the noise to determine its magnitude.
@@ -801,7 +801,7 @@ Sigma can be annealed throughout training to reduce exploration.
 Sigma will go from ``sigma_init`` to ``sigma_end`` in ``annealing_num_steps``.
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 509-524
+.. GENERATED FROM PYTHON SOURCE LINES 509-527
 
 .. code-block:: Python
 
@@ -809,13 +809,16 @@ Sigma will go from ``sigma_init`` to ``sigma_end`` in ``annealing_num_steps``.
 
     exploration_policies = {}
     for group, _agents in env.group_map.items():
-        exploration_policy = AdditiveGaussianWrapper(
+        exploration_policy = TensorDictSequential(
             policies[group],
-            annealing_num_steps=total_frames
-            // 2,  # Number of frames after which sigma is sigma_end
-            action_key=(group, "action"),
-            sigma_init=0.9,  # Initial value of the sigma
-            sigma_end=0.1,  # Final value of the sigma
+            AdditiveGaussianModule(
+                spec=policies[group].spec,
+                annealing_num_steps=total_frames
+                // 2,  # Number of frames after which sigma is sigma_end
+                action_key=(group, "action"),
+                sigma_init=0.9,  # Initial value of the sigma
+                sigma_end=0.1,  # Final value of the sigma
+            ),
         )
         exploration_policies[group] = exploration_policy
 
@@ -827,7 +830,7 @@ Sigma will go from ``sigma_init`` to ``sigma_end`` in ``annealing_num_steps``.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 525-562
+.. GENERATED FROM PYTHON SOURCE LINES 528-565
 
 Critic network
 --------------
@@ -867,7 +870,7 @@ all the values along the ``n_agents_in_group`` dimension will be identical.
 As with the policy, we create a critic network for each group and store them in a dictionary.
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 562-600
+.. GENERATED FROM PYTHON SOURCE LINES 565-603
 
 .. code-block:: Python
 
@@ -916,7 +919,7 @@ As with the policy, we create a critic network for each group and store them in 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 601-612
+.. GENERATED FROM PYTHON SOURCE LINES 604-615
 
 Let us try our policy and critic modules. As pointed earlier, the usage of
 :class:`~tensordict.nn.TensorDictModule` makes it possible to directly read the output
@@ -930,7 +933,7 @@ group entry.
 components as in single-agent learning. Isn't this fantastic?**
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 612-619
+.. GENERATED FROM PYTHON SOURCE LINES 615-622
 
 .. code-block:: Python
 
@@ -1007,7 +1010,7 @@ components as in single-agent learning. Isn't this fantastic?**
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 620-635
+.. GENERATED FROM PYTHON SOURCE LINES 623-638
 
 Data collector
 --------------
@@ -1025,7 +1028,7 @@ We need to feed it our exploration policies. Furthermore, to run the policies fr
 we put them in a sequence. They will not interfere with each other as each group writes and reads keys in different places.
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 635-647
+.. GENERATED FROM PYTHON SOURCE LINES 638-650
 
 .. code-block:: Python
 
@@ -1048,7 +1051,7 @@ we put them in a sequence. They will not interfere with each other as each group
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 648-655
+.. GENERATED FROM PYTHON SOURCE LINES 651-658
 
 Replay buffer
 -------------
@@ -1058,7 +1061,7 @@ There are many types of buffers, in this tutorial we use a basic buffer to store
 data randomly.
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 655-667
+.. GENERATED FROM PYTHON SOURCE LINES 658-670
 
 .. code-block:: Python
 
@@ -1081,7 +1084,7 @@ data randomly.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 668-678
+.. GENERATED FROM PYTHON SOURCE LINES 671-681
 
 Loss function
 -------------
@@ -1094,7 +1097,7 @@ goes with it.
 It is also possible to have different policies for each group.
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 678-712
+.. GENERATED FROM PYTHON SOURCE LINES 681-715
 
 .. code-block:: Python
 
@@ -1139,7 +1142,7 @@ It is also possible to have different policies for each group.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 713-720
+.. GENERATED FROM PYTHON SOURCE LINES 716-723
 
 Training utils
 --------------
@@ -1149,7 +1152,7 @@ They are very simple and do not contain any important logic.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 720-748
+.. GENERATED FROM PYTHON SOURCE LINES 723-751
 
 .. code-block:: Python
 
@@ -1188,7 +1191,7 @@ They are very simple and do not contain any important logic.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 749-767
+.. GENERATED FROM PYTHON SOURCE LINES 752-770
 
 Training loop
 -------------
@@ -1209,7 +1212,7 @@ The steps include:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 767-845
+.. GENERATED FROM PYTHON SOURCE LINES 770-848
 
 .. code-block:: Python
 
@@ -1293,17 +1296,23 @@ The steps include:
 
 
 
-
-
 .. rst-class:: sphx-glr-script-out
 
- .. code-block:: none
+.. code-block:: pytb
 
-    episode_reward_mean_adversary = 0, episode_reward_mean_agent = 0:   0%|          | 0/10 [00:00<?, ?it/s]    episode_reward_mean_adversary = 1.0, episode_reward_mean_agent = -1.0:  10%|█         | 1/10 [00:02<00:25,  2.85s/it]    episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  20%|██        | 2/10 [00:05<00:23,  2.93s/it]     episode_reward_mean_adversary = 1.0, episode_reward_mean_agent = -1.0:  30%|███       | 3/10 [00:08<00:20,  2.96s/it]    episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  40%|████      | 4/10 [00:11<00:17,  2.98s/it]     episode_reward_mean_adversary = 2.0, episode_reward_mean_agent = -2.0:  50%|█████     | 5/10 [00:14<00:14,  2.98s/it]    episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  60%|██████    | 6/10 [00:17<00:11,  2.96s/it]     episode_reward_mean_adversary = 2.0, episode_reward_mean_agent = -2.0:  70%|███████   | 7/10 [00:19<00:08,  2.69s/it]    episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  80%|████████  | 8/10 [00:22<00:05,  2.51s/it]     episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  90%|█████████ | 9/10 [00:24<00:02,  2.40s/it]    episode_reward_mean_adversary = 1.0, episode_reward_mean_agent = -1.0: 100%|██████████| 10/10 [00:26<00:00,  2.29s/it]
+    Traceback (most recent call last):
+      File "/pytorch/rl/docs/source/reference/generated/tutorials/multiagent_competitive_ddpg.py", line 820, in <module>
+        exploration_policies[group].step(current_frames)
+      File "/pytorch/rl/env/lib/python3.8/site-packages/tensordict/nn/common.py", line 1297, in __getattr__
+        return getattr(super().__getattr__("module"), name)
+      File "/pytorch/rl/env/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1895, in __getattr__
+        raise AttributeError(
+    AttributeError: 'ModuleList' object has no attribute 'step'
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 846-856
+
+.. GENERATED FROM PYTHON SOURCE LINES 849-859
 
 Results
 -------
@@ -1316,7 +1325,7 @@ When running this script locally, you may need to close the opened window to
 proceed with the rest of the screen.
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 856-870
+.. GENERATED FROM PYTHON SOURCE LINES 859-873
 
 .. code-block:: Python
 
@@ -1335,18 +1344,7 @@ proceed with the rest of the screen.
     plt.show()
 
 
-
-
-.. image-sg:: /tutorials/images/sphx_glr_multiagent_competitive_ddpg_001.png
-   :alt: multiagent competitive ddpg
-   :srcset: /tutorials/images/sphx_glr_multiagent_competitive_ddpg_001.png
-   :class: sphx-glr-single-img
-
-
-
-
-
-.. GENERATED FROM PYTHON SOURCE LINES 871-883
+.. GENERATED FROM PYTHON SOURCE LINES 874-886
 
 Render
 ------
@@ -1361,7 +1359,7 @@ wrapped environment and save the stack of frames to a `mp4` file which location 
 logger `video_logger`. Note that this code may require some external dependencies such as torchvision.
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 883-912
+.. GENERATED FROM PYTHON SOURCE LINES 886-915
 
 .. code-block:: Python
 
@@ -1395,13 +1393,7 @@ logger `video_logger`. Note that this code may require some external dependencie
 
 
 
-
-
-
-
-
-
-.. GENERATED FROM PYTHON SOURCE LINES 913-941
+.. GENERATED FROM PYTHON SOURCE LINES 916-944
 
 Conclusion and next steps
 -------------------------
@@ -1435,9 +1427,9 @@ Here are a few videos of some possible scenarios you can try in VMAS.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (1 minutes 31.916 seconds)
+   **Total running time of the script:** (0 minutes 58.060 seconds)
 
-**Estimated memory usage:**  12 MB
+**Estimated memory usage:**  3003 MB
 
 
 .. _sphx_glr_download_tutorials_multiagent_competitive_ddpg.py:
@@ -1453,6 +1445,10 @@ Here are a few videos of some possible scenarios you can try in VMAS.
     .. container:: sphx-glr-download sphx-glr-download-python
 
       :download:`Download Python source code: multiagent_competitive_ddpg.py <multiagent_competitive_ddpg.py>`
+
+    .. container:: sphx-glr-download sphx-glr-download-zip
+
+      :download:`Download zipped: multiagent_competitive_ddpg.zip <multiagent_competitive_ddpg.zip>`
 
 
 .. only:: html

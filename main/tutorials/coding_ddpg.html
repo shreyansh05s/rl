@@ -583,7 +583,7 @@ for instance) the <code class="docutils literal notranslate"><span class="pre">t
 accessible but this will just return a <strong>detached</strong> version of the
 actor parameters.</p>
 <p>Later, we will see how the target parameters should be updated in TorchRL.</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tensordict.nn</span> <span class="kn">import</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">TensorDictModule</span></a>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tensordict.nn</span> <span class="kn">import</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">TensorDictModule</span></a><span class="p">,</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">TensorDictSequential</span></a>
 
 
 <span class="k">def</span> <span class="nf">_init</span><span class="p">(</span>
@@ -1069,7 +1069,7 @@ environment specs.</p>
     <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">ActorCriticWrapper</span></a><span class="p">,</span>
     <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">DdpgMlpActor</span></a><span class="p">,</span>
     <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">DdpgMlpQNet</span></a><span class="p">,</span>
-    <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">OrnsteinUhlenbeckProcessWrapper</span></a><span class="p">,</span>
+    <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">OrnsteinUhlenbeckProcessModule</span></a><span class="p">,</span>
     <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">ProbabilisticActor</span></a><span class="p">,</span>
     <a href="https://pytorch.org/docs/stable/distributions.html#torch.distributions.transformed_distribution.TransformedDistribution" title="torch.distributions.transformed_distribution.TransformedDistribution" class="sphx-glr-backref-module-torch-distributions-transformed_distribution sphx-glr-backref-type-py-class"><span class="n">TanhDelta</span></a><span class="p">,</span>
     <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">ValueOperator</span></a><span class="p">,</span>
@@ -1127,15 +1127,18 @@ environment specs.</p>
 </div>
 <section id="exploration">
 <h3>Exploration<a class="headerlink" href="#exploration" title="Permalink to this heading">¶</a></h3>
-<p>The policy is wrapped in a <code class="xref py py-class docutils literal notranslate"><span class="pre">OrnsteinUhlenbeckProcessWrapper</span></code>
+<p>The policy is passed into a <code class="xref py py-class docutils literal notranslate"><span class="pre">OrnsteinUhlenbeckProcessModule</span></code>
 exploration module, as suggested in the original paper.
 Let’s define the number of frames before OU noise reaches its minimum value</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">annealing_frames</span> <span class="o">=</span> <span class="mi">1_000_000</span>
 
-<span class="n">actor_model_explore</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">OrnsteinUhlenbeckProcessWrapper</span></a><span class="p">(</span>
+<span class="n">actor_model_explore</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">TensorDictSequential</span></a><span class="p">(</span>
     <span class="n">actor</span><span class="p">,</span>
-    <span class="n">annealing_num_steps</span><span class="o">=</span><span class="n">annealing_frames</span><span class="p">,</span>
-<span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><a href="https://pytorch.org/docs/stable/tensor_attributes.html#torch.device" title="torch.device" class="sphx-glr-backref-module-torch sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">device</span></a><span class="p">)</span>
+    <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">OrnsteinUhlenbeckProcessModule</span></a><span class="p">(</span>
+        <span class="n">spec</span><span class="o">=</span><span class="n">actor</span><span class="o">.</span><span class="n">spec</span><span class="o">.</span><span class="n">clone</span><span class="p">(),</span>
+        <span class="n">annealing_num_steps</span><span class="o">=</span><span class="n">annealing_frames</span><span class="p">,</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><a href="https://pytorch.org/docs/stable/tensor_attributes.html#torch.device" title="torch.device" class="sphx-glr-backref-module-torch sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">device</span></a><span class="p">),</span>
+<span class="p">)</span>
 <span class="k">if</span> <a href="https://pytorch.org/docs/stable/tensor_attributes.html#torch.device" title="torch.device" class="sphx-glr-backref-module-torch sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">device</span></a> <span class="o">==</span> <a href="https://pytorch.org/docs/stable/tensor_attributes.html#torch.device" title="torch.device" class="sphx-glr-backref-module-torch sphx-glr-backref-type-py-class"><span class="n">torch</span><span class="o">.</span><span class="n">device</span></a><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">):</span>
     <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module.share_memory" title="torch.nn.Module.share_memory" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-method"><span class="n">actor_model_explore</span><span class="o">.</span><span class="n">share_memory</span></a><span class="p">()</span>
 </pre></div>
@@ -1500,33 +1503,33 @@ modules we need.</p>
         <span class="p">)</span>
 
     <span class="c1"># update the exploration strategy</span>
-    <span class="n">actor_model_explore</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">current_frames</span><span class="p">)</span>
+    <span class="n">actor_model_explore</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">current_frames</span><span class="p">)</span>
 
 <span class="n">collector</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
 <span class="k">del</span> <span class="n">collector</span>
 </pre></div>
 </div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>  0%|          | 0/10000 [00:00&lt;?, ?it/s]
-  8%|▊         | 800/10000 [00:00&lt;00:02, 3241.47it/s]
- 16%|█▌        | 1600/10000 [00:01&lt;00:09, 916.68it/s]
- 24%|██▍       | 2400/10000 [00:01&lt;00:05, 1375.52it/s]
- 32%|███▏      | 3200/10000 [00:02&lt;00:03, 1804.69it/s]
- 40%|████      | 4000/10000 [00:02&lt;00:02, 2173.64it/s]
- 48%|████▊     | 4800/10000 [00:02&lt;00:02, 2433.39it/s]
- 56%|█████▌    | 5600/10000 [00:02&lt;00:01, 2577.05it/s]
-reward: -2.01 (r0 = -1.72), reward eval: reward: -0.00, reward normalized=-1.71/6.49, grad norm= 90.19, loss_value= 390.08, loss_actor= 12.77, target value: -11.28:  56%|█████▌    | 5600/10000 [00:04&lt;00:01, 2577.05it/s]
-reward: -2.01 (r0 = -1.72), reward eval: reward: -0.00, reward normalized=-1.71/6.49, grad norm= 90.19, loss_value= 390.08, loss_actor= 12.77, target value: -11.28:  64%|██████▍   | 6400/10000 [00:04&lt;00:03, 928.68it/s]
-reward: -2.02 (r0 = -1.72), reward eval: reward: -0.00, reward normalized=-2.32/5.77, grad norm= 69.46, loss_value= 277.47, loss_actor= 11.91, target value: -15.23:  64%|██████▍   | 6400/10000 [00:06&lt;00:03, 928.68it/s]
-reward: -2.02 (r0 = -1.72), reward eval: reward: -0.00, reward normalized=-2.32/5.77, grad norm= 69.46, loss_value= 277.47, loss_actor= 11.91, target value: -15.23:  72%|███████▏  | 7200/10000 [00:06&lt;00:04, 648.98it/s]
-reward: -5.30 (r0 = -1.72), reward eval: reward: -0.00, reward normalized=-1.96/6.45, grad norm= 123.92, loss_value= 430.63, loss_actor= 13.54, target value: -13.40:  72%|███████▏  | 7200/10000 [00:08&lt;00:04, 648.98it/s]
-reward: -5.30 (r0 = -1.72), reward eval: reward: -0.00, reward normalized=-1.96/6.45, grad norm= 123.92, loss_value= 430.63, loss_actor= 13.54, target value: -13.40:  80%|████████  | 8000/10000 [00:08&lt;00:03, 540.08it/s]
-reward: -5.12 (r0 = -1.72), reward eval: reward: -0.00, reward normalized=-2.64/5.57, grad norm= 134.62, loss_value= 239.61, loss_actor= 16.96, target value: -17.69:  80%|████████  | 8000/10000 [00:10&lt;00:03, 540.08it/s]
-reward: -5.12 (r0 = -1.72), reward eval: reward: -0.00, reward normalized=-2.64/5.57, grad norm= 134.62, loss_value= 239.61, loss_actor= 16.96, target value: -17.69:  88%|████████▊ | 8800/10000 [00:10&lt;00:02, 485.18it/s]
-reward: -4.43 (r0 = -1.72), reward eval: reward: -5.56, reward normalized=-3.03/5.16, grad norm= 122.64, loss_value= 272.67, loss_actor= 18.94, target value: -20.89:  88%|████████▊ | 8800/10000 [00:13&lt;00:02, 485.18it/s]
-reward: -4.43 (r0 = -1.72), reward eval: reward: -5.56, reward normalized=-3.03/5.16, grad norm= 122.64, loss_value= 272.67, loss_actor= 18.94, target value: -20.89:  96%|█████████▌| 9600/10000 [00:13&lt;00:01, 385.17it/s]
-reward: -5.06 (r0 = -1.72), reward eval: reward: -5.56, reward normalized=-3.73/4.93, grad norm= 97.43, loss_value= 189.27, loss_actor= 23.42, target value: -25.76:  96%|█████████▌| 9600/10000 [00:15&lt;00:01, 385.17it/s]
-reward: -5.06 (r0 = -1.72), reward eval: reward: -5.56, reward normalized=-3.73/4.93, grad norm= 97.43, loss_value= 189.27, loss_actor= 23.42, target value: -25.76: : 10400it [00:16, 359.50it/s]
-reward: -5.24 (r0 = -1.72), reward eval: reward: -5.56, reward normalized=-2.68/5.00, grad norm= 74.92, loss_value= 216.04, loss_actor= 19.25, target value: -19.65: : 10400it [00:18, 359.50it/s]
+  8%|▊         | 800/10000 [00:00&lt;00:02, 3102.57it/s]
+ 16%|█▌        | 1600/10000 [00:01&lt;00:09, 897.62it/s]
+ 24%|██▍       | 2400/10000 [00:01&lt;00:05, 1348.80it/s]
+ 32%|███▏      | 3200/10000 [00:02&lt;00:03, 1769.88it/s]
+ 40%|████      | 4000/10000 [00:02&lt;00:02, 2135.69it/s]
+ 48%|████▊     | 4800/10000 [00:02&lt;00:02, 2440.67it/s]
+ 56%|█████▌    | 5600/10000 [00:02&lt;00:01, 2641.82it/s]
+reward: -3.01 (r0 = -2.03), reward eval: reward:  0.00, reward normalized=-1.71/5.88, grad norm= 92.29, loss_value= 273.90, loss_actor= 12.03, target value: -10.53:  56%|█████▌    | 5600/10000 [00:04&lt;00:01, 2641.82it/s]
+reward: -3.01 (r0 = -2.03), reward eval: reward:  0.00, reward normalized=-1.71/5.88, grad norm= 92.29, loss_value= 273.90, loss_actor= 12.03, target value: -10.53:  64%|██████▍   | 6400/10000 [00:04&lt;00:03, 932.46it/s]
+reward: -2.43 (r0 = -2.03), reward eval: reward:  0.00, reward normalized=-2.16/5.80, grad norm= 82.57, loss_value= 236.78, loss_actor= 14.19, target value: -13.27:  64%|██████▍   | 6400/10000 [00:06&lt;00:03, 932.46it/s]
+reward: -2.43 (r0 = -2.03), reward eval: reward:  0.00, reward normalized=-2.16/5.80, grad norm= 82.57, loss_value= 236.78, loss_actor= 14.19, target value: -13.27:  72%|███████▏  | 7200/10000 [00:06&lt;00:04, 646.70it/s]
+reward: -4.84 (r0 = -2.03), reward eval: reward:  0.00, reward normalized=-2.43/5.06, grad norm= 36.46, loss_value= 216.41, loss_actor= 16.43, target value: -16.16:  72%|███████▏  | 7200/10000 [00:08&lt;00:04, 646.70it/s]
+reward: -4.84 (r0 = -2.03), reward eval: reward:  0.00, reward normalized=-2.43/5.06, grad norm= 36.46, loss_value= 216.41, loss_actor= 16.43, target value: -16.16:  80%|████████  | 8000/10000 [00:08&lt;00:03, 534.70it/s]
+reward: -4.32 (r0 = -2.03), reward eval: reward:  0.00, reward normalized=-3.44/5.21, grad norm= 279.03, loss_value= 280.83, loss_actor= 18.88, target value: -23.19:  80%|████████  | 8000/10000 [00:10&lt;00:03, 534.70it/s]
+reward: -4.32 (r0 = -2.03), reward eval: reward:  0.00, reward normalized=-3.44/5.21, grad norm= 279.03, loss_value= 280.83, loss_actor= 18.88, target value: -23.19:  88%|████████▊ | 8800/10000 [00:11&lt;00:02, 476.85it/s]
+reward: -5.48 (r0 = -2.03), reward eval: reward: -6.43, reward normalized=-3.50/5.64, grad norm= 202.74, loss_value= 272.47, loss_actor= 19.17, target value: -24.01:  88%|████████▊ | 8800/10000 [00:13&lt;00:02, 476.85it/s]
+reward: -5.48 (r0 = -2.03), reward eval: reward: -6.43, reward normalized=-3.50/5.64, grad norm= 202.74, loss_value= 272.47, loss_actor= 19.17, target value: -24.01:  96%|█████████▌| 9600/10000 [00:14&lt;00:01, 376.88it/s]
+reward: -6.79 (r0 = -2.03), reward eval: reward: -6.43, reward normalized=-3.38/6.70, grad norm= 264.16, loss_value= 497.64, loss_actor= 22.61, target value: -23.00:  96%|█████████▌| 9600/10000 [00:15&lt;00:01, 376.88it/s]
+reward: -6.79 (r0 = -2.03), reward eval: reward: -6.43, reward normalized=-3.38/6.70, grad norm= 264.16, loss_value= 497.64, loss_actor= 22.61, target value: -23.00: : 10400it [00:16, 350.63it/s]
+reward: -6.83 (r0 = -2.03), reward eval: reward: -6.43, reward normalized=-2.45/5.76, grad norm= 349.74, loss_value= 261.15, loss_actor= 22.76, target value: -16.64: : 10400it [00:18, 350.63it/s]
 </pre></div>
 </div>
 </section>
@@ -1570,14 +1573,17 @@ loss component;</p></li>
 <li><p>Using <cite>&#64;dispatch</cite> (see <a class="reference external" href="https://github.com/pytorch/rl/pull/1230">[Feature] Distpatch IQL loss module</a>.)</p></li>
 <li><p>Allowing flexible TensorDict keys.</p></li>
 </ul>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (1 minutes 52.829 seconds)</p>
-<p><strong>Estimated memory usage:</strong>  19 MB</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (1 minutes 50.289 seconds)</p>
+<p><strong>Estimated memory usage:</strong>  323 MB</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-tutorials-coding-ddpg-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/7ef773e36507adbc389133424f663224/coding_ddpg.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">coding_ddpg.ipynb</span></code></a></p>
 </div>
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/0dfdb6ef4cc9782fdb39c4a9d0900d37/coding_ddpg.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">coding_ddpg.py</span></code></a></p>
+</div>
+<div class="sphx-glr-download sphx-glr-download-zip docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/081100bf3a52dc1a4dc24370cc84af82/coding_ddpg.zip"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">zipped:</span> <span class="pre">coding_ddpg.zip</span></code></a></p>
 </div>
 </div>
 <p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
