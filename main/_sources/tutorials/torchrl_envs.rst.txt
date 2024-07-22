@@ -147,7 +147,9 @@ Reward and action do not have this restriction:
                 high=Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float32, contiguous=True)),
             device=cpu,
             dtype=torch.float32,
-            domain=continuous), device=None, shape=torch.Size([]))
+            domain=continuous),
+        device=None,
+        shape=torch.Size([]))
     Env action_spec: 
      BoundedTensorSpec(
         shape=torch.Size([1]),
@@ -216,7 +218,7 @@ uniformly distributed) numbers in that space:
  .. code-block:: none
 
     random action: 
-     tensor([-0.1188])
+     tensor([0.4948])
 
 
 
@@ -265,7 +267,9 @@ these three signals:
             space=DiscreteBox(n=2),
             device=cpu,
             dtype=torch.bool,
-            domain=discrete), device=None, shape=torch.Size([]))
+            domain=discrete),
+        device=None,
+        shape=torch.Size([]))
 
 
 
@@ -709,7 +713,7 @@ argument that allows the user to quickly ask for image-based environments:
  .. code-block:: none
 
 
-    <matplotlib.image.AxesImage object at 0x7f681a779790>
+    <matplotlib.image.AxesImage object at 0x7fcd7a294a60>
 
 
 
@@ -803,7 +807,7 @@ Some environments only come in image-based format
         super().__init__(**kwargs)
       File "/pytorch/rl/torchrl/envs/libs/gym.py", line 784, in __init__
         super().__init__(**kwargs)
-      File "/pytorch/rl/torchrl/envs/common.py", line 3048, in __init__
+      File "/pytorch/rl/torchrl/envs/common.py", line 3047, in __init__
         self._env = self._build_env(**kwargs)  # writes the self._env attribute
       File "/pytorch/rl/torchrl/envs/libs/gym.py", line 1423, in _build_env
         env = self.lib.make(env_name, **kwargs)
@@ -1441,9 +1445,9 @@ This small difference will usually be absored throughout training.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (1 minutes 34.021 seconds)
+   **Total running time of the script:** (1 minutes 37.939 seconds)
 
-**Estimated memory usage:**  2828 MB
+**Estimated memory usage:**  4088 MB
 
 
 .. _sphx_glr_download_tutorials_torchrl_envs.py:

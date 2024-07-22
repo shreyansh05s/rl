@@ -2495,10 +2495,13 @@ policy device before the policy is used. Default is <code class="docutils litera
 <li><p><strong>break_when_any_done</strong> (<em>bool</em>) – breaks if any of the done state is True. If False, a reset() is
 called on the sub-envs that are done. Default is True.</p></li>
 <li><p><strong>return_contiguous</strong> (<em>bool</em>) – if False, a LazyStackedTensorDict will be returned. Default is True.</p></li>
-<li><p><strong>tensordict</strong> (<em>TensorDict</em><em>, </em><em>optional</em>) – if auto_reset is False, an initial
+<li><p><strong>tensordict</strong> (<em>TensorDict</em><em>, </em><em>optional</em>) – if <code class="docutils literal notranslate"><span class="pre">auto_reset</span></code> is False, an initial
 tensordict must be provided. Rollout will check if this tensordict has done flags and reset the
-environment in those dimensions (if needed). This normally should not occur if <code class="docutils literal notranslate"><span class="pre">tensordict</span></code> is the
-output of a reset, but can occur if <code class="docutils literal notranslate"><span class="pre">tensordict</span></code> is the last step of a previous rollout.</p></li>
+environment in those dimensions (if needed).
+This normally should not occur if <code class="docutils literal notranslate"><span class="pre">tensordict</span></code> is the output of a reset, but can occur
+if <code class="docutils literal notranslate"><span class="pre">tensordict</span></code> is the last step of a previous rollout.
+A <code class="docutils literal notranslate"><span class="pre">tensordict</span></code> can also be provided when <code class="docutils literal notranslate"><span class="pre">auto_reset=True</span></code> if metadata need to be passed
+to the <code class="docutils literal notranslate"><span class="pre">reset</span></code> method, such as a batch-size or a device for stateless environments.</p></li>
 <li><p><strong>set_truncated</strong> (<em>bool</em><em>, </em><em>optional</em>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;truncated&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">&quot;done&quot;</span></code> keys will be set to
 <code class="docutils literal notranslate"><span class="pre">True</span></code> after completion of the rollout. If no <code class="docutils literal notranslate"><span class="pre">&quot;truncated&quot;</span></code> is found within the
 <code class="docutils literal notranslate"><span class="pre">done_spec</span></code>, an exception is raised.

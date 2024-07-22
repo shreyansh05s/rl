@@ -2757,10 +2757,13 @@
 <span class="sd">            break_when_any_done (bool): breaks if any of the done state is True. If False, a reset() is</span>
 <span class="sd">                called on the sub-envs that are done. Default is True.</span>
 <span class="sd">            return_contiguous (bool): if False, a LazyStackedTensorDict will be returned. Default is True.</span>
-<span class="sd">            tensordict (TensorDict, optional): if auto_reset is False, an initial</span>
+<span class="sd">            tensordict (TensorDict, optional): if ``auto_reset`` is False, an initial</span>
 <span class="sd">                tensordict must be provided. Rollout will check if this tensordict has done flags and reset the</span>
-<span class="sd">                environment in those dimensions (if needed). This normally should not occur if ``tensordict`` is the</span>
-<span class="sd">                output of a reset, but can occur if ``tensordict`` is the last step of a previous rollout.</span>
+<span class="sd">                environment in those dimensions (if needed).</span>
+<span class="sd">                This normally should not occur if ``tensordict`` is the output of a reset, but can occur</span>
+<span class="sd">                if ``tensordict`` is the last step of a previous rollout.</span>
+<span class="sd">                A ``tensordict`` can also be provided when ``auto_reset=True`` if metadata need to be passed</span>
+<span class="sd">                to the ``reset`` method, such as a batch-size or a device for stateless environments.</span>
 <span class="sd">            set_truncated (bool, optional): if ``True``, ``&quot;truncated&quot;`` and ``&quot;done&quot;`` keys will be set to</span>
 <span class="sd">                ``True`` after completion of the rollout. If no ``&quot;truncated&quot;`` is found within the</span>
 <span class="sd">                ``done_spec``, an exception is raised.</span>
@@ -2967,11 +2970,7 @@
         <span class="n">env_device</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span>
 
         <span class="k">if</span> <span class="n">auto_reset</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">tensordict</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                    <span class="s2">&quot;tensordict cannot be provided when auto_reset is True&quot;</span>
-                <span class="p">)</span>
-            <span class="n">tensordict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+            <span class="n">tensordict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">tensordict</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">tensordict</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;tensordict must be provided when auto_reset is False&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>

@@ -673,7 +673,11 @@ you should not have to care about this.</p>
                 high=Tensor(shape=torch.Size([60, 3, 2]), device=cpu, dtype=torch.float32, contiguous=True)),
             device=cpu,
             dtype=torch.float32,
-            domain=continuous), device=cpu, shape=torch.Size([60, 3])), device=cpu, shape=torch.Size([60]))
+            domain=continuous),
+        device=cpu,
+        shape=torch.Size([60, 3])),
+    device=cpu,
+    shape=torch.Size([60]))
 reward_spec: CompositeSpec(
     agents: CompositeSpec(
         reward: UnboundedContinuousTensorSpec(
@@ -681,7 +685,11 @@ reward_spec: CompositeSpec(
             space=None,
             device=cpu,
             dtype=torch.float32,
-            domain=continuous), device=cpu, shape=torch.Size([60, 3])), device=cpu, shape=torch.Size([60]))
+            domain=continuous),
+        device=cpu,
+        shape=torch.Size([60, 3])),
+    device=cpu,
+    shape=torch.Size([60]))
 done_spec: CompositeSpec(
     done: DiscreteTensorSpec(
         shape=torch.Size([60, 1]),
@@ -694,7 +702,9 @@ done_spec: CompositeSpec(
         space=DiscreteBox(n=2),
         device=cpu,
         dtype=torch.bool,
-        domain=discrete), device=cpu, shape=torch.Size([60]))
+        domain=discrete),
+    device=cpu,
+    shape=torch.Size([60]))
 observation_spec: CompositeSpec(
     agents: CompositeSpec(
         observation: UnboundedContinuousTensorSpec(
@@ -721,7 +731,13 @@ observation_spec: CompositeSpec(
                 space=None,
                 device=cpu,
                 dtype=torch.float32,
-                domain=continuous), device=cpu, shape=torch.Size([60, 3])), device=cpu, shape=torch.Size([60, 3])), device=cpu, shape=torch.Size([60]))
+                domain=continuous),
+            device=cpu,
+            shape=torch.Size([60, 3])),
+        device=cpu,
+        shape=torch.Size([60, 3])),
+    device=cpu,
+    shape=torch.Size([60]))
 </pre></div>
 </div>
 <p>Using the commands just shown we can access the domain of each value.
@@ -1234,16 +1250,16 @@ The steps include:</p>
 </pre></div>
 </div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>episode_reward_mean = 0:   0%|          | 0/10 [00:00&lt;?, ?it/s]
-episode_reward_mean = -0.4579917788505554:  10%|█         | 1/10 [00:06&lt;01:01,  6.88s/it]
-episode_reward_mean = 0.14524875581264496:  20%|██        | 2/10 [00:13&lt;00:55,  6.89s/it]
-episode_reward_mean = 1.168386459350586:  30%|███       | 3/10 [00:20&lt;00:48,  6.94s/it]
-episode_reward_mean = 1.3613134622573853:  40%|████      | 4/10 [00:27&lt;00:41,  6.97s/it]
-episode_reward_mean = 1.921463131904602:  50%|█████     | 5/10 [00:34&lt;00:34,  6.96s/it]
-episode_reward_mean = 2.2106335163116455:  60%|██████    | 6/10 [00:41&lt;00:27,  6.97s/it]
-episode_reward_mean = 2.1925103664398193:  70%|███████   | 7/10 [00:48&lt;00:20,  6.96s/it]
-episode_reward_mean = 2.664064407348633:  80%|████████  | 8/10 [00:55&lt;00:13,  6.99s/it]
-episode_reward_mean = 2.6539173126220703:  90%|█████████ | 9/10 [01:02&lt;00:07,  7.02s/it]
-episode_reward_mean = 2.743558168411255: 100%|██████████| 10/10 [01:09&lt;00:00,  7.04s/it]
+episode_reward_mean = -0.4579917788505554:  10%|█         | 1/10 [00:06&lt;01:01,  6.87s/it]
+episode_reward_mean = 0.14524875581264496:  20%|██        | 2/10 [00:13&lt;00:55,  6.88s/it]
+episode_reward_mean = 1.168386459350586:  30%|███       | 3/10 [00:20&lt;00:48,  6.87s/it]
+episode_reward_mean = 1.3613134622573853:  40%|████      | 4/10 [00:27&lt;00:41,  6.85s/it]
+episode_reward_mean = 1.921463131904602:  50%|█████     | 5/10 [00:34&lt;00:34,  6.85s/it]
+episode_reward_mean = 2.2106335163116455:  60%|██████    | 6/10 [00:41&lt;00:27,  6.87s/it]
+episode_reward_mean = 2.1925103664398193:  70%|███████   | 7/10 [00:48&lt;00:20,  6.88s/it]
+episode_reward_mean = 2.664064407348633:  80%|████████  | 8/10 [00:55&lt;00:13,  6.93s/it]
+episode_reward_mean = 2.6539173126220703:  90%|█████████ | 9/10 [01:02&lt;00:07,  7.01s/it]
+episode_reward_mean = 2.743558168411255: 100%|██████████| 10/10 [01:09&lt;00:00,  7.08s/it]
 </pre></div>
 </div>
 </section>
@@ -1336,8 +1352,8 @@ Here are a few videos of some possible scenarios you can try in VMAS.</p>
 <p><span class="caption-text">Scenarios available in <a class="reference external" href="https://github.com/proroklab/VectorizedMultiAgentSimulator">VMAS</a></span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (2 minutes 5.699 seconds)</p>
-<p><strong>Estimated memory usage:</strong>  328 MB</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (2 minutes 7.783 seconds)</p>
+<p><strong>Estimated memory usage:</strong>  316 MB</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-tutorials-multiagent-ppo-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/a977047786179278d12b52546e1c0da8/multiagent_ppo.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">multiagent_ppo.ipynb</span></code></a></p>

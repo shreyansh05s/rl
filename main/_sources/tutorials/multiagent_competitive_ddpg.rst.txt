@@ -397,7 +397,9 @@ There are four specs to look at:
                     high=Tensor(shape=torch.Size([10, 2, 2]), device=cpu, dtype=torch.float32, contiguous=True)),
                 device=cpu,
                 dtype=torch.float32,
-                domain=continuous), device=cpu, shape=torch.Size([10, 2])),
+                domain=continuous),
+            device=cpu,
+            shape=torch.Size([10, 2])),
         agent: CompositeSpec(
             action: BoundedTensorSpec(
                 shape=torch.Size([10, 1, 2]),
@@ -406,7 +408,11 @@ There are four specs to look at:
                     high=Tensor(shape=torch.Size([10, 1, 2]), device=cpu, dtype=torch.float32, contiguous=True)),
                 device=cpu,
                 dtype=torch.float32,
-                domain=continuous), device=cpu, shape=torch.Size([10, 1])), device=cpu, shape=torch.Size([10]))
+                domain=continuous),
+            device=cpu,
+            shape=torch.Size([10, 1])),
+        device=cpu,
+        shape=torch.Size([10]))
     reward_spec: CompositeSpec(
         adversary: CompositeSpec(
             reward: UnboundedContinuousTensorSpec(
@@ -414,14 +420,20 @@ There are four specs to look at:
                 space=None,
                 device=cpu,
                 dtype=torch.float32,
-                domain=continuous), device=cpu, shape=torch.Size([10, 2])),
+                domain=continuous),
+            device=cpu,
+            shape=torch.Size([10, 2])),
         agent: CompositeSpec(
             reward: UnboundedContinuousTensorSpec(
                 shape=torch.Size([10, 1, 1]),
                 space=None,
                 device=cpu,
                 dtype=torch.float32,
-                domain=continuous), device=cpu, shape=torch.Size([10, 1])), device=cpu, shape=torch.Size([10]))
+                domain=continuous),
+            device=cpu,
+            shape=torch.Size([10, 1])),
+        device=cpu,
+        shape=torch.Size([10]))
     done_spec: CompositeSpec(
         done: DiscreteTensorSpec(
             shape=torch.Size([10, 1]),
@@ -434,7 +446,9 @@ There are four specs to look at:
             space=DiscreteBox(n=2),
             device=cpu,
             dtype=torch.bool,
-            domain=discrete), device=cpu, shape=torch.Size([10]))
+            domain=discrete),
+        device=cpu,
+        shape=torch.Size([10]))
     observation_spec: CompositeSpec(
         adversary: CompositeSpec(
             observation: UnboundedContinuousTensorSpec(
@@ -442,14 +456,20 @@ There are four specs to look at:
                 space=None,
                 device=cpu,
                 dtype=torch.float32,
-                domain=continuous), device=cpu, shape=torch.Size([10, 2])),
+                domain=continuous),
+            device=cpu,
+            shape=torch.Size([10, 2])),
         agent: CompositeSpec(
             observation: UnboundedContinuousTensorSpec(
                 shape=torch.Size([10, 1, 12]),
                 space=None,
                 device=cpu,
                 dtype=torch.float32,
-                domain=continuous), device=cpu, shape=torch.Size([10, 1])), device=cpu, shape=torch.Size([10]))
+                domain=continuous),
+            device=cpu,
+            shape=torch.Size([10, 1])),
+        device=cpu,
+        shape=torch.Size([10]))
 
 
 
@@ -1427,9 +1447,9 @@ Here are a few videos of some possible scenarios you can try in VMAS.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 58.060 seconds)
+   **Total running time of the script:** (1 minutes 0.376 seconds)
 
-**Estimated memory usage:**  3003 MB
+**Estimated memory usage:**  4256 MB
 
 
 .. _sphx_glr_download_tutorials_multiagent_competitive_ddpg.py:
