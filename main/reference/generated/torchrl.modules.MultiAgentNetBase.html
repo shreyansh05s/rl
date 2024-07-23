@@ -10,7 +10,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>MultiAgentConvNet &mdash; torchrl main documentation</title>
+  <title>MultiAgentNetBase &mdash; torchrl main documentation</title>
   
 
   
@@ -39,8 +39,8 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="QMixer" href="torchrl.modules.QMixer.html" />
-    <link rel="prev" title="MultiAgentMLP" href="torchrl.modules.MultiAgentMLP.html" />
+    <link rel="next" title="MultiAgentMLP" href="torchrl.modules.MultiAgentMLP.html" />
+    <link rel="prev" title="RSSMPrior" href="torchrl.modules.RSSMPrior.html" />
   <!-- Google Tag Manager -->
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -370,13 +370,13 @@
         
           <li><a href="../modules.html">torchrl.modules package</a> &gt;</li>
         
-      <li>MultiAgentConvNet</li>
+      <li>MultiAgentNetBase</li>
     
     
       <li class="pytorch-breadcrumbs-aside">
         
             
-            <a href="../../_sources/reference/generated/torchrl.modules.MultiAgentConvNet.rst.txt" rel="nofollow"><img src="../../_static/images/view-page-source-icon.svg"></a>
+            <a href="../../_sources/reference/generated/torchrl.modules.MultiAgentNetBase.rst.txt" rel="nofollow"><img src="../../_static/images/view-page-source-icon.svg"></a>
           
         
       </li>
@@ -408,164 +408,95 @@
             <div role="main" class="main-content" itemscope="itemscope" itemtype="http://schema.org/Article">
              <article itemprop="articleBody" id="pytorch-article" class="pytorch-article">
               
-  <section id="multiagentconvnet">
-<h1>MultiAgentConvNet<a class="headerlink" href="#multiagentconvnet" title="Permalink to this heading">¶</a></h1>
+  <section id="multiagentnetbase">
+<h1>MultiAgentNetBase<a class="headerlink" href="#multiagentnetbase" title="Permalink to this heading">¶</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="torchrl.modules.MultiAgentConvNet">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">torchrl.modules.</span></span><span class="sig-name descname"><span class="pre">MultiAgentConvNet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">n_agents:</span> <span class="pre">int,</span> <span class="pre">centralized:</span> <span class="pre">bool</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">share_params:</span> <span class="pre">bool</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">*,</span> <span class="pre">in_features:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">device:</span> <span class="pre">DEVICE_TYPING</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">num_cells:</span> <span class="pre">Sequence[int]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">kernel_sizes:</span> <span class="pre">Union[Sequence[Union[int,</span> <span class="pre">Sequence[int]]],</span> <span class="pre">int]</span> <span class="pre">=</span> <span class="pre">5,</span> <span class="pre">strides:</span> <span class="pre">Union[Sequence,</span> <span class="pre">int]</span> <span class="pre">=</span> <span class="pre">2,</span> <span class="pre">paddings:</span> <span class="pre">Union[Sequence,</span> <span class="pre">int]</span> <span class="pre">=</span> <span class="pre">0,</span> <span class="pre">activation_class:</span> <span class="pre">Type[nn.Module]</span> <span class="pre">=</span> <span class="pre">&lt;class</span> <span class="pre">'torch.nn.modules.activation.ELU'&gt;,</span> <span class="pre">**kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/torchrl/modules/models/multiagent.html#MultiAgentConvNet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.modules.MultiAgentConvNet" title="Permalink to this definition">¶</a></dt>
-<dd><p>Multi-agent CNN.</p>
-<p>In MARL settings, agents may or may not share the same policy for their actions: we say that the parameters can be shared or not. Similarly, a network may take the entire observation space (across agents) or on a per-agent basis to compute its output, which we refer to as “centralized” and “non-centralized”, respectively.</p>
-<p>It expects inputs with shape <code class="docutils literal notranslate"><span class="pre">(*B,</span> <span class="pre">n_agents,</span> <span class="pre">channels,</span> <span class="pre">x,</span> <span class="pre">y)</span></code>.</p>
+<dt class="sig sig-object py" id="torchrl.modules.MultiAgentNetBase">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">torchrl.modules.</span></span><span class="sig-name descname"><span class="pre">MultiAgentNetBase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_agents</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">centralized</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">share_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">agent_dim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vmap_randomness</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'different'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/torchrl/modules/models/multiagent.html#MultiAgentNetBase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.modules.MultiAgentNetBase" title="Permalink to this definition">¶</a></dt>
+<dd><p>A base class for multi-agent networks.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>to initialize the MARL module parameters with the <cite>torch.nn.init</cite>
-module, please refer to <a class="reference internal" href="torchrl.modules.MultiAgentNetBase.html#torchrl.modules.MultiAgentNetBase.get_stateful_net" title="torchrl.modules.MultiAgentNetBase.get_stateful_net"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_stateful_net()</span></code></a> and <a class="reference internal" href="torchrl.modules.MultiAgentNetBase.html#torchrl.modules.MultiAgentNetBase.from_stateful_net" title="torchrl.modules.MultiAgentNetBase.from_stateful_net"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_stateful_net()</span></code></a>
+module, please refer to <a class="reference internal" href="#torchrl.modules.MultiAgentNetBase.get_stateful_net" title="torchrl.modules.MultiAgentNetBase.get_stateful_net"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_stateful_net()</span></code></a> and <a class="reference internal" href="#torchrl.modules.MultiAgentNetBase.from_stateful_net" title="torchrl.modules.MultiAgentNetBase.from_stateful_net"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_stateful_net()</span></code></a>
 methods.</p>
 </div>
+<dl class="py method">
+<dt class="sig sig-object py" id="torchrl.modules.MultiAgentNetBase.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">inputs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.3)"><span class="pre">Tensor</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.3)"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="../../_modules/torchrl/modules/models/multiagent.html#MultiAgentNetBase.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.modules.MultiAgentNetBase.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="torchrl.modules.MultiAgentNetBase.from_stateful_net">
+<span class="sig-name descname"><span class="pre">from_stateful_net</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stateful_net</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch v2.3)"><span class="pre">Module</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/torchrl/modules/models/multiagent.html#MultiAgentNetBase.from_stateful_net"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.modules.MultiAgentNetBase.from_stateful_net" title="Permalink to this definition">¶</a></dt>
+<dd><p>Populates the parameters given a stateful version of the network.</p>
+<p>See <a class="reference internal" href="#torchrl.modules.MultiAgentNetBase.get_stateful_net" title="torchrl.modules.MultiAgentNetBase.get_stateful_net"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_stateful_net()</span></code></a> for details on how to gather a stateful version of the network.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>n_agents</strong> (<em>int</em>) – number of agents.</p></li>
-<li><p><strong>centralized</strong> (<em>bool</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, each agent will use the inputs of all agents to compute its output, resulting in input of shape <code class="docutils literal notranslate"><span class="pre">(*B,</span> <span class="pre">n_agents</span> <span class="pre">*</span> <span class="pre">channels,</span> <span class="pre">x,</span> <span class="pre">y)</span></code>. Otherwise, each agent will only use its data as input.</p></li>
-<li><p><strong>share_params</strong> (<em>bool</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, the same <a class="reference internal" href="torchrl.modules.ConvNet.html#torchrl.modules.ConvNet" title="torchrl.modules.ConvNet"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConvNet</span></code></a> will be used to make the forward pass
-for all agents (homogeneous policies). Otherwise, each agent will use a different <a class="reference internal" href="torchrl.modules.ConvNet.html#torchrl.modules.ConvNet" title="torchrl.modules.ConvNet"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConvNet</span></code></a> to process
-its input (heterogeneous policies).</p></li>
-</ul>
-</dd>
-<dt class="field-even">Keyword Arguments<span class="colon">:</span></dt>
-<dd class="field-even"><ul class="simple">
-<li><p><strong>in_features</strong> (<em>int</em><em>, </em><em>optional</em>) – the input feature dimension. If left to <code class="docutils literal notranslate"><span class="pre">None</span></code>,
-a lazy module is used.</p></li>
-<li><p><strong>device</strong> (<em>str</em><em> or </em><a class="reference external" href="https://pytorch.org/docs/stable/tensor_attributes.html#torch.device" title="(in PyTorch v2.3)"><em>torch.device</em></a><em>, </em><em>optional</em>) – device to create the module on.</p></li>
-<li><p><strong>num_cells</strong> (<em>int</em><em> or </em><em>Sequence</em><em>[</em><em>int</em><em>]</em><em>, </em><em>optional</em>) – number of cells of every layer in between the input and output. If
-an integer is provided, every layer will have the same number of cells. If an iterable is provided,
-the linear layers <code class="docutils literal notranslate"><span class="pre">out_features</span></code> will match the content of <code class="docutils literal notranslate"><span class="pre">num_cells</span></code>.</p></li>
-<li><p><strong>kernel_sizes</strong> (<em>int</em><em>, </em><em>Sequence</em><em>[</em><em>Union</em><em>[</em><em>int</em><em>, </em><em>Sequence</em><em>[</em><em>int</em><em>]</em><em>]</em><em>]</em>) – Kernel size(s) of the convolutional network.
-Defaults to <code class="docutils literal notranslate"><span class="pre">5</span></code>.</p></li>
-<li><p><strong>strides</strong> (<em>int</em><em> or </em><em>Sequence</em><em>[</em><em>int</em><em>]</em>) – Stride(s) of the convolutional network. If iterable, the length must match the
-depth, defined by the num_cells or depth arguments.
-Defaults to <code class="docutils literal notranslate"><span class="pre">2</span></code>.</p></li>
-<li><p><strong>activation_class</strong> (<em>Type</em><em>[</em><em>nn.Module</em><em>]</em>) – activation class to be used.
-Default to <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.nn.ELU.html#torch.nn.ELU" title="(in PyTorch v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.ELU</span></code></a>.</p></li>
-<li><p><strong>**kwargs</strong> – for <code class="xref py py-class docutils literal notranslate"><span class="pre">ConvNet</span></code> can be passed to customize the ConvNet.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>stateful_net</strong> (<em>nn.Module</em>) – the stateful network from which the params should be
+gathered.</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="torchrl.modules.MultiAgentNetBase.get_stateful_net">
+<span class="sig-name descname"><span class="pre">get_stateful_net</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">copy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/torchrl/modules/models/multiagent.html#MultiAgentNetBase.get_stateful_net"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.modules.MultiAgentNetBase.get_stateful_net" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a stateful version of the network.</p>
+<p>This can be used to initialize parameters.</p>
+<p>Such networks will often not be callable out-of-the-box and will require a <cite>vmap</cite> call
+to be executable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>copy</strong> (<em>bool</em><em>, </em><em>optional</em>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code>, a deepcopy of the network is made.
+Defaults to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+</dd>
+</dl>
+<p>If the parameters are modified in-place (recommended) there is no need to copy the
+parameters back into the MARL module.
+See <a class="reference internal" href="#torchrl.modules.MultiAgentNetBase.from_stateful_net" title="torchrl.modules.MultiAgentNetBase.from_stateful_net"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_stateful_net()</span></code></a> for details on how to re-populate the MARL model with
+parameters that have been re-initialized out-of-place.</p>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">torch</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.modules</span> <span class="kn">import</span> <span class="n">MultiAgentConvNet</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">batch</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">n_agents</span> <span class="o">=</span> <span class="mi">7</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">channels</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">100</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">obs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="o">*</span><span class="n">batch</span><span class="p">,</span> <span class="n">n_agents</span><span class="p">,</span> <span class="n">channels</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Let&#39;s consider a centralized network with shared parameters.</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">cnn</span> <span class="o">=</span> <span class="n">MultiAgentConvNet</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="n">n_agents</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">centralized</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">share_params</span> <span class="o">=</span> <span class="kc">True</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.modules</span> <span class="kn">import</span> <span class="n">MultiAgentMLP</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">n_agents</span> <span class="o">=</span> <span class="mi">6</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">n_agent_inputs</span><span class="o">=</span><span class="mi">3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">n_agent_outputs</span><span class="o">=</span><span class="mi">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">batch</span> <span class="o">=</span> <span class="mi">64</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="n">n_agents</span><span class="p">,</span> <span class="n">n_agent_inputs</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mlp</span> <span class="o">=</span> <span class="n">MultiAgentMLP</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">n_agent_inputs</span><span class="o">=</span><span class="n">n_agent_inputs</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">n_agent_outputs</span><span class="o">=</span><span class="n">n_agent_outputs</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">n_agents</span><span class="o">=</span><span class="n">n_agents</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">centralized</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">share_params</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">depth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
 <span class="gp">... </span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">cnn</span><span class="p">)</span>
-<span class="go">MultiAgentConvNet(</span>
-<span class="go">    (agent_networks): ModuleList(</span>
-<span class="go">        (0): ConvNet(</span>
-<span class="go">        (0): LazyConv2d(0, 32, kernel_size=(5, 5), stride=(2, 2))</span>
-<span class="go">        (1): ELU(alpha=1.0)</span>
-<span class="go">        (2): Conv2d(32, 32, kernel_size=(5, 5), stride=(2, 2))</span>
-<span class="go">        (3): ELU(alpha=1.0)</span>
-<span class="go">        (4): Conv2d(32, 32, kernel_size=(5, 5), stride=(2, 2))</span>
-<span class="go">        (5): ELU(alpha=1.0)</span>
-<span class="go">        (6): SquashDims()</span>
-<span class="go">        )</span>
-<span class="go">    )</span>
-<span class="go">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">cnn</span><span class="p">(</span><span class="n">obs</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># The final dimension of the resulting tensor would be determined based on the layer definition arguments and the shape of input &#39;obs&#39;.</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-<span class="go">torch.Size([3, 2, 7, 2592])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Since both observations and parameters are shared, we expect all agents to have identical outputs (eg. for a value function)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">all</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]))</span>
-<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">snet</span> <span class="o">=</span> <span class="n">mlp</span><span class="o">.</span><span class="n">get_stateful_net</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="n">module</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="s2">&quot;weight&quot;</span><span class="p">):</span>
+<span class="gp">... </span>        <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">kaiming_normal_</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">weight</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">snet</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">init</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># If the module has been updated out-of-place (not the case here) we can reset the params</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mlp</span><span class="o">.</span><span class="n">from_stateful_net</span><span class="p">(</span><span class="n">snet</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Alternatively, a local network with parameter sharing (eg. decentralized weight sharing policy)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">cnn</span> <span class="o">=</span> <span class="n">MultiAgentConvNet</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="n">n_agents</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">centralized</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">share_params</span> <span class="o">=</span> <span class="kc">True</span>
-<span class="gp">... </span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">cnn</span><span class="p">)</span>
-<span class="go">MultiAgentConvNet(</span>
-<span class="go">    (agent_networks): ModuleList(</span>
-<span class="go">        (0): ConvNet(</span>
-<span class="go">        (0): Conv2d(4, 32, kernel_size=(5, 5), stride=(2, 2))</span>
-<span class="go">        (1): ELU(alpha=1.0)</span>
-<span class="go">        (2): Conv2d(32, 32, kernel_size=(5, 5), stride=(2, 2))</span>
-<span class="go">        (3): ELU(alpha=1.0)</span>
-<span class="go">        (4): Conv2d(32, 32, kernel_size=(5, 5), stride=(2, 2))</span>
-<span class="go">        (5): ELU(alpha=1.0)</span>
-<span class="go">        (6): SquashDims()</span>
-<span class="go">        )</span>
-<span class="go">    )</span>
-<span class="go">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-<span class="go">torch.Size([3, 2, 7, 2592])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Parameters are shared but not observations, hence each agent has a different output.</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">all</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]))</span>
-<span class="go">False</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Or multiple local networks identical in structure but with differing weights.</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">cnn</span> <span class="o">=</span> <span class="n">MultiAgentConvNet</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="n">n_agents</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">centralized</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">share_params</span> <span class="o">=</span> <span class="kc">False</span>
-<span class="gp">... </span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">cnn</span><span class="p">)</span>
-<span class="go">MultiAgentConvNet(</span>
-<span class="go">    (agent_networks): ModuleList(</span>
-<span class="go">        (0-6): 7 x ConvNet(</span>
-<span class="go">        (0): Conv2d(4, 32, kernel_size=(5, 5), stride=(2, 2))</span>
-<span class="go">        (1): ELU(alpha=1.0)</span>
-<span class="go">        (2): Conv2d(32, 32, kernel_size=(5, 5), stride=(2, 2))</span>
-<span class="go">        (3): ELU(alpha=1.0)</span>
-<span class="go">        (4): Conv2d(32, 32, kernel_size=(5, 5), stride=(2, 2))</span>
-<span class="go">        (5): ELU(alpha=1.0)</span>
-<span class="go">        (6): SquashDims()</span>
-<span class="go">        )</span>
-<span class="go">    )</span>
-<span class="go">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-<span class="go">torch.Size([3, 2, 7, 2592])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">all</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]))</span>
-<span class="go">False</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Or where inputs are shared but not parameters.</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">cnn</span> <span class="o">=</span> <span class="n">MultiAgentConvNet</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="n">n_agents</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">centralized</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">share_params</span> <span class="o">=</span> <span class="kc">False</span>
-<span class="gp">... </span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">cnn</span><span class="p">)</span>
-<span class="go">MultiAgentConvNet(</span>
-<span class="go">    (agent_networks): ModuleList(</span>
-<span class="go">        (0-6): 7 x ConvNet(</span>
-<span class="go">        (0): Conv2d(28, 32, kernel_size=(5, 5), stride=(2, 2))</span>
-<span class="go">        (1): ELU(alpha=1.0)</span>
-<span class="go">        (2): Conv2d(32, 32, kernel_size=(5, 5), stride=(2, 2))</span>
-<span class="go">        (3): ELU(alpha=1.0)</span>
-<span class="go">        (4): Conv2d(32, 32, kernel_size=(5, 5), stride=(2, 2))</span>
-<span class="go">        (5): ELU(alpha=1.0)</span>
-<span class="go">        (6): SquashDims()</span>
-<span class="go">        )</span>
-<span class="go">    )</span>
-<span class="go">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-<span class="go">torch.Size([3, 2, 7, 2592])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">all</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]))</span>
-<span class="go">False</span>
-</pre></div>
-</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="torchrl.modules.MultiAgentNetBase.reset_parameters">
+<span class="sig-name descname"><span class="pre">reset_parameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/torchrl/modules/models/multiagent.html#MultiAgentNetBase.reset_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.modules.MultiAgentNetBase.reset_parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resets the parameters of the model.</p>
+</dd></dl>
+
 </dd></dl>
 
 </section>
@@ -578,10 +509,10 @@ Default to <a class="reference external" href="https://pytorch.org/docs/stable/g
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="torchrl.modules.QMixer.html" class="btn btn-neutral float-right" title="QMixer" accesskey="n" rel="next">Next <img src="../../_static/images/chevron-right-orange.svg" class="next-page"></a>
+        <a href="torchrl.modules.MultiAgentMLP.html" class="btn btn-neutral float-right" title="MultiAgentMLP" accesskey="n" rel="next">Next <img src="../../_static/images/chevron-right-orange.svg" class="next-page"></a>
       
       
-        <a href="torchrl.modules.MultiAgentMLP.html" class="btn btn-neutral" title="MultiAgentMLP" accesskey="p" rel="prev"><img src="../../_static/images/chevron-right-orange.svg" class="previous-page"> Previous</a>
+        <a href="torchrl.modules.RSSMPrior.html" class="btn btn-neutral" title="RSSMPrior" accesskey="p" rel="prev"><img src="../../_static/images/chevron-right-orange.svg" class="previous-page"> Previous</a>
       
     </div>
   
@@ -615,7 +546,7 @@ Default to <a class="reference external" href="https://pytorch.org/docs/stable/g
           <div class="pytorch-right-menu" id="pytorch-right-menu">
             <div class="pytorch-side-scroll" id="pytorch-side-scroll-right">
               <ul>
-<li><a class="reference internal" href="#">MultiAgentConvNet</a></li>
+<li><a class="reference internal" href="#">MultiAgentNetBase</a></li>
 </ul>
 
             </div>

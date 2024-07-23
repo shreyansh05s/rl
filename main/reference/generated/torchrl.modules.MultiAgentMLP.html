@@ -40,7 +40,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="MultiAgentConvNet" href="torchrl.modules.MultiAgentConvNet.html" />
-    <link rel="prev" title="RSSMPrior" href="torchrl.modules.RSSMPrior.html" />
+    <link rel="prev" title="MultiAgentNetBase" href="torchrl.modules.MultiAgentNetBase.html" />
   <!-- Google Tag Manager -->
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -453,6 +453,12 @@ default: nn.Tanh.</p></li>
 </ul>
 </dd>
 </dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>to initialize the MARL module parameters with the <cite>torch.nn.init</cite>
+module, please refer to <a class="reference internal" href="torchrl.modules.MultiAgentNetBase.html#torchrl.modules.MultiAgentNetBase.get_stateful_net" title="torchrl.modules.MultiAgentNetBase.get_stateful_net"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_stateful_net()</span></code></a> and <a class="reference internal" href="torchrl.modules.MultiAgentNetBase.html#torchrl.modules.MultiAgentNetBase.from_stateful_net" title="torchrl.modules.MultiAgentNetBase.from_stateful_net"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_stateful_net()</span></code></a>
+methods.</p>
+</div>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.modules</span> <span class="kn">import</span> <span class="n">MultiAgentMLP</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">torch</span>
@@ -460,8 +466,8 @@ default: nn.Tanh.</p></li>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">n_agent_inputs</span><span class="o">=</span><span class="mi">3</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">n_agent_outputs</span><span class="o">=</span><span class="mi">2</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">batch</span> <span class="o">=</span> <span class="mi">64</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">obs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="n">n_agents</span><span class="p">,</span> <span class="n">n_agent_inputs</span>
-<span class="go">First let&#39;s instantiate a local network shared by all agents (e.g. a parameter-shared policy)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="n">n_agents</span><span class="p">,</span> <span class="n">n_agent_inputs</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># instantiate a local network shared by all agents (e.g. a parameter-shared policy)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mlp</span> <span class="o">=</span> <span class="n">MultiAgentMLP</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="n">n_agent_inputs</span><span class="o">=</span><span class="n">n_agent_inputs</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">n_agent_outputs</span><span class="o">=</span><span class="n">n_agent_outputs</span><span class="p">,</span>
@@ -549,7 +555,7 @@ default: nn.Tanh.</p></li>
         <a href="torchrl.modules.MultiAgentConvNet.html" class="btn btn-neutral float-right" title="MultiAgentConvNet" accesskey="n" rel="next">Next <img src="../../_static/images/chevron-right-orange.svg" class="next-page"></a>
       
       
-        <a href="torchrl.modules.RSSMPrior.html" class="btn btn-neutral" title="RSSMPrior" accesskey="p" rel="prev"><img src="../../_static/images/chevron-right-orange.svg" class="previous-page"> Previous</a>
+        <a href="torchrl.modules.MultiAgentNetBase.html" class="btn btn-neutral" title="MultiAgentNetBase" accesskey="p" rel="prev"><img src="../../_static/images/chevron-right-orange.svg" class="previous-page"> Previous</a>
       
     </div>
   

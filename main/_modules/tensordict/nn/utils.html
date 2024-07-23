@@ -466,30 +466,40 @@
         <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">softplus</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">bias</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_val</span></div></div>
 
 
+<span class="n">_MAPPINGS</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;softplus&quot;</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">softplus</span><span class="p">,</span>
+    <span class="s2">&quot;exp&quot;</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">,</span>
+    <span class="s2">&quot;relu&quot;</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">relu</span><span class="p">,</span>
+    <span class="s2">&quot;biased_softplus&quot;</span><span class="p">:</span> <span class="n">biased_softplus</span><span class="p">(</span><span class="mf">1.0</span><span class="p">),</span>
+    <span class="s2">&quot;none&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">,</span>
+<span class="p">}</span>
+
+
 <span class="k">def</span> <span class="nf">mappings</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Given an input string, returns a surjective function f(x): R -&gt; R^+.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        key (str): one of &quot;softplus&quot;, &quot;exp&quot;, &quot;relu&quot;, &quot;expln&quot;,</span>
-<span class="sd">            or &quot;biased_softplus&quot;. If the key beggins with &quot;biased_softplus&quot;,</span>
-<span class="sd">            then it needs to take the following form:</span>
-<span class="sd">            ```&quot;biased_softplus_{bias}&quot;``` where ```bias``` can be converted to a floating point number that will be used to bias the softplus function.</span>
-<span class="sd">            Alternatively, the ```&quot;biased_softplus_{bias}_{min_val}&quot;``` syntax can be used. In that case, the additional ```min_val``` term is a floating point</span>
-<span class="sd">            number that will be used to encode the minimum value of the softplus transform.</span>
-<span class="sd">            In practice, the equation used is softplus(x + bias) + min_val, where bias and min_val are values computed such that the conditions above are met.</span>
+<span class="sd">        key (str): one of `&quot;softplus&quot;`, `&quot;exp&quot;`, `&quot;relu&quot;`, `&quot;expln&quot;`,</span>
+<span class="sd">            `&quot;biased_softplus&quot;` or `&quot;none&quot;` (no mapping).</span>
+
+<span class="sd">    .. note:: If the key begins with `&quot;biased_softplus&quot;`,</span>
+<span class="sd">      then it needs to take the following form:</span>
+<span class="sd">      ```&quot;biased_softplus_{bias}&quot;``` where ```bias``` can be converted to a floating point number that will be</span>
+<span class="sd">      used to bias the softplus function.</span>
+<span class="sd">      Alternatively, the ```&quot;biased_softplus_{bias}_{min_val}&quot;``` syntax can be used.</span>
+<span class="sd">      In that case, the additional ```min_val``` term is a floating point</span>
+<span class="sd">      number that will be used to encode the minimum value of the softplus transform.</span>
+<span class="sd">      In practice, the equation used is `softplus(x + bias) + min_val`, where bias and min_val are values computed</span>
+<span class="sd">      such that the conditions above are met.</span>
+
+<span class="sd">    .. note:: Custom mappings can be added through ``tensordict.nn.add_custom_mapping``.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">         a Callable</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">_mappings</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;softplus&quot;</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">softplus</span><span class="p">,</span>
-        <span class="s2">&quot;exp&quot;</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">,</span>
-        <span class="s2">&quot;relu&quot;</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">relu</span><span class="p">,</span>
-        <span class="s2">&quot;biased_softplus&quot;</span><span class="p">:</span> <span class="n">biased_softplus</span><span class="p">(</span><span class="mf">1.0</span><span class="p">),</span>
-    <span class="p">}</span>
-    <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">_mappings</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">_mappings</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">_MAPPINGS</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_MAPPINGS</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
     <span class="k">elif</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;biased_softplus&quot;</span><span class="p">):</span>
         <span class="n">stripped_key</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">stripped_key</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
@@ -503,6 +513,23 @@
 
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown mapping </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">add_custom_mapping</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">mapping</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Adds a custom mapping to be used in mapping classes.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        name (str): a mapping name.</span>
+<span class="sd">        mapping (callable): a callable that takes a tensor as input and outputs a tensor</span>
+<span class="sd">            with the same shape.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; from tensordict.nn import add_custom_mapping, NormalParamExtractor</span>
+<span class="sd">        &gt;&gt;&gt; add_custom_mapping(&quot;my_mapping&quot;, lambda x: torch.zeros_like(x))</span>
+<span class="sd">        &gt;&gt;&gt; npe = NormalParamExtractor(scale_mapping=&quot;my_mapping&quot;, scale_lb=0.0)</span>
+<span class="sd">        &gt;&gt;&gt; assert (npe(torch.randn(10))[1] == torch.zeros(5)).all()</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_MAPPINGS</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapping</span>
 
 
 <span class="k">class</span> <span class="nc">set_skip_existing</span><span class="p">(</span><span class="n">_DecoratorContextManager</span><span class="p">):</span>

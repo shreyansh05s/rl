@@ -433,6 +433,16 @@ can be simply done via</p>
 </pre></div>
 </div>
 </div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Initializing parameters in losses can be done via a query to <a class="reference internal" href="generated/torchrl.objectives.LossModule.html#torchrl.objectives.LossModule.get_stateful_net" title="torchrl.objectives.LossModule.get_stateful_net"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_stateful_net()</span></code></a>
+which will return a stateful version of the network that can be initialized like any other module.
+If the modification is done in-place, it will be downstreamed to any other module that uses the same parameter
+set (within and outside of the loss): for instance, modifying the <code class="docutils literal notranslate"><span class="pre">actor_network</span></code> parameters from the loss
+will also modify the actor in the collector.
+If the parameters are modified out-of-place, <a class="reference internal" href="generated/torchrl.objectives.LossModule.html#torchrl.objectives.LossModule.from_stateful_net" title="torchrl.objectives.LossModule.from_stateful_net"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_stateful_net()</span></code></a> can be
+used to reset the parameters in the loss to the new value.</p>
+</div>
 <section id="training-value-functions">
 <h2>Training value functions<a class="headerlink" href="#training-value-functions" title="Permalink to this heading">¶</a></h2>
 <p>TorchRL provides a range of <strong>value estimators</strong> such as TD(0), TD(1), TD(<span class="math notranslate nohighlight">\(\lambda\)</span>)

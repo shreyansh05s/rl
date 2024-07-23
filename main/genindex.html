@@ -1702,6 +1702,8 @@
 </li>
         <li><a href="reference/generated/torchrl.modules.MPCPlannerBase.html#torchrl.modules.MPCPlannerBase.forward">(torchrl.modules.MPCPlannerBase method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.modules.MultiAgentNetBase.html#torchrl.modules.MultiAgentNetBase.forward">(torchrl.modules.MultiAgentNetBase method)</a>
+</li>
         <li><a href="reference/generated/torchrl.modules.NormalParamWrapper.html#torchrl.modules.NormalParamWrapper.forward">(torchrl.modules.NormalParamWrapper method)</a>
 </li>
         <li><a href="reference/generated/torchrl.modules.ObsDecoder.html#torchrl.modules.ObsDecoder.forward">(torchrl.modules.ObsDecoder method)</a>
@@ -1811,6 +1813,12 @@
         <li><a href="reference/generated/torchrl.data.PromptData.html#torchrl.data.PromptData.from_dataset">(torchrl.data.PromptData class method)</a>
 </li>
       </ul></li>
+      <li><a href="reference/generated/torchrl.modules.MultiAgentNetBase.html#torchrl.modules.MultiAgentNetBase.from_stateful_net">from_stateful_net() (torchrl.modules.MultiAgentNetBase method)</a>
+
+      <ul>
+        <li><a href="reference/generated/torchrl.objectives.LossModule.html#torchrl.objectives.LossModule.from_stateful_net">(torchrl.objectives.LossModule method)</a>
+</li>
+      </ul></li>
       <li><a href="reference/generated/torchrl.data.PairwiseDataset.html#torchrl.data.PairwiseDataset.from_tensordict">from_tensordict() (torchrl.data.PairwiseDataset class method)</a>
 
       <ul>
@@ -1875,6 +1883,16 @@
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.full_state_spec">(torchrl.envs.SerialEnv property)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.full_state_spec">(torchrl.envs.TicTacToeEnv property)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/generated/torchrl.objectives.A2CLoss.html#torchrl.objectives.A2CLoss.functional">functional (torchrl.objectives.A2CLoss property)</a>
+
+      <ul>
+        <li><a href="reference/generated/torchrl.objectives.LossModule.html#torchrl.objectives.LossModule.functional">(torchrl.objectives.LossModule property)</a>
+</li>
+        <li><a href="reference/generated/torchrl.objectives.PPOLoss.html#torchrl.objectives.PPOLoss.functional">(torchrl.objectives.PPOLoss property)</a>
+</li>
+        <li><a href="reference/generated/torchrl.objectives.ReinforceLoss.html#torchrl.objectives.ReinforceLoss.functional">(torchrl.objectives.ReinforceLoss property)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -1997,6 +2015,12 @@
 </li>
       <li><a href="reference/generated/torchrl.modules.tensordict_module.WorldModelWrapper.html#torchrl.modules.tensordict_module.WorldModelWrapper.get_reward_operator">get_reward_operator() (torchrl.modules.tensordict_module.WorldModelWrapper method)</a>
 </li>
+      <li><a href="reference/generated/torchrl.modules.MultiAgentNetBase.html#torchrl.modules.MultiAgentNetBase.get_stateful_net">get_stateful_net() (torchrl.modules.MultiAgentNetBase method)</a>
+
+      <ul>
+        <li><a href="reference/generated/torchrl.objectives.LossModule.html#torchrl.objectives.LossModule.get_stateful_net">(torchrl.objectives.LossModule method)</a>
+</li>
+      </ul></li>
       <li><a href="reference/generated/torchrl.trainers.helpers.get_stats_random_rollout.html#torchrl.trainers.helpers.get_stats_random_rollout">get_stats_random_rollout() (in module torchrl.trainers.helpers)</a>
 </li>
       <li><a href="reference/generated/torchrl.data.MultiStep.html#torchrl.data.MultiStep.get_submodule">get_submodule() (torchrl.data.MultiStep method)</a>
@@ -2619,8 +2643,6 @@
         <li><a href="reference/generated/torchrl.data.RewardData.html#torchrl.data.RewardData.memmap">(torchrl.data.RewardData method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/generated/torchrl.data.PairwiseDataset.html#torchrl.data.PairwiseDataset.memmap_">memmap_() (torchrl.data.PairwiseDataset method)</a>
 
       <ul>
@@ -2629,6 +2651,8 @@
         <li><a href="reference/generated/torchrl.data.RewardData.html#torchrl.data.RewardData.memmap_">(torchrl.data.RewardData method)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/generated/torchrl.data.PairwiseDataset.html#torchrl.data.PairwiseDataset.memmap_like">memmap_like() (torchrl.data.PairwiseDataset method)</a>
 
       <ul>
@@ -2704,6 +2728,8 @@
       <li><a href="reference/generated/torchrl.modules.MultiAgentConvNet.html#torchrl.modules.MultiAgentConvNet">MultiAgentConvNet (class in torchrl.modules)</a>
 </li>
       <li><a href="reference/generated/torchrl.modules.MultiAgentMLP.html#torchrl.modules.MultiAgentMLP">MultiAgentMLP (class in torchrl.modules)</a>
+</li>
+      <li><a href="reference/generated/torchrl.modules.MultiAgentNetBase.html#torchrl.modules.MultiAgentNetBase">MultiAgentNetBase (class in torchrl.modules)</a>
 </li>
       <li><a href="reference/generated/torchrl.collectors.MultiaSyncDataCollector.html#torchrl.collectors.MultiaSyncDataCollector">MultiaSyncDataCollector (class in torchrl.collectors)</a>
 </li>
@@ -3492,6 +3518,8 @@
 </li>
       </ul></li>
       <li><a href="reference/generated/torchrl.modules.reset_noise.html#torchrl.modules.reset_noise">reset_noise (class in torchrl.modules)</a>
+</li>
+      <li><a href="reference/generated/torchrl.modules.MultiAgentNetBase.html#torchrl.modules.MultiAgentNetBase.reset_parameters">reset_parameters() (torchrl.modules.MultiAgentNetBase method)</a>
 </li>
       <li><a href="reference/generated/torchrl.data.BinaryDiscreteTensorSpec.html#torchrl.data.BinaryDiscreteTensorSpec.reshape">reshape() (torchrl.data.BinaryDiscreteTensorSpec method)</a>
 

@@ -407,6 +407,7 @@
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">import</span> <span class="nn">abc</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
 <span class="kn">from</span> <span class="nn">textwrap</span> <span class="kn">import</span> <span class="n">indent</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Union</span>
 
@@ -422,8 +423,14 @@
 <span class="kn">from</span> <span class="nn">torchrl.modules.models.utils</span> <span class="kn">import</span> <span class="n">_reset_parameters_recursive</span>
 
 
-<span class="k">class</span> <span class="nc">MultiAgentNetBase</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A base class for multi-agent networks.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="MultiAgentNetBase"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.MultiAgentNetBase.html#torchrl.modules.MultiAgentNetBase">[docs]</a><span class="k">class</span> <span class="nc">MultiAgentNetBase</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A base class for multi-agent networks.</span>
+
+<span class="sd">    .. note:: to initialize the MARL module parameters with the `torch.nn.init`</span>
+<span class="sd">        module, please refer to :meth:`~.get_stateful_net` and :meth:`~.from_stateful_net`</span>
+<span class="sd">        methods.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">_empty_net</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span>
 
@@ -500,7 +507,7 @@
 
         <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">vmap</span><span class="p">(</span><span class="n">exec_module</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">inputs</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<div class="viewcode-block" id="MultiAgentNetBase.forward"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.MultiAgentNetBase.html#torchrl.modules.MultiAgentNetBase.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">inputs</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">inputs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="o">*</span><span class="n">inputs</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -542,7 +549,82 @@
                 <span class="sa">f</span><span class="s2">&quot; but got </span><span class="si">{</span><span class="n">output</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">output</span>
+        <span class="k">return</span> <span class="n">output</span></div>
+
+<div class="viewcode-block" id="MultiAgentNetBase.get_stateful_net"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.MultiAgentNetBase.html#torchrl.modules.MultiAgentNetBase.get_stateful_net">[docs]</a>    <span class="k">def</span> <span class="nf">get_stateful_net</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">copy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a stateful version of the network.</span>
+
+<span class="sd">        This can be used to initialize parameters.</span>
+
+<span class="sd">        Such networks will often not be callable out-of-the-box and will require a `vmap` call</span>
+<span class="sd">        to be executable.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            copy (bool, optional): if ``True``, a deepcopy of the network is made.</span>
+<span class="sd">                Defaults to ``True``.</span>
+
+<span class="sd">        If the parameters are modified in-place (recommended) there is no need to copy the</span>
+<span class="sd">        parameters back into the MARL module.</span>
+<span class="sd">        See :meth:`~.from_stateful_net` for details on how to re-populate the MARL model with</span>
+<span class="sd">        parameters that have been re-initialized out-of-place.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; from torchrl.modules import MultiAgentMLP</span>
+<span class="sd">            &gt;&gt;&gt; import torch</span>
+<span class="sd">            &gt;&gt;&gt; n_agents = 6</span>
+<span class="sd">            &gt;&gt;&gt; n_agent_inputs=3</span>
+<span class="sd">            &gt;&gt;&gt; n_agent_outputs=2</span>
+<span class="sd">            &gt;&gt;&gt; batch = 64</span>
+<span class="sd">            &gt;&gt;&gt; obs = torch.zeros(batch, n_agents, n_agent_inputs)</span>
+<span class="sd">            &gt;&gt;&gt; mlp = MultiAgentMLP(</span>
+<span class="sd">            ...     n_agent_inputs=n_agent_inputs,</span>
+<span class="sd">            ...     n_agent_outputs=n_agent_outputs,</span>
+<span class="sd">            ...     n_agents=n_agents,</span>
+<span class="sd">            ...     centralized=False,</span>
+<span class="sd">            ...     share_params=False,</span>
+<span class="sd">            ...     depth=2,</span>
+<span class="sd">            ... )</span>
+<span class="sd">            &gt;&gt;&gt; snet = mlp.get_stateful_net()</span>
+<span class="sd">            &gt;&gt;&gt; def init(module):</span>
+<span class="sd">            ...     if hasattr(module, &quot;weight&quot;):</span>
+<span class="sd">            ...         torch.nn.init.kaiming_normal_(module.weight)</span>
+<span class="sd">            &gt;&gt;&gt; snet.apply(init)</span>
+<span class="sd">            &gt;&gt;&gt; # If the module has been updated out-of-place (not the case here) we can reset the params</span>
+<span class="sd">            &gt;&gt;&gt; mlp.from_stateful_net(snet)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">copy</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">net</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_empty_net</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">RuntimeError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                    <span class="s2">&quot;Failed to deepcopy the module, consider using copy=False.&quot;</span>
+                <span class="p">)</span> <span class="kn">from</span> <span class="nn">err</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">net</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_empty_net</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">to_module</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">net</span></div>
+
+<div class="viewcode-block" id="MultiAgentNetBase.from_stateful_net"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.MultiAgentNetBase.html#torchrl.modules.MultiAgentNetBase.from_stateful_net">[docs]</a>    <span class="k">def</span> <span class="nf">from_stateful_net</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stateful_net</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Populates the parameters given a stateful version of the network.</span>
+
+<span class="sd">        See :meth:`~.get_stateful_net` for details on how to gather a stateful version of the network.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            stateful_net (nn.Module): the stateful network from which the params should be</span>
+<span class="sd">                gathered.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="o">.</span><span class="n">from_module</span><span class="p">(</span><span class="n">stateful_net</span><span class="p">,</span> <span class="n">as_module</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">keyset0</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">))</span>
+        <span class="n">keyset1</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">keyset0</span> <span class="o">!=</span> <span class="n">keyset1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;The keys of params and provided module differ: &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">keyset1</span><span class="o">-</span><span class="n">keyset0</span><span class="si">}</span><span class="s2"> are in self.params and not in the module, &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">keyset0</span><span class="o">-</span><span class="n">keyset1</span><span class="si">}</span><span class="s2"> are in the module but not in self.params.&quot;</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">update_</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">data</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">empty_net</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s2">&quot;_empty_net&quot;</span><span class="p">]</span>
@@ -554,7 +636,7 @@
         <span class="n">agent_dim</span> <span class="o">=</span> <span class="n">indent</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;agent_dim=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">agent_dim</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="mi">4</span> <span class="o">*</span> <span class="s2">&quot; &quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">(</span><span class="se">\n</span><span class="si">{</span><span class="n">module_repr</span><span class="si">}</span><span class="s2">,</span><span class="se">\n</span><span class="si">{</span><span class="n">n_agents</span><span class="si">}</span><span class="s2">,</span><span class="se">\n</span><span class="si">{</span><span class="n">share_params</span><span class="si">}</span><span class="s2">,</span><span class="se">\n</span><span class="si">{</span><span class="n">centralized</span><span class="si">}</span><span class="s2">,</span><span class="se">\n</span><span class="si">{</span><span class="n">agent_dim</span><span class="si">}</span><span class="s2">)&quot;</span>
 
-    <span class="k">def</span> <span class="nf">reset_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="MultiAgentNetBase.reset_parameters"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.MultiAgentNetBase.html#torchrl.modules.MultiAgentNetBase.reset_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">reset_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Resets the parameters of the model.&quot;&quot;&quot;</span>
 
         <span class="k">def</span> <span class="nf">vmap_reset_module</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -569,7 +651,7 @@
             <span class="n">vmap_reset_module</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_empty_net</span><span class="p">,</span> <span class="n">randomness</span><span class="o">=</span><span class="s2">&quot;different&quot;</span><span class="p">)(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">to_module</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_empty_net</span><span class="p">):</span>
-                <span class="n">_reset_parameters_recursive</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_empty_net</span><span class="p">)</span>
+                <span class="n">_reset_parameters_recursive</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_empty_net</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="MultiAgentMLP"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.MultiAgentMLP.html#torchrl.modules.MultiAgentMLP">[docs]</a><span class="k">class</span> <span class="nc">MultiAgentMLP</span><span class="p">(</span><span class="n">MultiAgentNetBase</span><span class="p">):</span>
@@ -614,6 +696,10 @@
 <span class="sd">            default: nn.Tanh.</span>
 <span class="sd">        **kwargs: for :class:`torchrl.modules.models.MLP` can be passed to customize the MLPs.</span>
 
+<span class="sd">    .. note:: to initialize the MARL module parameters with the `torch.nn.init`</span>
+<span class="sd">        module, please refer to :meth:`~.get_stateful_net` and :meth:`~.from_stateful_net`</span>
+<span class="sd">        methods.</span>
+
 <span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.modules import MultiAgentMLP</span>
 <span class="sd">        &gt;&gt;&gt; import torch</span>
@@ -621,8 +707,8 @@
 <span class="sd">        &gt;&gt;&gt; n_agent_inputs=3</span>
 <span class="sd">        &gt;&gt;&gt; n_agent_outputs=2</span>
 <span class="sd">        &gt;&gt;&gt; batch = 64</span>
-<span class="sd">        &gt;&gt;&gt; obs = torch.zeros(batch, n_agents, n_agent_inputs</span>
-<span class="sd">        First let&#39;s instantiate a local network shared by all agents (e.g. a parameter-shared policy)</span>
+<span class="sd">        &gt;&gt;&gt; obs = torch.zeros(batch, n_agents, n_agent_inputs)</span>
+<span class="sd">        &gt;&gt;&gt; # instantiate a local network shared by all agents (e.g. a parameter-shared policy)</span>
 <span class="sd">        &gt;&gt;&gt; mlp = MultiAgentMLP(</span>
 <span class="sd">        ...     n_agent_inputs=n_agent_inputs,</span>
 <span class="sd">        ...     n_agent_outputs=n_agent_outputs,</span>
@@ -759,6 +845,10 @@
 
 <span class="sd">    It expects inputs with shape ``(*B, n_agents, channels, x, y)``.</span>
 
+<span class="sd">    .. note:: to initialize the MARL module parameters with the `torch.nn.init`</span>
+<span class="sd">        module, please refer to :meth:`~.get_stateful_net` and :meth:`~.from_stateful_net`</span>
+<span class="sd">        methods.</span>
+
 <span class="sd">    Args:</span>
 <span class="sd">        n_agents (int): number of agents.</span>
 <span class="sd">        centralized (bool): If ``True``, each agent will use the inputs of all agents to compute its output, resulting in input of shape ``(*B, n_agents * channels, x, y)``. Otherwise, each agent will only use its data as input.</span>
@@ -790,7 +880,7 @@
 <span class="sd">        &gt;&gt;&gt; n_agents = 7</span>
 <span class="sd">        &gt;&gt;&gt; channels, x, y = 3, 100, 100</span>
 <span class="sd">        &gt;&gt;&gt; obs = torch.randn(*batch, n_agents, channels, x, y)</span>
-<span class="sd">        &gt;&gt;&gt; # First lets consider a centralized network with shared parameters.</span>
+<span class="sd">        &gt;&gt;&gt; # Let&#39;s consider a centralized network with shared parameters.</span>
 <span class="sd">        &gt;&gt;&gt; cnn = MultiAgentConvNet(</span>
 <span class="sd">        ...     n_agents,</span>
 <span class="sd">        ...     centralized = True,</span>
