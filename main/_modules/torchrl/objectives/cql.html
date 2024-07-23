@@ -411,7 +411,7 @@
 <span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">torch</span>
@@ -448,8 +448,15 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        actor_network (ProbabilisticActor): stochastic actor</span>
-<span class="sd">        qvalue_network (TensorDictModule): Q(s, a) parametric model.</span>
+<span class="sd">        qvalue_network (TensorDictModule or list of TensorDictModule): Q(s, a) parametric model.</span>
 <span class="sd">            This module typically outputs a ``&quot;state_action_value&quot;`` entry.</span>
+<span class="sd">            If a single instance of `qvalue_network` is provided, it will be duplicated ``N``</span>
+<span class="sd">            times (where ``N=2`` for this loss). If a list of modules is passed, their</span>
+<span class="sd">            parameters will be stacked unless they share the same identity (in which case</span>
+<span class="sd">            the original parameter will be expanded).</span>
+
+<span class="sd">            .. warning:: When a list of parameters if passed, it will __not__ be compared against the policy parameters</span>
+<span class="sd">              and all the parameters will be considered as untied.</span>
 
 <span class="sd">    Keyword args:</span>
 <span class="sd">        loss_function (str, optional): loss function to be used with</span>
@@ -668,7 +675,7 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">actor_network</span><span class="p">:</span> <span class="n">ProbabilisticActor</span><span class="p">,</span>
-        <span class="n">qvalue_network</span><span class="p">:</span> <span class="n">TensorDictModule</span><span class="p">,</span>
+        <span class="n">qvalue_network</span><span class="p">:</span> <span class="n">TensorDictModule</span> <span class="o">|</span> <span class="n">List</span><span class="p">[</span><span class="n">TensorDictModule</span><span class="p">],</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">loss_function</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;smooth_l1&quot;</span><span class="p">,</span>
         <span class="n">alpha_init</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>

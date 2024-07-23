@@ -418,8 +418,18 @@
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>actor_network</strong> (<em>TensorDictModule</em>) – the actor to be trained</p></li>
-<li><p><strong>qvalue_network</strong> (<em>TensorDictModule</em>) – a single Q-value network that will
-be multiplicated as many times as needed.</p></li>
+<li><p><strong>qvalue_network</strong> (<em>TensorDictModule</em>) – <p>a single Q-value network or a list of
+Q-value networks.
+If a single instance of <cite>qvalue_network</cite> is provided, it will be duplicated <code class="docutils literal notranslate"><span class="pre">num_qvalue_nets</span></code>
+times. If a list of modules is passed, their
+parameters will be stacked unless they share the same identity (in which case
+the original parameter will be expanded).</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>When a list of parameters if passed, it will __not__ be compared against the policy parameters
+and all the parameters will be considered as untied.</p>
+</div>
+</p></li>
 </ul>
 </dd>
 <dt class="field-even">Keyword Arguments<span class="colon">:</span></dt>
@@ -452,7 +462,7 @@ and the target entropy is <code class="docutils literal notranslate"><span class
 the actor.</p></li>
 <li><p><strong>separate_losses</strong> (<em>bool</em><em>, </em><em>optional</em>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code>, shared parameters between
 policy and critic will only be trained on the policy loss.
-Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code>, ie. gradients are propagated to shared
+Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code>, i.e., gradients are propagated to shared
 parameters for both policy and critic losses.</p></li>
 <li><p><strong>reduction</strong> (<em>str</em><em>, </em><em>optional</em>) – Specifies the reduction to apply to the output:
 <code class="docutils literal notranslate"><span class="pre">&quot;none&quot;</span></code> | <code class="docutils literal notranslate"><span class="pre">&quot;mean&quot;</span></code> | <code class="docutils literal notranslate"><span class="pre">&quot;sum&quot;</span></code>. <code class="docutils literal notranslate"><span class="pre">&quot;none&quot;</span></code>: no reduction will be applied,

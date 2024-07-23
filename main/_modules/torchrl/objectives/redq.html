@@ -409,7 +409,7 @@
 <span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
 <span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Number</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">from</span> <span class="nn">tensordict</span> <span class="kn">import</span> <span class="n">TensorDict</span><span class="p">,</span> <span class="n">TensorDictBase</span><span class="p">,</span> <span class="n">TensorDictParams</span>
@@ -443,8 +443,14 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        actor_network (TensorDictModule): the actor to be trained</span>
-<span class="sd">        qvalue_network (TensorDictModule): a single Q-value network that will</span>
-<span class="sd">            be multiplicated as many times as needed.</span>
+<span class="sd">        qvalue_network (TensorDictModule): a single Q-value network or a list of Q-value networks.</span>
+<span class="sd">            If a single instance of `qvalue_network` is provided, it will be duplicated ``num_qvalue_nets``</span>
+<span class="sd">            times. If a list of modules is passed, their</span>
+<span class="sd">            parameters will be stacked unless they share the same identity (in which case</span>
+<span class="sd">            the original parameter will be expanded).</span>
+
+<span class="sd">            .. warning:: When a list of parameters if passed, it will __not__ be compared against the policy parameters</span>
+<span class="sd">              and all the parameters will be considered as untied.</span>
 
 <span class="sd">    Keyword Args:</span>
 <span class="sd">        num_qvalue_nets (int, optional): Number of Q-value networks to be trained.</span>
@@ -479,7 +485,7 @@
 <span class="sd">            ``&quot;td_error&quot;``.</span>
 <span class="sd">        separate_losses (bool, optional): if ``True``, shared parameters between</span>
 <span class="sd">            policy and critic will only be trained on the policy loss.</span>
-<span class="sd">            Defaults to ``False``, ie. gradients are propagated to shared</span>
+<span class="sd">            Defaults to ``False``, i.e., gradients are propagated to shared</span>
 <span class="sd">            parameters for both policy and critic losses.</span>
 <span class="sd">        reduction (str, optional): Specifies the reduction to apply to the output:</span>
 <span class="sd">            ``&quot;none&quot;`` | ``&quot;mean&quot;`` | ``&quot;sum&quot;``. ``&quot;none&quot;``: no reduction will be applied,</span>
@@ -652,7 +658,7 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">actor_network</span><span class="p">:</span> <span class="n">TensorDictModule</span><span class="p">,</span>
-        <span class="n">qvalue_network</span><span class="p">:</span> <span class="n">TensorDictModule</span><span class="p">,</span>
+        <span class="n">qvalue_network</span><span class="p">:</span> <span class="n">TensorDictModule</span> <span class="o">|</span> <span class="n">List</span><span class="p">[</span><span class="n">TensorDictModule</span><span class="p">],</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">num_qvalue_nets</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
         <span class="n">sub_sample_len</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
