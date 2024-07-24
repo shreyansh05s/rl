@@ -238,7 +238,7 @@ topic, it is treated in :ref:`a separate tutorial <RNN_tuto>`.
 Probabilistic policies
 ----------------------
 
-Policy-optimization sota-implementations like
+Policy-optimization algorithms like
 `PPO <https://arxiv.org/abs/1707.06347>`_ require the policy to be
 stochastic: unlike in the examples above, the module now encodes a map from
 the observation space to a parameter space encoding a distribution over the
@@ -323,7 +323,7 @@ There are a few things to note about this rollout:
 
 - Since we asked for it during the construction of the actor, the
   log-probability of the actions given the distribution at that time is
-  also written. This is necessary for sota-implementations like PPO.
+  also written. This is necessary for algorithms like PPO.
 - The parameters of the distribution are returned within the output
   tensordict too under the ``"loc"`` and ``"scale"`` entries.
 
@@ -633,7 +633,7 @@ Next steps:
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 45.393 seconds)
+   **Total running time of the script:** (0 minutes 47.332 seconds)
 
 **Estimated memory usage:**  317 MB
 

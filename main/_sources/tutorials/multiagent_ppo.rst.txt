@@ -73,7 +73,7 @@ as a sophisticated version of `REINFORCE <https://link.springer.com/content/pdf/
 the foundational policy-optimization algorithm. For more information, see the
 `Proximal Policy Optimization Algorithms <https://arxiv.org/abs/1707.06347>`_ paper.
 
-This type of sota-implementations is usually trained *on-policy*. This means that, at every learning iteration, we have a
+This type of algorithms is usually trained *on-policy*. This means that, at every learning iteration, we have a
 **sampling** and a **training** phase. In the **sampling** phase of iteration :math:`t`, rollouts are collected
 form agents' interactions in the environment using the current policies :math:`\mathbf{\pi}_t`.
 In the **training** phase, all the collected rollouts are immediately fed to the training process to perform
@@ -944,7 +944,7 @@ with the only difference that it will auto reset done states until the desired f
 Replay buffer
 -------------
 
-Replay buffers are a common building piece of off-policy RL sota-implementations.
+Replay buffers are a common building piece of off-policy RL algorithms.
 In on-policy contexts, a replay buffer is refilled every time a batch of
 data is collected, and its data is repeatedly consumed for a certain number
 of epochs.
@@ -1127,7 +1127,7 @@ The steps include:
 
  .. code-block:: none
 
-    episode_reward_mean = 0:   0%|          | 0/10 [00:00<?, ?it/s]    episode_reward_mean = -0.4579917788505554:  10%|█         | 1/10 [00:06<00:59,  6.63s/it]    episode_reward_mean = 0.14524875581264496:  20%|██        | 2/10 [00:13<00:52,  6.62s/it]    episode_reward_mean = 1.168386459350586:  30%|███       | 3/10 [00:19<00:46,  6.63s/it]      episode_reward_mean = 1.3613134622573853:  40%|████      | 4/10 [00:26<00:39,  6.61s/it]    episode_reward_mean = 1.921463131904602:  50%|█████     | 5/10 [00:33<00:33,  6.63s/it]     episode_reward_mean = 2.2106335163116455:  60%|██████    | 6/10 [00:39<00:26,  6.65s/it]    episode_reward_mean = 2.1925103664398193:  70%|███████   | 7/10 [00:46<00:19,  6.64s/it]    episode_reward_mean = 2.664064407348633:  80%|████████  | 8/10 [00:53<00:13,  6.67s/it]     episode_reward_mean = 2.6539173126220703:  90%|█████████ | 9/10 [00:59<00:06,  6.69s/it]    episode_reward_mean = 2.743558168411255: 100%|██████████| 10/10 [01:06<00:00,  6.74s/it]
+    episode_reward_mean = 0:   0%|          | 0/10 [00:00<?, ?it/s]    episode_reward_mean = -0.4579917788505554:  10%|█         | 1/10 [00:06<01:01,  6.81s/it]    episode_reward_mean = 0.14524875581264496:  20%|██        | 2/10 [00:13<00:54,  6.78s/it]    episode_reward_mean = 1.168386459350586:  30%|███       | 3/10 [00:20<00:47,  6.78s/it]      episode_reward_mean = 1.3613134622573853:  40%|████      | 4/10 [00:27<00:40,  6.77s/it]    episode_reward_mean = 1.921463131904602:  50%|█████     | 5/10 [00:33<00:33,  6.77s/it]     episode_reward_mean = 2.2106335163116455:  60%|██████    | 6/10 [00:40<00:27,  6.76s/it]    episode_reward_mean = 2.1925103664398193:  70%|███████   | 7/10 [00:47<00:20,  6.76s/it]    episode_reward_mean = 2.664064407348633:  80%|████████  | 8/10 [00:54<00:13,  6.78s/it]     episode_reward_mean = 2.6539173126220703:  90%|█████████ | 9/10 [01:01<00:06,  6.81s/it]    episode_reward_mean = 2.743558168411255: 100%|██████████| 10/10 [01:08<00:00,  6.87s/it]
 
 
 
@@ -1235,7 +1235,7 @@ In this tutorial, we have seen:
 
 Now that you are proficient with multi-agent DDPG, you can check out all the TorchRL multi-agent implementations in the
 GitHub repository.
-These are code-only scripts of many popular MARL sota-implementations such as the ones seen in this tutorial,
+These are code-only scripts of many popular MARL algorithms such as the ones seen in this tutorial,
 QMIX, MADDPG, IQL, and many more!
 
 You can also check out our other multi-agent tutorial on how to train competitive
@@ -1258,9 +1258,9 @@ Here are a few videos of some possible scenarios you can try in VMAS.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (2 minutes 2.977 seconds)
+   **Total running time of the script:** (2 minutes 6.726 seconds)
 
-**Estimated memory usage:**  320 MB
+**Estimated memory usage:**  319 MB
 
 
 .. _sphx_glr_download_tutorials_multiagent_ppo.py:

@@ -827,7 +827,7 @@ algorithms, such as DQN, DDPG or Dreamer.</p>
 <section id="multi-agent-specific-modules">
 <h3>Multi-agent-specific modules<a class="headerlink" href="#multi-agent-specific-modules" title="Permalink to this heading">¶</a></h3>
 <p>These networks implement models that can be used in multi-agent contexts.
-They use <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.vmap.html#torch.vmap" title="(in PyTorch v2.3)"><code class="xref py py-func docutils literal notranslate"><span class="pre">vmap()</span></code></a> to execute multiple networks all at once on the
+They use <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.vmap.html#torch.vmap" title="(in PyTorch v2.4)"><code class="xref py py-func docutils literal notranslate"><span class="pre">vmap()</span></code></a> to execute multiple networks all at once on the
 network inputs. Because the parameters are batched, initialization may differ
 from what is usually done with other PyTorch modules, see
 <a class="reference internal" href="generated/torchrl.modules.MultiAgentNetBase.html#torchrl.modules.MultiAgentNetBase.get_stateful_net" title="torchrl.modules.MultiAgentNetBase.get_stateful_net"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_stateful_net()</span></code></a>

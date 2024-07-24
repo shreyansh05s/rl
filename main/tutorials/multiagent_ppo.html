@@ -478,7 +478,7 @@ the expected return given some proximality constraints. You can think of it
 as a sophisticated version of <a class="reference external" href="https://link.springer.com/content/pdf/10.1007/BF00992696.pdf">REINFORCE</a>,
 the foundational policy-optimization algorithm. For more information, see the
 <a class="reference external" href="https://arxiv.org/abs/1707.06347">Proximal Policy Optimization Algorithms</a> paper.</p>
-<p>This type of sota-implementations is usually trained <em>on-policy</em>. This means that, at every learning iteration, we have a
+<p>This type of algorithms is usually trained <em>on-policy</em>. This means that, at every learning iteration, we have a
 <strong>sampling</strong> and a <strong>training</strong> phase. In the <strong>sampling</strong> phase of iteration <span class="math notranslate nohighlight">\(t\)</span>, rollouts are collected
 form agents’ interactions in the environment using the current policies <span class="math notranslate nohighlight">\(\mathbf{\pi}_t\)</span>.
 In the <strong>training</strong> phase, all the collected rollouts are immediately fed to the training process to perform
@@ -1091,7 +1091,7 @@ with the only difference that it will auto reset done states until the desired f
 </section>
 <section id="replay-buffer">
 <h2>Replay buffer<a class="headerlink" href="#replay-buffer" title="Permalink to this heading">¶</a></h2>
-<p>Replay buffers are a common building piece of off-policy RL sota-implementations.
+<p>Replay buffers are a common building piece of off-policy RL algorithms.
 In on-policy contexts, a replay buffer is refilled every time a batch of
 data is collected, and its data is repeatedly consumed for a certain number
 of epochs.</p>
@@ -1250,16 +1250,16 @@ The steps include:</p>
 </pre></div>
 </div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>episode_reward_mean = 0:   0%|          | 0/10 [00:00&lt;?, ?it/s]
-episode_reward_mean = -0.4579917788505554:  10%|█         | 1/10 [00:06&lt;00:59,  6.63s/it]
-episode_reward_mean = 0.14524875581264496:  20%|██        | 2/10 [00:13&lt;00:52,  6.62s/it]
-episode_reward_mean = 1.168386459350586:  30%|███       | 3/10 [00:19&lt;00:46,  6.63s/it]
-episode_reward_mean = 1.3613134622573853:  40%|████      | 4/10 [00:26&lt;00:39,  6.61s/it]
-episode_reward_mean = 1.921463131904602:  50%|█████     | 5/10 [00:33&lt;00:33,  6.63s/it]
-episode_reward_mean = 2.2106335163116455:  60%|██████    | 6/10 [00:39&lt;00:26,  6.65s/it]
-episode_reward_mean = 2.1925103664398193:  70%|███████   | 7/10 [00:46&lt;00:19,  6.64s/it]
-episode_reward_mean = 2.664064407348633:  80%|████████  | 8/10 [00:53&lt;00:13,  6.67s/it]
-episode_reward_mean = 2.6539173126220703:  90%|█████████ | 9/10 [00:59&lt;00:06,  6.69s/it]
-episode_reward_mean = 2.743558168411255: 100%|██████████| 10/10 [01:06&lt;00:00,  6.74s/it]
+episode_reward_mean = -0.4579917788505554:  10%|█         | 1/10 [00:06&lt;01:01,  6.81s/it]
+episode_reward_mean = 0.14524875581264496:  20%|██        | 2/10 [00:13&lt;00:54,  6.78s/it]
+episode_reward_mean = 1.168386459350586:  30%|███       | 3/10 [00:20&lt;00:47,  6.78s/it]
+episode_reward_mean = 1.3613134622573853:  40%|████      | 4/10 [00:27&lt;00:40,  6.77s/it]
+episode_reward_mean = 1.921463131904602:  50%|█████     | 5/10 [00:33&lt;00:33,  6.77s/it]
+episode_reward_mean = 2.2106335163116455:  60%|██████    | 6/10 [00:40&lt;00:27,  6.76s/it]
+episode_reward_mean = 2.1925103664398193:  70%|███████   | 7/10 [00:47&lt;00:20,  6.76s/it]
+episode_reward_mean = 2.664064407348633:  80%|████████  | 8/10 [00:54&lt;00:13,  6.78s/it]
+episode_reward_mean = 2.6539173126220703:  90%|█████████ | 9/10 [01:01&lt;00:06,  6.81s/it]
+episode_reward_mean = 2.743558168411255: 100%|██████████| 10/10 [01:08&lt;00:00,  6.87s/it]
 </pre></div>
 </div>
 </section>
@@ -1336,7 +1336,7 @@ episode_reward_mean = 2.743558168411255: 100%|██████████| 10
 </ul>
 <p>Now that you are proficient with multi-agent DDPG, you can check out all the TorchRL multi-agent implementations in the
 GitHub repository.
-These are code-only scripts of many popular MARL sota-implementations such as the ones seen in this tutorial,
+These are code-only scripts of many popular MARL algorithms such as the ones seen in this tutorial,
 QMIX, MADDPG, IQL, and many more!</p>
 <p>You can also check out our other multi-agent tutorial on how to train competitive
 MADDPG/IDDPG in PettingZoo/VMAS with multiple agent groups: <a class="reference internal" href="multiagent_competitive_ddpg.html"><span class="doc">Competitive Multi-Agent Reinforcement Learning (DDPG) with TorchRL Tutorial</span></a>.</p>
@@ -1352,8 +1352,8 @@ Here are a few videos of some possible scenarios you can try in VMAS.</p>
 <p><span class="caption-text">Scenarios available in <a class="reference external" href="https://github.com/proroklab/VectorizedMultiAgentSimulator">VMAS</a></span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (2 minutes 2.977 seconds)</p>
-<p><strong>Estimated memory usage:</strong>  320 MB</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (2 minutes 6.726 seconds)</p>
+<p><strong>Estimated memory usage:</strong>  319 MB</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-tutorials-multiagent-ppo-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/a977047786179278d12b52546e1c0da8/multiagent_ppo.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">multiagent_ppo.ipynb</span></code></a></p>

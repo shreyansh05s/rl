@@ -182,13 +182,13 @@ Common environment libraries (e.g. OpenAI gym) are only optional.
       │   └── "trainers.py"
       └── "version.py"
 
-Unlike other domains, RL is less about media than *sota-implementations*. As such, it
+Unlike other domains, RL is less about media than *algorithms*. As such, it
 is harder to make truly independent components.
 
 What TorchRL is not:
 
-* a collection of sota-implementations: we do not intend to provide SOTA implementations of RL sota-implementations,
-  but we provide these sota-implementations only as examples of how to use the library.
+* a collection of algorithms: we do not intend to provide SOTA implementations of RL algorithms,
+  but we provide these algorithms only as examples of how to use the library.
 
 * a research framework: modularity in TorchRL comes in two flavours. First, we try
   to build re-usable components, such that they can be easily swapped with each other.
@@ -638,7 +638,7 @@ Here are examples of using a replaybuffer with tensordicts.
  .. code-block:: none
 
 
-    tensor([0, 1])
+    tensor([1, 0])
 
 
 
@@ -668,8 +668,8 @@ Here are examples of using a replaybuffer with tensordicts.
 
  .. code-block:: none
 
-    0 0.06984967738389969
-    1 0.28791671991348267
+    0 0.28791671991348267
+    1 0.06984967738389969
     2 0.0
 
 
@@ -2176,7 +2176,7 @@ The library is on PyPI: *pip install torchrl*
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (3 minutes 44.659 seconds)
+   **Total running time of the script:** (3 minutes 53.060 seconds)
 
 **Estimated memory usage:**  325 MB
 

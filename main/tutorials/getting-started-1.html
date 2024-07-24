@@ -461,12 +461,12 @@ a Convolutional Neural Network (CNN) as backbones.</p>
 <p>Similar to how environments interact with instances of
 <code class="xref py py-class docutils literal notranslate"><span class="pre">TensorDict</span></code>, the modules used to represent policies and
 value functions also do the same. The core idea is simple: encapsulate a
-standard <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></a> (or any other function) within a class
+standard <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch v2.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></a> (or any other function) within a class
 that knows which entries need to be read and passed to the module, and then
 records the results with the assigned entries. To illustrate this, we will
 use the simplest policy possible: a deterministic map from the observation
 space to the action space. For maximum generality, we will use a
-<a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.nn.LazyLinear.html#torch.nn.LazyLinear" title="(in PyTorch v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">LazyLinear</span></code></a> module with the Pendulum environment we
+<a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.nn.LazyLinear.html#torch.nn.LazyLinear" title="(in PyTorch v2.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">LazyLinear</span></code></a> module with the Pendulum environment we
 instantiated in the previous tutorial.</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
 
@@ -576,7 +576,7 @@ topic, it is treated in <a class="reference internal" href="dqn_with_rnn.html#rn
 </section>
 <section id="probabilistic-policies">
 <h2>Probabilistic policies<a class="headerlink" href="#probabilistic-policies" title="Permalink to this heading">¶</a></h2>
-<p>Policy-optimization sota-implementations like
+<p>Policy-optimization algorithms like
 <a class="reference external" href="https://arxiv.org/abs/1707.06347">PPO</a> require the policy to be
 stochastic: unlike in the examples above, the module now encodes a map from
 the observation space to a parameter space encoding a distribution over the
@@ -644,7 +644,7 @@ populate our tensordict with samples and log-probabilities.</p></li>
 <ul class="simple">
 <li><p>Since we asked for it during the construction of the actor, the
 log-probability of the actions given the distribution at that time is
-also written. This is necessary for sota-implementations like PPO.</p></li>
+also written. This is necessary for algorithms like PPO.</p></li>
 <li><p>The parameters of the distribution are returned within the output
 tensordict too under the <code class="docutils literal notranslate"><span class="pre">&quot;loc&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">&quot;scale&quot;</span></code> entries.</p></li>
 </ul>
@@ -696,7 +696,7 @@ to <code class="xref py py-meth docutils literal notranslate"><span class="pre">
 <p>To build our explorative policy, we only had to concatenate the
 deterministic policy module with the exploration module within a
 <code class="xref py py-class docutils literal notranslate"><span class="pre">TensorDictSequential</span></code> module (which is the analogous
-to <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.nn.Sequential.html#torch.nn.Sequential" title="(in PyTorch v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequential</span></code></a> in the tensordict realm).</p>
+to <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.nn.Sequential.html#torch.nn.Sequential" title="(in PyTorch v2.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequential</span></code></a> in the tensordict realm).</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">exploration_policy</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">TensorDictSequential</span></a><span class="p">(</span><span class="n">policy</span><span class="p">,</span> <span class="n">exploration_module</span><span class="p">)</span>
 
 <span class="k">with</span> <span class="n">set_exploration_type</span><span class="p">(</span><span class="n">ExplorationType</span><span class="o">.</span><span class="n">MEAN</span><span class="p">):</span>
@@ -813,7 +813,7 @@ required by the env);</p></li>
 <li><p>Compare this to the usage of transformers with the Decision Transformers
 examples (see the <code class="docutils literal notranslate"><span class="pre">example</span></code> directory on GitHub).</p></li>
 </ul>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 45.393 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 47.332 seconds)</p>
 <p><strong>Estimated memory usage:</strong>  317 MB</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-tutorials-getting-started-1-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">

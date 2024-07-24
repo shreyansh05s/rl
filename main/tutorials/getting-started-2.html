@@ -464,9 +464,9 @@ straightforward nature of the API for basic usage, this tutorial will be kept br
 <section id="rl-objective-functions">
 <h2>RL objective functions<a class="headerlink" href="#rl-objective-functions" title="Permalink to this heading">¶</a></h2>
 <p>In RL, innovation typically involves the exploration of novel methods
-for optimizing a policy (i.e., new sota-implementations), rather than focusing
+for optimizing a policy (i.e., new algorithms), rather than focusing
 on new architectures, as seen in other domains. Within TorchRL,
-these sota-implementations are encapsulated within loss modules. A loss
+these algorithms are encapsulated within loss modules. A loss
 module orchestrates the various components of your algorithm and
 yields a set of loss values that can be backpropagated
 through to train the corresponding components.</p>
@@ -570,7 +570,7 @@ found in your training loop:</p>
 <section id="further-considerations-target-parameters">
 <h2>Further considerations: Target parameters<a class="headerlink" href="#further-considerations-target-parameters" title="Permalink to this heading">¶</a></h2>
 <p>Another important aspect to consider is the presence of target parameters
-in off-policy sota-implementations like DDPG. Target parameters typically represent
+in off-policy algorithms like DDPG. Target parameters typically represent
 a delayed or smoothed version of the parameters over time, and they play
 a crucial role in value estimation during policy training. Utilizing target
 parameters for policy training often proves to be significantly more
@@ -600,8 +600,8 @@ optimization step or each collection step:</p>
 <li><p>The <a class="reference internal" href="coding_ddpg.html#coding-ddpg"><span class="std std-ref">Coding a DDPG loss tutorial</span></a>;</p></li>
 <li><p>Losses in action in <a class="reference internal" href="coding_ppo.html#coding-ppo"><span class="std std-ref">PPO</span></a> or <a class="reference internal" href="coding_dqn.html#coding-dqn"><span class="std std-ref">DQN</span></a>.</p></li>
 </ul>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 25.176 seconds)</p>
-<p><strong>Estimated memory usage:</strong>  322 MB</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 25.348 seconds)</p>
+<p><strong>Estimated memory usage:</strong>  321 MB</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-tutorials-getting-started-2-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/ae2b99ca949badb94260561dacc8c210/getting-started-2.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">getting-started-2.ipynb</span></code></a></p>

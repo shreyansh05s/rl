@@ -456,12 +456,12 @@ Common environment libraries (e.g. OpenAI gym) are only optional.</p>
 <dt><strong>Content</strong>:</dt><dd><a class="reference internal image-reference" href="../_images/aafig-1f3b6e30cfaaae3f21ed3b55ebfc722276b91b6f.svg"><img alt="../_images/aafig-1f3b6e30cfaaae3f21ed3b55ebfc722276b91b6f.svg" height="2736.0" src="../_images/aafig-1f3b6e30cfaaae3f21ed3b55ebfc722276b91b6f.svg" width="783.0" /></a>
 </dd>
 </dl>
-<p>Unlike other domains, RL is less about media than <em>sota-implementations</em>. As such, it
+<p>Unlike other domains, RL is less about media than <em>algorithms</em>. As such, it
 is harder to make truly independent components.</p>
 <p>What TorchRL is not:</p>
 <ul class="simple">
-<li><p>a collection of sota-implementations: we do not intend to provide SOTA implementations of RL sota-implementations,
-but we provide these sota-implementations only as examples of how to use the library.</p></li>
+<li><p>a collection of algorithms: we do not intend to provide SOTA implementations of RL algorithms,
+but we provide these algorithms only as examples of how to use the library.</p></li>
 <li><p>a research framework: modularity in TorchRL comes in two flavours. First, we try
 to build re-usable components, such that they can be easily swapped with each other.
 Second, we make our best such that components can be used independently of the rest
@@ -700,7 +700,7 @@ TensorDict(
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">tensordict_sample</span><span class="p">[</span><span class="s2">&quot;index&quot;</span><span class="p">]</span>
 </pre></div>
 </div>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>tensor([0, 1])
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>tensor([1, 0])
 </pre></div>
 </div>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">tensordict_sample</span><span class="p">[</span><span class="s2">&quot;td_error&quot;</span><span class="p">]</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.rand.html#torch.rand" title="torch.rand" class="sphx-glr-backref-module-torch sphx-glr-backref-type-py-function"><span class="n">torch</span><span class="o">.</span><span class="n">rand</span></a><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
@@ -717,8 +717,8 @@ TensorDict(
     <span class="kn">import</span> <span class="nn">gym</span>
 </pre></div>
 </div>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>0 0.06984967738389969
-1 0.28791671991348267
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>0 0.28791671991348267
+1 0.06984967738389969
 2 0.0
 </pre></div>
 </div>
@@ -1649,7 +1649,7 @@ Since the library is nascent, it is a great time for you to shape it the way you
 <section id="installing-the-library">
 <h2>Installing the Library<a class="headerlink" href="#installing-the-library" title="Permalink to this heading">¶</a></h2>
 <p>The library is on PyPI: <em>pip install torchrl</em></p>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (3 minutes 44.659 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (3 minutes 53.060 seconds)</p>
 <p><strong>Estimated memory usage:</strong>  325 MB</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-tutorials-torchrl-demo-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
