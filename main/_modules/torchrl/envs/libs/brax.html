@@ -482,8 +482,10 @@
 <span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; import brax.envs</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.envs import BraxWrapper</span>
+<span class="sd">        &gt;&gt;&gt; import torch</span>
+<span class="sd">        &gt;&gt;&gt; device = &quot;cuda&quot; if torch.cuda.is_available() else &quot;cpu&quot;</span>
 <span class="sd">        &gt;&gt;&gt; base_env = brax.envs.get_environment(&quot;ant&quot;)</span>
-<span class="sd">        &gt;&gt;&gt; env = BraxWrapper(base_env)</span>
+<span class="sd">        &gt;&gt;&gt; env = BraxWrapper(base_env, device=device)</span>
 <span class="sd">        &gt;&gt;&gt; env.set_seed(0)</span>
 <span class="sd">        &gt;&gt;&gt; td = env.reset()</span>
 <span class="sd">        &gt;&gt;&gt; td[&quot;action&quot;] = env.action_spec.rand()</span>
@@ -513,7 +515,9 @@
 <span class="sd">    and report the execution time for a short rollout:</span>
 
 <span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; import torch</span>
 <span class="sd">        &gt;&gt;&gt; from torch.utils.benchmark import Timer</span>
+<span class="sd">        &gt;&gt;&gt; device = &quot;cuda&quot; if torch.cuda.is_available() else &quot;cpu&quot;</span>
 <span class="sd">        &gt;&gt;&gt; for batch_size in [4, 16, 128]:</span>
 <span class="sd">        ...     timer = Timer(&#39;&#39;&#39;</span>
 <span class="sd">        ... env.rollout(100)</span>
@@ -521,7 +525,7 @@
 <span class="sd">        ...     setup=f&#39;&#39;&#39;</span>
 <span class="sd">        ... import brax.envs</span>
 <span class="sd">        ... from torchrl.envs import BraxWrapper</span>
-<span class="sd">        ... env = BraxWrapper(brax.envs.get_environment(&quot;ant&quot;), batch_size=[{batch_size}])</span>
+<span class="sd">        ... env = BraxWrapper(brax.envs.get_environment(&quot;ant&quot;), batch_size=[{batch_size}], device=&quot;{device}&quot;)</span>
 <span class="sd">        ... env.set_seed(0)</span>
 <span class="sd">        ... env.rollout(2)</span>
 <span class="sd">        ... &#39;&#39;&#39;)</span>
@@ -861,7 +865,9 @@
 
 <span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.envs import BraxEnv</span>
-<span class="sd">        &gt;&gt;&gt; env = BraxEnv(&quot;ant&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; import torch</span>
+<span class="sd">        &gt;&gt;&gt; device = &quot;cuda&quot; if torch.cuda.is_available() else &quot;cpu&quot;</span>
+<span class="sd">        &gt;&gt;&gt; env = BraxEnv(&quot;ant&quot;, device=device)</span>
 <span class="sd">        &gt;&gt;&gt; env.set_seed(0)</span>
 <span class="sd">        &gt;&gt;&gt; td = env.reset()</span>
 <span class="sd">        &gt;&gt;&gt; td[&quot;action&quot;] = env.action_spec.rand()</span>
@@ -891,13 +897,16 @@
 <span class="sd">    and report the execution time for a short rollout:</span>
 
 <span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; import torch</span>
+<span class="sd">        &gt;&gt;&gt; from torch.utils.benchmark import Timer</span>
+<span class="sd">        &gt;&gt;&gt; device = &quot;cuda&quot; if torch.cuda.is_available() else &quot;cpu&quot;</span>
 <span class="sd">        &gt;&gt;&gt; for batch_size in [4, 16, 128]:</span>
 <span class="sd">        ...     timer = Timer(&#39;&#39;&#39;</span>
 <span class="sd">        ... env.rollout(100)</span>
 <span class="sd">        ... &#39;&#39;&#39;,</span>
 <span class="sd">        ...     setup=f&#39;&#39;&#39;</span>
 <span class="sd">        ... from torchrl.envs import BraxEnv</span>
-<span class="sd">        ... env = BraxEnv(&quot;ant&quot;, batch_size=[{batch_size}])</span>
+<span class="sd">        ... env = BraxEnv(&quot;ant&quot;, batch_size=[{batch_size}], device=&quot;{device}&quot;)</span>
 <span class="sd">        ... env.set_seed(0)</span>
 <span class="sd">        ... env.rollout(2)</span>
 <span class="sd">        ... &#39;&#39;&#39;)</span>
