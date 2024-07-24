@@ -775,14 +775,16 @@
                 <span class="s2">&quot;log_alpha_prime&quot;</span><span class="p">,</span>
                 <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">1.0</span><span class="p">),</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)),</span>
             <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_make_vmap</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reduction</span> <span class="o">=</span> <span class="n">reduction</span>
 
+    <span class="k">def</span> <span class="nf">_make_vmap</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_vmap_qvalue_networkN0</span> <span class="o">=</span> <span class="n">_vmap_func</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">qvalue_network</span><span class="p">,</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">randomness</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">vmap_randomness</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_vmap_qvalue_network00</span> <span class="o">=</span> <span class="n">_vmap_func</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">qvalue_network</span><span class="p">,</span> <span class="n">randomness</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">vmap_randomness</span>
         <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">reduction</span> <span class="o">=</span> <span class="n">reduction</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">target_entropy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

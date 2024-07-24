@@ -443,6 +443,24 @@ will also modify the actor in the collector.
 If the parameters are modified out-of-place, <a class="reference internal" href="generated/torchrl.objectives.LossModule.html#torchrl.objectives.LossModule.from_stateful_net" title="torchrl.objectives.LossModule.from_stateful_net"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_stateful_net()</span></code></a> can be
 used to reset the parameters in the loss to the new value.</p>
 </div>
+<section id="torch-vmap-and-randomness">
+<h2>torch.vmap and randomness<a class="headerlink" href="#torch-vmap-and-randomness" title="Permalink to this heading">¶</a></h2>
+<p>TorchRL loss modules have plenty of calls to <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.vmap.html#torch.vmap" title="(in PyTorch v2.3)"><code class="xref py py-func docutils literal notranslate"><span class="pre">vmap()</span></code></a> to amortize the cost of calling multiple similar models
+in a loop, and instead vectorize these operations. <cite>vmap</cite> needs to be told explicitly what to do when random numbers
+need to be generated within the call. To do this, a randomness mode need to be set and must be one of <cite>“error”</cite> (default,
+errors when dealing with pseudo-random functions), <cite>“same”</cite> (replicates the results across the batch) or <cite>“different”</cite>
+(each element of the batch is treated separately).
+Relying on the default will typically result in an error such as this one:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="ne">RuntimeError</span><span class="p">:</span> <span class="n">vmap</span><span class="p">:</span> <span class="n">called</span> <span class="n">random</span> <span class="n">operation</span> <span class="k">while</span> <span class="ow">in</span> <span class="n">randomness</span> <span class="n">error</span> <span class="n">mode</span><span class="o">.</span>
+</pre></div>
+</div>
+<p>Since the calls to <cite>vmap</cite> are buried down the loss modules, TorchRL
+provides an interface to set that vmap mode from the outside through <cite>loss.vmap_randomness = str_value</cite>, see
+<a class="reference internal" href="generated/torchrl.objectives.LossModule.html#torchrl.objectives.LossModule.vmap_randomness" title="torchrl.objectives.LossModule.vmap_randomness"><code class="xref py py-meth docutils literal notranslate"><span class="pre">vmap_randomness()</span></code></a> for more information.</p>
+<p><code class="docutils literal notranslate"><span class="pre">LossModule.vmap_randomness</span></code> defaults to <cite>“error”</cite> if no random module is detected, and to <cite>“different”</cite> in
+other cases. By default, only a limited number of modules are listed as random, but the list can be extended
+using the <code class="xref py py-func docutils literal notranslate"><span class="pre">add_random_module()</span></code> function.</p>
+</section>
 <section id="training-value-functions">
 <h2>Training value functions<a class="headerlink" href="#training-value-functions" title="Permalink to this heading">¶</a></h2>
 <p>TorchRL provides a range of <strong>value estimators</strong> such as TD(0), TD(1), TD(<span class="math notranslate nohighlight">\(\lambda\)</span>)
@@ -816,6 +834,7 @@ auto-completion to make their choice.</p>
             <div class="pytorch-side-scroll" id="pytorch-side-scroll-right">
               <ul>
 <li><a class="reference internal" href="#">torchrl.objectives package</a><ul>
+<li><a class="reference internal" href="#torch-vmap-and-randomness">torch.vmap and randomness</a></li>
 <li><a class="reference internal" href="#training-value-functions">Training value functions</a></li>
 <li><a class="reference internal" href="#dqn">DQN</a></li>
 <li><a class="reference internal" href="#ddpg">DDPG</a></li>

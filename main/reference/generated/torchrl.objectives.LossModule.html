@@ -684,6 +684,22 @@ are direct members of this module.</p>
 <dd><p>The value function blends in the reward and value estimate(s) from upcoming state(s)/state-action pair(s) into a target value estimate for the value network.</p>
 </dd></dl>
 
+<dl class="py property">
+<dt class="sig sig-object py" id="torchrl.objectives.LossModule.vmap_randomness">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">vmap_randomness</span></span><a class="headerlink" href="#torchrl.objectives.LossModule.vmap_randomness" title="Permalink to this definition">¶</a></dt>
+<dd><p>Vmap random mode.</p>
+<p>The vmap randomness mode controls what <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.vmap.html#torch.vmap" title="(in PyTorch v2.3)"><code class="xref py py-func docutils literal notranslate"><span class="pre">vmap()</span></code></a> should do when dealing with
+functions with a random outcome such as <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.randn.html#torch.randn" title="(in PyTorch v2.3)"><code class="xref py py-func docutils literal notranslate"><span class="pre">randn()</span></code></a> and <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.rand.html#torch.rand" title="(in PyTorch v2.3)"><code class="xref py py-func docutils literal notranslate"><span class="pre">rand()</span></code></a>.
+If <cite>“error”</cite>, any random function will raise an exception indicating that <cite>vmap</cite> does not
+know how to handle the random call.</p>
+<p>If <cite>“different”</cite>, every element of the batch along which vmap is being called will
+behave differently. If <cite>“same”</cite>, vmaps will copy the same result across all elements.</p>
+<p><code class="docutils literal notranslate"><span class="pre">vmap_randomness</span></code> defaults to <cite>“error”</cite> if no random module is detected, and to <cite>“different”</cite> in
+other cases. By default, only a limited number of modules are listed as random, but the list can be extended
+using the <code class="xref py py-func docutils literal notranslate"><span class="pre">add_random_module()</span></code> function.</p>
+<p>This property supports setting its value.</p>
+</dd></dl>
+
 </dd></dl>
 
 </section>
