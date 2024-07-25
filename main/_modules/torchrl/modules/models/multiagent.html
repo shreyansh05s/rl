@@ -472,8 +472,23 @@
                 <span class="k">break</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">initialized</span> <span class="o">=</span> <span class="n">initialized</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_make_params</span><span class="p">(</span><span class="n">agent_networks</span><span class="p">)</span>
+        <span class="c1"># We make sure all params and buffers are on &#39;meta&#39; device</span>
+        <span class="c1">#  To do this, we set the device keyword arg to &#39;meta&#39;, we also temporarily change</span>
+        <span class="c1">#  the default device. Finally, we convert all params to &#39;meta&#39; tensors that are not params.</span>
         <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;device&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;meta&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s2">&quot;_empty_net&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_single_net</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;meta&quot;</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_empty_net</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_single_net</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">NotImplementedError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+                <span class="k">if</span> <span class="s2">&quot;Cannot copy out of meta tensor&quot;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">err</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                        <span class="s2">&quot;The network was built using `factory().to(device), build the network directly &quot;</span>
+                        <span class="s2">&quot;on device using `factory(device=device)` instead.&quot;</span>
+                    <span class="p">)</span>
+            <span class="c1"># Remove all parameters</span>
+            <span class="n">TensorDict</span><span class="o">.</span><span class="n">from_module</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_empty_net</span><span class="p">)</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s2">&quot;meta&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">to_module</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_empty_net</span>
+            <span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">vmap_randomness</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -627,7 +642,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">update_</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">data</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">empty_net</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s2">&quot;_empty_net&quot;</span><span class="p">]</span>
+        <span class="n">empty_net</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_empty_net</span>
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">to_module</span><span class="p">(</span><span class="n">empty_net</span><span class="p">):</span>
             <span class="n">module_repr</span> <span class="o">=</span> <span class="n">indent</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">empty_net</span><span class="p">),</span> <span class="mi">4</span> <span class="o">*</span> <span class="s2">&quot; &quot;</span><span class="p">)</span>
         <span class="n">n_agents</span> <span class="o">=</span> <span class="n">indent</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;n_agents=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_agents</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="mi">4</span> <span class="o">*</span> <span class="s2">&quot; &quot;</span><span class="p">)</span>
