@@ -503,14 +503,14 @@
 <span class="sd">        &gt;&gt;&gt; import torch</span>
 <span class="sd">        &gt;&gt;&gt; from torch import nn</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.data.tensor_specs import UnboundedContinuousTensorSpec</span>
-<span class="sd">        &gt;&gt;&gt; from torchrl.modules.distributions.continuous import NormalParamWrapper, TanhNormal</span>
+<span class="sd">        &gt;&gt;&gt; from torchrl.modules.distributions import NormalParamExtractor, TanhNormal</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.modules.tensordict_module.actors import ProbabilisticActor, ValueOperator</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.modules.tensordict_module.common import SafeModule</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.objectives.reinforce import ReinforceLoss</span>
 <span class="sd">        &gt;&gt;&gt; from tensordict import TensorDict</span>
 <span class="sd">        &gt;&gt;&gt; n_obs, n_act = 3, 5</span>
 <span class="sd">        &gt;&gt;&gt; value_net = ValueOperator(nn.Linear(n_obs, 1), in_keys=[&quot;observation&quot;])</span>
-<span class="sd">        &gt;&gt;&gt; net = NormalParamWrapper(nn.Linear(n_obs, 2 * n_act))</span>
+<span class="sd">        &gt;&gt;&gt; net = nn.Sequential(nn.Linear(n_obs, 2 * n_act), NormalParamExtractor())</span>
 <span class="sd">        &gt;&gt;&gt; module = SafeModule(net, in_keys=[&quot;observation&quot;], out_keys=[&quot;loc&quot;, &quot;scale&quot;])</span>
 <span class="sd">        &gt;&gt;&gt; actor_net = ProbabilisticActor(</span>
 <span class="sd">        ...     module,</span>
@@ -549,13 +549,13 @@
 <span class="sd">        &gt;&gt;&gt; import torch</span>
 <span class="sd">        &gt;&gt;&gt; from torch import nn</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.data.tensor_specs import UnboundedContinuousTensorSpec</span>
-<span class="sd">        &gt;&gt;&gt; from torchrl.modules.distributions.continuous import NormalParamWrapper, TanhNormal</span>
+<span class="sd">        &gt;&gt;&gt; from torchrl.modules.distributions import NormalParamExtractor, TanhNormal</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.modules.tensordict_module.actors import ProbabilisticActor, ValueOperator</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.modules.tensordict_module.common import SafeModule</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.objectives.reinforce import ReinforceLoss</span>
 <span class="sd">        &gt;&gt;&gt; n_obs, n_act = 3, 5</span>
 <span class="sd">        &gt;&gt;&gt; value_net = ValueOperator(nn.Linear(n_obs, 1), in_keys=[&quot;observation&quot;])</span>
-<span class="sd">        &gt;&gt;&gt; net = NormalParamWrapper(nn.Linear(n_obs, 2 * n_act))</span>
+<span class="sd">        &gt;&gt;&gt; net = nn.Sequential(nn.Linear(n_obs, 2 * n_act), NormalParamExtractor())</span>
 <span class="sd">        &gt;&gt;&gt; module = SafeModule(net, in_keys=[&quot;observation&quot;], out_keys=[&quot;loc&quot;, &quot;scale&quot;])</span>
 <span class="sd">        &gt;&gt;&gt; actor_net = ProbabilisticActor(</span>
 <span class="sd">        ...     module,</span>

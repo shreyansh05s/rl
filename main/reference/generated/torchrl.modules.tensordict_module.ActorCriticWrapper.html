@@ -433,12 +433,12 @@ will both return a standalone TDModule with the dedicated functionality.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.modules</span> <span class="kn">import</span> <span class="p">(</span>
 <span class="gp">... </span>     <span class="n">ActorCriticWrapper</span><span class="p">,</span>
 <span class="gp">... </span>     <span class="n">ProbabilisticActor</span><span class="p">,</span>
-<span class="gp">... </span>     <span class="n">NormalParamWrapper</span><span class="p">,</span>
+<span class="gp">... </span>     <span class="n">NormalParamExtractor</span><span class="p">,</span>
 <span class="gp">... </span>     <span class="n">TanhNormal</span><span class="p">,</span>
 <span class="gp">... </span>     <span class="n">ValueOperator</span><span class="p">,</span>
 <span class="gp">... </span> <span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">action_module</span> <span class="o">=</span> <span class="n">TensorDictModule</span><span class="p">(</span>
-<span class="gp">... </span>       <span class="n">NormalParamWrapper</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">)),</span>
+<span class="gp">... </span>       <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span> <span class="n">NormalParamExtractor</span><span class="p">()),</span>
 <span class="gp">... </span>       <span class="n">in_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;observation&quot;</span><span class="p">],</span>
 <span class="gp">... </span>       <span class="n">out_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;loc&quot;</span><span class="p">,</span> <span class="s2">&quot;scale&quot;</span><span class="p">],</span>
 <span class="gp">... </span>   <span class="p">)</span>

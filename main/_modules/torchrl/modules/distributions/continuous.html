@@ -427,15 +427,6 @@
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">torchrl.modules.utils</span> <span class="kn">import</span> <span class="n">mappings</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s2">&quot;NormalParamWrapper&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;TanhNormal&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Delta&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;TanhDelta&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;TruncatedNormal&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;IndependentNormal&quot;</span><span class="p">,</span>
-<span class="p">]</span>
-
 <span class="c1"># speeds up distribution construction</span>
 <span class="n">D</span><span class="o">.</span><span class="n">Distribution</span><span class="o">.</span><span class="n">set_default_validate_args</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
 
@@ -555,6 +546,10 @@
         <span class="n">scale_mapping</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;biased_softplus_1.0&quot;</span><span class="p">,</span>
         <span class="n">scale_lb</span><span class="p">:</span> <span class="n">Number</span> <span class="o">=</span> <span class="mf">1e-4</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;The NormalParamWrapper class will be deprecated in v0.7 in favor of :class:`~tensordict.nn.NormalParamExtractor`.&quot;</span><span class="p">,</span>
+            <span class="n">category</span><span class="o">=</span><span class="ne">DeprecationWarning</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">operator</span> <span class="o">=</span> <span class="n">operator</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">scale_mapping</span> <span class="o">=</span> <span class="n">scale_mapping</span>
@@ -1161,10 +1156,13 @@
         <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;TanhDelta mean has not analytical form.&quot;</span><span class="p">)</span></div>
 
 
-<span class="k">def</span> <span class="nf">uniform_sample_delta</span><span class="p">(</span><span class="n">dist</span><span class="p">:</span> <span class="n">Delta</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">_uniform_sample_delta</span><span class="p">(</span><span class="n">dist</span><span class="p">:</span> <span class="n">Delta</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
     <span class="k">if</span> <span class="n">size</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">size</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">([])</span>
     <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn_like</span><span class="p">(</span><span class="n">dist</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">size</span><span class="p">))</span>
+
+
+<span class="n">uniform_sample_delta</span> <span class="o">=</span> <span class="n">_uniform_sample_delta</span>
 </pre></div>
 
              </article>

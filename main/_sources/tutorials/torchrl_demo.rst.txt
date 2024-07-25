@@ -1526,16 +1526,18 @@ Specialized Classes
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 606-625
+.. GENERATED FROM PYTHON SOURCE LINES 606-627
 
 .. code-block:: Python
 
 
     # Probabilistic modules
-    from torchrl.modules import NormalParamWrapper, TanhNormal
+    from torchrl.modules import NormalParamExtractor, TanhNormal
 
     td = TensorDict({"input": torch.randn(3, 5)}, [3])
-    net = NormalParamWrapper(nn.Linear(5, 4))  # splits the output in loc and scale
+    net = nn.Sequential(
+        nn.Linear(5, 4), NormalParamExtractor()
+    )  # splits the output in loc and scale
     module = TensorDictModule(net, in_keys=["input"], out_keys=["loc", "scale"])
     td_module = ProbabilisticTensorDictSequential(
         module,
@@ -1570,7 +1572,7 @@ Specialized Classes
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 626-641
+.. GENERATED FROM PYTHON SOURCE LINES 628-643
 
 .. code-block:: Python
 
@@ -1611,7 +1613,7 @@ Specialized Classes
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 642-661
+.. GENERATED FROM PYTHON SOURCE LINES 644-663
 
 .. code-block:: Python
 
@@ -1655,12 +1657,12 @@ Specialized Classes
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 662-664
+.. GENERATED FROM PYTHON SOURCE LINES 664-666
 
 Using Environments and Modules
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. GENERATED FROM PYTHON SOURCE LINES 664-692
+.. GENERATED FROM PYTHON SOURCE LINES 666-694
 
 .. code-block:: Python
 
@@ -1725,7 +1727,7 @@ Using Environments and Modules
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 693-711
+.. GENERATED FROM PYTHON SOURCE LINES 695-713
 
 .. code-block:: Python
 
@@ -1780,7 +1782,7 @@ Using Environments and Modules
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 712-715
+.. GENERATED FROM PYTHON SOURCE LINES 714-717
 
 .. code-block:: Python
 
@@ -1800,7 +1802,7 @@ Using Environments and Modules
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 716-727
+.. GENERATED FROM PYTHON SOURCE LINES 718-729
 
 .. code-block:: Python
 
@@ -1822,12 +1824,12 @@ Using Environments and Modules
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 728-730
+.. GENERATED FROM PYTHON SOURCE LINES 730-732
 
 Collectors
 ^^^^^^^^^^
 
-.. GENERATED FROM PYTHON SOURCE LINES 730-736
+.. GENERATED FROM PYTHON SOURCE LINES 732-738
 
 .. code-block:: Python
 
@@ -1844,12 +1846,12 @@ Collectors
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 737-739
+.. GENERATED FROM PYTHON SOURCE LINES 739-741
 
 EnvCreator makes sure that we can send a lambda function from process to process
 We use a SerialEnv for simplicity, but for larger jobs a ParallelEnv would be better suited.
 
-.. GENERATED FROM PYTHON SOURCE LINES 739-749
+.. GENERATED FROM PYTHON SOURCE LINES 741-751
 
 .. code-block:: Python
 
@@ -1870,11 +1872,11 @@ We use a SerialEnv for simplicity, but for larger jobs a ParallelEnv would be be
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 750-751
+.. GENERATED FROM PYTHON SOURCE LINES 752-753
 
 Sync data collector
 
-.. GENERATED FROM PYTHON SOURCE LINES 751-763
+.. GENERATED FROM PYTHON SOURCE LINES 753-765
 
 .. code-block:: Python
 
@@ -1897,7 +1899,7 @@ Sync data collector
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 764-773
+.. GENERATED FROM PYTHON SOURCE LINES 766-775
 
 .. code-block:: Python
 
@@ -1949,7 +1951,7 @@ Sync data collector
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 774-795
+.. GENERATED FROM PYTHON SOURCE LINES 776-797
 
 .. code-block:: Python
 
@@ -2013,12 +2015,12 @@ Sync data collector
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 796-798
+.. GENERATED FROM PYTHON SOURCE LINES 798-800
 
 Objectives
 ^^^^^^^^^^
 
-.. GENERATED FROM PYTHON SOURCE LINES 798-820
+.. GENERATED FROM PYTHON SOURCE LINES 800-822
 
 .. code-block:: Python
 
@@ -2051,7 +2053,7 @@ Objectives
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 821-837
+.. GENERATED FROM PYTHON SOURCE LINES 823-839
 
 .. code-block:: Python
 
@@ -2078,7 +2080,7 @@ Objectives
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 838-841
+.. GENERATED FROM PYTHON SOURCE LINES 840-843
 
 .. code-block:: Python
 
@@ -2109,7 +2111,7 @@ Objectives
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 842-845
+.. GENERATED FROM PYTHON SOURCE LINES 844-847
 
 .. code-block:: Python
 
@@ -2144,7 +2146,7 @@ Objectives
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 846-865
+.. GENERATED FROM PYTHON SOURCE LINES 848-867
 
 State of the Library
 ^^^^^^^^^^^^^^^^^^^^
@@ -2166,7 +2168,7 @@ RL (or just curious), try it! Give us feedback: what will make the success of
 TorchRL is how well it covers researchers needs. To do that, we need their input!
 Since the library is nascent, it is a great time for you to shape it the way you want!
 
-.. GENERATED FROM PYTHON SOURCE LINES 867-871
+.. GENERATED FROM PYTHON SOURCE LINES 869-873
 
 Installing the Library
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -2176,7 +2178,7 @@ The library is on PyPI: *pip install torchrl*
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (3 minutes 53.642 seconds)
+   **Total running time of the script:** (3 minutes 55.502 seconds)
 
 **Estimated memory usage:**  325 MB
 

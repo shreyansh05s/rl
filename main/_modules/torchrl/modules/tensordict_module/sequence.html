@@ -436,11 +436,11 @@
 <span class="sd">        &gt;&gt;&gt; import torch</span>
 <span class="sd">        &gt;&gt;&gt; from tensordict import TensorDict</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.data import CompositeSpec, UnboundedContinuousTensorSpec</span>
-<span class="sd">        &gt;&gt;&gt; from torchrl.modules import TanhNormal, SafeSequential, TensorDictModule, NormalParamWrapper</span>
+<span class="sd">        &gt;&gt;&gt; from torchrl.modules import TanhNormal, SafeSequential, TensorDictModule, NormalParamExtractor</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.modules.tensordict_module import SafeProbabilisticModule</span>
 <span class="sd">        &gt;&gt;&gt; td = TensorDict({&quot;input&quot;: torch.randn(3, 4)}, [3,])</span>
 <span class="sd">        &gt;&gt;&gt; spec1 = CompositeSpec(hidden=UnboundedContinuousTensorSpec(4), loc=None, scale=None)</span>
-<span class="sd">        &gt;&gt;&gt; net1 = NormalParamWrapper(torch.nn.Linear(4, 8))</span>
+<span class="sd">        &gt;&gt;&gt; net1 = nn.Sequential(torch.nn.Linear(4, 8), NormalParamExtractor())</span>
 <span class="sd">        &gt;&gt;&gt; module1 = TensorDictModule(net1, in_keys=[&quot;input&quot;], out_keys=[&quot;loc&quot;, &quot;scale&quot;])</span>
 <span class="sd">        &gt;&gt;&gt; td_module1 = SafeProbabilisticModule(</span>
 <span class="sd">        ...     module=module1,</span>

@@ -554,7 +554,7 @@
 <span class="sd">        &gt;&gt;&gt; import torch</span>
 <span class="sd">        &gt;&gt;&gt; from torch import nn</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.data.tensor_specs import BoundedTensorSpec</span>
-<span class="sd">        &gt;&gt;&gt; from torchrl.modules.distributions.continuous import NormalParamWrapper, TanhNormal</span>
+<span class="sd">        &gt;&gt;&gt; from torchrl.modules.distributions import NormalParamExtractor, TanhNormal</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.modules.tensordict_module.actors import ProbabilisticActor, ValueOperator</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.modules.tensordict_module.common import SafeModule</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.objectives.ppo import PPOLoss</span>
@@ -562,7 +562,7 @@
 <span class="sd">        &gt;&gt;&gt; n_act, n_obs = 4, 3</span>
 <span class="sd">        &gt;&gt;&gt; spec = BoundedTensorSpec(-torch.ones(n_act), torch.ones(n_act), (n_act,))</span>
 <span class="sd">        &gt;&gt;&gt; base_layer = nn.Linear(n_obs, 5)</span>
-<span class="sd">        &gt;&gt;&gt; net = NormalParamWrapper(nn.Sequential(base_layer, nn.Linear(5, 2 * n_act)))</span>
+<span class="sd">        &gt;&gt;&gt; net = nn.Sequential(base_layer, nn.Linear(5, 2 * n_act), NormalParamExtractor())</span>
 <span class="sd">        &gt;&gt;&gt; module = SafeModule(net, in_keys=[&quot;observation&quot;], out_keys=[&quot;loc&quot;, &quot;scale&quot;])</span>
 <span class="sd">        &gt;&gt;&gt; actor = ProbabilisticActor(</span>
 <span class="sd">        ...     module=module,</span>
@@ -607,14 +607,14 @@
 <span class="sd">        &gt;&gt;&gt; import torch</span>
 <span class="sd">        &gt;&gt;&gt; from torch import nn</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.data.tensor_specs import BoundedTensorSpec</span>
-<span class="sd">        &gt;&gt;&gt; from torchrl.modules.distributions.continuous import NormalParamWrapper, TanhNormal</span>
+<span class="sd">        &gt;&gt;&gt; from torchrl.modules.distributions import NormalParamExtractor, TanhNormal</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.modules.tensordict_module.actors import ProbabilisticActor, ValueOperator</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.modules.tensordict_module.common import SafeModule</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.objectives.ppo import PPOLoss</span>
 <span class="sd">        &gt;&gt;&gt; n_act, n_obs = 4, 3</span>
 <span class="sd">        &gt;&gt;&gt; spec = BoundedTensorSpec(-torch.ones(n_act), torch.ones(n_act), (n_act,))</span>
 <span class="sd">        &gt;&gt;&gt; base_layer = nn.Linear(n_obs, 5)</span>
-<span class="sd">        &gt;&gt;&gt; net = NormalParamWrapper(nn.Sequential(base_layer, nn.Linear(5, 2 * n_act)))</span>
+<span class="sd">        &gt;&gt;&gt; net = nn.Sequential(base_layer, nn.Linear(5, 2 * n_act), NormalParamExtractor())</span>
 <span class="sd">        &gt;&gt;&gt; module = SafeModule(net, in_keys=[&quot;observation&quot;], out_keys=[&quot;loc&quot;, &quot;scale&quot;])</span>
 <span class="sd">        &gt;&gt;&gt; actor = ProbabilisticActor(</span>
 <span class="sd">        ...     module=module,</span>
