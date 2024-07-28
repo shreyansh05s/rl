@@ -783,6 +783,8 @@
 <span class="sd">    Methods:</span>
 <span class="sd">        set_recurrent_mode: controls whether the module should be executed in</span>
 <span class="sd">            recurrent mode.</span>
+<span class="sd">        make_tensordict_primer: creates the TensorDictPrimer transforms for the environment to be aware of the</span>
+<span class="sd">            recurrent states of the RNN.</span>
 
 <span class="sd">    .. note:: This module relies on specific ``recurrent_state`` keys being present in the input</span>
 <span class="sd">        TensorDicts. To generate a :class:`~torchrl.envs.transforms.TensorDictPrimer` transform that will automatically</span>
@@ -922,7 +924,46 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">out_keys</span> <span class="o">=</span> <span class="n">out_keys</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_recurrent_mode</span> <span class="o">=</span> <span class="kc">False</span>
 
-    <span class="k">def</span> <span class="nf">make_tensordict_primer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="LSTMModule.make_tensordict_primer"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.LSTMModule.html#torchrl.modules.LSTMModule.make_tensordict_primer">[docs]</a>    <span class="k">def</span> <span class="nf">make_tensordict_primer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Makes a tensordict primer for the environment.</span>
+
+<span class="sd">        A :class:`~torchrl.envs.TensorDictPrimer` object will ensure that the policy is aware of the supplementary</span>
+<span class="sd">        inputs and outputs (recurrent states) during rollout execution. That way, the data can be shared across</span>
+<span class="sd">        processes and dealt with properly.</span>
+
+<span class="sd">        Not including a ``TensorDictPrimer`` in the environment may result in poorly defined behaviours, for instance</span>
+<span class="sd">        in parallel settings where a step involves copying the new recurrent state from ``&quot;next&quot;`` to the root</span>
+<span class="sd">        tensordict, which the meth:`~torchrl.EnvBase.step_mdp` method will not be able to do as the recurrent states</span>
+<span class="sd">        are not registered within the environment specs.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; from torchrl.collectors import SyncDataCollector</span>
+<span class="sd">            &gt;&gt;&gt; from torchrl.envs import TransformedEnv, InitTracker</span>
+<span class="sd">            &gt;&gt;&gt; from torchrl.envs import GymEnv</span>
+<span class="sd">            &gt;&gt;&gt; from torchrl.modules import MLP, LSTMModule</span>
+<span class="sd">            &gt;&gt;&gt; from torch import nn</span>
+<span class="sd">            &gt;&gt;&gt; from tensordict.nn import TensorDictSequential as Seq, TensorDictModule as Mod</span>
+<span class="sd">            &gt;&gt;&gt;</span>
+<span class="sd">            &gt;&gt;&gt; env = TransformedEnv(GymEnv(&quot;Pendulum-v1&quot;), InitTracker())</span>
+<span class="sd">            &gt;&gt;&gt; lstm_module = LSTMModule(</span>
+<span class="sd">            ...     input_size=env.observation_spec[&quot;observation&quot;].shape[-1],</span>
+<span class="sd">            ...     hidden_size=64,</span>
+<span class="sd">            ...     in_keys=[&quot;observation&quot;, &quot;rs_h&quot;, &quot;rs_c&quot;],</span>
+<span class="sd">            ...     out_keys=[&quot;intermediate&quot;, (&quot;next&quot;, &quot;rs_h&quot;), (&quot;next&quot;, &quot;rs_c&quot;)])</span>
+<span class="sd">            &gt;&gt;&gt; mlp = MLP(num_cells=[64], out_features=1)</span>
+<span class="sd">            &gt;&gt;&gt; policy = Seq(lstm_module, Mod(mlp, in_keys=[&quot;intermediate&quot;], out_keys=[&quot;action&quot;]))</span>
+<span class="sd">            &gt;&gt;&gt; policy(env.reset())</span>
+<span class="sd">            &gt;&gt;&gt; env = env.append_transform(lstm_module.make_tensordict_primer())</span>
+<span class="sd">            &gt;&gt;&gt; data_collector = SyncDataCollector(</span>
+<span class="sd">            ...     env,</span>
+<span class="sd">            ...     policy,</span>
+<span class="sd">            ...     frames_per_batch=10</span>
+<span class="sd">            ... )</span>
+<span class="sd">            &gt;&gt;&gt; for data in data_collector:</span>
+<span class="sd">            ...     print(data)</span>
+<span class="sd">            ...     break</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">torchrl.envs.transforms.transforms</span> <span class="kn">import</span> <span class="n">TensorDictPrimer</span>
 
         <span class="k">def</span> <span class="nf">make_tuple</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
@@ -949,7 +990,7 @@
                     <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lstm</span><span class="o">.</span><span class="n">num_layers</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lstm</span><span class="o">.</span><span class="n">hidden_size</span><span class="p">)</span>
                 <span class="p">),</span>
             <span class="p">}</span>
-        <span class="p">)</span>
+        <span class="p">)</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">recurrent_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1467,6 +1508,8 @@
 <span class="sd">    Methods:</span>
 <span class="sd">        set_recurrent_mode: controls whether the module should be executed in</span>
 <span class="sd">            recurrent mode.</span>
+<span class="sd">        make_tensordict_primer: creates the TensorDictPrimer transforms for the environment to be aware of the</span>
+<span class="sd">            recurrent states of the RNN.</span>
 
 <span class="sd">    .. note:: This module relies on specific ``recurrent_state`` keys being present in the input</span>
 <span class="sd">        TensorDicts. To generate a :class:`~torchrl.envs.transforms.TensorDictPrimer` transform that will automatically</span>
@@ -1631,7 +1674,46 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">out_keys</span> <span class="o">=</span> <span class="n">out_keys</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_recurrent_mode</span> <span class="o">=</span> <span class="kc">False</span>
 
-    <span class="k">def</span> <span class="nf">make_tensordict_primer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="GRUModule.make_tensordict_primer"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.GRUModule.html#torchrl.modules.GRUModule.make_tensordict_primer">[docs]</a>    <span class="k">def</span> <span class="nf">make_tensordict_primer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Makes a tensordict primer for the environment.</span>
+
+<span class="sd">        A :class:`~torchrl.envs.TensorDictPrimer` object will ensure that the policy is aware of the supplementary</span>
+<span class="sd">        inputs and outputs (recurrent states) during rollout execution. That way, the data can be shared across</span>
+<span class="sd">        processes and dealt with properly.</span>
+
+<span class="sd">        Not including a ``TensorDictPrimer`` in the environment may result in poorly defined behaviours, for instance</span>
+<span class="sd">        in parallel settings where a step involves copying the new recurrent state from ``&quot;next&quot;`` to the root</span>
+<span class="sd">        tensordict, which the meth:`~torchrl.EnvBase.step_mdp` method will not be able to do as the recurrent states</span>
+<span class="sd">        are not registered within the environment specs.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; from torchrl.collectors import SyncDataCollector</span>
+<span class="sd">            &gt;&gt;&gt; from torchrl.envs import TransformedEnv, InitTracker</span>
+<span class="sd">            &gt;&gt;&gt; from torchrl.envs import GymEnv</span>
+<span class="sd">            &gt;&gt;&gt; from torchrl.modules import MLP, LSTMModule</span>
+<span class="sd">            &gt;&gt;&gt; from torch import nn</span>
+<span class="sd">            &gt;&gt;&gt; from tensordict.nn import TensorDictSequential as Seq, TensorDictModule as Mod</span>
+<span class="sd">            &gt;&gt;&gt;</span>
+<span class="sd">            &gt;&gt;&gt; env = TransformedEnv(GymEnv(&quot;Pendulum-v1&quot;), InitTracker())</span>
+<span class="sd">            &gt;&gt;&gt; gru_module = GRUModule(</span>
+<span class="sd">            ...     input_size=env.observation_spec[&quot;observation&quot;].shape[-1],</span>
+<span class="sd">            ...     hidden_size=64,</span>
+<span class="sd">            ...     in_keys=[&quot;observation&quot;, &quot;rs&quot;],</span>
+<span class="sd">            ...     out_keys=[&quot;intermediate&quot;, (&quot;next&quot;, &quot;rs&quot;)])</span>
+<span class="sd">            &gt;&gt;&gt; mlp = MLP(num_cells=[64], out_features=1)</span>
+<span class="sd">            &gt;&gt;&gt; policy = Seq(gru_module, Mod(mlp, in_keys=[&quot;intermediate&quot;], out_keys=[&quot;action&quot;]))</span>
+<span class="sd">            &gt;&gt;&gt; policy(env.reset())</span>
+<span class="sd">            &gt;&gt;&gt; env = env.append_transform(gru_module.make_tensordict_primer())</span>
+<span class="sd">            &gt;&gt;&gt; data_collector = SyncDataCollector(</span>
+<span class="sd">            ...     env,</span>
+<span class="sd">            ...     policy,</span>
+<span class="sd">            ...     frames_per_batch=10</span>
+<span class="sd">            ... )</span>
+<span class="sd">            &gt;&gt;&gt; for data in data_collector:</span>
+<span class="sd">            ...     print(data)</span>
+<span class="sd">            ...     break</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">torchrl.envs</span> <span class="kn">import</span> <span class="n">TensorDictPrimer</span>
 
         <span class="k">def</span> <span class="nf">make_tuple</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
@@ -1653,7 +1735,7 @@
                     <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gru</span><span class="o">.</span><span class="n">num_layers</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">gru</span><span class="o">.</span><span class="n">hidden_size</span><span class="p">)</span>
                 <span class="p">),</span>
             <span class="p">}</span>
-        <span class="p">)</span>
+        <span class="p">)</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">recurrent_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

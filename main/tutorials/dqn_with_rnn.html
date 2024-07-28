@@ -669,7 +669,7 @@ move the recurrent state to the root TensorDict, making it available to the
 RNN during the following call (see figure in the intro).</p>
 <p>As mentioned earlier, we have one more optional transform to add to our
 environment to make sure that the recurrent states are passed to the buffer.
-The <code class="xref py py-meth docutils literal notranslate"><span class="pre">make_tensordict_primer()</span></code> method does
+The <a class="reference internal" href="../reference/generated/torchrl.modules.LSTMModule.html#id0" title="torchrl.modules.LSTMModule.make_tensordict_primer"><code class="xref py py-meth docutils literal notranslate"><span class="pre">make_tensordict_primer()</span></code></a> method does
 exactly that:</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">env</span><span class="o">.</span><span class="n">append_transform</span><span class="p">(</span><span class="n">lstm</span><span class="o">.</span><span class="n">make_tensordict_primer</span><span class="p">())</span>
 </pre></div>
@@ -801,7 +801,7 @@ such an opportunity to speed up our training loop!
 To use it, we just need to tell the LSTM module to run on “recurrent-mode”
 when used by the loss.
 As we’ll usually want to have two copies of the LSTM module, we do this by
-calling a <a class="reference internal" href="../reference/generated/torchrl.modules.LSTMModule.html#id0" title="torchrl.modules.LSTMModule.set_recurrent_mode"><code class="xref py py-meth docutils literal notranslate"><span class="pre">set_recurrent_mode()</span></code></a> method that
+calling a <a class="reference internal" href="../reference/generated/torchrl.modules.LSTMModule.html#id1" title="torchrl.modules.LSTMModule.set_recurrent_mode"><code class="xref py py-meth docutils literal notranslate"><span class="pre">set_recurrent_mode()</span></code></a> method that
 will return a new instance of the LSTM (with shared weights) that will
 assume that the input data is sequential in nature.</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">policy</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">Seq</span></a><span class="p">(</span><span class="n">feature</span><span class="p">,</span> <span class="n">lstm</span><span class="o">.</span><span class="n">set_recurrent_mode</span><span class="p">(</span><span class="kc">True</span><span class="p">),</span> <span class="n">mlp</span><span class="p">,</span> <span class="n">qval</span><span class="p">)</span>
@@ -962,15 +962,15 @@ Pay attention to the key names which will reflect what can be found in this data
     device=None,
     is_shared=False)
 
- 25%|██▌       | 50/200 [00:00&lt;00:01, 123.66it/s]
- 25%|██▌       | 50/200 [00:10&lt;00:01, 123.66it/s]
-steps: 11, loss_val:  0.0004, action_spread: tensor([ 5, 45]):  25%|██▌       | 50/200 [00:19&lt;00:01, 123.66it/s]
-steps: 11, loss_val:  0.0004, action_spread: tensor([ 5, 45]):  50%|█████     | 100/200 [00:20&lt;00:23,  4.18it/s]
-steps: 11, loss_val:  0.0003, action_spread: tensor([ 7, 43]):  50%|█████     | 100/200 [00:39&lt;00:23,  4.18it/s]
-steps: 11, loss_val:  0.0003, action_spread: tensor([ 7, 43]):  75%|███████▌  | 150/200 [00:40&lt;00:15,  3.20it/s]
-steps: 11, loss_val:  0.0002, action_spread: tensor([45,  5]):  75%|███████▌  | 150/200 [00:59&lt;00:15,  3.20it/s]
-steps: 11, loss_val:  0.0002, action_spread: tensor([45,  5]): 100%|██████████| 200/200 [01:00&lt;00:00,  2.89it/s]
-steps: 13, loss_val:  0.0003, action_spread: tensor([ 7, 43]): 100%|██████████| 200/200 [01:19&lt;00:00,  2.89it/s]
+ 25%|██▌       | 50/200 [00:00&lt;00:01, 128.64it/s]
+ 25%|██▌       | 50/200 [00:10&lt;00:01, 128.64it/s]
+steps: 10, loss_val:  0.0004, action_spread: tensor([ 4, 46]):  25%|██▌       | 50/200 [00:19&lt;00:01, 128.64it/s]
+steps: 10, loss_val:  0.0004, action_spread: tensor([ 4, 46]):  50%|█████     | 100/200 [00:19&lt;00:23,  4.30it/s]
+steps: 16, loss_val:  0.0003, action_spread: tensor([ 8, 42]):  50%|█████     | 100/200 [00:38&lt;00:23,  4.30it/s]
+steps: 16, loss_val:  0.0003, action_spread: tensor([ 8, 42]):  75%|███████▌  | 150/200 [00:39&lt;00:15,  3.32it/s]
+steps: 16, loss_val:  0.0003, action_spread: tensor([ 4, 46]):  75%|███████▌  | 150/200 [00:57&lt;00:15,  3.32it/s]
+steps: 16, loss_val:  0.0003, action_spread: tensor([ 4, 46]): 100%|██████████| 200/200 [00:58&lt;00:00,  2.99it/s]
+steps: 20, loss_val:  0.0002, action_spread: tensor([35, 15]): 100%|██████████| 200/200 [01:16&lt;00:00,  2.99it/s]
 </pre></div>
 </div>
 <p>Let’s plot our results:</p>
@@ -1002,8 +1002,8 @@ the data</p></li>
 <ul class="simple">
 <li><p>The TorchRL documentation can be found <a class="reference external" href="https://pytorch.org/rl/">here</a>.</p></li>
 </ul>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (2 minutes 19.017 seconds)</p>
-<p><strong>Estimated memory usage:</strong>  2228 MB</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (2 minutes 19.488 seconds)</p>
+<p><strong>Estimated memory usage:</strong>  1903 MB</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-tutorials-dqn-with-rnn-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/28be785bad9a380ed2a853d865b074b9/dqn_with_rnn.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">dqn_with_rnn.ipynb</span></code></a></p>
