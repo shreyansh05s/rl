@@ -1523,7 +1523,10 @@
             <span class="n">truncated</span> <span class="o">=</span> <span class="n">final_rollout</span><span class="p">[</span><span class="s2">&quot;next&quot;</span><span class="p">,</span> <span class="n">truncated_key</span><span class="p">]</span>
             <span class="n">truncated</span><span class="p">[</span><span class="n">last_step</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="n">final_rollout</span><span class="p">[</span><span class="s2">&quot;next&quot;</span><span class="p">,</span> <span class="n">truncated_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">truncated</span>
-            <span class="n">final_rollout</span><span class="p">[</span><span class="s2">&quot;next&quot;</span><span class="p">,</span> <span class="n">_replace_last</span><span class="p">(</span><span class="n">truncated_key</span><span class="p">,</span> <span class="s2">&quot;done&quot;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">truncated</span>
+            <span class="n">done</span> <span class="o">=</span> <span class="n">final_rollout</span><span class="p">[</span><span class="s2">&quot;next&quot;</span><span class="p">,</span> <span class="n">_replace_last</span><span class="p">(</span><span class="n">truncated_key</span><span class="p">,</span> <span class="s2">&quot;done&quot;</span><span class="p">)]</span>
+            <span class="n">final_rollout</span><span class="p">[</span><span class="s2">&quot;next&quot;</span><span class="p">,</span> <span class="n">_replace_last</span><span class="p">(</span><span class="n">truncated_key</span><span class="p">,</span> <span class="s2">&quot;done&quot;</span><span class="p">)]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">done</span> <span class="o">|</span> <span class="n">truncated</span>
+            <span class="p">)</span>
         <span class="k">return</span> <span class="n">final_rollout</span>
 
 <div class="viewcode-block" id="SyncDataCollector.reset"><a class="viewcode-back" href="../../../reference/generated/torchrl.collectors.SyncDataCollector.html#torchrl.collectors.SyncDataCollector.reset">[docs]</a>    <span class="nd">@torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">()</span>
