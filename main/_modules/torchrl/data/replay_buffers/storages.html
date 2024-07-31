@@ -1319,6 +1319,23 @@
 <span class="sd">            has capacity ``3`` if ``ndim=1`` and ``12`` if ``ndim=2``.</span>
 <span class="sd">            Defaults to ``1``.</span>
 
+<span class="sd">    .. note:: When checkpointing a ``LazyMemmapStorage``, one can provide a path identical to where the storage is</span>
+<span class="sd">        already stored to avoid executing long copies of data that is already stored on disk.</span>
+<span class="sd">        This will only work if the default :class:`~torchrl.data.TensorStorageCheckpointer` checkpointer is used.</span>
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; from tensordict import TensorDict</span>
+<span class="sd">            &gt;&gt;&gt; from torchrl.data import TensorStorage, LazyMemmapStorage, ReplayBuffer</span>
+<span class="sd">            &gt;&gt;&gt; import tempfile</span>
+<span class="sd">            &gt;&gt;&gt; from pathlib import Path</span>
+<span class="sd">            &gt;&gt;&gt; import time</span>
+<span class="sd">            &gt;&gt;&gt; td = TensorDict(a=0, b=1).expand(1000).clone()</span>
+<span class="sd">            &gt;&gt;&gt; # We pass a path that is &lt;main_ckpt_dir&gt;/storage to LazyMemmapStorage</span>
+<span class="sd">            &gt;&gt;&gt; rb_memmap = ReplayBuffer(storage=LazyMemmapStorage(10_000_000, scratch_dir=&quot;dump/storage&quot;))</span>
+<span class="sd">            &gt;&gt;&gt; rb_memmap.extend(td);</span>
+<span class="sd">            &gt;&gt;&gt; # Checkpointing in `dump` is a zero-copy, as the data is already in `dump/storage`</span>
+<span class="sd">            &gt;&gt;&gt; rb_memmap.dumps(Path(&quot;./dump&quot;))</span>
+
+
 <span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; data = TensorDict({</span>
 <span class="sd">        ...     &quot;some data&quot;: torch.randn(10, 11),</span>

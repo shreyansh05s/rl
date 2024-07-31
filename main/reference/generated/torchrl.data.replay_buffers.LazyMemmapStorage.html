@@ -432,6 +432,26 @@ Defaults to <code class="docutils literal notranslate"><span class="pre">1</span
 </ul>
 </dd>
 </dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When checkpointing a <code class="docutils literal notranslate"><span class="pre">LazyMemmapStorage</span></code>, one can provide a path identical to where the storage is
+already stored to avoid executing long copies of data that is already stored on disk.
+This will only work if the default <code class="xref py py-class docutils literal notranslate"><span class="pre">TensorStorageCheckpointer</span></code> checkpointer is used.
+Example:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">tensordict</span> <span class="kn">import</span> <span class="n">TensorDict</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.data</span> <span class="kn">import</span> <span class="n">TensorStorage</span><span class="p">,</span> <span class="n">LazyMemmapStorage</span><span class="p">,</span> <span class="n">ReplayBuffer</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">tempfile</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">time</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">td</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># We pass a path that is &lt;main_ckpt_dir&gt;/storage to LazyMemmapStorage</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rb_memmap</span> <span class="o">=</span> <span class="n">ReplayBuffer</span><span class="p">(</span><span class="n">storage</span><span class="o">=</span><span class="n">LazyMemmapStorage</span><span class="p">(</span><span class="mi">10_000_000</span><span class="p">,</span> <span class="n">scratch_dir</span><span class="o">=</span><span class="s2">&quot;dump/storage&quot;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rb_memmap</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">td</span><span class="p">);</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Checkpointing in `dump` is a zero-copy, as the data is already in `dump/storage`</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rb_memmap</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="s2">&quot;./dump&quot;</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="p">({</span>
 <span class="gp">... </span>    <span class="s2">&quot;some data&quot;</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">),</span>
