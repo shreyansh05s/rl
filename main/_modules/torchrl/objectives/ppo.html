@@ -543,7 +543,7 @@
 <span class="sd">        &gt;&gt;&gt; actor_head = SomeActor(in_keys=[&quot;hidden&quot;])</span>
 <span class="sd">        &gt;&gt;&gt; value_head = SomeValue(in_keys=[&quot;hidden&quot;])</span>
 <span class="sd">        &gt;&gt;&gt; # first option, with 2 calls on the common module</span>
-<span class="sd">        &gt;&gt;&gt; model = ActorCriticOperator(common, actor_head, value_head)</span>
+<span class="sd">        &gt;&gt;&gt; model = ActorValueOperator(common, actor_head, value_head)</span>
 <span class="sd">        &gt;&gt;&gt; loss_module = PPOLoss(model.get_policy_operator(), model.get_value_operator())</span>
 <span class="sd">        &gt;&gt;&gt; # second option, with a single call to the common module</span>
 <span class="sd">        &gt;&gt;&gt; loss_module = PPOLoss(ProbabilisticTensorDictSequential(model, actor_head), value_head)</span>
@@ -1120,10 +1120,10 @@
 <span class="sd">        &gt;&gt;&gt; actor_head = SomeActor(in_keys=[&quot;hidden&quot;])</span>
 <span class="sd">        &gt;&gt;&gt; value_head = SomeValue(in_keys=[&quot;hidden&quot;])</span>
 <span class="sd">        &gt;&gt;&gt; # first option, with 2 calls on the common module</span>
-<span class="sd">        &gt;&gt;&gt; model = ActorCriticOperator(common, actor_head, value_head)</span>
-<span class="sd">        &gt;&gt;&gt; loss_module = PPOLoss(model.get_policy_operator(), model.get_value_operator())</span>
+<span class="sd">        &gt;&gt;&gt; model = ActorValueOperator(common, actor_head, value_head)</span>
+<span class="sd">        &gt;&gt;&gt; loss_module = ClipPPOLoss(model.get_policy_operator(), model.get_value_operator())</span>
 <span class="sd">        &gt;&gt;&gt; # second option, with a single call to the common module</span>
-<span class="sd">        &gt;&gt;&gt; loss_module = PPOLoss(ProbabilisticTensorDictSequential(model, actor_head), value_head)</span>
+<span class="sd">        &gt;&gt;&gt; loss_module = ClipPPOLoss(ProbabilisticTensorDictSequential(model, actor_head), value_head)</span>
 
 <span class="sd">      This will work regardless of whether separate_losses is activated or not.</span>
 
@@ -1357,10 +1357,10 @@
 <span class="sd">        &gt;&gt;&gt; actor_head = SomeActor(in_keys=[&quot;hidden&quot;])</span>
 <span class="sd">        &gt;&gt;&gt; value_head = SomeValue(in_keys=[&quot;hidden&quot;])</span>
 <span class="sd">        &gt;&gt;&gt; # first option, with 2 calls on the common module</span>
-<span class="sd">        &gt;&gt;&gt; model = ActorCriticOperator(common, actor_head, value_head)</span>
-<span class="sd">        &gt;&gt;&gt; loss_module = PPOLoss(model.get_policy_operator(), model.get_value_operator())</span>
+<span class="sd">        &gt;&gt;&gt; model = ActorValueOperator(common, actor_head, value_head)</span>
+<span class="sd">        &gt;&gt;&gt; loss_module = KLPENPPOLoss(model.get_policy_operator(), model.get_value_operator())</span>
 <span class="sd">        &gt;&gt;&gt; # second option, with a single call to the common module</span>
-<span class="sd">        &gt;&gt;&gt; loss_module = PPOLoss(ProbabilisticTensorDictSequential(model, actor_head), value_head)</span>
+<span class="sd">        &gt;&gt;&gt; loss_module = KLPENPPOLoss(ProbabilisticTensorDictSequential(model, actor_head), value_head)</span>
 
 <span class="sd">      This will work regardless of whether separate_losses is activated or not.</span>
 
