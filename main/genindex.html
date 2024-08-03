@@ -38,18 +38,13 @@
   <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="#" />
     <link rel="search" title="Search" href="search.html" />
-  <!-- Google Analytics -->
-  
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-117752657-2"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'UA-117752657-2');
-    </script>
-  
-  <!-- End Google Analytics -->
+  <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','UA-117752657-2');</script>
+    <!-- End Google Tag Manager -->
   
 
   
@@ -84,120 +79,170 @@
 
       <div class="main-menu">
         <ul>
-          <li>
-            <a href="https://pytorch.org/get-started">Get Started</a>
-          </li>
 
-          <li>
-            <a href="https://pytorch.org/ecosystem">Ecosystem</a>
-          </li>
-
-          <li>
-            <a href="">Mobile</a>
-          </li>
-
-          <li>
-            <a href="https://pytorch.org/blog/">Blog</a>
-          </li>
-
-          <li>
-            <a href="https://pytorch.org/tutorials">Tutorials</a>
-          </li>
-
-          <li>
-            <div id="resourcesDropdownButton" data-toggle="resources-dropdown" class="resources-dropdown">
-              <a class="resource-option with-down-orange-arrow">
-                Docs
+          <li class="main-menu-item">
+          <div id="resourcesDropdownButton" data-toggle="resources-dropdown" class="resources-dropdown">
+              <a class="with-down-arrow">
+                Learn
               </a>
               <div class="resources-dropdown-menu">
-                <a class="doc-dropdown-option nav-dropdown-item" href="https://pytorch.org/docs/stable/index.html">
-                  <span class="dropdown-title">PyTorch</span>
-                  <p></p>
+                <a class="nav-dropdown-item" href="https://pytorch.org/get-started">
+                  <span class=dropdown-title>Get Started</span>
+                  <p>Run PyTorch locally or get started quickly with one of the supported cloud platforms</p>
                 </a>
-                <a class="doc-dropdown-option nav-dropdown-item" href="https://pytorch.org/audio/stable/index.html">
-                  <span class="dropdown-title">torchaudio</span>
-                  <p></p>
+                <a class="nav-dropdown-item" href="https://pytorch.org/tutorials">
+                  <span class="dropdown-title">Tutorials</span>
+                  <p>Whats new in PyTorch tutorials</p>
                 </a>
-                <a class="doc-dropdown-option nav-dropdown-item" href="https://pytorch.org/text/stable/index.html">
-                  <span class="dropdown-title">torchtext</span>
-                  <p></p>
+                <a class="nav-dropdown-item" href="https://pytorch.org/tutorials/beginner/basics/intro.html">
+                  <span class="dropdown-title">Learn the Basics</span>
+                  <p>Familiarize yourself with PyTorch concepts and modules</p>
                 </a>
-                <a class="doc-dropdown-option nav-dropdown-item" href="https://pytorch.org/vision/stable/index.html">
-                  <span class="dropdown-title">torchvision</span>
-                  <p></p>
+                <a class="nav-dropdown-item" href="https://pytorch.org/tutorials/recipes/recipes_index.html">
+                  <span class="dropdown-title">PyTorch Recipes</span>
+                  <p>Bite-size, ready-to-deploy PyTorch code examples</p>
                 </a>
-                <a class="doc-dropdown-option nav-dropdown-item" href="https://pytorch.org/torcharrow">
-                  <span class="dropdown-title">torcharrow</span>
-                  <p></p>
-                </a>
-                <a class="doc-dropdown-option nav-dropdown-item" href="https://pytorch.org/data">
-                  <span class="dropdown-title">TorchData</span>
-                  <p></p>
-                </a>
-                <a class="doc-dropdown-option nav-dropdown-item" href="https://pytorch.org/torchrec">
-                  <span class="dropdown-title">TorchRec</span>
-                  <p></p>
-                </a>
-                <a class="doc-dropdown-option nav-dropdown-item" href="https://pytorch.org/serve/">
-                  <span class="dropdown-title">TorchServe</span>
-                  <p></p>
-                </a>
-                <a class="doc-dropdown-option nav-dropdown-item" href="https://pytorch.org/torchx/">
-                  <span class="dropdown-title">TorchX</span>
-                  <p></p>
-                </a>
-                <a class="doc-dropdown-option nav-dropdown-item" href="https://pytorch.org/xla">
-                  <span class="dropdown-title">PyTorch on XLA Devices</span>
-                  <p></p>
-                </a>
-            </div>
-          </li>
-
-          <li>
-            <div id="resourcesDropdownButton" data-toggle="resources-dropdown" class="resources-dropdown">
-              <a class="resource-option with-down-arrow">
-                Resources
-              </a>
-              <div class="resources-dropdown-menu">
-                <a class="nav-dropdown-item" href="https://pytorch.org/features">
-                  <span class="dropdown-title">About</span>
-                  <p>Learn about PyTorch’s features and capabilities</p>
-                </a>
-                <a class="nav-dropdown-item" href="https://pytorch.org/foundation">
-                  <span class="dropdown-title">PyTorch Foundation</span>
-                  <p>Learn about the PyTorch foundation</p>
-                </a>
-                <a class="nav-dropdown-item" href="https://pytorch.org/#community-module">
-                  <span class="dropdown-title">Community</span>
-                  <p>Join the PyTorch developer community to contribute, learn, and get your questions answered.</p>
-                </a>
-                <a class="nav-dropdown-item" href="https://pytorch.org/community-stories">
-                  <span class="dropdown-title">Community Stories</span>
-                  <p>Learn how our community solves real, everyday machine learning problems with PyTorch.</p>
-                </a>
-                <a class="nav-dropdown-item" href="https://pytorch.org/resources">
-                  <span class="dropdown-title">Developer Resources</span>
-                  <p>Find resources and get questions answered</p>
-                </a>
-                <a class="nav-dropdown-item" href="https://pytorch.org/events">
-                  <span class="dropdown-title">Events</span>
-                  <p>Find events, webinars, and podcasts</p>
-                </a>
-                <a class="nav-dropdown-item" href="https://discuss.pytorch.org/" target="_blank">
-                  <span class="dropdown-title">Forums</span>
-                  <p>A place to discuss PyTorch code, issues, install, research</p>
-                </a>
-                <a class="nav-dropdown-item" href="https://pytorch.org/hub">
-                  <span class="dropdown-title">Models (Beta)</span>
-                  <p>Discover, publish, and reuse pre-trained models</p>
+                <a class="nav-dropdown-item" href="https://pytorch.org/tutorials/beginner/introyt.html">
+                  <span class="dropdown-title">Intro to PyTorch - YouTube Series</span>
+                  <p>Master PyTorch basics with our engaging YouTube tutorial series</p>
                 </a>
               </div>
             </div>
           </li>
 
           <li>
-            <a href="https://github.com/pytorch/pytorch">GitHub</a>
+          <div id="resourcesDropdownButton" data-toggle="resources-dropdown" class="resources-dropdown">
+              <a class="with-down-arrow">
+                Ecosystem
+              </a>
+              <div class="resources-dropdown-menu">
+                <a class="nav-dropdown-item" href="https://pytorch.org/ecosystem">
+                  <span class="dropdown-title">Tools</span>
+                  <p>Learn about the tools and frameworks in the PyTorch Ecosystem</p>
+                </a>
+                <a class="nav-dropdown-item" href="https://pytorch.org/#community-module">
+                  <span class=dropdown-title>Community</span>
+                  <p>Join the PyTorch developer community to contribute, learn, and get your questions answered</p>
+                </a>
+                <a class="nav-dropdown-item" href="https://discuss.pytorch.org/" target="_blank">
+                  <span class=dropdown-title>Forums</span>
+                  <p>A place to discuss PyTorch code, issues, install, research</p>
+                </a>
+                <a class="nav-dropdown-item" href="https://pytorch.org/resources">
+                  <span class=dropdown-title>Developer Resources</span>
+                  <p>Find resources and get questions answered</p>
+                </a>
+                <a class="nav-dropdown-item" href="https://pytorch.org/ecosystem/contributor-awards-2023">
+                  <span class="dropdown-title">Contributor Awards - 2023</span>
+                  <p>Award winners announced at this year's PyTorch Conference</p>
+                </a>
+              </div>
+            </div>
           </li>
+
+          <li>
+          <div id="resourcesDropdownButton" data-toggle="resources-dropdown" class="resources-dropdown">
+              <a class="with-down-arrow">
+                Edge
+              </a>
+              <div class="resources-dropdown-menu">
+                <a class="nav-dropdown-item" href="https://pytorch.org/edge">
+                  <span class="dropdown-title">About PyTorch Edge</span>
+                  <p>Build innovative and privacy-aware AI experiences for edge devices</p>
+                </a>
+                <a class="nav-dropdown-item" href="https://pytorch.org/executorch-overview">
+                  <span class="dropdown-title">ExecuTorch</span>
+                  <p>End-to-end solution for enabling on-device inference capabilities across mobile and edge devices</p>
+                </a>
+              </div>
+            </div>  
+          </li>
+
+          <li class="main-menu-item">
+            <div id="resourcesDropdownButton" data-toggle="resources-dropdown" class="resources-dropdown">
+              <a class="with-down-arrow">
+                Docs
+              </a>
+              <div class="resources-dropdown-menu">
+                <a class="nav-dropdown-item" href="https://pytorch.org/docs/stable/index.html">
+                  <span class="dropdown-title">PyTorch</span>
+                  <p>Explore the documentation for comprehensive guidance on how to use PyTorch</p>
+                </a>
+                <a class="nav-dropdown-item" href="https://pytorch.org/pytorch-domains">
+                  <span class="dropdown-title">PyTorch Domains</span>
+                  <p>Read the PyTorch Domains documentation to learn more about domain-specific libraries</p>
+                </a>
+              </div>
+            </div>
+          </li>
+
+          <li>
+            <div id="resourcesDropdownButton" data-toggle="resources-dropdown" class="resources-dropdown">
+              <a class="with-down-arrow">
+                Blogs & News 
+              </a>
+              <div class="resources-dropdown-menu">
+                <a class="nav-dropdown-item" href="https://pytorch.org/blog/">
+                  <span class="dropdown-title">PyTorch Blog</span>
+                  <p>Catch up on the latest technical news and happenings</p>
+                </a>
+                 <a class="nav-dropdown-item" href="https://pytorch.org/community-blog">
+                  <span class="dropdown-title">Community Blog</span>
+                  <p>Stories from the PyTorch ecosystem</p>
+                </a>
+                <a class="nav-dropdown-item" href="https://pytorch.org/videos">
+                  <span class="dropdown-title">Videos</span>
+                  <p>Learn about the latest PyTorch tutorials, new, and more </p>
+                <a class="nav-dropdown-item" href="https://pytorch.org/community-stories">
+                  <span class="dropdown-title">Community Stories</span>
+                  <p>Learn how our community solves real, everyday machine learning problems with PyTorch</p>
+                </a>
+                <a class="nav-dropdown-item" href="https://pytorch.org/events">
+                  <span class="dropdown-title">Events</span>
+                  <p>Find events, webinars, and podcasts</p>
+                </a>
+            </div>
+          </li>
+
+          <li>
+            <div id="resourcesDropdownButton" data-toggle="resources-dropdown" class="resources-dropdown">
+              <a class="with-down-arrow">
+                About
+              </a>
+              <div class="resources-dropdown-menu">
+                <a class="nav-dropdown-item" href="https://pytorch.org/foundation">
+                  <span class="dropdown-title">PyTorch Foundation</span>
+                  <p>Learn more about the PyTorch Foundation</p>
+                </a>
+                <a class="nav-dropdown-item" href="https://pytorch.org/governing-board">
+                  <span class="dropdown-title">Governing Board</span>
+                  <p></p>
+                </a>
+              </div>
+            </div>
+          </li>
+
+          <li class="main-menu-item">
+            <div class="no-dropdown">
+              <a href="https://pytorch.org/join" data-cta="join">
+                Become a Member
+              </a>
+            </div>
+          </li>
+          <li>
+           <div class="main-menu-item">
+             <a href="https://github.com/pytorch/pytorch" class="github-icon">
+             </a>
+           </div>
+          </li>
+          <!--- TODO: This block adds the search icon to the nav bar. We will enable it later. 
+          <li>
+            <div class="main-menu-item">
+             <a href="https://github.com/pytorch/pytorch" class="search-icon">
+             </a>
+            </div>
+          </li>
+          --->
         </ul>
       </div>
 
@@ -222,17 +267,10 @@
         <div class="pytorch-menu pytorch-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           <div class="pytorch-left-menu-search">
             
-
-            
-              
-              
-                <div class="version">
-                  main (0.4.0 )
-                </div>
-              
-            
-
-            
+    <div class="version">
+      <a href="../versions.html"><span style="font-size:110%">main (0.5.0) &#x25BC</span></a>
+    </div>
+    
 
 
   
@@ -246,7 +284,6 @@
   </form>
 </div>
 
-            
           </div>
 
           
@@ -350,27 +387,12 @@
         <div class="pytorch-content-left">
 
         
-          <div class="pytorch-call-to-action-links">
-            <div id="tutorial-type">genindex</div>
-
-            <div id="google-colab-link">
-              <img class="call-to-action-img" src="_static/images/pytorch-colab.svg"/>
-              <div class="call-to-action-desktop-view">Run in Google Colab</div>
-              <div class="call-to-action-mobile-view">Colab</div>
-            </div>
-            <div id="download-notebook-link">
-              <img class="call-to-action-notebook-img" src="_static/images/pytorch-download.svg"/>
-              <div class="call-to-action-desktop-view">Download Notebook</div>
-              <div class="call-to-action-mobile-view">Notebook</div>
-            </div>
-            <div id="github-view-link">
-              <img class="call-to-action-img" src="_static/images/pytorch-github.svg"/>
-              <div class="call-to-action-desktop-view">View on GitHub</div>
-              <div class="call-to-action-mobile-view">GitHub</div>
-            </div>
-          </div>
-
-        
+    
+    
+          <!-- Google Tag Manager (noscript) -->
+          <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=UA-117752657-2"
+          height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+          <!-- End Google Tag Manager (noscript) -->
           
           <div class="rst-content">
           
@@ -420,7 +442,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.action_key">(torchrl.envs.ParallelEnv property)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.action_key">(torchrl.envs.PendulumEnv property)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.action_key">(torchrl.envs.SerialEnv property)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.action_key">(torchrl.envs.TicTacToeEnv property)</a>
 </li>
       </ul></li>
       <li><a href="reference/generated/torchrl.envs.EnvBase.html#torchrl.envs.EnvBase.action_keys">action_keys (torchrl.envs.EnvBase property)</a>
@@ -430,7 +456,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.action_keys">(torchrl.envs.ParallelEnv property)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.action_keys">(torchrl.envs.PendulumEnv property)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.action_keys">(torchrl.envs.SerialEnv property)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.action_keys">(torchrl.envs.TicTacToeEnv property)</a>
 </li>
       </ul></li>
       <li><a href="reference/generated/torchrl.envs.EnvBase.html#torchrl.envs.EnvBase.action_spec">action_spec (torchrl.envs.EnvBase property)</a>
@@ -440,12 +470,22 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.action_spec">(torchrl.envs.ParallelEnv property)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.action_spec">(torchrl.envs.PendulumEnv property)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.action_spec">(torchrl.envs.SerialEnv property)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.action_spec">(torchrl.envs.TicTacToeEnv property)</a>
+</li>
       </ul></li>
+      <li><a href="reference/generated/torchrl.envs.transforms.ActionDiscretizer.html#torchrl.envs.transforms.ActionDiscretizer">ActionDiscretizer (class in torchrl.envs.transforms)</a>
+</li>
+      <li><a href="reference/generated/torchrl.envs.transforms.ActionDiscretizer.html#torchrl.envs.transforms.ActionDiscretizer.SamplingStrategy">ActionDiscretizer.SamplingStrategy (class in torchrl.envs.transforms)</a>
+</li>
       <li><a href="reference/generated/torchrl.envs.transforms.ActionMask.html#torchrl.envs.transforms.ActionMask">ActionMask (class in torchrl.envs.transforms)</a>
 </li>
       <li><a href="reference/generated/torchrl.modules.tensordict_module.Actor.html#torchrl.modules.tensordict_module.Actor">Actor (class in torchrl.modules.tensordict_module)</a>
+</li>
+      <li><a href="reference/generated/torchrl.objectives.TD3BCLoss.html#torchrl.objectives.TD3BCLoss.actor_loss">actor_loss() (torchrl.objectives.TD3BCLoss method)</a>
 </li>
       <li><a href="reference/generated/torchrl.modules.tensordict_module.ActorCriticOperator.html#torchrl.modules.tensordict_module.ActorCriticOperator">ActorCriticOperator (class in torchrl.modules.tensordict_module)</a>
 </li>
@@ -508,7 +548,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.add_module">(torchrl.envs.ParallelEnv method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.add_module">(torchrl.envs.PendulumEnv method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.add_module">(torchrl.envs.SerialEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.add_module">(torchrl.envs.TicTacToeEnv method)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.rb_transforms.MultiStepTransform.html#torchrl.envs.transforms.rb_transforms.MultiStepTransform.add_module">(torchrl.envs.transforms.rb_transforms.MultiStepTransform method)</a>
 </li>
@@ -520,13 +564,19 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.add_truncated_keys">(torchrl.envs.ParallelEnv method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.add_truncated_keys">(torchrl.envs.PendulumEnv method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.add_truncated_keys">(torchrl.envs.SerialEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.add_truncated_keys">(torchrl.envs.TicTacToeEnv method)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.TransformedEnv.html#torchrl.envs.transforms.TransformedEnv.add_truncated_keys">(torchrl.envs.transforms.TransformedEnv method)</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/generated/torchrl.modules.tensordict_module.AdditiveGaussianModule.html#torchrl.modules.tensordict_module.AdditiveGaussianModule">AdditiveGaussianModule (class in torchrl.modules.tensordict_module)</a>
+</li>
       <li><a href="reference/generated/torchrl.modules.tensordict_module.AdditiveGaussianWrapper.html#torchrl.modules.tensordict_module.AdditiveGaussianWrapper">AdditiveGaussianWrapper (class in torchrl.modules.tensordict_module)</a>
 </li>
       <li><a href="reference/generated/torchrl.envs.transforms.Compose.html#torchrl.envs.transforms.Compose.append">append() (torchrl.envs.transforms.Compose method)</a>
@@ -566,7 +616,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.append_transform">(torchrl.envs.ParallelEnv method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.append_transform">(torchrl.envs.PendulumEnv method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.append_transform">(torchrl.envs.SerialEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.append_transform">(torchrl.envs.TicTacToeEnv method)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.TransformedEnv.html#torchrl.envs.transforms.TransformedEnv.append_transform">(torchrl.envs.transforms.TransformedEnv method)</a>
 </li>
@@ -580,7 +634,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.apply">(torchrl.envs.ParallelEnv method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.apply">(torchrl.envs.PendulumEnv method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.apply">(torchrl.envs.SerialEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.apply">(torchrl.envs.TicTacToeEnv method)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.rb_transforms.MultiStepTransform.html#torchrl.envs.transforms.rb_transforms.MultiStepTransform.apply">(torchrl.envs.transforms.rb_transforms.MultiStepTransform method)</a>
 </li>
@@ -670,7 +728,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.batch_size">(torchrl.envs.ParallelEnv property)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.batch_size">(torchrl.envs.PendulumEnv property)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.batch_size">(torchrl.envs.SerialEnv property)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.batch_size">(torchrl.envs.TicTacToeEnv property)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.TransformedEnv.html#torchrl.envs.transforms.TransformedEnv.batch_size">(torchrl.envs.transforms.TransformedEnv property)</a>
 </li>
@@ -688,7 +750,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.bfloat16">(torchrl.envs.ParallelEnv method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.bfloat16">(torchrl.envs.PendulumEnv method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.bfloat16">(torchrl.envs.SerialEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.bfloat16">(torchrl.envs.TicTacToeEnv method)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.rb_transforms.MultiStepTransform.html#torchrl.envs.transforms.rb_transforms.MultiStepTransform.bfloat16">(torchrl.envs.transforms.rb_transforms.MultiStepTransform method)</a>
 </li>
@@ -716,7 +782,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.buffers">(torchrl.envs.ParallelEnv method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.buffers">(torchrl.envs.PendulumEnv method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.buffers">(torchrl.envs.SerialEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.buffers">(torchrl.envs.TicTacToeEnv method)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.rb_transforms.MultiStepTransform.html#torchrl.envs.transforms.rb_transforms.MultiStepTransform.buffers">(torchrl.envs.transforms.rb_transforms.MultiStepTransform method)</a>
 </li>
@@ -754,7 +824,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.children">(torchrl.envs.ParallelEnv method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.children">(torchrl.envs.PendulumEnv method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.children">(torchrl.envs.SerialEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.children">(torchrl.envs.TicTacToeEnv method)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.rb_transforms.MultiStepTransform.html#torchrl.envs.transforms.rb_transforms.MultiStepTransform.children">(torchrl.envs.transforms.rb_transforms.MultiStepTransform method)</a>
 </li>
@@ -804,25 +878,57 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.compile">(torchrl.envs.ParallelEnv method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.compile">(torchrl.envs.PendulumEnv method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.compile">(torchrl.envs.SerialEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.compile">(torchrl.envs.TicTacToeEnv method)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.rb_transforms.MultiStepTransform.html#torchrl.envs.transforms.rb_transforms.MultiStepTransform.compile">(torchrl.envs.transforms.rb_transforms.MultiStepTransform method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/generated/torchrl.envs.transforms.Compose.html#torchrl.envs.transforms.Compose">Compose (class in torchrl.envs.transforms)</a>
 </li>
       <li><a href="reference/generated/torchrl.data.CompositeSpec.html#torchrl.data.CompositeSpec">CompositeSpec (class in torchrl.data)</a>
 </li>
       <li><a href="reference/generated/torchrl.data.consolidate_spec.html#torchrl.data.consolidate_spec">consolidate_spec (class in torchrl.data)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/generated/torchrl.data.ConstantKLController.html#torchrl.data.ConstantKLController">ConstantKLController (class in torchrl.data)</a>
 </li>
       <li><a href="reference/generated/torchrl.envs.transforms.rb_transforms.MultiStepTransform.html#torchrl.envs.transforms.rb_transforms.MultiStepTransform.container">container (torchrl.envs.transforms.rb_transforms.MultiStepTransform property)</a>
 
       <ul>
         <li><a href="reference/generated/torchrl.envs.transforms.Transform.html#torchrl.envs.transforms.Transform.container">(torchrl.envs.transforms.Transform property)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/generated/torchrl.data.BinaryDiscreteTensorSpec.html#torchrl.data.BinaryDiscreteTensorSpec.contains">contains() (torchrl.data.BinaryDiscreteTensorSpec method)</a>
+
+      <ul>
+        <li><a href="reference/generated/torchrl.data.BoundedTensorSpec.html#torchrl.data.BoundedTensorSpec.contains">(torchrl.data.BoundedTensorSpec method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.CompositeSpec.html#torchrl.data.CompositeSpec.contains">(torchrl.data.CompositeSpec method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.DiscreteTensorSpec.html#torchrl.data.DiscreteTensorSpec.contains">(torchrl.data.DiscreteTensorSpec method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.LazyStackedCompositeSpec.html#torchrl.data.LazyStackedCompositeSpec.contains">(torchrl.data.LazyStackedCompositeSpec method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.LazyStackedTensorSpec.html#torchrl.data.LazyStackedTensorSpec.contains">(torchrl.data.LazyStackedTensorSpec method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.MultiDiscreteTensorSpec.html#torchrl.data.MultiDiscreteTensorSpec.contains">(torchrl.data.MultiDiscreteTensorSpec method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.MultiOneHotDiscreteTensorSpec.html#torchrl.data.MultiOneHotDiscreteTensorSpec.contains">(torchrl.data.MultiOneHotDiscreteTensorSpec method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.NonTensorSpec.html#torchrl.data.NonTensorSpec.contains">(torchrl.data.NonTensorSpec method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.OneHotDiscreteTensorSpec.html#torchrl.data.OneHotDiscreteTensorSpec.contains">(torchrl.data.OneHotDiscreteTensorSpec method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.TensorSpec.html#torchrl.data.TensorSpec.contains">(torchrl.data.TensorSpec method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.UnboundedContinuousTensorSpec.html#torchrl.data.UnboundedContinuousTensorSpec.contains">(torchrl.data.UnboundedContinuousTensorSpec method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.UnboundedDiscreteTensorSpec.html#torchrl.data.UnboundedDiscreteTensorSpec.contains">(torchrl.data.UnboundedDiscreteTensorSpec method)</a>
 </li>
       </ul></li>
       <li><a href="reference/generated/torchrl.data.contains_lazy_spec.html#torchrl.data.contains_lazy_spec">contains_lazy_spec (class in torchrl.data)</a>
@@ -846,7 +952,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.cpu">(torchrl.envs.ParallelEnv method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.cpu">(torchrl.envs.PendulumEnv method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.cpu">(torchrl.envs.SerialEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.cpu">(torchrl.envs.TicTacToeEnv method)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.rb_transforms.MultiStepTransform.html#torchrl.envs.transforms.rb_transforms.MultiStepTransform.cpu">(torchrl.envs.transforms.rb_transforms.MultiStepTransform method)</a>
 </li>
@@ -856,6 +966,8 @@
       <li><a href="reference/generated/torchrl.data.create_infinite_iterator.html#torchrl.data.create_infinite_iterator">create_infinite_iterator (class in torchrl.data)</a>
 </li>
       <li><a href="reference/generated/torchrl.data.RolloutFromModel.html#torchrl.data.RolloutFromModel.create_rollout_td">create_rollout_td() (torchrl.data.RolloutFromModel method)</a>
+</li>
+      <li><a href="reference/generated/torchrl.envs.transforms.Crop.html#torchrl.envs.transforms.Crop">Crop (class in torchrl.envs.transforms)</a>
 </li>
       <li><a href="reference/generated/torchrl.record.loggers.csv.CSVLogger.html#torchrl.record.loggers.csv.CSVLogger">CSVLogger() (in module torchrl.record.loggers.csv)</a>
 </li>
@@ -868,7 +980,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.cuda">(torchrl.envs.ParallelEnv method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.cuda">(torchrl.envs.PendulumEnv method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.cuda">(torchrl.envs.SerialEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.cuda">(torchrl.envs.TicTacToeEnv method)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.rb_transforms.MultiStepTransform.html#torchrl.envs.transforms.rb_transforms.MultiStepTransform.cuda">(torchrl.envs.transforms.rb_transforms.MultiStepTransform method)</a>
 </li>
@@ -997,8 +1113,6 @@
 </li>
       <li><a href="reference/generated/torchrl.collectors.distributed.DistributedSyncDataCollector.html#torchrl.collectors.distributed.DistributedSyncDataCollector">DistributedSyncDataCollector (class in torchrl.collectors.distributed)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/generated/torchrl.objectives.DistributionalDQNLoss.html#torchrl.objectives.DistributionalDQNLoss">DistributionalDQNLoss (class in torchrl.objectives)</a>
 </li>
       <li><a href="reference/generated/torchrl.modules.DistributionalDQNnet.html#torchrl.modules.DistributionalDQNnet">DistributionalDQNnet (class in torchrl.modules)</a>
@@ -1020,7 +1134,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.done_key">(torchrl.envs.ParallelEnv property)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.done_key">(torchrl.envs.PendulumEnv property)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.done_key">(torchrl.envs.SerialEnv property)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.done_key">(torchrl.envs.TicTacToeEnv property)</a>
 </li>
       </ul></li>
       <li><a href="reference/generated/torchrl.envs.EnvBase.html#torchrl.envs.EnvBase.done_keys">done_keys (torchrl.envs.EnvBase property)</a>
@@ -1030,9 +1148,15 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.done_keys">(torchrl.envs.ParallelEnv property)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.done_keys">(torchrl.envs.PendulumEnv property)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.done_keys">(torchrl.envs.SerialEnv property)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.done_keys">(torchrl.envs.TicTacToeEnv property)</a>
+</li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/generated/torchrl.envs.EnvBase.html#torchrl.envs.EnvBase.done_keys_groups">done_keys_groups (torchrl.envs.EnvBase property)</a>
 
       <ul>
@@ -1040,7 +1164,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.done_keys_groups">(torchrl.envs.ParallelEnv property)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.done_keys_groups">(torchrl.envs.PendulumEnv property)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.done_keys_groups">(torchrl.envs.SerialEnv property)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.done_keys_groups">(torchrl.envs.TicTacToeEnv property)</a>
 </li>
       </ul></li>
       <li><a href="reference/generated/torchrl.envs.EnvBase.html#torchrl.envs.EnvBase.done_spec">done_spec (torchrl.envs.EnvBase property)</a>
@@ -1050,7 +1178,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.done_spec">(torchrl.envs.ParallelEnv property)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.done_spec">(torchrl.envs.PendulumEnv property)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.done_spec">(torchrl.envs.SerialEnv property)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.done_spec">(torchrl.envs.TicTacToeEnv property)</a>
 </li>
       </ul></li>
       <li><a href="reference/generated/torchrl.data.MultiStep.html#torchrl.data.MultiStep.double">double() (torchrl.data.MultiStep method)</a>
@@ -1062,7 +1194,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.double">(torchrl.envs.ParallelEnv method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.double">(torchrl.envs.PendulumEnv method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.double">(torchrl.envs.SerialEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.double">(torchrl.envs.TicTacToeEnv method)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.rb_transforms.MultiStepTransform.html#torchrl.envs.transforms.rb_transforms.MultiStepTransform.double">(torchrl.envs.transforms.rb_transforms.MultiStepTransform method)</a>
 </li>
@@ -1091,6 +1227,48 @@
 </li>
       <li><a href="reference/generated/torchrl.modules.DuelingCnnDQNet.html#torchrl.modules.DuelingCnnDQNet">DuelingCnnDQNet (class in torchrl.modules)</a>
 </li>
+      <li><a href="reference/generated/torchrl.data.datasets.AtariDQNExperienceReplay.html#torchrl.data.datasets.AtariDQNExperienceReplay.dump">dump() (torchrl.data.datasets.AtariDQNExperienceReplay method)</a>
+
+      <ul>
+        <li><a href="reference/generated/torchrl.data.datasets.BaseDatasetExperienceReplay.html#torchrl.data.datasets.BaseDatasetExperienceReplay.dump">(torchrl.data.datasets.BaseDatasetExperienceReplay method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.datasets.D4RLExperienceReplay.html#torchrl.data.datasets.D4RLExperienceReplay.dump">(torchrl.data.datasets.D4RLExperienceReplay method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.datasets.GenDGRLExperienceReplay.html#torchrl.data.datasets.GenDGRLExperienceReplay.dump">(torchrl.data.datasets.GenDGRLExperienceReplay method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.datasets.MinariExperienceReplay.html#torchrl.data.datasets.MinariExperienceReplay.dump">(torchrl.data.datasets.MinariExperienceReplay method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.datasets.OpenMLExperienceReplay.html#torchrl.data.datasets.OpenMLExperienceReplay.dump">(torchrl.data.datasets.OpenMLExperienceReplay method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.datasets.OpenXExperienceReplay.html#torchrl.data.datasets.OpenXExperienceReplay.dump">(torchrl.data.datasets.OpenXExperienceReplay method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.datasets.RobosetExperienceReplay.html#torchrl.data.datasets.RobosetExperienceReplay.dump">(torchrl.data.datasets.RobosetExperienceReplay method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.datasets.VD4RLExperienceReplay.html#torchrl.data.datasets.VD4RLExperienceReplay.dump">(torchrl.data.datasets.VD4RLExperienceReplay method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.PrioritizedReplayBuffer.html#torchrl.data.PrioritizedReplayBuffer.dump">(torchrl.data.PrioritizedReplayBuffer method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.replay_buffers.LazyMemmapStorage.html#torchrl.data.replay_buffers.LazyMemmapStorage.dump">(torchrl.data.replay_buffers.LazyMemmapStorage method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.replay_buffers.LazyTensorStorage.html#torchrl.data.replay_buffers.LazyTensorStorage.dump">(torchrl.data.replay_buffers.LazyTensorStorage method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.replay_buffers.ListStorage.html#torchrl.data.replay_buffers.ListStorage.dump">(torchrl.data.replay_buffers.ListStorage method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.replay_buffers.ReplayBufferEnsemble.html#torchrl.data.replay_buffers.ReplayBufferEnsemble.dump">(torchrl.data.replay_buffers.ReplayBufferEnsemble method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.replay_buffers.Storage.html#torchrl.data.replay_buffers.Storage.dump">(torchrl.data.replay_buffers.Storage method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.replay_buffers.StorageEnsemble.html#torchrl.data.replay_buffers.StorageEnsemble.dump">(torchrl.data.replay_buffers.StorageEnsemble method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.replay_buffers.TensorStorage.html#torchrl.data.replay_buffers.TensorStorage.dump">(torchrl.data.replay_buffers.TensorStorage method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.ReplayBuffer.html#torchrl.data.ReplayBuffer.dump">(torchrl.data.ReplayBuffer method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.TensorDictPrioritizedReplayBuffer.html#torchrl.data.TensorDictPrioritizedReplayBuffer.dump">(torchrl.data.TensorDictPrioritizedReplayBuffer method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.TensorDictReplayBuffer.html#torchrl.data.TensorDictReplayBuffer.dump">(torchrl.data.TensorDictReplayBuffer method)</a>
+</li>
+      </ul></li>
       <li><a href="reference/generated/torchrl.data.datasets.AtariDQNExperienceReplay.html#torchrl.data.datasets.AtariDQNExperienceReplay.dumps">dumps() (torchrl.data.datasets.AtariDQNExperienceReplay method)</a>
 
       <ul>
@@ -1172,7 +1350,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.empty_cache">(torchrl.envs.ParallelEnv method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.empty_cache">(torchrl.envs.PendulumEnv method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.empty_cache">(torchrl.envs.SerialEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.empty_cache">(torchrl.envs.TicTacToeEnv method)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.TransformedEnv.html#torchrl.envs.transforms.TransformedEnv.empty_cache">(torchrl.envs.transforms.TransformedEnv method)</a>
 </li>
@@ -1222,7 +1404,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.eval">(torchrl.envs.ParallelEnv method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.eval">(torchrl.envs.PendulumEnv method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.eval">(torchrl.envs.SerialEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.eval">(torchrl.envs.TicTacToeEnv method)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.rb_transforms.MultiStepTransform.html#torchrl.envs.transforms.rb_transforms.MultiStepTransform.eval">(torchrl.envs.transforms.rb_transforms.MultiStepTransform method)</a>
 </li>
@@ -1316,7 +1502,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.extra_repr">(torchrl.envs.ParallelEnv method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.extra_repr">(torchrl.envs.PendulumEnv method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.extra_repr">(torchrl.envs.SerialEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.extra_repr">(torchrl.envs.TicTacToeEnv method)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.rb_transforms.MultiStepTransform.html#torchrl.envs.transforms.rb_transforms.MultiStepTransform.extra_repr">(torchrl.envs.transforms.rb_transforms.MultiStepTransform method)</a>
 </li>
@@ -1334,10 +1524,18 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.fake_tensordict">(torchrl.envs.ParallelEnv method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.fake_tensordict">(torchrl.envs.PendulumEnv method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.fake_tensordict">(torchrl.envs.SerialEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.fake_tensordict">(torchrl.envs.TicTacToeEnv method)</a>
 </li>
       </ul></li>
       <li><a href="reference/generated/torchrl.envs.transforms.FiniteTensorDictCheck.html#torchrl.envs.transforms.FiniteTensorDictCheck">FiniteTensorDictCheck (class in torchrl.envs.transforms)</a>
+</li>
+      <li><a href="reference/generated/torchrl.data.Flat2TED.html#torchrl.data.Flat2TED">Flat2TED (class in torchrl.data)</a>
+</li>
+      <li><a href="reference/generated/torchrl.data.replay_buffers.FlatStorageCheckpointer.html#torchrl.data.replay_buffers.FlatStorageCheckpointer">FlatStorageCheckpointer (class in torchrl.data.replay_buffers)</a>
 </li>
       <li><a href="reference/generated/torchrl.data.BinaryDiscreteTensorSpec.html#torchrl.data.BinaryDiscreteTensorSpec.flatten">flatten() (torchrl.data.BinaryDiscreteTensorSpec method)</a>
 
@@ -1378,7 +1576,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.float">(torchrl.envs.ParallelEnv method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.float">(torchrl.envs.PendulumEnv method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.float">(torchrl.envs.SerialEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.float">(torchrl.envs.TicTacToeEnv method)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.rb_transforms.MultiStepTransform.html#torchrl.envs.transforms.rb_transforms.MultiStepTransform.float">(torchrl.envs.transforms.rb_transforms.MultiStepTransform method)</a>
 </li>
@@ -1392,7 +1594,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.forward">(torchrl.envs.ParallelEnv method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.forward">(torchrl.envs.PendulumEnv method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.forward">(torchrl.envs.SerialEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.forward">(torchrl.envs.TicTacToeEnv method)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.ActionMask.html#torchrl.envs.transforms.ActionMask.forward">(torchrl.envs.transforms.ActionMask method)</a>
 </li>
@@ -1498,6 +1704,8 @@
 </li>
         <li><a href="reference/generated/torchrl.modules.MPCPlannerBase.html#torchrl.modules.MPCPlannerBase.forward">(torchrl.modules.MPCPlannerBase method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.modules.MultiAgentNetBase.html#torchrl.modules.MultiAgentNetBase.forward">(torchrl.modules.MultiAgentNetBase method)</a>
+</li>
         <li><a href="reference/generated/torchrl.modules.NormalParamWrapper.html#torchrl.modules.NormalParamWrapper.forward">(torchrl.modules.NormalParamWrapper method)</a>
 </li>
         <li><a href="reference/generated/torchrl.modules.ObsDecoder.html#torchrl.modules.ObsDecoder.forward">(torchrl.modules.ObsDecoder method)</a>
@@ -1512,6 +1720,8 @@
 </li>
         <li><a href="reference/generated/torchrl.modules.SqueezeLayer.html#torchrl.modules.SqueezeLayer.forward">(torchrl.modules.SqueezeLayer method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.modules.tensordict_module.AdditiveGaussianModule.html#torchrl.modules.tensordict_module.AdditiveGaussianModule.forward">(torchrl.modules.tensordict_module.AdditiveGaussianModule method)</a>
+</li>
         <li><a href="reference/generated/torchrl.modules.tensordict_module.AdditiveGaussianWrapper.html#torchrl.modules.tensordict_module.AdditiveGaussianWrapper.forward">(torchrl.modules.tensordict_module.AdditiveGaussianWrapper method)</a>
 </li>
         <li><a href="reference/generated/torchrl.modules.tensordict_module.DecisionTransformerInferenceWrapper.html#torchrl.modules.tensordict_module.DecisionTransformerInferenceWrapper.forward">(torchrl.modules.tensordict_module.DecisionTransformerInferenceWrapper method)</a>
@@ -1521,6 +1731,8 @@
         <li><a href="reference/generated/torchrl.modules.tensordict_module.EGreedyModule.html#torchrl.modules.tensordict_module.EGreedyModule.forward">(torchrl.modules.tensordict_module.EGreedyModule method)</a>
 </li>
         <li><a href="reference/generated/torchrl.modules.tensordict_module.MultiStepActorWrapper.html#torchrl.modules.tensordict_module.MultiStepActorWrapper.forward">(torchrl.modules.tensordict_module.MultiStepActorWrapper method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.modules.tensordict_module.OrnsteinUhlenbeckProcessModule.html#torchrl.modules.tensordict_module.OrnsteinUhlenbeckProcessModule.forward">(torchrl.modules.tensordict_module.OrnsteinUhlenbeckProcessModule method)</a>
 </li>
         <li><a href="reference/generated/torchrl.modules.tensordict_module.OrnsteinUhlenbeckProcessWrapper.html#torchrl.modules.tensordict_module.OrnsteinUhlenbeckProcessWrapper.forward">(torchrl.modules.tensordict_module.OrnsteinUhlenbeckProcessWrapper method)</a>
 </li>
@@ -1576,6 +1788,8 @@
 </li>
         <li><a href="reference/generated/torchrl.objectives.SACLoss.html#torchrl.objectives.SACLoss.forward">(torchrl.objectives.SACLoss method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.objectives.TD3BCLoss.html#torchrl.objectives.TD3BCLoss.forward">(torchrl.objectives.TD3BCLoss method)</a>
+</li>
         <li><a href="reference/generated/torchrl.objectives.TD3Loss.html#torchrl.objectives.TD3Loss.forward">(torchrl.objectives.TD3Loss method)</a>
 </li>
         <li><a href="reference/generated/torchrl.objectives.value.GAE.html#torchrl.objectives.value.GAE.forward">(torchrl.objectives.value.GAE method)</a>
@@ -1593,10 +1807,18 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/generated/torchrl.envs.transforms.FrameSkipTransform.html#torchrl.envs.transforms.FrameSkipTransform">FrameSkipTransform (class in torchrl.envs.transforms)</a>
 </li>
+      <li><a href="reference/generated/torchrl.envs.transforms.VecNorm.html#torchrl.envs.transforms.VecNorm.freeze">freeze() (torchrl.envs.transforms.VecNorm method)</a>
+</li>
       <li><a href="reference/generated/torchrl.data.PairwiseDataset.html#torchrl.data.PairwiseDataset.from_dataset">from_dataset() (torchrl.data.PairwiseDataset class method)</a>
 
       <ul>
         <li><a href="reference/generated/torchrl.data.PromptData.html#torchrl.data.PromptData.from_dataset">(torchrl.data.PromptData class method)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/generated/torchrl.modules.MultiAgentNetBase.html#torchrl.modules.MultiAgentNetBase.from_stateful_net">from_stateful_net() (torchrl.modules.MultiAgentNetBase method)</a>
+
+      <ul>
+        <li><a href="reference/generated/torchrl.objectives.LossModule.html#torchrl.objectives.LossModule.from_stateful_net">(torchrl.objectives.LossModule method)</a>
 </li>
       </ul></li>
       <li><a href="reference/generated/torchrl.data.PairwiseDataset.html#torchrl.data.PairwiseDataset.from_tensordict">from_tensordict() (torchrl.data.PairwiseDataset class method)</a>
@@ -1607,6 +1829,8 @@
         <li><a href="reference/generated/torchrl.data.RewardData.html#torchrl.data.RewardData.from_tensordict">(torchrl.data.RewardData class method)</a>
 </li>
       </ul></li>
+      <li><a href="reference/generated/torchrl.envs.transforms.VecNorm.html#torchrl.envs.transforms.VecNorm.frozen_copy">frozen_copy() (torchrl.envs.transforms.VecNorm method)</a>
+</li>
       <li><a href="reference/generated/torchrl.envs.EnvBase.html#torchrl.envs.EnvBase.full_action_spec">full_action_spec (torchrl.envs.EnvBase property)</a>
 
       <ul>
@@ -1614,7 +1838,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.full_action_spec">(torchrl.envs.ParallelEnv property)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.full_action_spec">(torchrl.envs.PendulumEnv property)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.full_action_spec">(torchrl.envs.SerialEnv property)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.full_action_spec">(torchrl.envs.TicTacToeEnv property)</a>
 </li>
       </ul></li>
       <li><a href="reference/generated/torchrl.envs.EnvBase.html#torchrl.envs.EnvBase.full_done_spec">full_done_spec (torchrl.envs.EnvBase property)</a>
@@ -1624,7 +1852,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.full_done_spec">(torchrl.envs.ParallelEnv property)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.full_done_spec">(torchrl.envs.PendulumEnv property)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.full_done_spec">(torchrl.envs.SerialEnv property)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.full_done_spec">(torchrl.envs.TicTacToeEnv property)</a>
 </li>
       </ul></li>
       <li><a href="reference/generated/torchrl.envs.EnvBase.html#torchrl.envs.EnvBase.full_reward_spec">full_reward_spec (torchrl.envs.EnvBase property)</a>
@@ -1634,7 +1866,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.full_reward_spec">(torchrl.envs.ParallelEnv property)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.full_reward_spec">(torchrl.envs.PendulumEnv property)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.full_reward_spec">(torchrl.envs.SerialEnv property)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.full_reward_spec">(torchrl.envs.TicTacToeEnv property)</a>
 </li>
       </ul></li>
       <li><a href="reference/generated/torchrl.envs.EnvBase.html#torchrl.envs.EnvBase.full_state_spec">full_state_spec (torchrl.envs.EnvBase property)</a>
@@ -1644,7 +1880,21 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.full_state_spec">(torchrl.envs.ParallelEnv property)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.full_state_spec">(torchrl.envs.PendulumEnv property)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.full_state_spec">(torchrl.envs.SerialEnv property)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.full_state_spec">(torchrl.envs.TicTacToeEnv property)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/generated/torchrl.objectives.A2CLoss.html#torchrl.objectives.A2CLoss.functional">functional (torchrl.objectives.A2CLoss property)</a>
+
+      <ul>
+        <li><a href="reference/generated/torchrl.objectives.LossModule.html#torchrl.objectives.LossModule.functional">(torchrl.objectives.LossModule property)</a>
+</li>
+        <li><a href="reference/generated/torchrl.objectives.PPOLoss.html#torchrl.objectives.PPOLoss.functional">(torchrl.objectives.PPOLoss property)</a>
+</li>
+        <li><a href="reference/generated/torchrl.objectives.ReinforceLoss.html#torchrl.objectives.ReinforceLoss.functional">(torchrl.objectives.ReinforceLoss property)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -1654,6 +1904,8 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/generated/torchrl.objectives.value.GAE.html#torchrl.objectives.value.GAE">GAE (class in torchrl.objectives.value)</a>
+</li>
+      <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.gen_params">gen_params() (torchrl.envs.PendulumEnv static method)</a>
 </li>
       <li><a href="reference/generated/torchrl.data.datasets.GenDGRLExperienceReplay.html#torchrl.data.datasets.GenDGRLExperienceReplay">GenDGRLExperienceReplay (class in torchrl.data.datasets)</a>
 </li>
@@ -1686,7 +1938,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.get_buffer">(torchrl.envs.ParallelEnv method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.get_buffer">(torchrl.envs.PendulumEnv method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.get_buffer">(torchrl.envs.SerialEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.get_buffer">(torchrl.envs.TicTacToeEnv method)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.rb_transforms.MultiStepTransform.html#torchrl.envs.transforms.rb_transforms.MultiStepTransform.get_buffer">(torchrl.envs.transforms.rb_transforms.MultiStepTransform method)</a>
 </li>
@@ -1706,7 +1962,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.get_extra_state">(torchrl.envs.ParallelEnv method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.get_extra_state">(torchrl.envs.PendulumEnv method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.get_extra_state">(torchrl.envs.SerialEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.get_extra_state">(torchrl.envs.TicTacToeEnv method)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.rb_transforms.MultiStepTransform.html#torchrl.envs.transforms.rb_transforms.MultiStepTransform.get_extra_state">(torchrl.envs.transforms.rb_transforms.MultiStepTransform method)</a>
 </li>
@@ -1717,6 +1977,8 @@
 </li>
       <li><a href="reference/generated/torchrl.record.loggers.get_logger.html#torchrl.record.loggers.get_logger">get_logger() (in module torchrl.record.loggers)</a>
 </li>
+      <li><a href="reference/generated/torchrl.modules.TanhNormal.html#torchrl.modules.TanhNormal.get_mode">get_mode() (torchrl.modules.TanhNormal method)</a>
+</li>
       <li><a href="reference/generated/torchrl.data.MultiStep.html#torchrl.data.MultiStep.get_parameter">get_parameter() (torchrl.data.MultiStep method)</a>
 
       <ul>
@@ -1726,7 +1988,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.get_parameter">(torchrl.envs.ParallelEnv method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.get_parameter">(torchrl.envs.PendulumEnv method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.get_parameter">(torchrl.envs.SerialEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.get_parameter">(torchrl.envs.TicTacToeEnv method)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.rb_transforms.MultiStepTransform.html#torchrl.envs.transforms.rb_transforms.MultiStepTransform.get_parameter">(torchrl.envs.transforms.rb_transforms.MultiStepTransform method)</a>
 </li>
@@ -1747,8 +2013,16 @@
         <li><a href="reference/generated/torchrl.modules.tensordict_module.ActorValueOperator.html#torchrl.modules.tensordict_module.ActorValueOperator.get_policy_operator">(torchrl.modules.tensordict_module.ActorValueOperator method)</a>
 </li>
       </ul></li>
+      <li><a href="reference/generated/torchrl.modules.utils.get_primers_from_module.html#torchrl.modules.utils.get_primers_from_module">get_primers_from_module (class in torchrl.modules.utils)</a>
+</li>
       <li><a href="reference/generated/torchrl.modules.tensordict_module.WorldModelWrapper.html#torchrl.modules.tensordict_module.WorldModelWrapper.get_reward_operator">get_reward_operator() (torchrl.modules.tensordict_module.WorldModelWrapper method)</a>
 </li>
+      <li><a href="reference/generated/torchrl.modules.MultiAgentNetBase.html#torchrl.modules.MultiAgentNetBase.get_stateful_net">get_stateful_net() (torchrl.modules.MultiAgentNetBase method)</a>
+
+      <ul>
+        <li><a href="reference/generated/torchrl.objectives.LossModule.html#torchrl.objectives.LossModule.get_stateful_net">(torchrl.objectives.LossModule method)</a>
+</li>
+      </ul></li>
       <li><a href="reference/generated/torchrl.trainers.helpers.get_stats_random_rollout.html#torchrl.trainers.helpers.get_stats_random_rollout">get_stats_random_rollout() (in module torchrl.trainers.helpers)</a>
 </li>
       <li><a href="reference/generated/torchrl.data.MultiStep.html#torchrl.data.MultiStep.get_submodule">get_submodule() (torchrl.data.MultiStep method)</a>
@@ -1760,7 +2034,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.get_submodule">(torchrl.envs.ParallelEnv method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.get_submodule">(torchrl.envs.PendulumEnv method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.get_submodule">(torchrl.envs.SerialEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.get_submodule">(torchrl.envs.TicTacToeEnv method)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.rb_transforms.MultiStepTransform.html#torchrl.envs.transforms.rb_transforms.MultiStepTransform.get_submodule">(torchrl.envs.transforms.rb_transforms.MultiStepTransform method)</a>
 </li>
@@ -1807,6 +2085,12 @@
 <h2 id="H">H</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/generated/torchrl.data.H5Combine.html#torchrl.data.H5Combine">H5Combine (class in torchrl.data)</a>
+</li>
+      <li><a href="reference/generated/torchrl.data.H5Split.html#torchrl.data.H5Split">H5Split (class in torchrl.data)</a>
+</li>
+      <li><a href="reference/generated/torchrl.data.replay_buffers.H5StorageCheckpointer.html#torchrl.data.replay_buffers.H5StorageCheckpointer">H5StorageCheckpointer (class in torchrl.data.replay_buffers)</a>
+</li>
       <li><a href="reference/generated/torchrl.envs.HabitatEnv.html#torchrl.envs.HabitatEnv">HabitatEnv() (in module torchrl.envs)</a>
 </li>
       <li><a href="reference/generated/torchrl.data.MultiStep.html#torchrl.data.MultiStep.half">half() (torchrl.data.MultiStep method)</a>
@@ -1818,7 +2102,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.half">(torchrl.envs.ParallelEnv method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.half">(torchrl.envs.PendulumEnv method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.half">(torchrl.envs.SerialEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.half">(torchrl.envs.TicTacToeEnv method)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.rb_transforms.MultiStepTransform.html#torchrl.envs.transforms.rb_transforms.MultiStepTransform.half">(torchrl.envs.transforms.rb_transforms.MultiStepTransform method)</a>
 </li>
@@ -1916,7 +2204,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.input_spec">(torchrl.envs.ParallelEnv property)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.input_spec">(torchrl.envs.PendulumEnv property)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.input_spec">(torchrl.envs.SerialEnv property)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.input_spec">(torchrl.envs.TicTacToeEnv property)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.TransformedEnv.html#torchrl.envs.transforms.TransformedEnv.input_spec">(torchrl.envs.transforms.TransformedEnv property)</a>
 </li>
@@ -1970,7 +2262,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.ipu">(torchrl.envs.ParallelEnv method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.ipu">(torchrl.envs.PendulumEnv method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.ipu">(torchrl.envs.SerialEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.ipu">(torchrl.envs.TicTacToeEnv method)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.rb_transforms.MultiStepTransform.html#torchrl.envs.transforms.rb_transforms.MultiStepTransform.ipu">(torchrl.envs.transforms.rb_transforms.MultiStepTransform method)</a>
 </li>
@@ -2069,10 +2365,68 @@
 </li>
       <li><a href="reference/generated/torchrl.data.replay_buffers.ListStorage.html#torchrl.data.replay_buffers.ListStorage">ListStorage (class in torchrl.data.replay_buffers)</a>
 </li>
+      <li><a href="reference/generated/torchrl.data.replay_buffers.ListStorageCheckpointer.html#torchrl.data.replay_buffers.ListStorageCheckpointer">ListStorageCheckpointer (class in torchrl.data.replay_buffers)</a>
+</li>
       <li><a href="reference/generated/torchrl.modules.tensordict_module.LMHeadActorValueOperator.html#torchrl.modules.tensordict_module.LMHeadActorValueOperator">LMHeadActorValueOperator (class in torchrl.modules.tensordict_module)</a>
 </li>
-      <li><a href="reference/generated/torchrl.data.TokenizedDatasetLoader.html#torchrl.data.TokenizedDatasetLoader.load">load() (torchrl.data.TokenizedDatasetLoader method)</a>
+      <li><a href="reference/generated/torchrl.data.datasets.AtariDQNExperienceReplay.html#torchrl.data.datasets.AtariDQNExperienceReplay.load">load() (torchrl.data.datasets.AtariDQNExperienceReplay method)</a>
+
+      <ul>
+        <li><a href="reference/generated/torchrl.data.datasets.BaseDatasetExperienceReplay.html#torchrl.data.datasets.BaseDatasetExperienceReplay.load">(torchrl.data.datasets.BaseDatasetExperienceReplay method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.data.datasets.D4RLExperienceReplay.html#torchrl.data.datasets.D4RLExperienceReplay.load">(torchrl.data.datasets.D4RLExperienceReplay method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.datasets.GenDGRLExperienceReplay.html#torchrl.data.datasets.GenDGRLExperienceReplay.load">(torchrl.data.datasets.GenDGRLExperienceReplay method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.datasets.MinariExperienceReplay.html#torchrl.data.datasets.MinariExperienceReplay.load">(torchrl.data.datasets.MinariExperienceReplay method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.datasets.OpenMLExperienceReplay.html#torchrl.data.datasets.OpenMLExperienceReplay.load">(torchrl.data.datasets.OpenMLExperienceReplay method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.datasets.OpenXExperienceReplay.html#torchrl.data.datasets.OpenXExperienceReplay.load">(torchrl.data.datasets.OpenXExperienceReplay method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.datasets.RobosetExperienceReplay.html#torchrl.data.datasets.RobosetExperienceReplay.load">(torchrl.data.datasets.RobosetExperienceReplay method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.datasets.VD4RLExperienceReplay.html#torchrl.data.datasets.VD4RLExperienceReplay.load">(torchrl.data.datasets.VD4RLExperienceReplay method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.PairwiseDataset.html#torchrl.data.PairwiseDataset.load">(torchrl.data.PairwiseDataset class method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.PrioritizedReplayBuffer.html#torchrl.data.PrioritizedReplayBuffer.load">(torchrl.data.PrioritizedReplayBuffer method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.PromptData.html#torchrl.data.PromptData.load">(torchrl.data.PromptData class method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.replay_buffers.LazyMemmapStorage.html#torchrl.data.replay_buffers.LazyMemmapStorage.load">(torchrl.data.replay_buffers.LazyMemmapStorage method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.replay_buffers.LazyTensorStorage.html#torchrl.data.replay_buffers.LazyTensorStorage.load">(torchrl.data.replay_buffers.LazyTensorStorage method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.replay_buffers.ListStorage.html#torchrl.data.replay_buffers.ListStorage.load">(torchrl.data.replay_buffers.ListStorage method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.replay_buffers.ReplayBufferEnsemble.html#torchrl.data.replay_buffers.ReplayBufferEnsemble.load">(torchrl.data.replay_buffers.ReplayBufferEnsemble method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.replay_buffers.Storage.html#torchrl.data.replay_buffers.Storage.load">(torchrl.data.replay_buffers.Storage method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.replay_buffers.StorageEnsemble.html#torchrl.data.replay_buffers.StorageEnsemble.load">(torchrl.data.replay_buffers.StorageEnsemble method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.replay_buffers.TensorStorage.html#torchrl.data.replay_buffers.TensorStorage.load">(torchrl.data.replay_buffers.TensorStorage method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.ReplayBuffer.html#torchrl.data.ReplayBuffer.load">(torchrl.data.ReplayBuffer method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.RewardData.html#torchrl.data.RewardData.load">(torchrl.data.RewardData class method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.TensorDictPrioritizedReplayBuffer.html#torchrl.data.TensorDictPrioritizedReplayBuffer.load">(torchrl.data.TensorDictPrioritizedReplayBuffer method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.TensorDictReplayBuffer.html#torchrl.data.TensorDictReplayBuffer.load">(torchrl.data.TensorDictReplayBuffer method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.TokenizedDatasetLoader.html#torchrl.data.TokenizedDatasetLoader.load">(torchrl.data.TokenizedDatasetLoader method)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/generated/torchrl.data.PairwiseDataset.html#torchrl.data.PairwiseDataset.load_">load_() (torchrl.data.PairwiseDataset method)</a>
+
+      <ul>
+        <li><a href="reference/generated/torchrl.data.PromptData.html#torchrl.data.PromptData.load_">(torchrl.data.PromptData method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.RewardData.html#torchrl.data.RewardData.load_">(torchrl.data.RewardData method)</a>
+</li>
+      </ul></li>
       <li><a href="reference/generated/torchrl.data.PairwiseDataset.html#torchrl.data.PairwiseDataset.load_memmap">load_memmap() (torchrl.data.PairwiseDataset class method)</a>
 
       <ul>
@@ -2106,7 +2460,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.load_state_dict">(torchrl.envs.ParallelEnv method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.load_state_dict">(torchrl.envs.PendulumEnv method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.load_state_dict">(torchrl.envs.SerialEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.load_state_dict">(torchrl.envs.TicTacToeEnv method)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.rb_transforms.MultiStepTransform.html#torchrl.envs.transforms.rb_transforms.MultiStepTransform.load_state_dict">(torchrl.envs.transforms.rb_transforms.MultiStepTransform method)</a>
 </li>
@@ -2115,6 +2473,8 @@
         <li><a href="reference/generated/torchrl.objectives.SACLoss.html#torchrl.objectives.SACLoss.load_state_dict">(torchrl.objectives.SACLoss method)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/generated/torchrl.data.datasets.AtariDQNExperienceReplay.html#torchrl.data.datasets.AtariDQNExperienceReplay.loads">loads() (torchrl.data.datasets.AtariDQNExperienceReplay method)</a>
 
       <ul>
@@ -2145,8 +2505,8 @@
         <li><a href="reference/generated/torchrl.data.TensorDictReplayBuffer.html#torchrl.data.TensorDictReplayBuffer.loads">(torchrl.data.TensorDictReplayBuffer method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/generated/torchrl.envs.transforms.VecNorm.html#torchrl.envs.transforms.VecNorm.loc">loc (torchrl.envs.transforms.VecNorm property)</a>
+</li>
       <li><a href="reference/generated/torchrl.collectors.distributed.RayCollector.html#torchrl.collectors.distributed.RayCollector.local_policy">local_policy() (torchrl.collectors.distributed.RayCollector method)</a>
 </li>
       <li><a href="reference/generated/torchrl.data.CompositeSpec.html#torchrl.data.CompositeSpec.lock_">lock_() (torchrl.data.CompositeSpec method)</a>
@@ -2203,6 +2563,12 @@
 </li>
       <li><a href="reference/generated/torchrl.trainers.helpers.make_target_updater.html#torchrl.trainers.helpers.make_target_updater">make_target_updater() (in module torchrl.trainers.helpers)</a>
 </li>
+      <li><a href="reference/generated/torchrl.modules.GRUModule.html#id0">make_tensordict_primer() (torchrl.modules.GRUModule method)</a>, <a href="reference/generated/torchrl.modules.GRUModule.html#torchrl.modules.GRUModule.make_tensordict_primer">[1]</a>
+
+      <ul>
+        <li><a href="reference/generated/torchrl.modules.LSTMModule.html#id0">(torchrl.modules.LSTMModule method)</a>, <a href="reference/generated/torchrl.modules.LSTMModule.html#torchrl.modules.LSTMModule.make_tensordict_primer">[1]</a>
+</li>
+      </ul></li>
       <li><a href="reference/generated/torchrl.trainers.helpers.make_trainer.html#torchrl.trainers.helpers.make_trainer">make_trainer() (in module torchrl.trainers.helpers)</a>
 </li>
       <li><a href="reference/generated/torchrl.objectives.A2CLoss.html#torchrl.objectives.A2CLoss.make_value_estimator">make_value_estimator() (torchrl.objectives.A2CLoss method)</a>
@@ -2236,6 +2602,8 @@
 </li>
         <li><a href="reference/generated/torchrl.objectives.SACLoss.html#torchrl.objectives.SACLoss.make_value_estimator">(torchrl.objectives.SACLoss method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.objectives.TD3BCLoss.html#torchrl.objectives.TD3BCLoss.make_value_estimator">(torchrl.objectives.TD3BCLoss method)</a>
+</li>
         <li><a href="reference/generated/torchrl.objectives.TD3Loss.html#torchrl.objectives.TD3Loss.make_value_estimator">(torchrl.objectives.TD3Loss method)</a>
 </li>
       </ul></li>
@@ -2256,13 +2624,19 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.maybe_reset">(torchrl.envs.ParallelEnv method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.maybe_reset">(torchrl.envs.PendulumEnv method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.maybe_reset">(torchrl.envs.SerialEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.maybe_reset">(torchrl.envs.TicTacToeEnv method)</a>
 </li>
       </ul></li>
       <li><a href="reference/generated/torchrl.modules.Delta.html#torchrl.modules.Delta.mean">mean (torchrl.modules.Delta property)</a>
 
       <ul>
         <li><a href="reference/generated/torchrl.modules.TanhDelta.html#torchrl.modules.TanhDelta.mean">(torchrl.modules.TanhDelta property)</a>
+</li>
+        <li><a href="reference/generated/torchrl.modules.TanhNormal.html#torchrl.modules.TanhNormal.mean">(torchrl.modules.TanhNormal property)</a>
 </li>
       </ul></li>
       <li><a href="reference/generated/torchrl.envs.MeltingpotEnv.html#torchrl.envs.MeltingpotEnv">MeltingpotEnv() (in module torchrl.envs)</a>
@@ -2277,8 +2651,6 @@
         <li><a href="reference/generated/torchrl.data.RewardData.html#torchrl.data.RewardData.memmap">(torchrl.data.RewardData method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/generated/torchrl.data.PairwiseDataset.html#torchrl.data.PairwiseDataset.memmap_">memmap_() (torchrl.data.PairwiseDataset method)</a>
 
       <ul>
@@ -2293,6 +2665,16 @@
         <li><a href="reference/generated/torchrl.data.PromptData.html#torchrl.data.PromptData.memmap_like">(torchrl.data.PromptData method)</a>
 </li>
         <li><a href="reference/generated/torchrl.data.RewardData.html#torchrl.data.RewardData.memmap_like">(torchrl.data.RewardData method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/generated/torchrl.data.PairwiseDataset.html#torchrl.data.PairwiseDataset.memmap_refresh_">memmap_refresh_() (torchrl.data.PairwiseDataset method)</a>
+
+      <ul>
+        <li><a href="reference/generated/torchrl.data.PromptData.html#torchrl.data.PromptData.memmap_refresh_">(torchrl.data.PromptData method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.RewardData.html#torchrl.data.RewardData.memmap_refresh_">(torchrl.data.RewardData method)</a>
 </li>
       </ul></li>
       <li><a href="reference/generated/torchrl.data.datasets.MinariExperienceReplay.html#torchrl.data.datasets.MinariExperienceReplay">MinariExperienceReplay (class in torchrl.data.datasets)</a>
@@ -2334,7 +2716,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.modules">(torchrl.envs.ParallelEnv method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.modules">(torchrl.envs.PendulumEnv method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.modules">(torchrl.envs.SerialEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.modules">(torchrl.envs.TicTacToeEnv method)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.rb_transforms.MultiStepTransform.html#torchrl.envs.transforms.rb_transforms.MultiStepTransform.modules">(torchrl.envs.transforms.rb_transforms.MultiStepTransform method)</a>
 </li>
@@ -2347,9 +2733,29 @@
 </li>
       <li><a href="reference/generated/torchrl.modules.MPPIPlanner.html#torchrl.modules.MPPIPlanner">MPPIPlanner (class in torchrl.modules)</a>
 </li>
+      <li><a href="reference/generated/torchrl.data.MultiStep.html#torchrl.data.MultiStep.mtia">mtia() (torchrl.data.MultiStep method)</a>
+
+      <ul>
+        <li><a href="reference/generated/torchrl.envs.EnvBase.html#torchrl.envs.EnvBase.mtia">(torchrl.envs.EnvBase method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.GymLikeEnv.html#torchrl.envs.GymLikeEnv.mtia">(torchrl.envs.GymLikeEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.mtia">(torchrl.envs.ParallelEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.mtia">(torchrl.envs.PendulumEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.mtia">(torchrl.envs.SerialEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.mtia">(torchrl.envs.TicTacToeEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.transforms.rb_transforms.MultiStepTransform.html#torchrl.envs.transforms.rb_transforms.MultiStepTransform.mtia">(torchrl.envs.transforms.rb_transforms.MultiStepTransform method)</a>
+</li>
+      </ul></li>
       <li><a href="reference/generated/torchrl.modules.MultiAgentConvNet.html#torchrl.modules.MultiAgentConvNet">MultiAgentConvNet (class in torchrl.modules)</a>
 </li>
       <li><a href="reference/generated/torchrl.modules.MultiAgentMLP.html#torchrl.modules.MultiAgentMLP">MultiAgentMLP (class in torchrl.modules)</a>
+</li>
+      <li><a href="reference/generated/torchrl.modules.MultiAgentNetBase.html#torchrl.modules.MultiAgentNetBase">MultiAgentNetBase (class in torchrl.modules)</a>
 </li>
       <li><a href="reference/generated/torchrl.collectors.MultiaSyncDataCollector.html#torchrl.collectors.MultiaSyncDataCollector">MultiaSyncDataCollector (class in torchrl.collectors)</a>
 </li>
@@ -2386,7 +2792,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.named_buffers">(torchrl.envs.ParallelEnv method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.named_buffers">(torchrl.envs.PendulumEnv method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.named_buffers">(torchrl.envs.SerialEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.named_buffers">(torchrl.envs.TicTacToeEnv method)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.rb_transforms.MultiStepTransform.html#torchrl.envs.transforms.rb_transforms.MultiStepTransform.named_buffers">(torchrl.envs.transforms.rb_transforms.MultiStepTransform method)</a>
 </li>
@@ -2400,7 +2810,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.named_children">(torchrl.envs.ParallelEnv method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.named_children">(torchrl.envs.PendulumEnv method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.named_children">(torchrl.envs.SerialEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.named_children">(torchrl.envs.TicTacToeEnv method)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.rb_transforms.MultiStepTransform.html#torchrl.envs.transforms.rb_transforms.MultiStepTransform.named_children">(torchrl.envs.transforms.rb_transforms.MultiStepTransform method)</a>
 </li>
@@ -2414,7 +2828,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.named_modules">(torchrl.envs.ParallelEnv method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.named_modules">(torchrl.envs.PendulumEnv method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.named_modules">(torchrl.envs.SerialEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.named_modules">(torchrl.envs.TicTacToeEnv method)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.rb_transforms.MultiStepTransform.html#torchrl.envs.transforms.rb_transforms.MultiStepTransform.named_modules">(torchrl.envs.transforms.rb_transforms.MultiStepTransform method)</a>
 </li>
@@ -2430,7 +2848,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.named_parameters">(torchrl.envs.ParallelEnv method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.named_parameters">(torchrl.envs.PendulumEnv method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.named_parameters">(torchrl.envs.SerialEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.named_parameters">(torchrl.envs.TicTacToeEnv method)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.rb_transforms.MultiStepTransform.html#torchrl.envs.transforms.rb_transforms.MultiStepTransform.named_parameters">(torchrl.envs.transforms.rb_transforms.MultiStepTransform method)</a>
 </li>
@@ -2445,6 +2867,10 @@
         <li><a href="reference/generated/torchrl.data.RewardData.html#torchrl.data.RewardData.names">(torchrl.data.RewardData property)</a>
 </li>
       </ul></li>
+      <li><a href="reference/generated/torchrl.data.Nested2TED.html#torchrl.data.Nested2TED">Nested2TED (class in torchrl.data)</a>
+</li>
+      <li><a href="reference/generated/torchrl.data.replay_buffers.NestedStorageCheckpointer.html#torchrl.data.replay_buffers.NestedStorageCheckpointer">NestedStorageCheckpointer (class in torchrl.data.replay_buffers)</a>
+</li>
       <li><a href="reference/generated/torchrl.objectives.next_state_value.html#torchrl.objectives.next_state_value">next_state_value (class in torchrl.objectives)</a>
 </li>
       <li><a href="reference/generated/torchrl.modules.NoisyLazyLinear.html#torchrl.modules.NoisyLazyLinear">NoisyLazyLinear (class in torchrl.modules)</a>
@@ -2474,7 +2900,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.observation_spec">(torchrl.envs.ParallelEnv property)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.observation_spec">(torchrl.envs.PendulumEnv property)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.observation_spec">(torchrl.envs.SerialEnv property)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.observation_spec">(torchrl.envs.TicTacToeEnv property)</a>
 </li>
       </ul></li>
       <li><a href="reference/generated/torchrl.envs.transforms.ObservationNorm.html#torchrl.envs.transforms.ObservationNorm">ObservationNorm (class in torchrl.envs.transforms)</a>
@@ -2499,6 +2929,8 @@
 </li>
       <li><a href="reference/generated/torchrl.trainers.OptimizerHook.html#torchrl.trainers.OptimizerHook">OptimizerHook (class in torchrl.trainers)</a>
 </li>
+      <li><a href="reference/generated/torchrl.modules.tensordict_module.OrnsteinUhlenbeckProcessModule.html#torchrl.modules.tensordict_module.OrnsteinUhlenbeckProcessModule">OrnsteinUhlenbeckProcessModule (class in torchrl.modules.tensordict_module)</a>
+</li>
       <li><a href="reference/generated/torchrl.modules.tensordict_module.OrnsteinUhlenbeckProcessWrapper.html#torchrl.modules.tensordict_module.OrnsteinUhlenbeckProcessWrapper">OrnsteinUhlenbeckProcessWrapper (class in torchrl.modules.tensordict_module)</a>
 </li>
       <li><a href="reference/generated/torchrl.envs.EnvBase.html#torchrl.envs.EnvBase.output_spec">output_spec (torchrl.envs.EnvBase property)</a>
@@ -2508,7 +2940,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.output_spec">(torchrl.envs.ParallelEnv property)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.output_spec">(torchrl.envs.PendulumEnv property)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.output_spec">(torchrl.envs.SerialEnv property)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.output_spec">(torchrl.envs.TicTacToeEnv property)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.TransformedEnv.html#torchrl.envs.transforms.TransformedEnv.output_spec">(torchrl.envs.transforms.TransformedEnv property)</a>
 </li>
@@ -2534,7 +2970,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.parameters">(torchrl.envs.ParallelEnv method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.parameters">(torchrl.envs.PendulumEnv method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.parameters">(torchrl.envs.SerialEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.parameters">(torchrl.envs.TicTacToeEnv method)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.rb_transforms.MultiStepTransform.html#torchrl.envs.transforms.rb_transforms.MultiStepTransform.parameters">(torchrl.envs.transforms.rb_transforms.MultiStepTransform method)</a>
 </li>
@@ -2547,6 +2987,8 @@
         <li><a href="reference/generated/torchrl.envs.transforms.Transform.html#torchrl.envs.transforms.Transform.parent">(torchrl.envs.transforms.Transform property)</a>
 </li>
       </ul></li>
+      <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv">PendulumEnv (class in torchrl.envs)</a>
+</li>
       <li><a href="reference/generated/torchrl.envs.transforms.PermuteTransform.html#torchrl.envs.transforms.PermuteTransform">PermuteTransform (class in torchrl.envs.transforms)</a>
 </li>
       <li><a href="reference/generated/torchrl.envs.PettingZooEnv.html#torchrl.envs.PettingZooEnv">PettingZooEnv() (in module torchrl.envs)</a>
@@ -2639,6 +3081,8 @@
 </li>
       <li><a href="reference/generated/torchrl.objectives.multiagent.QMixerLoss.html#torchrl.objectives.multiagent.QMixerLoss">QMixerLoss (class in torchrl.objectives.multiagent)</a>
 </li>
+      <li><a href="reference/generated/torchrl.objectives.TD3BCLoss.html#torchrl.objectives.TD3BCLoss.qvalue_loss">qvalue_loss() (torchrl.objectives.TD3BCLoss method)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/generated/torchrl.modules.tensordict_module.QValueActor.html#torchrl.modules.tensordict_module.QValueActor">QValueActor (class in torchrl.modules.tensordict_module)</a>
@@ -2690,7 +3134,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.rand_action">(torchrl.envs.ParallelEnv method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.rand_action">(torchrl.envs.PendulumEnv method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.rand_action">(torchrl.envs.SerialEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.rand_action">(torchrl.envs.TicTacToeEnv method)</a>
 </li>
       </ul></li>
       <li><a href="reference/generated/torchrl.envs.ModelBasedEnvBase.html#torchrl.envs.rand_step">rand_step() (in module torchrl.envs)</a>
@@ -2702,7 +3150,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.rand_step">(torchrl.envs.ParallelEnv method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.rand_step">(torchrl.envs.PendulumEnv method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.rand_step">(torchrl.envs.SerialEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.rand_step">(torchrl.envs.TicTacToeEnv method)</a>
 </li>
       </ul></li>
       <li><a href="reference/generated/torchrl.modules.tensordict_module.SafeModule.html#torchrl.modules.tensordict_module.SafeModule.random">random() (torchrl.modules.tensordict_module.SafeModule method)</a>
@@ -2770,7 +3222,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.register_backward_hook">(torchrl.envs.ParallelEnv method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.register_backward_hook">(torchrl.envs.PendulumEnv method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.register_backward_hook">(torchrl.envs.SerialEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.register_backward_hook">(torchrl.envs.TicTacToeEnv method)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.rb_transforms.MultiStepTransform.html#torchrl.envs.transforms.rb_transforms.MultiStepTransform.register_backward_hook">(torchrl.envs.transforms.rb_transforms.MultiStepTransform method)</a>
 </li>
@@ -2784,7 +3240,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.register_buffer">(torchrl.envs.ParallelEnv method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.register_buffer">(torchrl.envs.PendulumEnv method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.register_buffer">(torchrl.envs.SerialEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.register_buffer">(torchrl.envs.TicTacToeEnv method)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.rb_transforms.MultiStepTransform.html#torchrl.envs.transforms.rb_transforms.MultiStepTransform.register_buffer">(torchrl.envs.transforms.rb_transforms.MultiStepTransform method)</a>
 </li>
@@ -2798,7 +3258,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.register_forward_hook">(torchrl.envs.ParallelEnv method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.register_forward_hook">(torchrl.envs.PendulumEnv method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.register_forward_hook">(torchrl.envs.SerialEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.register_forward_hook">(torchrl.envs.TicTacToeEnv method)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.rb_transforms.MultiStepTransform.html#torchrl.envs.transforms.rb_transforms.MultiStepTransform.register_forward_hook">(torchrl.envs.transforms.rb_transforms.MultiStepTransform method)</a>
 </li>
@@ -2812,7 +3276,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.register_forward_pre_hook">(torchrl.envs.ParallelEnv method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.register_forward_pre_hook">(torchrl.envs.PendulumEnv method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.register_forward_pre_hook">(torchrl.envs.SerialEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.register_forward_pre_hook">(torchrl.envs.TicTacToeEnv method)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.rb_transforms.MultiStepTransform.html#torchrl.envs.transforms.rb_transforms.MultiStepTransform.register_forward_pre_hook">(torchrl.envs.transforms.rb_transforms.MultiStepTransform method)</a>
 </li>
@@ -2826,7 +3294,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.register_full_backward_hook">(torchrl.envs.ParallelEnv method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.register_full_backward_hook">(torchrl.envs.PendulumEnv method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.register_full_backward_hook">(torchrl.envs.SerialEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.register_full_backward_hook">(torchrl.envs.TicTacToeEnv method)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.rb_transforms.MultiStepTransform.html#torchrl.envs.transforms.rb_transforms.MultiStepTransform.register_full_backward_hook">(torchrl.envs.transforms.rb_transforms.MultiStepTransform method)</a>
 </li>
@@ -2840,7 +3312,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.register_full_backward_pre_hook">(torchrl.envs.ParallelEnv method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.register_full_backward_pre_hook">(torchrl.envs.PendulumEnv method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.register_full_backward_pre_hook">(torchrl.envs.SerialEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.register_full_backward_pre_hook">(torchrl.envs.TicTacToeEnv method)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.rb_transforms.MultiStepTransform.html#torchrl.envs.transforms.rb_transforms.MultiStepTransform.register_full_backward_pre_hook">(torchrl.envs.transforms.rb_transforms.MultiStepTransform method)</a>
 </li>
@@ -2852,11 +3328,45 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.register_gym">(torchrl.envs.ParallelEnv class method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.register_gym">(torchrl.envs.PendulumEnv class method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.register_gym">(torchrl.envs.SerialEnv class method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.register_gym">(torchrl.envs.TicTacToeEnv class method)</a>
 </li>
       </ul></li>
       <li><a href="reference/generated/torchrl.envs.transforms.EndOfLifeTransform.html#torchrl.envs.transforms.EndOfLifeTransform.register_keys">register_keys() (torchrl.envs.transforms.EndOfLifeTransform method)</a>
 </li>
+      <li><a href="reference/generated/torchrl.data.datasets.AtariDQNExperienceReplay.html#torchrl.data.datasets.AtariDQNExperienceReplay.register_load_hook">register_load_hook() (torchrl.data.datasets.AtariDQNExperienceReplay method)</a>
+
+      <ul>
+        <li><a href="reference/generated/torchrl.data.datasets.BaseDatasetExperienceReplay.html#torchrl.data.datasets.BaseDatasetExperienceReplay.register_load_hook">(torchrl.data.datasets.BaseDatasetExperienceReplay method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.datasets.D4RLExperienceReplay.html#torchrl.data.datasets.D4RLExperienceReplay.register_load_hook">(torchrl.data.datasets.D4RLExperienceReplay method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.datasets.GenDGRLExperienceReplay.html#torchrl.data.datasets.GenDGRLExperienceReplay.register_load_hook">(torchrl.data.datasets.GenDGRLExperienceReplay method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.datasets.MinariExperienceReplay.html#torchrl.data.datasets.MinariExperienceReplay.register_load_hook">(torchrl.data.datasets.MinariExperienceReplay method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.datasets.OpenMLExperienceReplay.html#torchrl.data.datasets.OpenMLExperienceReplay.register_load_hook">(torchrl.data.datasets.OpenMLExperienceReplay method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.datasets.OpenXExperienceReplay.html#torchrl.data.datasets.OpenXExperienceReplay.register_load_hook">(torchrl.data.datasets.OpenXExperienceReplay method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.datasets.RobosetExperienceReplay.html#torchrl.data.datasets.RobosetExperienceReplay.register_load_hook">(torchrl.data.datasets.RobosetExperienceReplay method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.datasets.VD4RLExperienceReplay.html#torchrl.data.datasets.VD4RLExperienceReplay.register_load_hook">(torchrl.data.datasets.VD4RLExperienceReplay method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.PrioritizedReplayBuffer.html#torchrl.data.PrioritizedReplayBuffer.register_load_hook">(torchrl.data.PrioritizedReplayBuffer method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.replay_buffers.ReplayBufferEnsemble.html#torchrl.data.replay_buffers.ReplayBufferEnsemble.register_load_hook">(torchrl.data.replay_buffers.ReplayBufferEnsemble method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.ReplayBuffer.html#torchrl.data.ReplayBuffer.register_load_hook">(torchrl.data.ReplayBuffer method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.TensorDictPrioritizedReplayBuffer.html#torchrl.data.TensorDictPrioritizedReplayBuffer.register_load_hook">(torchrl.data.TensorDictPrioritizedReplayBuffer method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.TensorDictReplayBuffer.html#torchrl.data.TensorDictReplayBuffer.register_load_hook">(torchrl.data.TensorDictReplayBuffer method)</a>
+</li>
+      </ul></li>
       <li><a href="reference/generated/torchrl.data.MultiStep.html#torchrl.data.MultiStep.register_load_state_dict_post_hook">register_load_state_dict_post_hook() (torchrl.data.MultiStep method)</a>
 
       <ul>
@@ -2866,9 +3376,31 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.register_load_state_dict_post_hook">(torchrl.envs.ParallelEnv method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.register_load_state_dict_post_hook">(torchrl.envs.PendulumEnv method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.register_load_state_dict_post_hook">(torchrl.envs.SerialEnv method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.register_load_state_dict_post_hook">(torchrl.envs.TicTacToeEnv method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.transforms.rb_transforms.MultiStepTransform.html#torchrl.envs.transforms.rb_transforms.MultiStepTransform.register_load_state_dict_post_hook">(torchrl.envs.transforms.rb_transforms.MultiStepTransform method)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/generated/torchrl.data.MultiStep.html#torchrl.data.MultiStep.register_load_state_dict_pre_hook">register_load_state_dict_pre_hook() (torchrl.data.MultiStep method)</a>
+
+      <ul>
+        <li><a href="reference/generated/torchrl.envs.EnvBase.html#torchrl.envs.EnvBase.register_load_state_dict_pre_hook">(torchrl.envs.EnvBase method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.GymLikeEnv.html#torchrl.envs.GymLikeEnv.register_load_state_dict_pre_hook">(torchrl.envs.GymLikeEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.register_load_state_dict_pre_hook">(torchrl.envs.ParallelEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.register_load_state_dict_pre_hook">(torchrl.envs.PendulumEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.register_load_state_dict_pre_hook">(torchrl.envs.SerialEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.register_load_state_dict_pre_hook">(torchrl.envs.TicTacToeEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.transforms.rb_transforms.MultiStepTransform.html#torchrl.envs.transforms.rb_transforms.MultiStepTransform.register_load_state_dict_pre_hook">(torchrl.envs.transforms.rb_transforms.MultiStepTransform method)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -2882,7 +3414,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.register_module">(torchrl.envs.ParallelEnv method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.register_module">(torchrl.envs.PendulumEnv method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.register_module">(torchrl.envs.SerialEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.register_module">(torchrl.envs.TicTacToeEnv method)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.rb_transforms.MultiStepTransform.html#torchrl.envs.transforms.rb_transforms.MultiStepTransform.register_module">(torchrl.envs.transforms.rb_transforms.MultiStepTransform method)</a>
 </li>
@@ -2896,9 +3432,61 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.register_parameter">(torchrl.envs.ParallelEnv method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.register_parameter">(torchrl.envs.PendulumEnv method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.register_parameter">(torchrl.envs.SerialEnv method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.register_parameter">(torchrl.envs.TicTacToeEnv method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.transforms.rb_transforms.MultiStepTransform.html#torchrl.envs.transforms.rb_transforms.MultiStepTransform.register_parameter">(torchrl.envs.transforms.rb_transforms.MultiStepTransform method)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/generated/torchrl.data.datasets.AtariDQNExperienceReplay.html#torchrl.data.datasets.AtariDQNExperienceReplay.register_save_hook">register_save_hook() (torchrl.data.datasets.AtariDQNExperienceReplay method)</a>
+
+      <ul>
+        <li><a href="reference/generated/torchrl.data.datasets.BaseDatasetExperienceReplay.html#torchrl.data.datasets.BaseDatasetExperienceReplay.register_save_hook">(torchrl.data.datasets.BaseDatasetExperienceReplay method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.datasets.D4RLExperienceReplay.html#torchrl.data.datasets.D4RLExperienceReplay.register_save_hook">(torchrl.data.datasets.D4RLExperienceReplay method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.datasets.GenDGRLExperienceReplay.html#torchrl.data.datasets.GenDGRLExperienceReplay.register_save_hook">(torchrl.data.datasets.GenDGRLExperienceReplay method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.datasets.MinariExperienceReplay.html#torchrl.data.datasets.MinariExperienceReplay.register_save_hook">(torchrl.data.datasets.MinariExperienceReplay method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.datasets.OpenMLExperienceReplay.html#torchrl.data.datasets.OpenMLExperienceReplay.register_save_hook">(torchrl.data.datasets.OpenMLExperienceReplay method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.datasets.OpenXExperienceReplay.html#torchrl.data.datasets.OpenXExperienceReplay.register_save_hook">(torchrl.data.datasets.OpenXExperienceReplay method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.datasets.RobosetExperienceReplay.html#torchrl.data.datasets.RobosetExperienceReplay.register_save_hook">(torchrl.data.datasets.RobosetExperienceReplay method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.datasets.VD4RLExperienceReplay.html#torchrl.data.datasets.VD4RLExperienceReplay.register_save_hook">(torchrl.data.datasets.VD4RLExperienceReplay method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.PrioritizedReplayBuffer.html#torchrl.data.PrioritizedReplayBuffer.register_save_hook">(torchrl.data.PrioritizedReplayBuffer method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.replay_buffers.ReplayBufferEnsemble.html#torchrl.data.replay_buffers.ReplayBufferEnsemble.register_save_hook">(torchrl.data.replay_buffers.ReplayBufferEnsemble method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.ReplayBuffer.html#torchrl.data.ReplayBuffer.register_save_hook">(torchrl.data.ReplayBuffer method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.TensorDictPrioritizedReplayBuffer.html#torchrl.data.TensorDictPrioritizedReplayBuffer.register_save_hook">(torchrl.data.TensorDictPrioritizedReplayBuffer method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.TensorDictReplayBuffer.html#torchrl.data.TensorDictReplayBuffer.register_save_hook">(torchrl.data.TensorDictReplayBuffer method)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/generated/torchrl.data.MultiStep.html#torchrl.data.MultiStep.register_state_dict_post_hook">register_state_dict_post_hook() (torchrl.data.MultiStep method)</a>
+
+      <ul>
+        <li><a href="reference/generated/torchrl.envs.EnvBase.html#torchrl.envs.EnvBase.register_state_dict_post_hook">(torchrl.envs.EnvBase method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.GymLikeEnv.html#torchrl.envs.GymLikeEnv.register_state_dict_post_hook">(torchrl.envs.GymLikeEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.register_state_dict_post_hook">(torchrl.envs.ParallelEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.register_state_dict_post_hook">(torchrl.envs.PendulumEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.register_state_dict_post_hook">(torchrl.envs.SerialEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.register_state_dict_post_hook">(torchrl.envs.TicTacToeEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.transforms.rb_transforms.MultiStepTransform.html#torchrl.envs.transforms.rb_transforms.MultiStepTransform.register_state_dict_post_hook">(torchrl.envs.transforms.rb_transforms.MultiStepTransform method)</a>
 </li>
       </ul></li>
       <li><a href="reference/generated/torchrl.data.MultiStep.html#torchrl.data.MultiStep.register_state_dict_pre_hook">register_state_dict_pre_hook() (torchrl.data.MultiStep method)</a>
@@ -2910,7 +3498,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.register_state_dict_pre_hook">(torchrl.envs.ParallelEnv method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.register_state_dict_pre_hook">(torchrl.envs.PendulumEnv method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.register_state_dict_pre_hook">(torchrl.envs.SerialEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.register_state_dict_pre_hook">(torchrl.envs.TicTacToeEnv method)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.rb_transforms.MultiStepTransform.html#torchrl.envs.transforms.rb_transforms.MultiStepTransform.register_state_dict_pre_hook">(torchrl.envs.transforms.rb_transforms.MultiStepTransform method)</a>
 </li>
@@ -2938,7 +3530,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.requires_grad_">(torchrl.envs.ParallelEnv method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.requires_grad_">(torchrl.envs.PendulumEnv method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.requires_grad_">(torchrl.envs.SerialEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.requires_grad_">(torchrl.envs.TicTacToeEnv method)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.rb_transforms.MultiStepTransform.html#torchrl.envs.transforms.rb_transforms.MultiStepTransform.requires_grad_">(torchrl.envs.transforms.rb_transforms.MultiStepTransform method)</a>
 </li>
@@ -2962,7 +3558,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.reset">(torchrl.envs.ParallelEnv method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.reset">(torchrl.envs.PendulumEnv method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.reset">(torchrl.envs.SerialEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.reset">(torchrl.envs.TicTacToeEnv method)</a>
 </li>
       </ul></li>
       <li><a href="reference/generated/torchrl.envs.EnvBase.html#torchrl.envs.EnvBase.reset_keys">reset_keys (torchrl.envs.EnvBase property)</a>
@@ -2972,10 +3572,16 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.reset_keys">(torchrl.envs.ParallelEnv property)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.reset_keys">(torchrl.envs.PendulumEnv property)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.reset_keys">(torchrl.envs.SerialEnv property)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.reset_keys">(torchrl.envs.TicTacToeEnv property)</a>
 </li>
       </ul></li>
       <li><a href="reference/generated/torchrl.modules.reset_noise.html#torchrl.modules.reset_noise">reset_noise (class in torchrl.modules)</a>
+</li>
+      <li><a href="reference/generated/torchrl.modules.MultiAgentNetBase.html#torchrl.modules.MultiAgentNetBase.reset_parameters">reset_parameters() (torchrl.modules.MultiAgentNetBase method)</a>
 </li>
       <li><a href="reference/generated/torchrl.data.BinaryDiscreteTensorSpec.html#torchrl.data.BinaryDiscreteTensorSpec.reshape">reshape() (torchrl.data.BinaryDiscreteTensorSpec method)</a>
 
@@ -3018,7 +3624,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.reward_key">(torchrl.envs.ParallelEnv property)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.reward_key">(torchrl.envs.PendulumEnv property)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.reward_key">(torchrl.envs.SerialEnv property)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.reward_key">(torchrl.envs.TicTacToeEnv property)</a>
 </li>
       </ul></li>
       <li><a href="reference/generated/torchrl.envs.EnvBase.html#torchrl.envs.EnvBase.reward_keys">reward_keys (torchrl.envs.EnvBase property)</a>
@@ -3028,7 +3638,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.reward_keys">(torchrl.envs.ParallelEnv property)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.reward_keys">(torchrl.envs.PendulumEnv property)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.reward_keys">(torchrl.envs.SerialEnv property)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.reward_keys">(torchrl.envs.TicTacToeEnv property)</a>
 </li>
       </ul></li>
       <li><a href="reference/generated/torchrl.envs.EnvBase.html#torchrl.envs.EnvBase.reward_spec">reward_spec (torchrl.envs.EnvBase property)</a>
@@ -3038,7 +3652,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.reward_spec">(torchrl.envs.ParallelEnv property)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.reward_spec">(torchrl.envs.PendulumEnv property)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.reward_spec">(torchrl.envs.SerialEnv property)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.reward_spec">(torchrl.envs.TicTacToeEnv property)</a>
 </li>
       </ul></li>
       <li><a href="reference/generated/torchrl.envs.transforms.RewardClipping.html#torchrl.envs.transforms.RewardClipping">RewardClipping (class in torchrl.envs.transforms)</a>
@@ -3066,7 +3684,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.rollout">(torchrl.envs.ParallelEnv method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.rollout">(torchrl.envs.PendulumEnv method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.rollout">(torchrl.envs.SerialEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.rollout">(torchrl.envs.TicTacToeEnv method)</a>
 </li>
       </ul></li>
       <li><a href="reference/generated/torchrl.data.RolloutFromModel.html#torchrl.data.RolloutFromModel">RolloutFromModel (class in torchrl.data)</a>
@@ -3103,6 +3725,34 @@
 </li>
       <li><a href="reference/generated/torchrl.modules.tensordict_module.SafeSequential.html#torchrl.modules.tensordict_module.SafeSequential">SafeSequential (class in torchrl.modules.tensordict_module)</a>
 </li>
+      <li><a href="reference/generated/torchrl.data.BinaryDiscreteTensorSpec.html#torchrl.data.BinaryDiscreteTensorSpec.sample">sample (torchrl.data.BinaryDiscreteTensorSpec property)</a>
+
+      <ul>
+        <li><a href="reference/generated/torchrl.data.BoundedTensorSpec.html#torchrl.data.BoundedTensorSpec.sample">(torchrl.data.BoundedTensorSpec property)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.CompositeSpec.html#torchrl.data.CompositeSpec.sample">(torchrl.data.CompositeSpec property)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.DiscreteTensorSpec.html#torchrl.data.DiscreteTensorSpec.sample">(torchrl.data.DiscreteTensorSpec property)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.LazyStackedCompositeSpec.html#torchrl.data.LazyStackedCompositeSpec.sample">(torchrl.data.LazyStackedCompositeSpec property)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.LazyStackedTensorSpec.html#torchrl.data.LazyStackedTensorSpec.sample">(torchrl.data.LazyStackedTensorSpec property)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.MultiDiscreteTensorSpec.html#torchrl.data.MultiDiscreteTensorSpec.sample">(torchrl.data.MultiDiscreteTensorSpec property)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.MultiOneHotDiscreteTensorSpec.html#torchrl.data.MultiOneHotDiscreteTensorSpec.sample">(torchrl.data.MultiOneHotDiscreteTensorSpec property)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.NonTensorSpec.html#torchrl.data.NonTensorSpec.sample">(torchrl.data.NonTensorSpec property)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.OneHotDiscreteTensorSpec.html#torchrl.data.OneHotDiscreteTensorSpec.sample">(torchrl.data.OneHotDiscreteTensorSpec property)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.TensorSpec.html#torchrl.data.TensorSpec.sample">(torchrl.data.TensorSpec property)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.UnboundedContinuousTensorSpec.html#torchrl.data.UnboundedContinuousTensorSpec.sample">(torchrl.data.UnboundedContinuousTensorSpec property)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.UnboundedDiscreteTensorSpec.html#torchrl.data.UnboundedDiscreteTensorSpec.sample">(torchrl.data.UnboundedDiscreteTensorSpec property)</a>
+</li>
+      </ul></li>
       <li><a href="reference/generated/torchrl.data.datasets.AtariDQNExperienceReplay.html#torchrl.data.datasets.AtariDQNExperienceReplay.sample">sample() (torchrl.data.datasets.AtariDQNExperienceReplay method)</a>
 
       <ul>
@@ -3177,6 +3827,56 @@
 </li>
       <li><a href="reference/generated/torchrl.data.replay_buffers.SamplerWithoutReplacement.html#torchrl.data.replay_buffers.SamplerWithoutReplacement">SamplerWithoutReplacement (class in torchrl.data.replay_buffers)</a>
 </li>
+      <li><a href="reference/generated/torchrl.data.datasets.AtariDQNExperienceReplay.html#torchrl.data.datasets.AtariDQNExperienceReplay.save">save() (torchrl.data.datasets.AtariDQNExperienceReplay method)</a>
+
+      <ul>
+        <li><a href="reference/generated/torchrl.data.datasets.BaseDatasetExperienceReplay.html#torchrl.data.datasets.BaseDatasetExperienceReplay.save">(torchrl.data.datasets.BaseDatasetExperienceReplay method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.datasets.D4RLExperienceReplay.html#torchrl.data.datasets.D4RLExperienceReplay.save">(torchrl.data.datasets.D4RLExperienceReplay method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.datasets.GenDGRLExperienceReplay.html#torchrl.data.datasets.GenDGRLExperienceReplay.save">(torchrl.data.datasets.GenDGRLExperienceReplay method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.datasets.MinariExperienceReplay.html#torchrl.data.datasets.MinariExperienceReplay.save">(torchrl.data.datasets.MinariExperienceReplay method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.datasets.OpenMLExperienceReplay.html#torchrl.data.datasets.OpenMLExperienceReplay.save">(torchrl.data.datasets.OpenMLExperienceReplay method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.datasets.OpenXExperienceReplay.html#torchrl.data.datasets.OpenXExperienceReplay.save">(torchrl.data.datasets.OpenXExperienceReplay method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.datasets.RobosetExperienceReplay.html#torchrl.data.datasets.RobosetExperienceReplay.save">(torchrl.data.datasets.RobosetExperienceReplay method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.datasets.VD4RLExperienceReplay.html#torchrl.data.datasets.VD4RLExperienceReplay.save">(torchrl.data.datasets.VD4RLExperienceReplay method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.PairwiseDataset.html#torchrl.data.PairwiseDataset.save">(torchrl.data.PairwiseDataset method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.PrioritizedReplayBuffer.html#torchrl.data.PrioritizedReplayBuffer.save">(torchrl.data.PrioritizedReplayBuffer method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.PromptData.html#torchrl.data.PromptData.save">(torchrl.data.PromptData method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.replay_buffers.LazyMemmapStorage.html#torchrl.data.replay_buffers.LazyMemmapStorage.save">(torchrl.data.replay_buffers.LazyMemmapStorage method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.replay_buffers.LazyTensorStorage.html#torchrl.data.replay_buffers.LazyTensorStorage.save">(torchrl.data.replay_buffers.LazyTensorStorage method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.replay_buffers.ListStorage.html#torchrl.data.replay_buffers.ListStorage.save">(torchrl.data.replay_buffers.ListStorage method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.replay_buffers.ReplayBufferEnsemble.html#torchrl.data.replay_buffers.ReplayBufferEnsemble.save">(torchrl.data.replay_buffers.ReplayBufferEnsemble method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.replay_buffers.Storage.html#torchrl.data.replay_buffers.Storage.save">(torchrl.data.replay_buffers.Storage method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.replay_buffers.StorageEnsemble.html#torchrl.data.replay_buffers.StorageEnsemble.save">(torchrl.data.replay_buffers.StorageEnsemble method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.replay_buffers.TensorStorage.html#torchrl.data.replay_buffers.TensorStorage.save">(torchrl.data.replay_buffers.TensorStorage method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.ReplayBuffer.html#torchrl.data.ReplayBuffer.save">(torchrl.data.ReplayBuffer method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.RewardData.html#torchrl.data.RewardData.save">(torchrl.data.RewardData method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.TensorDictPrioritizedReplayBuffer.html#torchrl.data.TensorDictPrioritizedReplayBuffer.save">(torchrl.data.TensorDictPrioritizedReplayBuffer method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.TensorDictReplayBuffer.html#torchrl.data.TensorDictReplayBuffer.save">(torchrl.data.TensorDictReplayBuffer method)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/generated/torchrl.envs.transforms.VecNorm.html#torchrl.envs.transforms.VecNorm.scale">scale (torchrl.envs.transforms.VecNorm property)</a>
+</li>
       <li><a href="reference/generated/torchrl.trainers.SelectKeys.html#torchrl.trainers.SelectKeys">SelectKeys (class in torchrl.trainers)</a>
 </li>
       <li><a href="reference/generated/torchrl.envs.transforms.SelectTransform.html#torchrl.envs.transforms.SelectTransform">SelectTransform (class in torchrl.envs.transforms)</a>
@@ -3204,7 +3904,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.set_extra_state">(torchrl.envs.ParallelEnv method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.set_extra_state">(torchrl.envs.PendulumEnv method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.set_extra_state">(torchrl.envs.SerialEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.set_extra_state">(torchrl.envs.TicTacToeEnv method)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.rb_transforms.MultiStepTransform.html#torchrl.envs.transforms.rb_transforms.MultiStepTransform.set_extra_state">(torchrl.envs.transforms.rb_transforms.MultiStepTransform method)</a>
 </li>
@@ -3223,10 +3927,10 @@
       </ul></li>
       <li><a href="reference/generated/torchrl.envs.transforms.TransformedEnv.html#torchrl.envs.transforms.TransformedEnv.set_missing_tolerance">set_missing_tolerance() (torchrl.envs.transforms.TransformedEnv method)</a>
 </li>
-      <li><a href="reference/generated/torchrl.modules.GRUModule.html#id0">set_recurrent_mode() (torchrl.modules.GRUModule method)</a>, <a href="reference/generated/torchrl.modules.GRUModule.html#torchrl.modules.GRUModule.set_recurrent_mode">[1]</a>
+      <li><a href="reference/generated/torchrl.modules.GRUModule.html#id1">set_recurrent_mode() (torchrl.modules.GRUModule method)</a>, <a href="reference/generated/torchrl.modules.GRUModule.html#torchrl.modules.GRUModule.set_recurrent_mode">[1]</a>
 
       <ul>
-        <li><a href="reference/generated/torchrl.modules.LSTMModule.html#id0">(torchrl.modules.LSTMModule method)</a>, <a href="reference/generated/torchrl.modules.LSTMModule.html#torchrl.modules.LSTMModule.set_recurrent_mode">[1]</a>
+        <li><a href="reference/generated/torchrl.modules.LSTMModule.html#id1">(torchrl.modules.LSTMModule method)</a>, <a href="reference/generated/torchrl.modules.LSTMModule.html#torchrl.modules.LSTMModule.set_recurrent_mode">[1]</a>
 </li>
       </ul></li>
       <li><a href="reference/generated/torchrl.data.datasets.AtariDQNExperienceReplay.html#torchrl.data.datasets.AtariDQNExperienceReplay.set_sampler">set_sampler() (torchrl.data.datasets.AtariDQNExperienceReplay method)</a>
@@ -3278,7 +3982,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.set_seed">(torchrl.envs.ParallelEnv method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.set_seed">(torchrl.envs.PendulumEnv method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.set_seed">(torchrl.envs.SerialEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.set_seed">(torchrl.envs.TicTacToeEnv method)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.TransformedEnv.html#torchrl.envs.transforms.TransformedEnv.set_seed">(torchrl.envs.transforms.TransformedEnv method)</a>
 </li>
@@ -3313,6 +4021,26 @@
         <li><a href="reference/generated/torchrl.data.TensorDictReplayBuffer.html#torchrl.data.TensorDictReplayBuffer.set_storage">(torchrl.data.TensorDictReplayBuffer method)</a>
 </li>
       </ul></li>
+      <li><a href="reference/generated/torchrl.data.MultiStep.html#torchrl.data.MultiStep.set_submodule">set_submodule() (torchrl.data.MultiStep method)</a>
+
+      <ul>
+        <li><a href="reference/generated/torchrl.envs.EnvBase.html#torchrl.envs.EnvBase.set_submodule">(torchrl.envs.EnvBase method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.GymLikeEnv.html#torchrl.envs.GymLikeEnv.set_submodule">(torchrl.envs.GymLikeEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.set_submodule">(torchrl.envs.ParallelEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.set_submodule">(torchrl.envs.PendulumEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.set_submodule">(torchrl.envs.SerialEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.set_submodule">(torchrl.envs.TicTacToeEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.transforms.rb_transforms.MultiStepTransform.html#torchrl.envs.transforms.rb_transforms.MultiStepTransform.set_submodule">(torchrl.envs.transforms.rb_transforms.MultiStepTransform method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/generated/torchrl.modules.tensordict_module.DecisionTransformerInferenceWrapper.html#torchrl.modules.tensordict_module.DecisionTransformerInferenceWrapper.set_tensor_keys">set_tensor_keys() (torchrl.modules.tensordict_module.DecisionTransformerInferenceWrapper method)</a>
 </li>
       <li><a href="reference/generated/torchrl.data.datasets.AtariDQNExperienceReplay.html#torchrl.data.datasets.AtariDQNExperienceReplay.set_writer">set_writer() (torchrl.data.datasets.AtariDQNExperienceReplay method)</a>
@@ -3345,8 +4073,6 @@
         <li><a href="reference/generated/torchrl.data.TensorDictReplayBuffer.html#torchrl.data.TensorDictReplayBuffer.set_writer">(torchrl.data.TensorDictReplayBuffer method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/generated/torchrl.envs.EnvBase.html#torchrl.envs.EnvBase.shape">shape (torchrl.envs.EnvBase property)</a>
 
       <ul>
@@ -3354,7 +4080,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.shape">(torchrl.envs.ParallelEnv property)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.shape">(torchrl.envs.PendulumEnv property)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.shape">(torchrl.envs.SerialEnv property)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.shape">(torchrl.envs.TicTacToeEnv property)</a>
 </li>
       </ul></li>
       <li><a href="reference/generated/torchrl.data.MultiStep.html#torchrl.data.MultiStep.share_memory">share_memory() (torchrl.data.MultiStep method)</a>
@@ -3366,7 +4096,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.share_memory">(torchrl.envs.ParallelEnv method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.share_memory">(torchrl.envs.PendulumEnv method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.share_memory">(torchrl.envs.SerialEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.share_memory">(torchrl.envs.TicTacToeEnv method)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.rb_transforms.MultiStepTransform.html#torchrl.envs.transforms.rb_transforms.MultiStepTransform.share_memory">(torchrl.envs.transforms.rb_transforms.MultiStepTransform method)</a>
 </li>
@@ -3402,7 +4136,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.specs">(torchrl.envs.ParallelEnv property)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.specs">(torchrl.envs.PendulumEnv property)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.specs">(torchrl.envs.SerialEnv property)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.specs">(torchrl.envs.TicTacToeEnv property)</a>
 </li>
       </ul></li>
       <li><a href="reference/generated/torchrl.collectors.utils.split_trajectories.html#torchrl.collectors.utils.split_trajectories">split_trajectories() (in module torchrl.collectors.utils)</a>
@@ -3441,6 +4179,8 @@
 </li>
       <li><a href="reference/generated/torchrl.envs.transforms.SqueezeTransform.html#torchrl.envs.transforms.SqueezeTransform">SqueezeTransform (class in torchrl.envs.transforms)</a>
 </li>
+      <li><a href="reference/generated/torchrl.envs.transforms.VecNorm.html#torchrl.envs.transforms.VecNorm.standard_normal">standard_normal (torchrl.envs.transforms.VecNorm property)</a>
+</li>
       <li><a href="reference/generated/torchrl.collectors.aSyncDataCollector.html#torchrl.collectors.aSyncDataCollector.state_dict">state_dict() (torchrl.collectors.aSyncDataCollector method)</a>
 
       <ul>
@@ -3466,13 +4206,31 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.state_dict">(torchrl.envs.ParallelEnv method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.state_dict">(torchrl.envs.PendulumEnv method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.state_dict">(torchrl.envs.SerialEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.state_dict">(torchrl.envs.TicTacToeEnv method)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.rb_transforms.MultiStepTransform.html#torchrl.envs.transforms.rb_transforms.MultiStepTransform.state_dict">(torchrl.envs.transforms.rb_transforms.MultiStepTransform method)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.TransformedEnv.html#torchrl.envs.transforms.TransformedEnv.state_dict">(torchrl.envs.transforms.TransformedEnv method)</a>
 </li>
         <li><a href="reference/generated/torchrl.objectives.SACLoss.html#torchrl.objectives.SACLoss.state_dict">(torchrl.objectives.SACLoss method)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/generated/torchrl.envs.EnvBase.html#torchrl.envs.EnvBase.state_keys">state_keys (torchrl.envs.EnvBase property)</a>
+
+      <ul>
+        <li><a href="reference/generated/torchrl.envs.GymLikeEnv.html#torchrl.envs.GymLikeEnv.state_keys">(torchrl.envs.GymLikeEnv property)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.state_keys">(torchrl.envs.ParallelEnv property)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.state_keys">(torchrl.envs.PendulumEnv property)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.state_keys">(torchrl.envs.SerialEnv property)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.state_keys">(torchrl.envs.TicTacToeEnv property)</a>
 </li>
       </ul></li>
       <li><a href="reference/generated/torchrl.envs.EnvBase.html#torchrl.envs.EnvBase.state_spec">state_spec (torchrl.envs.EnvBase property)</a>
@@ -3482,7 +4240,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.state_spec">(torchrl.envs.ParallelEnv property)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.state_spec">(torchrl.envs.PendulumEnv property)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.state_spec">(torchrl.envs.SerialEnv property)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.state_spec">(torchrl.envs.TicTacToeEnv property)</a>
 </li>
       </ul></li>
       <li><a href="reference/generated/torchrl.envs.ModelBasedEnvBase.html#torchrl.envs.step">step() (in module torchrl.envs)</a>
@@ -3494,11 +4256,19 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.step">(torchrl.envs.ParallelEnv method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.step">(torchrl.envs.PendulumEnv method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.step">(torchrl.envs.SerialEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.step">(torchrl.envs.TicTacToeEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.modules.tensordict_module.AdditiveGaussianModule.html#torchrl.modules.tensordict_module.AdditiveGaussianModule.step">(torchrl.modules.tensordict_module.AdditiveGaussianModule method)</a>
 </li>
         <li><a href="reference/generated/torchrl.modules.tensordict_module.AdditiveGaussianWrapper.html#torchrl.modules.tensordict_module.AdditiveGaussianWrapper.step">(torchrl.modules.tensordict_module.AdditiveGaussianWrapper method)</a>
 </li>
         <li><a href="reference/generated/torchrl.modules.tensordict_module.EGreedyModule.html#torchrl.modules.tensordict_module.EGreedyModule.step">(torchrl.modules.tensordict_module.EGreedyModule method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.modules.tensordict_module.OrnsteinUhlenbeckProcessModule.html#torchrl.modules.tensordict_module.OrnsteinUhlenbeckProcessModule.step">(torchrl.modules.tensordict_module.OrnsteinUhlenbeckProcessModule method)</a>
 </li>
         <li><a href="reference/generated/torchrl.modules.tensordict_module.OrnsteinUhlenbeckProcessWrapper.html#torchrl.modules.tensordict_module.OrnsteinUhlenbeckProcessWrapper.step">(torchrl.modules.tensordict_module.OrnsteinUhlenbeckProcessWrapper method)</a>
 </li>
@@ -3510,7 +4280,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.step_and_maybe_reset">(torchrl.envs.ParallelEnv method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.step_and_maybe_reset">(torchrl.envs.PendulumEnv method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.step_and_maybe_reset">(torchrl.envs.SerialEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.step_and_maybe_reset">(torchrl.envs.TicTacToeEnv method)</a>
 </li>
       </ul></li>
       <li><a href="reference/generated/torchrl.envs.utils.step_mdp.html#torchrl.envs.utils.step_mdp">step_mdp() (in module torchrl.envs.utils)</a>
@@ -3551,7 +4325,11 @@
         <li><a href="reference/generated/torchrl.data.TensorDictReplayBuffer.html#torchrl.data.TensorDictReplayBuffer.storage">(torchrl.data.TensorDictReplayBuffer property)</a>
 </li>
       </ul></li>
+      <li><a href="reference/generated/torchrl.data.replay_buffers.StorageCheckpointerBase.html#torchrl.data.replay_buffers.StorageCheckpointerBase">StorageCheckpointerBase (class in torchrl.data.replay_buffers)</a>
+</li>
       <li><a href="reference/generated/torchrl.data.replay_buffers.StorageEnsemble.html#torchrl.data.replay_buffers.StorageEnsemble">StorageEnsemble (class in torchrl.data.replay_buffers)</a>
+</li>
+      <li><a href="reference/generated/torchrl.data.replay_buffers.StorageEnsembleCheckpointer.html#torchrl.data.replay_buffers.StorageEnsembleCheckpointer">StorageEnsembleCheckpointer (class in torchrl.data.replay_buffers)</a>
 </li>
       <li><a href="reference/generated/torchrl.collectors.distributed.submitit_delayed_launcher.html#torchrl.collectors.distributed.submitit_delayed_launcher">submitit_delayed_launcher (class in torchrl.collectors.distributed)</a>
 </li>
@@ -3587,6 +4365,8 @@
 </li>
       <li><a href="reference/generated/torchrl.objectives.value.TD1Estimator.html#torchrl.objectives.value.TD1Estimator">TD1Estimator (class in torchrl.objectives.value)</a>
 </li>
+      <li><a href="reference/generated/torchrl.objectives.TD3BCLoss.html#torchrl.objectives.TD3BCLoss">TD3BCLoss (class in torchrl.objectives)</a>
+</li>
       <li><a href="reference/generated/torchrl.objectives.TD3Loss.html#torchrl.objectives.TD3Loss">TD3Loss (class in torchrl.objectives)</a>
 </li>
       <li><a href="reference/generated/torchrl.objectives.value.functional.td_lambda_advantage_estimate.html#torchrl.objectives.value.functional.td_lambda_advantage_estimate">td_lambda_advantage_estimate (class in torchrl.objectives.value.functional)</a>
@@ -3594,6 +4374,10 @@
       <li><a href="reference/generated/torchrl.objectives.value.functional.td_lambda_return_estimate.html#torchrl.objectives.value.functional.td_lambda_return_estimate">td_lambda_return_estimate (class in torchrl.objectives.value.functional)</a>
 </li>
       <li><a href="reference/generated/torchrl.objectives.value.TDLambdaEstimator.html#torchrl.objectives.value.TDLambdaEstimator">TDLambdaEstimator (class in torchrl.objectives.value)</a>
+</li>
+      <li><a href="reference/generated/torchrl.data.TED2Flat.html#torchrl.data.TED2Flat">TED2Flat (class in torchrl.data)</a>
+</li>
+      <li><a href="reference/generated/torchrl.data.TED2Nested.html#torchrl.data.TED2Nested">TED2Nested (class in torchrl.data)</a>
 </li>
       <li><a href="reference/generated/torchrl.record.loggers.tensorboard.TensorboardLogger.html#torchrl.record.loggers.tensorboard.TensorboardLogger">TensorboardLogger() (in module torchrl.record.loggers.tensorboard)</a>
 </li>
@@ -3615,7 +4399,11 @@
 </li>
       <li><a href="reference/generated/torchrl.data.replay_buffers.TensorStorage.html#torchrl.data.replay_buffers.TensorStorage">TensorStorage (class in torchrl.data.replay_buffers)</a>
 </li>
+      <li><a href="reference/generated/torchrl.data.replay_buffers.TensorStorageCheckpointer.html#torchrl.data.replay_buffers.TensorStorageCheckpointer">TensorStorageCheckpointer (class in torchrl.data.replay_buffers)</a>
+</li>
       <li><a href="reference/generated/torchrl.envs.utils.terminated_or_truncated.html#torchrl.envs.utils.terminated_or_truncated">terminated_or_truncated() (in module torchrl.envs.utils)</a>
+</li>
+      <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv">TicTacToeEnv (class in torchrl.envs)</a>
 </li>
       <li><a href="reference/generated/torchrl.envs.transforms.TimeMaxPool.html#torchrl.envs.transforms.TimeMaxPool">TimeMaxPool (class in torchrl.envs.transforms)</a>
 </li>
@@ -3628,7 +4416,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.to">(torchrl.envs.ParallelEnv method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.to">(torchrl.envs.PendulumEnv method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.to">(torchrl.envs.SerialEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.to">(torchrl.envs.TicTacToeEnv method)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.Compose.html#torchrl.envs.transforms.Compose.to">(torchrl.envs.transforms.Compose method)</a>
 </li>
@@ -3670,7 +4462,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.to_empty">(torchrl.envs.ParallelEnv method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.to_empty">(torchrl.envs.PendulumEnv method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.to_empty">(torchrl.envs.SerialEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.to_empty">(torchrl.envs.TicTacToeEnv method)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.rb_transforms.MultiStepTransform.html#torchrl.envs.transforms.rb_transforms.MultiStepTransform.to_empty">(torchrl.envs.transforms.rb_transforms.MultiStepTransform method)</a>
 </li>
@@ -3742,7 +4538,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.train">(torchrl.envs.ParallelEnv method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.train">(torchrl.envs.PendulumEnv method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.train">(torchrl.envs.SerialEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.train">(torchrl.envs.TicTacToeEnv method)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.rb_transforms.MultiStepTransform.html#torchrl.envs.transforms.rb_transforms.MultiStepTransform.train">(torchrl.envs.transforms.rb_transforms.MultiStepTransform method)</a>
 </li>
@@ -3785,9 +4585,11 @@
         <li><a href="reference/generated/torchrl.envs.transforms.Transform.html#torchrl.envs.transforms.Transform.transform_env_device">(torchrl.envs.transforms.Transform method)</a>
 </li>
       </ul></li>
-      <li><a href="reference/generated/torchrl.envs.transforms.BatchSizeTransform.html#torchrl.envs.transforms.BatchSizeTransform.transform_input_spec">transform_input_spec() (torchrl.envs.transforms.BatchSizeTransform method)</a>
+      <li><a href="reference/generated/torchrl.envs.transforms.ActionDiscretizer.html#torchrl.envs.transforms.ActionDiscretizer.transform_input_spec">transform_input_spec() (torchrl.envs.transforms.ActionDiscretizer method)</a>
 
       <ul>
+        <li><a href="reference/generated/torchrl.envs.transforms.BatchSizeTransform.html#torchrl.envs.transforms.BatchSizeTransform.transform_input_spec">(torchrl.envs.transforms.BatchSizeTransform method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.transforms.Compose.html#torchrl.envs.transforms.Compose.transform_input_spec">(torchrl.envs.transforms.Compose method)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.DeviceCastTransform.html#torchrl.envs.transforms.DeviceCastTransform.transform_input_spec">(torchrl.envs.transforms.DeviceCastTransform method)</a>
@@ -3831,6 +4633,8 @@
         <li><a href="reference/generated/torchrl.envs.transforms.ClipTransform.html#torchrl.envs.transforms.ClipTransform.transform_observation_spec">(torchrl.envs.transforms.ClipTransform method)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.Compose.html#torchrl.envs.transforms.Compose.transform_observation_spec">(torchrl.envs.transforms.Compose method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.transforms.Crop.html#torchrl.envs.transforms.Crop.transform_observation_spec">(torchrl.envs.transforms.Crop method)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.DeviceCastTransform.html#torchrl.envs.transforms.DeviceCastTransform.transform_observation_spec">(torchrl.envs.transforms.DeviceCastTransform method)</a>
 </li>
@@ -3942,7 +4746,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.type">(torchrl.envs.ParallelEnv method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.type">(torchrl.envs.PendulumEnv method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.type">(torchrl.envs.SerialEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.type">(torchrl.envs.TicTacToeEnv method)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.rb_transforms.MultiStepTransform.html#torchrl.envs.transforms.rb_transforms.MultiStepTransform.type">(torchrl.envs.transforms.rb_transforms.MultiStepTransform method)</a>
 </li>
@@ -4021,14 +4829,16 @@
         <li><a href="reference/generated/torchrl.data.UnboundedDiscreteTensorSpec.html#torchrl.data.UnboundedDiscreteTensorSpec.unflatten">(torchrl.data.UnboundedDiscreteTensorSpec method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/generated/torchrl.envs.transforms.VecNorm.html#torchrl.envs.transforms.VecNorm.unfreeze">unfreeze() (torchrl.envs.transforms.VecNorm method)</a>
+</li>
       <li><a href="reference/generated/torchrl.data.CompositeSpec.html#torchrl.data.CompositeSpec.unlock_">unlock_() (torchrl.data.CompositeSpec method)</a>
 
       <ul>
         <li><a href="reference/generated/torchrl.data.LazyStackedCompositeSpec.html#torchrl.data.LazyStackedCompositeSpec.unlock_">(torchrl.data.LazyStackedCompositeSpec method)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/generated/torchrl.envs.transforms.UnsqueezeTransform.html#torchrl.envs.transforms.UnsqueezeTransform">UnsqueezeTransform (class in torchrl.envs.transforms)</a>
 </li>
       <li><a href="reference/generated/torchrl.data.AdaptiveKLController.html#torchrl.data.AdaptiveKLController.update">update() (torchrl.data.AdaptiveKLController method)</a>
@@ -4037,6 +4847,18 @@
 
       <ul>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.update_kwargs">(torchrl.envs.SerialEnv method)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/generated/torchrl.data.BinaryDiscreteTensorSpec.html#torchrl.data.BinaryDiscreteTensorSpec.update_mask">update_mask() (torchrl.data.BinaryDiscreteTensorSpec method)</a>
+
+      <ul>
+        <li><a href="reference/generated/torchrl.data.DiscreteTensorSpec.html#torchrl.data.DiscreteTensorSpec.update_mask">(torchrl.data.DiscreteTensorSpec method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.MultiDiscreteTensorSpec.html#torchrl.data.MultiDiscreteTensorSpec.update_mask">(torchrl.data.MultiDiscreteTensorSpec method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.MultiOneHotDiscreteTensorSpec.html#torchrl.data.MultiOneHotDiscreteTensorSpec.update_mask">(torchrl.data.MultiOneHotDiscreteTensorSpec method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.data.OneHotDiscreteTensorSpec.html#torchrl.data.OneHotDiscreteTensorSpec.update_mask">(torchrl.data.OneHotDiscreteTensorSpec method)</a>
 </li>
       </ul></li>
       <li><a href="reference/generated/torchrl.collectors.aSyncDataCollector.html#torchrl.collectors.aSyncDataCollector.update_policy_weights_">update_policy_weights_() (torchrl.collectors.aSyncDataCollector method)</a>
@@ -4155,6 +4977,8 @@
 </li>
       <li><a href="reference/generated/torchrl.envs.transforms.VIPTransform.html#torchrl.envs.transforms.VIPTransform">VIPTransform (class in torchrl.envs.transforms)</a>
 </li>
+      <li><a href="reference/generated/torchrl.objectives.LossModule.html#torchrl.objectives.LossModule.vmap_randomness">vmap_randomness (torchrl.objectives.LossModule property)</a>
+</li>
       <li><a href="reference/generated/torchrl.modules.VmapModule.html#torchrl.modules.VmapModule">VmapModule (class in torchrl.modules)</a>
 </li>
       <li><a href="reference/generated/torchrl.envs.VmasEnv.html#torchrl.envs.VmasEnv">VmasEnv() (in module torchrl.envs)</a>
@@ -4222,7 +5046,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.xpu">(torchrl.envs.ParallelEnv method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.xpu">(torchrl.envs.PendulumEnv method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.xpu">(torchrl.envs.SerialEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.xpu">(torchrl.envs.TicTacToeEnv method)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.rb_transforms.MultiStepTransform.html#torchrl.envs.transforms.rb_transforms.MultiStepTransform.xpu">(torchrl.envs.transforms.rb_transforms.MultiStepTransform method)</a>
 </li>
@@ -4272,7 +5100,11 @@
 </li>
         <li><a href="reference/generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv.zero_grad">(torchrl.envs.ParallelEnv method)</a>
 </li>
+        <li><a href="reference/generated/torchrl.envs.PendulumEnv.html#torchrl.envs.PendulumEnv.zero_grad">(torchrl.envs.PendulumEnv method)</a>
+</li>
         <li><a href="reference/generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv.zero_grad">(torchrl.envs.SerialEnv method)</a>
+</li>
+        <li><a href="reference/generated/torchrl.envs.TicTacToeEnv.html#torchrl.envs.TicTacToeEnv.zero_grad">(torchrl.envs.TicTacToeEnv method)</a>
 </li>
         <li><a href="reference/generated/torchrl.envs.transforms.rb_transforms.MultiStepTransform.html#torchrl.envs.transforms.rb_transforms.MultiStepTransform.zero_grad">(torchrl.envs.transforms.rb_transforms.MultiStepTransform method)</a>
 </li>
@@ -4309,6 +5141,8 @@
 </footer>
 
           </div>
+
+
         </div>
 
         <div class="pytorch-content-right" id="pytorch-content-right">
@@ -4347,7 +5181,55 @@
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+     
+    <script type="text/javascript">
+      $(document).ready(function() {
+	  var downloadNote = $(".sphx-glr-download-link-note.admonition.note");
+	  if (downloadNote.length >= 1) {
+	      var tutorialUrl = $("#tutorial-type").text();
+	      var githubLink = "https://github.com/pytorch/rl/blob/main/tutorials/sphinx-tutorials/"  + tutorialUrl + ".py",
+		  notebookLink = $(".sphx-glr-download-jupyter").find(".download.reference")[0].href,
+		  notebookDownloadPath = notebookLink.split('_downloads')[1],
+		  colabLink = "https://colab.research.google.com/github/pytorch/rl/blob/gh-pages/main/_downloads" + notebookDownloadPath;
+
+	      $(".pytorch-call-to-action-links a[data-response='Run in Google Colab']").attr("href", colabLink);
+	      $(".pytorch-call-to-action-links a[data-response='View on Github']").attr("href", githubLink);
+	  }
+
+          var overwrite = function(_) {
+              if ($(this).length > 0) {
+                  $(this)[0].href = "https://github.com/pytorch/rl"
+              }
+          }
+          // PC
+          $(".main-menu a:contains('GitHub')").each(overwrite);
+          // Mobile
+          $(".main-menu a:contains('Github')").each(overwrite);
+      });
+
+      
+       $(window).ready(function() {
+           var original = window.sideMenus.bind;
+           var startup = true;
+           window.sideMenus.bind = function() {
+               original();
+               if (startup) {
+                   $("#pytorch-right-menu a.reference.internal").each(function(i) {
+                       if (this.classList.contains("not-expanded")) {
+                           this.nextElementSibling.style.display = "block";
+                           this.classList.remove("not-expanded");
+                           this.classList.add("expanded");
+                       }
+                   });
+                   startup = false;
+               }
+           };
+       });
+    </script>
+
+    
+
 
   <!-- Begin Footer -->
 
@@ -4411,7 +5293,7 @@
             <li><a href="https://twitter.com/pytorch" target="_blank">Twitter</a></li>
             <li><a href="https://www.youtube.com/pytorch" target="_blank">YouTube</a></li>
             <li><a href="https://www.linkedin.com/company/pytorch" target="_blank">LinkedIn</a></li>
-          </ul>
+          </ul>  
           </div>
 
         <div class="footer-links-col">
@@ -4424,7 +5306,7 @@
           </ul>
          </div>
         </div>
-
+        
         <div class="privacy-policy">
           <ul>
             <li class="privacy-policy-links"><a href="https://www.linuxfoundation.org/terms/" target="_blank">Terms</a></li>
@@ -4435,9 +5317,9 @@
         <div class="copyright">
         <p>© Copyright The Linux Foundation. The PyTorch Foundation is a project of The Linux Foundation.
           For web site terms of use, trademark policy and other policies applicable to The PyTorch Foundation please see
-          <a href="www.linuxfoundation.org/policies/">www.linuxfoundation.org/policies/</a>. The PyTorch Foundation supports the PyTorch open source
+          <a href="https://www.linuxfoundation.org/policies/">www.linuxfoundation.org/policies/</a>. The PyTorch Foundation supports the PyTorch open source
           project, which has been established as PyTorch Project a Series of LF Projects, LLC. For policies applicable to the PyTorch Project a Series of LF Projects, LLC,
-          please see <a href="www.lfprojects.org/policies/">www.lfprojects.org/policies/</a>.</p>
+          please see <a href="https://www.lfprojects.org/policies/">www.lfprojects.org/policies/</a>.</p>
       </div>
      </div>
 
@@ -4467,114 +5349,111 @@
     <div class="mobile-main-menu-links-container">
       <div class="main-menu">
         <ul>
-          <li>
-            <a href="https://pytorch.org/get-started">Get Started</a>
-          </li>
+           <li class="resources-mobile-menu-title">
+             <a>Learn</a>
+           </li>
+           <ul class="resources-mobile-menu-items">
+             <li>
+               <a href="https://pytorch.org/get-started">Get Started</a>
+             </li>
+             <li>
+               <a href="https://pytorch.org/tutorials">Tutorials</a>
+             </li>
+             <li>
+               <a href="https://pytorch.org/tutorials/beginner/basics/intro.html">Learn the Basics</a>
+             </li>
+             <li>
+               <a href="https://pytorch.org/tutorials/recipes/recipes_index.html">PyTorch Recipes</a>
+             </li>
+             <li>
+               <a href="https://pytorch.org/tutorials/beginner/introyt.html">Introduction to PyTorch - YouTube Series</a>
+             </li>
+           </ul>
+           <li class="resources-mobile-menu-title">
+             <a>Ecosystem</a>
+           </li>
+           <ul class="resources-mobile-menu-items">
+             <li>
+               <a href="https://pytorch.org/ecosystem">Tools</a>
+             </li>
+             <li>
+               <a href="https://pytorch.org/#community-module">Community</a>
+             </li>
+             <li>
+               <a href="https://discuss.pytorch.org/">Forums</a>
+             </li>
+             <li>
+               <a href="https://pytorch.org/resources">Developer Resources</a>
+             </li>
+             <li>
+               <a href="https://pytorch.org/ecosystem/contributor-awards-2023">Contributor Awards - 2023</a>
+             </li>
+           </ul>
 
-          <li>
-            <a href="https://pytorch.org/ecosystem">Ecosystem</a>
-          </li>
+           <li class="resources-mobile-menu-title">
+             <a>Edge</a>
+           </li>
 
-          <li>
-            <a href="">Mobile</a>
-          </li>
+           <ul class="resources-mobile-menu-items">
+             <li>
+               <a href="https://pytorch.org/edge">About PyTorch Edge</a>
+             </li>
+             
+             <li>
+               <a href="https://pytorch.org/executorch-overview">ExecuTorch</a>
+             </li>
+           </ul>
 
-          <li>
-            <a href="https://pytorch.org/blog/">Blog</a>
-          </li>
+           <li class="resources-mobile-menu-title">
+             <a>Docs</a>
+           </li>
 
-          <li>
-            <a href="https://pytorch.org/tutorials">Tutorials</a>
-          </li>
-
-          <li class="resources-mobile-menu-title">
-            Docs
-          </li>
-
-          <ul class="resources-mobile-menu-items">
+           <ul class="resources-mobile-menu-items">
             <li>
               <a href="https://pytorch.org/docs/stable/index.html">PyTorch</a>
             </li>
 
             <li>
-              <a href="https://pytorch.org/audio/stable/index.html">torchaudio</a>
-            </li>
-
-            <li>
-              <a href="https://pytorch.org/text/stable/index.html">torchtext</a>
-            </li>
-
-            <li>
-              <a href="https://pytorch.org/vision/stable/index.html">torchvision</a>
-            </li>
-
-            <li>
-              <a href="https://pytorch.org/torcharrow">torcharrow</a>
-            </li>
-
-            <li>
-              <a href="https://pytorch.org/data">TorchData</a>
-            </li>
-
-            <li>
-              <a href="https://pytorch.org/torchrec">TorchRec</a>
-            </li>
-
-            <li>
-              <a href="https://pytorch.org/serve/">TorchServe</a>
-            </li>
-
-            <li>
-              <a href="https://pytorch.org/torchx/">TorchX</a>
-            </li>
-
-            <li>
-              <a href="https://pytorch.org/xla">PyTorch on XLA Devices</a>
+              <a href="https://pytorch.org/pytorch-domains">PyTorch Domains</a>
             </li>
           </ul>
 
           <li class="resources-mobile-menu-title">
-            Resources
+            <a>Blog & News</a>
           </li>
-
+            
            <ul class="resources-mobile-menu-items">
-
             <li>
-              <a href="https://pytorch.org/features">About</a>
+              <a href="https://pytorch.org/blog/">PyTorch Blog</a>
+            </li>
+            <li>
+              <a href="https://pytorch.org/community-blog">Community Blog</a>
             </li>
 
             <li>
-              <a href="https://pytorch.org/foundation">PyTorch Foundation</a>
-            </li>
-
-            <li>
-              <a href="https://pytorch.org/#community-module">Community</a>
+              <a href="https://pytorch.org/videos">Videos</a>
             </li>
 
             <li>
               <a href="https://pytorch.org/community-stories">Community Stories</a>
             </li>
-
-            <li>
-              <a href="https://pytorch.org/resources">Developer Resources</a>
-            </li>
-
             <li>
               <a href="https://pytorch.org/events">Events</a>
             </li>
+          </ul>
+          
+          <li class="resources-mobile-menu-title">
+            <a>About</a>
+          </li>
 
+          <ul class="resources-mobile-menu-items">
             <li>
-              <a href="https://discuss.pytorch.org/">Forums</a>
+              <a href="https://pytorch.org/foundation">PyTorch Foundation</a>
             </li>
-
             <li>
-              <a href="https://pytorch.org/hub">Models (Beta)</a>
+              <a href="https://pytorch.org/governing-board">Governing Board</a>
             </li>
           </ul>
-
-          <li>
-            <a href="https://github.com/pytorch/pytorch">Github</a>
-          </li>
         </ul>
       </div>
     </div>

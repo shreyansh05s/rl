@@ -41,18 +41,13 @@
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Task-specific policy in multi-task environments" href="multi_task.html" />
     <link rel="prev" title="Using Replay Buffers" href="rb_tutorial.html" />
-  <!-- Google Analytics -->
-  
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-117752657-2"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'UA-117752657-2');
-    </script>
-  
-  <!-- End Google Analytics -->
+  <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','UA-117752657-2');</script>
+    <!-- End Google Tag Manager -->
   
 
   
@@ -87,120 +82,170 @@
 
       <div class="main-menu">
         <ul>
-          <li>
-            <a href="https://pytorch.org/get-started">Get Started</a>
-          </li>
 
-          <li>
-            <a href="https://pytorch.org/ecosystem">Ecosystem</a>
-          </li>
-
-          <li>
-            <a href="">Mobile</a>
-          </li>
-
-          <li>
-            <a href="https://pytorch.org/blog/">Blog</a>
-          </li>
-
-          <li>
-            <a href="https://pytorch.org/tutorials">Tutorials</a>
-          </li>
-
-          <li>
-            <div id="resourcesDropdownButton" data-toggle="resources-dropdown" class="resources-dropdown">
-              <a class="resource-option with-down-orange-arrow">
-                Docs
+          <li class="main-menu-item">
+          <div id="resourcesDropdownButton" data-toggle="resources-dropdown" class="resources-dropdown">
+              <a class="with-down-arrow">
+                Learn
               </a>
               <div class="resources-dropdown-menu">
-                <a class="doc-dropdown-option nav-dropdown-item" href="https://pytorch.org/docs/stable/index.html">
-                  <span class="dropdown-title">PyTorch</span>
-                  <p></p>
+                <a class="nav-dropdown-item" href="https://pytorch.org/get-started">
+                  <span class=dropdown-title>Get Started</span>
+                  <p>Run PyTorch locally or get started quickly with one of the supported cloud platforms</p>
                 </a>
-                <a class="doc-dropdown-option nav-dropdown-item" href="https://pytorch.org/audio/stable/index.html">
-                  <span class="dropdown-title">torchaudio</span>
-                  <p></p>
+                <a class="nav-dropdown-item" href="https://pytorch.org/tutorials">
+                  <span class="dropdown-title">Tutorials</span>
+                  <p>Whats new in PyTorch tutorials</p>
                 </a>
-                <a class="doc-dropdown-option nav-dropdown-item" href="https://pytorch.org/text/stable/index.html">
-                  <span class="dropdown-title">torchtext</span>
-                  <p></p>
+                <a class="nav-dropdown-item" href="https://pytorch.org/tutorials/beginner/basics/intro.html">
+                  <span class="dropdown-title">Learn the Basics</span>
+                  <p>Familiarize yourself with PyTorch concepts and modules</p>
                 </a>
-                <a class="doc-dropdown-option nav-dropdown-item" href="https://pytorch.org/vision/stable/index.html">
-                  <span class="dropdown-title">torchvision</span>
-                  <p></p>
+                <a class="nav-dropdown-item" href="https://pytorch.org/tutorials/recipes/recipes_index.html">
+                  <span class="dropdown-title">PyTorch Recipes</span>
+                  <p>Bite-size, ready-to-deploy PyTorch code examples</p>
                 </a>
-                <a class="doc-dropdown-option nav-dropdown-item" href="https://pytorch.org/torcharrow">
-                  <span class="dropdown-title">torcharrow</span>
-                  <p></p>
-                </a>
-                <a class="doc-dropdown-option nav-dropdown-item" href="https://pytorch.org/data">
-                  <span class="dropdown-title">TorchData</span>
-                  <p></p>
-                </a>
-                <a class="doc-dropdown-option nav-dropdown-item" href="https://pytorch.org/torchrec">
-                  <span class="dropdown-title">TorchRec</span>
-                  <p></p>
-                </a>
-                <a class="doc-dropdown-option nav-dropdown-item" href="https://pytorch.org/serve/">
-                  <span class="dropdown-title">TorchServe</span>
-                  <p></p>
-                </a>
-                <a class="doc-dropdown-option nav-dropdown-item" href="https://pytorch.org/torchx/">
-                  <span class="dropdown-title">TorchX</span>
-                  <p></p>
-                </a>
-                <a class="doc-dropdown-option nav-dropdown-item" href="https://pytorch.org/xla">
-                  <span class="dropdown-title">PyTorch on XLA Devices</span>
-                  <p></p>
-                </a>
-            </div>
-          </li>
-
-          <li>
-            <div id="resourcesDropdownButton" data-toggle="resources-dropdown" class="resources-dropdown">
-              <a class="resource-option with-down-arrow">
-                Resources
-              </a>
-              <div class="resources-dropdown-menu">
-                <a class="nav-dropdown-item" href="https://pytorch.org/features">
-                  <span class="dropdown-title">About</span>
-                  <p>Learn about PyTorch’s features and capabilities</p>
-                </a>
-                <a class="nav-dropdown-item" href="https://pytorch.org/foundation">
-                  <span class="dropdown-title">PyTorch Foundation</span>
-                  <p>Learn about the PyTorch foundation</p>
-                </a>
-                <a class="nav-dropdown-item" href="https://pytorch.org/#community-module">
-                  <span class="dropdown-title">Community</span>
-                  <p>Join the PyTorch developer community to contribute, learn, and get your questions answered.</p>
-                </a>
-                <a class="nav-dropdown-item" href="https://pytorch.org/community-stories">
-                  <span class="dropdown-title">Community Stories</span>
-                  <p>Learn how our community solves real, everyday machine learning problems with PyTorch.</p>
-                </a>
-                <a class="nav-dropdown-item" href="https://pytorch.org/resources">
-                  <span class="dropdown-title">Developer Resources</span>
-                  <p>Find resources and get questions answered</p>
-                </a>
-                <a class="nav-dropdown-item" href="https://pytorch.org/events">
-                  <span class="dropdown-title">Events</span>
-                  <p>Find events, webinars, and podcasts</p>
-                </a>
-                <a class="nav-dropdown-item" href="https://discuss.pytorch.org/" target="_blank">
-                  <span class="dropdown-title">Forums</span>
-                  <p>A place to discuss PyTorch code, issues, install, research</p>
-                </a>
-                <a class="nav-dropdown-item" href="https://pytorch.org/hub">
-                  <span class="dropdown-title">Models (Beta)</span>
-                  <p>Discover, publish, and reuse pre-trained models</p>
+                <a class="nav-dropdown-item" href="https://pytorch.org/tutorials/beginner/introyt.html">
+                  <span class="dropdown-title">Intro to PyTorch - YouTube Series</span>
+                  <p>Master PyTorch basics with our engaging YouTube tutorial series</p>
                 </a>
               </div>
             </div>
           </li>
 
           <li>
-            <a href="https://github.com/pytorch/pytorch">GitHub</a>
+          <div id="resourcesDropdownButton" data-toggle="resources-dropdown" class="resources-dropdown">
+              <a class="with-down-arrow">
+                Ecosystem
+              </a>
+              <div class="resources-dropdown-menu">
+                <a class="nav-dropdown-item" href="https://pytorch.org/ecosystem">
+                  <span class="dropdown-title">Tools</span>
+                  <p>Learn about the tools and frameworks in the PyTorch Ecosystem</p>
+                </a>
+                <a class="nav-dropdown-item" href="https://pytorch.org/#community-module">
+                  <span class=dropdown-title>Community</span>
+                  <p>Join the PyTorch developer community to contribute, learn, and get your questions answered</p>
+                </a>
+                <a class="nav-dropdown-item" href="https://discuss.pytorch.org/" target="_blank">
+                  <span class=dropdown-title>Forums</span>
+                  <p>A place to discuss PyTorch code, issues, install, research</p>
+                </a>
+                <a class="nav-dropdown-item" href="https://pytorch.org/resources">
+                  <span class=dropdown-title>Developer Resources</span>
+                  <p>Find resources and get questions answered</p>
+                </a>
+                <a class="nav-dropdown-item" href="https://pytorch.org/ecosystem/contributor-awards-2023">
+                  <span class="dropdown-title">Contributor Awards - 2023</span>
+                  <p>Award winners announced at this year's PyTorch Conference</p>
+                </a>
+              </div>
+            </div>
           </li>
+
+          <li>
+          <div id="resourcesDropdownButton" data-toggle="resources-dropdown" class="resources-dropdown">
+              <a class="with-down-arrow">
+                Edge
+              </a>
+              <div class="resources-dropdown-menu">
+                <a class="nav-dropdown-item" href="https://pytorch.org/edge">
+                  <span class="dropdown-title">About PyTorch Edge</span>
+                  <p>Build innovative and privacy-aware AI experiences for edge devices</p>
+                </a>
+                <a class="nav-dropdown-item" href="https://pytorch.org/executorch-overview">
+                  <span class="dropdown-title">ExecuTorch</span>
+                  <p>End-to-end solution for enabling on-device inference capabilities across mobile and edge devices</p>
+                </a>
+              </div>
+            </div>  
+          </li>
+
+          <li class="main-menu-item">
+            <div id="resourcesDropdownButton" data-toggle="resources-dropdown" class="resources-dropdown">
+              <a class="with-down-arrow">
+                Docs
+              </a>
+              <div class="resources-dropdown-menu">
+                <a class="nav-dropdown-item" href="https://pytorch.org/docs/stable/index.html">
+                  <span class="dropdown-title">PyTorch</span>
+                  <p>Explore the documentation for comprehensive guidance on how to use PyTorch</p>
+                </a>
+                <a class="nav-dropdown-item" href="https://pytorch.org/pytorch-domains">
+                  <span class="dropdown-title">PyTorch Domains</span>
+                  <p>Read the PyTorch Domains documentation to learn more about domain-specific libraries</p>
+                </a>
+              </div>
+            </div>
+          </li>
+
+          <li>
+            <div id="resourcesDropdownButton" data-toggle="resources-dropdown" class="resources-dropdown">
+              <a class="with-down-arrow">
+                Blogs & News 
+              </a>
+              <div class="resources-dropdown-menu">
+                <a class="nav-dropdown-item" href="https://pytorch.org/blog/">
+                  <span class="dropdown-title">PyTorch Blog</span>
+                  <p>Catch up on the latest technical news and happenings</p>
+                </a>
+                 <a class="nav-dropdown-item" href="https://pytorch.org/community-blog">
+                  <span class="dropdown-title">Community Blog</span>
+                  <p>Stories from the PyTorch ecosystem</p>
+                </a>
+                <a class="nav-dropdown-item" href="https://pytorch.org/videos">
+                  <span class="dropdown-title">Videos</span>
+                  <p>Learn about the latest PyTorch tutorials, new, and more </p>
+                <a class="nav-dropdown-item" href="https://pytorch.org/community-stories">
+                  <span class="dropdown-title">Community Stories</span>
+                  <p>Learn how our community solves real, everyday machine learning problems with PyTorch</p>
+                </a>
+                <a class="nav-dropdown-item" href="https://pytorch.org/events">
+                  <span class="dropdown-title">Events</span>
+                  <p>Find events, webinars, and podcasts</p>
+                </a>
+            </div>
+          </li>
+
+          <li>
+            <div id="resourcesDropdownButton" data-toggle="resources-dropdown" class="resources-dropdown">
+              <a class="with-down-arrow">
+                About
+              </a>
+              <div class="resources-dropdown-menu">
+                <a class="nav-dropdown-item" href="https://pytorch.org/foundation">
+                  <span class="dropdown-title">PyTorch Foundation</span>
+                  <p>Learn more about the PyTorch Foundation</p>
+                </a>
+                <a class="nav-dropdown-item" href="https://pytorch.org/governing-board">
+                  <span class="dropdown-title">Governing Board</span>
+                  <p></p>
+                </a>
+              </div>
+            </div>
+          </li>
+
+          <li class="main-menu-item">
+            <div class="no-dropdown">
+              <a href="https://pytorch.org/join" data-cta="join">
+                Become a Member
+              </a>
+            </div>
+          </li>
+          <li>
+           <div class="main-menu-item">
+             <a href="https://github.com/pytorch/pytorch" class="github-icon">
+             </a>
+           </div>
+          </li>
+          <!--- TODO: This block adds the search icon to the nav bar. We will enable it later. 
+          <li>
+            <div class="main-menu-item">
+             <a href="https://github.com/pytorch/pytorch" class="search-icon">
+             </a>
+            </div>
+          </li>
+          --->
         </ul>
       </div>
 
@@ -225,17 +270,10 @@
         <div class="pytorch-menu pytorch-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           <div class="pytorch-left-menu-search">
             
-
-            
-              
-              
-                <div class="version">
-                  main (0.4.0 )
-                </div>
-              
-            
-
-            
+    <div class="version">
+      <a href="../../versions.html"><span style="font-size:110%">main (0.5.0) &#x25BC</span></a>
+    </div>
+    
 
 
   
@@ -249,7 +287,6 @@
   </form>
 </div>
 
-            
           </div>
 
           
@@ -355,27 +392,34 @@
         <div class="pytorch-content-left">
 
         
-          <div class="pytorch-call-to-action-links">
-            <div id="tutorial-type">tutorials/multiagent_competitive_ddpg</div>
+    
 
-            <div id="google-colab-link">
-              <img class="call-to-action-img" src="../_static/images/pytorch-colab.svg"/>
-              <div class="call-to-action-desktop-view">Run in Google Colab</div>
-              <div class="call-to-action-mobile-view">Colab</div>
-            </div>
-            <div id="download-notebook-link">
-              <img class="call-to-action-notebook-img" src="../_static/images/pytorch-download.svg"/>
-              <div class="call-to-action-desktop-view">Download Notebook</div>
-              <div class="call-to-action-mobile-view">Notebook</div>
-            </div>
-            <div id="github-view-link">
-              <img class="call-to-action-img" src="../_static/images/pytorch-github.svg"/>
-              <div class="call-to-action-desktop-view">View on GitHub</div>
-              <div class="call-to-action-mobile-view">GitHub</div>
-            </div>
-          </div>
+    <div class="pytorch-call-to-action-links">
+      <div id="tutorial-type">tutorials/multiagent_competitive_ddpg</div>
 
-        
+      <div id="google-colab-link">
+        <img class="call-to-action-img" src="../_static/images/pytorch-colab.svg"/>
+        <div class="call-to-action-desktop-view">Run in Google Colab</div>
+        <div class="call-to-action-mobile-view">Colab</div>
+      </div>
+      <div id="download-notebook-link">
+        <img class="call-to-action-notebook-img" src="../_static/images/pytorch-download.svg"/>
+        <div class="call-to-action-desktop-view">Download Notebook</div>
+        <div class="call-to-action-mobile-view">Notebook</div>
+      </div>
+      <div id="github-view-link">
+        <img class="call-to-action-img" src="../_static/images/pytorch-github.svg"/>
+        <div class="call-to-action-desktop-view">View on GitHub</div>
+        <div class="call-to-action-mobile-view">GitHub</div>
+      </div>
+    </div>
+
+    
+    
+          <!-- Google Tag Manager (noscript) -->
+          <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=UA-117752657-2"
+          height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+          <!-- End Google Tag Manager (noscript) -->
           
           <div class="rst-content">
           
@@ -385,11 +429,16 @@
   <div class="sphx-glr-download-link-note admonition note">
 <p class="admonition-title">Note</p>
 <p><a class="reference internal" href="#sphx-glr-download-tutorials-multiagent-competitive-ddpg-py"><span class="std std-ref">Go to the end</span></a>
-to download the full example code</p>
+to download the full example code.</p>
 </div>
 <section class="sphx-glr-example-title" id="competitive-multi-agent-reinforcement-learning-ddpg-with-torchrl-tutorial">
 <span id="sphx-glr-tutorials-multiagent-competitive-ddpg-py"></span><h1>Competitive Multi-Agent Reinforcement Learning (DDPG) with TorchRL Tutorial<a class="headerlink" href="#competitive-multi-agent-reinforcement-learning-ddpg-with-torchrl-tutorial" title="Permalink to this heading">¶</a></h1>
 <p><strong>Author</strong>: <a class="reference external" href="https://github.com/matteobettini">Matteo Bettini</a></p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>The <a class="reference external" href="https://github.com/facebookresearch/BenchMARL">BenchMARL</a> library provides state-of-the-art
+implementations of MARL algorithms using TorchRL.</p>
+</div>
 <p>This tutorial demonstrates how to use PyTorch and TorchRL to
 solve a Competitive Multi-Agent Reinforcement Learning (MARL) problem.</p>
 <p>For ease of use, this tutorial will follow the general structure of the already available <a class="reference internal" href="multiagent_ppo.html"><span class="doc">Multi-Agent Reinforcement Learning (PPO) with TorchRL Tutorial</span></a>.</p>
@@ -494,7 +543,7 @@ to render and visualize your own trained policy before and after the training pr
 <span class="p">)</span>
 
 <span class="kn">from</span> <span class="nn">torchrl.modules</span> <span class="kn">import</span> <span class="p">(</span>
-    <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">AdditiveGaussianWrapper</span></a><span class="p">,</span>
+    <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">AdditiveGaussianModule</span></a><span class="p">,</span>
     <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">MultiAgentMLP</span></a><span class="p">,</span>
     <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">ProbabilisticActor</span></a><span class="p">,</span>
     <a href="https://pytorch.org/docs/stable/distributions.html#torch.distributions.transformed_distribution.TransformedDistribution" title="torch.distributions.transformed_distribution.TransformedDistribution" class="sphx-glr-backref-module-torch-distributions-transformed_distribution sphx-glr-backref-type-py-class"><span class="n">TanhDelta</span></a><span class="p">,</span>
@@ -665,7 +714,9 @@ you should not have to care about this.</p>
                 high=Tensor(shape=torch.Size([10, 2, 2]), device=cpu, dtype=torch.float32, contiguous=True)),
             device=cpu,
             dtype=torch.float32,
-            domain=continuous), device=cpu, shape=torch.Size([10, 2])),
+            domain=continuous),
+        device=cpu,
+        shape=torch.Size([10, 2])),
     agent: CompositeSpec(
         action: BoundedTensorSpec(
             shape=torch.Size([10, 1, 2]),
@@ -674,7 +725,11 @@ you should not have to care about this.</p>
                 high=Tensor(shape=torch.Size([10, 1, 2]), device=cpu, dtype=torch.float32, contiguous=True)),
             device=cpu,
             dtype=torch.float32,
-            domain=continuous), device=cpu, shape=torch.Size([10, 1])), device=cpu, shape=torch.Size([10]))
+            domain=continuous),
+        device=cpu,
+        shape=torch.Size([10, 1])),
+    device=cpu,
+    shape=torch.Size([10]))
 reward_spec: CompositeSpec(
     adversary: CompositeSpec(
         reward: UnboundedContinuousTensorSpec(
@@ -682,14 +737,20 @@ reward_spec: CompositeSpec(
             space=None,
             device=cpu,
             dtype=torch.float32,
-            domain=continuous), device=cpu, shape=torch.Size([10, 2])),
+            domain=continuous),
+        device=cpu,
+        shape=torch.Size([10, 2])),
     agent: CompositeSpec(
         reward: UnboundedContinuousTensorSpec(
             shape=torch.Size([10, 1, 1]),
             space=None,
             device=cpu,
             dtype=torch.float32,
-            domain=continuous), device=cpu, shape=torch.Size([10, 1])), device=cpu, shape=torch.Size([10]))
+            domain=continuous),
+        device=cpu,
+        shape=torch.Size([10, 1])),
+    device=cpu,
+    shape=torch.Size([10]))
 done_spec: CompositeSpec(
     done: DiscreteTensorSpec(
         shape=torch.Size([10, 1]),
@@ -702,7 +763,9 @@ done_spec: CompositeSpec(
         space=DiscreteBox(n=2),
         device=cpu,
         dtype=torch.bool,
-        domain=discrete), device=cpu, shape=torch.Size([10]))
+        domain=discrete),
+    device=cpu,
+    shape=torch.Size([10]))
 observation_spec: CompositeSpec(
     adversary: CompositeSpec(
         observation: UnboundedContinuousTensorSpec(
@@ -710,14 +773,20 @@ observation_spec: CompositeSpec(
             space=None,
             device=cpu,
             dtype=torch.float32,
-            domain=continuous), device=cpu, shape=torch.Size([10, 2])),
+            domain=continuous),
+        device=cpu,
+        shape=torch.Size([10, 2])),
     agent: CompositeSpec(
         observation: UnboundedContinuousTensorSpec(
             shape=torch.Size([10, 1, 12]),
             space=None,
             device=cpu,
             dtype=torch.float32,
-            domain=continuous), device=cpu, shape=torch.Size([10, 1])), device=cpu, shape=torch.Size([10]))
+            domain=continuous),
+        device=cpu,
+        shape=torch.Size([10, 1])),
+    device=cpu,
+    shape=torch.Size([10]))
 </pre></div>
 </div>
 <p>Using the commands just shown we can access the domain of each value.</p>
@@ -930,8 +999,8 @@ the <code class="xref py py-class docutils literal notranslate"><span class="pre
         <span class="n">out_keys</span><span class="o">=</span><span class="p">[(</span><span class="n">group</span><span class="p">,</span> <span class="s2">&quot;action&quot;</span><span class="p">)],</span>
         <span class="n">distribution_class</span><span class="o">=</span><a href="https://pytorch.org/docs/stable/distributions.html#torch.distributions.transformed_distribution.TransformedDistribution" title="torch.distributions.transformed_distribution.TransformedDistribution" class="sphx-glr-backref-module-torch-distributions-transformed_distribution sphx-glr-backref-type-py-class"><span class="n">TanhDelta</span></a><span class="p">,</span>
         <span class="n">distribution_kwargs</span><span class="o">=</span><span class="p">{</span>
-            <span class="s2">&quot;min&quot;</span><span class="p">:</span> <span class="n">env</span><span class="o">.</span><span class="n">full_action_spec</span><span class="p">[</span><span class="n">group</span><span class="p">,</span> <span class="s2">&quot;action&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">low</span><span class="p">,</span>
-            <span class="s2">&quot;max&quot;</span><span class="p">:</span> <span class="n">env</span><span class="o">.</span><span class="n">full_action_spec</span><span class="p">[</span><span class="n">group</span><span class="p">,</span> <span class="s2">&quot;action&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">high</span><span class="p">,</span>
+            <span class="s2">&quot;low&quot;</span><span class="p">:</span> <span class="n">env</span><span class="o">.</span><span class="n">full_action_spec</span><span class="p">[</span><span class="n">group</span><span class="p">,</span> <span class="s2">&quot;action&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">low</span><span class="p">,</span>
+            <span class="s2">&quot;high&quot;</span><span class="p">:</span> <span class="n">env</span><span class="o">.</span><span class="n">full_action_spec</span><span class="p">[</span><span class="n">group</span><span class="p">,</span> <span class="s2">&quot;action&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">high</span><span class="p">,</span>
         <span class="p">},</span>
         <span class="n">return_log_prob</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span>
@@ -941,20 +1010,23 @@ the <code class="xref py py-class docutils literal notranslate"><span class="pre
 <p><strong>Third</strong>: Exploration</p>
 <p>Since the DDPG policy is deterministic, we need a way to perform exploration during collection.</p>
 <p>For this purpose, we need to append an exploration layer to our policies before passing them to the collector.
-In this case we use a <code class="xref py py-class docutils literal notranslate"><span class="pre">AdditiveGaussianWrapper</span></code>, which adds gaussian noise to our action
+In this case we use a <code class="xref py py-class docutils literal notranslate"><span class="pre">AdditiveGaussianModule</span></code>, which adds gaussian noise to our action
 (and clamps it if the noise makes the action out of bounds).</p>
 <p>This exploration wrapper uses a <code class="docutils literal notranslate"><span class="pre">sigma</span></code> parameter which is multiplied by the noise to determine its magnitude.
 Sigma can be annealed throughout training to reduce exploration.
 Sigma will go from <code class="docutils literal notranslate"><span class="pre">sigma_init</span></code> to <code class="docutils literal notranslate"><span class="pre">sigma_end</span></code> in <code class="docutils literal notranslate"><span class="pre">annealing_num_steps</span></code>.</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">exploration_policies</span> <span class="o">=</span> <span class="p">{}</span>
 <span class="k">for</span> <span class="n">group</span><span class="p">,</span> <span class="n">_agents</span> <span class="ow">in</span> <span class="n">env</span><span class="o">.</span><span class="n">group_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-    <span class="n">exploration_policy</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">AdditiveGaussianWrapper</span></a><span class="p">(</span>
+    <span class="n">exploration_policy</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">TensorDictSequential</span></a><span class="p">(</span>
         <span class="n">policies</span><span class="p">[</span><span class="n">group</span><span class="p">],</span>
-        <span class="n">annealing_num_steps</span><span class="o">=</span><span class="n">total_frames</span>
-        <span class="o">//</span> <span class="mi">2</span><span class="p">,</span>  <span class="c1"># Number of frames after which sigma is sigma_end</span>
-        <span class="n">action_key</span><span class="o">=</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="s2">&quot;action&quot;</span><span class="p">),</span>
-        <span class="n">sigma_init</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span>  <span class="c1"># Initial value of the sigma</span>
-        <span class="n">sigma_end</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>  <span class="c1"># Final value of the sigma</span>
+        <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">AdditiveGaussianModule</span></a><span class="p">(</span>
+            <span class="n">spec</span><span class="o">=</span><span class="n">policies</span><span class="p">[</span><span class="n">group</span><span class="p">]</span><span class="o">.</span><span class="n">spec</span><span class="p">,</span>
+            <span class="n">annealing_num_steps</span><span class="o">=</span><span class="n">total_frames</span>
+            <span class="o">//</span> <span class="mi">2</span><span class="p">,</span>  <span class="c1"># Number of frames after which sigma is sigma_end</span>
+            <span class="n">action_key</span><span class="o">=</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="s2">&quot;action&quot;</span><span class="p">),</span>
+            <span class="n">sigma_init</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span>  <span class="c1"># Initial value of the sigma</span>
+            <span class="n">sigma_end</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>  <span class="c1"># Final value of the sigma</span>
+        <span class="p">),</span>
     <span class="p">)</span>
     <span class="n">exploration_policies</span><span class="p">[</span><span class="n">group</span><span class="p">]</span> <span class="o">=</span> <span class="n">exploration_policy</span>
 </pre></div>
@@ -1128,7 +1200,7 @@ we put them in a sequence. They will not interfere with each other as each group
 </section>
 <section id="replay-buffer">
 <h2>Replay buffer<a class="headerlink" href="#replay-buffer" title="Permalink to this heading">¶</a></h2>
-<p>Replay buffers are a common building piece of off-policy RL sota-implementations.
+<p>Replay buffers are a common building piece of off-policy RL algorithms.
 There are many types of buffers, in this tutorial we use a basic buffer to store and sample tensordict
 data randomly.</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">replay_buffers</span> <span class="o">=</span> <span class="p">{}</span>
@@ -1328,17 +1400,14 @@ The steps include:</p>
     <span class="n">pbar</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>episode_reward_mean_adversary = 0, episode_reward_mean_agent = 0:   0%|          | 0/10 [00:00&lt;?, ?it/s]
-episode_reward_mean_adversary = 1.0, episode_reward_mean_agent = -1.0:  10%|█         | 1/10 [00:03&lt;00:31,  3.47s/it]
-episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  20%|██        | 2/10 [00:07&lt;00:28,  3.56s/it]
-episode_reward_mean_adversary = 1.0, episode_reward_mean_agent = -1.0:  30%|███       | 3/10 [00:10&lt;00:25,  3.59s/it]
-episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  40%|████      | 4/10 [00:14&lt;00:21,  3.61s/it]
-episode_reward_mean_adversary = 2.0, episode_reward_mean_agent = -2.0:  50%|█████     | 5/10 [00:17&lt;00:18,  3.61s/it]
-episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  60%|██████    | 6/10 [00:21&lt;00:14,  3.51s/it]
-episode_reward_mean_adversary = 2.0, episode_reward_mean_agent = -2.0:  70%|███████   | 7/10 [00:24&lt;00:09,  3.27s/it]
-episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  80%|████████  | 8/10 [00:26&lt;00:06,  3.11s/it]
-episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  90%|█████████ | 9/10 [00:29&lt;00:02,  2.99s/it]
-episode_reward_mean_adversary = 1.0, episode_reward_mean_agent = -1.0: 100%|██████████| 10/10 [00:32&lt;00:00,  2.89s/it]
+<div class="sphx-glr-script-out highlight-pytb notranslate"><div class="highlight"><pre><span></span><span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;/pytorch/rl/docs/source/reference/generated/tutorials/multiagent_competitive_ddpg.py&quot;</span>, line <span class="m">820</span>, in <span class="n">&lt;module&gt;</span>
+<span class="w">    </span><span class="n">exploration_policies</span><span class="p">[</span><span class="n">group</span><span class="p">]</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">current_frames</span><span class="p">)</span>
+  File <span class="nb">&quot;/pytorch/rl/env/lib/python3.8/site-packages/tensordict/nn/common.py&quot;</span>, line <span class="m">1302</span>, in <span class="n">__getattr__</span>
+<span class="w">    </span><span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__getattr__</span><span class="p">(</span><span class="s2">&quot;module&quot;</span><span class="p">),</span> <span class="n">name</span><span class="p">)</span>
+  File <span class="nb">&quot;/pytorch/rl/env/lib/python3.8/site-packages/torch/nn/modules/module.py&quot;</span>, line <span class="m">1914</span>, in <span class="n">__getattr__</span>
+<span class="w">    </span><span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
+<span class="gr">AttributeError</span>: <span class="n">&#39;ModuleList&#39; object has no attribute &#39;step&#39;</span>
 </pre></div>
 </div>
 </section>
@@ -1362,7 +1431,7 @@ proceed with the rest of the screen.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<img src="../_images/sphx_glr_multiagent_competitive_ddpg_001.png" srcset="../_images/sphx_glr_multiagent_competitive_ddpg_001.png" alt="multiagent competitive ddpg" class = "sphx-glr-single-img"/></section>
+</section>
 <section id="render">
 <h2>Render<a class="headerlink" href="#render" title="Permalink to this heading">¶</a></h2>
 <p><em>Rendering instruction are for VMAS</em>, aka when running with <code class="docutils literal notranslate"><span class="pre">use_vmas=True</span></code>.</p>
@@ -1411,7 +1480,7 @@ logger <cite>video_logger</cite>. Note that this code may require some external 
 </ul>
 <p>Now that you are proficient with multi-agent DDPG, you can check out all the TorchRL multi-agent implementations in the
 GitHub repository.
-These are code-only scripts of many MARL sota-implementations such as the ones seen in this tutorial,
+These are code-only scripts of many MARL algorithms such as the ones seen in this tutorial,
 QMIX, MADDPG, IQL, and many more!</p>
 <p>Also do remember to check out our tutorial: <a class="reference internal" href="multiagent_ppo.html"><span class="doc">Multi-Agent Reinforcement Learning (PPO) with TorchRL Tutorial</span></a>.</p>
 <p>Finally, you can modify the parameters of this tutorial to try many other configurations and scenarios
@@ -1424,14 +1493,17 @@ Here are a few videos of some possible scenarios you can try in VMAS.</p>
 <p><span class="caption-text">Scenarios available in <a class="reference external" href="https://github.com/proroklab/VectorizedMultiAgentSimulator">VMAS</a></span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (1 minutes 36.277 seconds)</p>
-<p><strong>Estimated memory usage:</strong>  12 MB</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (1 minutes 2.588 seconds)</p>
+<p><strong>Estimated memory usage:</strong>  4780 MB</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-tutorials-multiagent-competitive-ddpg-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/f3b53654a2b96b82010dd96f73ff5151/multiagent_competitive_ddpg.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">multiagent_competitive_ddpg.ipynb</span></code></a></p>
 </div>
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/d30bb6552cc07dec0f1da33382d3fa02/multiagent_competitive_ddpg.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">multiagent_competitive_ddpg.py</span></code></a></p>
+</div>
+<div class="sphx-glr-download sphx-glr-download-zip docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/5128e829b7152f5a40050c479b691f69/multiagent_competitive_ddpg.zip"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">zipped:</span> <span class="pre">multiagent_competitive_ddpg.zip</span></code></a></p>
 </div>
 </div>
 <p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
@@ -1475,6 +1547,8 @@ Here are a few videos of some possible scenarios you can try in VMAS.</p>
 </footer>
 
           </div>
+
+
         </div>
 
         <div class="pytorch-content-right" id="pytorch-content-right">
@@ -1537,7 +1611,55 @@ Here are a few videos of some possible scenarios you can try in VMAS.</p>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+     
+    <script type="text/javascript">
+      $(document).ready(function() {
+	  var downloadNote = $(".sphx-glr-download-link-note.admonition.note");
+	  if (downloadNote.length >= 1) {
+	      var tutorialUrl = $("#tutorial-type").text();
+	      var githubLink = "https://github.com/pytorch/rl/blob/main/tutorials/sphinx-tutorials/"  + tutorialUrl + ".py",
+		  notebookLink = $(".sphx-glr-download-jupyter").find(".download.reference")[0].href,
+		  notebookDownloadPath = notebookLink.split('_downloads')[1],
+		  colabLink = "https://colab.research.google.com/github/pytorch/rl/blob/gh-pages/main/_downloads" + notebookDownloadPath;
+
+	      $(".pytorch-call-to-action-links a[data-response='Run in Google Colab']").attr("href", colabLink);
+	      $(".pytorch-call-to-action-links a[data-response='View on Github']").attr("href", githubLink);
+	  }
+
+          var overwrite = function(_) {
+              if ($(this).length > 0) {
+                  $(this)[0].href = "https://github.com/pytorch/rl"
+              }
+          }
+          // PC
+          $(".main-menu a:contains('GitHub')").each(overwrite);
+          // Mobile
+          $(".main-menu a:contains('Github')").each(overwrite);
+      });
+
+      
+       $(window).ready(function() {
+           var original = window.sideMenus.bind;
+           var startup = true;
+           window.sideMenus.bind = function() {
+               original();
+               if (startup) {
+                   $("#pytorch-right-menu a.reference.internal").each(function(i) {
+                       if (this.classList.contains("not-expanded")) {
+                           this.nextElementSibling.style.display = "block";
+                           this.classList.remove("not-expanded");
+                           this.classList.add("expanded");
+                       }
+                   });
+                   startup = false;
+               }
+           };
+       });
+    </script>
+
+    
+
 
   <!-- Begin Footer -->
 
@@ -1601,7 +1723,7 @@ Here are a few videos of some possible scenarios you can try in VMAS.</p>
             <li><a href="https://twitter.com/pytorch" target="_blank">Twitter</a></li>
             <li><a href="https://www.youtube.com/pytorch" target="_blank">YouTube</a></li>
             <li><a href="https://www.linkedin.com/company/pytorch" target="_blank">LinkedIn</a></li>
-          </ul>
+          </ul>  
           </div>
 
         <div class="footer-links-col">
@@ -1614,7 +1736,7 @@ Here are a few videos of some possible scenarios you can try in VMAS.</p>
           </ul>
          </div>
         </div>
-
+        
         <div class="privacy-policy">
           <ul>
             <li class="privacy-policy-links"><a href="https://www.linuxfoundation.org/terms/" target="_blank">Terms</a></li>
@@ -1625,9 +1747,9 @@ Here are a few videos of some possible scenarios you can try in VMAS.</p>
         <div class="copyright">
         <p>© Copyright The Linux Foundation. The PyTorch Foundation is a project of The Linux Foundation.
           For web site terms of use, trademark policy and other policies applicable to The PyTorch Foundation please see
-          <a href="www.linuxfoundation.org/policies/">www.linuxfoundation.org/policies/</a>. The PyTorch Foundation supports the PyTorch open source
+          <a href="https://www.linuxfoundation.org/policies/">www.linuxfoundation.org/policies/</a>. The PyTorch Foundation supports the PyTorch open source
           project, which has been established as PyTorch Project a Series of LF Projects, LLC. For policies applicable to the PyTorch Project a Series of LF Projects, LLC,
-          please see <a href="www.lfprojects.org/policies/">www.lfprojects.org/policies/</a>.</p>
+          please see <a href="https://www.lfprojects.org/policies/">www.lfprojects.org/policies/</a>.</p>
       </div>
      </div>
 
@@ -1657,114 +1779,111 @@ Here are a few videos of some possible scenarios you can try in VMAS.</p>
     <div class="mobile-main-menu-links-container">
       <div class="main-menu">
         <ul>
-          <li>
-            <a href="https://pytorch.org/get-started">Get Started</a>
-          </li>
+           <li class="resources-mobile-menu-title">
+             <a>Learn</a>
+           </li>
+           <ul class="resources-mobile-menu-items">
+             <li>
+               <a href="https://pytorch.org/get-started">Get Started</a>
+             </li>
+             <li>
+               <a href="https://pytorch.org/tutorials">Tutorials</a>
+             </li>
+             <li>
+               <a href="https://pytorch.org/tutorials/beginner/basics/intro.html">Learn the Basics</a>
+             </li>
+             <li>
+               <a href="https://pytorch.org/tutorials/recipes/recipes_index.html">PyTorch Recipes</a>
+             </li>
+             <li>
+               <a href="https://pytorch.org/tutorials/beginner/introyt.html">Introduction to PyTorch - YouTube Series</a>
+             </li>
+           </ul>
+           <li class="resources-mobile-menu-title">
+             <a>Ecosystem</a>
+           </li>
+           <ul class="resources-mobile-menu-items">
+             <li>
+               <a href="https://pytorch.org/ecosystem">Tools</a>
+             </li>
+             <li>
+               <a href="https://pytorch.org/#community-module">Community</a>
+             </li>
+             <li>
+               <a href="https://discuss.pytorch.org/">Forums</a>
+             </li>
+             <li>
+               <a href="https://pytorch.org/resources">Developer Resources</a>
+             </li>
+             <li>
+               <a href="https://pytorch.org/ecosystem/contributor-awards-2023">Contributor Awards - 2023</a>
+             </li>
+           </ul>
 
-          <li>
-            <a href="https://pytorch.org/ecosystem">Ecosystem</a>
-          </li>
+           <li class="resources-mobile-menu-title">
+             <a>Edge</a>
+           </li>
 
-          <li>
-            <a href="">Mobile</a>
-          </li>
+           <ul class="resources-mobile-menu-items">
+             <li>
+               <a href="https://pytorch.org/edge">About PyTorch Edge</a>
+             </li>
+             
+             <li>
+               <a href="https://pytorch.org/executorch-overview">ExecuTorch</a>
+             </li>
+           </ul>
 
-          <li>
-            <a href="https://pytorch.org/blog/">Blog</a>
-          </li>
+           <li class="resources-mobile-menu-title">
+             <a>Docs</a>
+           </li>
 
-          <li>
-            <a href="https://pytorch.org/tutorials">Tutorials</a>
-          </li>
-
-          <li class="resources-mobile-menu-title">
-            Docs
-          </li>
-
-          <ul class="resources-mobile-menu-items">
+           <ul class="resources-mobile-menu-items">
             <li>
               <a href="https://pytorch.org/docs/stable/index.html">PyTorch</a>
             </li>
 
             <li>
-              <a href="https://pytorch.org/audio/stable/index.html">torchaudio</a>
-            </li>
-
-            <li>
-              <a href="https://pytorch.org/text/stable/index.html">torchtext</a>
-            </li>
-
-            <li>
-              <a href="https://pytorch.org/vision/stable/index.html">torchvision</a>
-            </li>
-
-            <li>
-              <a href="https://pytorch.org/torcharrow">torcharrow</a>
-            </li>
-
-            <li>
-              <a href="https://pytorch.org/data">TorchData</a>
-            </li>
-
-            <li>
-              <a href="https://pytorch.org/torchrec">TorchRec</a>
-            </li>
-
-            <li>
-              <a href="https://pytorch.org/serve/">TorchServe</a>
-            </li>
-
-            <li>
-              <a href="https://pytorch.org/torchx/">TorchX</a>
-            </li>
-
-            <li>
-              <a href="https://pytorch.org/xla">PyTorch on XLA Devices</a>
+              <a href="https://pytorch.org/pytorch-domains">PyTorch Domains</a>
             </li>
           </ul>
 
           <li class="resources-mobile-menu-title">
-            Resources
+            <a>Blog & News</a>
           </li>
-
+            
            <ul class="resources-mobile-menu-items">
-
             <li>
-              <a href="https://pytorch.org/features">About</a>
+              <a href="https://pytorch.org/blog/">PyTorch Blog</a>
+            </li>
+            <li>
+              <a href="https://pytorch.org/community-blog">Community Blog</a>
             </li>
 
             <li>
-              <a href="https://pytorch.org/foundation">PyTorch Foundation</a>
-            </li>
-
-            <li>
-              <a href="https://pytorch.org/#community-module">Community</a>
+              <a href="https://pytorch.org/videos">Videos</a>
             </li>
 
             <li>
               <a href="https://pytorch.org/community-stories">Community Stories</a>
             </li>
-
-            <li>
-              <a href="https://pytorch.org/resources">Developer Resources</a>
-            </li>
-
             <li>
               <a href="https://pytorch.org/events">Events</a>
             </li>
+          </ul>
+          
+          <li class="resources-mobile-menu-title">
+            <a>About</a>
+          </li>
 
+          <ul class="resources-mobile-menu-items">
             <li>
-              <a href="https://discuss.pytorch.org/">Forums</a>
+              <a href="https://pytorch.org/foundation">PyTorch Foundation</a>
             </li>
-
             <li>
-              <a href="https://pytorch.org/hub">Models (Beta)</a>
+              <a href="https://pytorch.org/governing-board">Governing Board</a>
             </li>
           </ul>
-
-          <li>
-            <a href="https://github.com/pytorch/pytorch">Github</a>
-          </li>
         </ul>
       </div>
     </div>

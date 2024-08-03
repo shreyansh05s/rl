@@ -11,7 +11,7 @@
         :class: sphx-glr-download-link-note
 
         :ref:`Go to the end <sphx_glr_download_tutorials_getting-started-4.py>`
-        to download the full example code
+        to download the full example code.
 
 .. rst-class:: sphx-glr-example-title
 
@@ -58,7 +58,7 @@ mostly be interchangeable, their instantiation can differ.
 
 Usually, building a logger requires
 at least an experiment name and possibly a logging directory and other
-hyperapameters.
+hyperparameters.
 
 
 .. GENERATED FROM PYTHON SOURCE LINES 45-50
@@ -98,7 +98,7 @@ reward, loss value or time elapsed for executing a piece of code.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 59-74
+.. GENERATED FROM PYTHON SOURCE LINES 59-77
 
 Recording videos
 ----------------
@@ -110,13 +110,16 @@ rendering and recording videos isn't too difficult.
 
 Let's first see how we can create a Gym environment that outputs images
 alongside its observations. :class:`~torchrl.envs.GymEnv` accept two keywords
-for this purpose: ``from_pixels=True`` will make the env ``step`` function
+for this purpose:
+- ``from_pixels=True`` will make the env ``step`` function
 write a ``"pixels"`` entry containing the images corresponding to your
-observations, and the ``pixels_only=False`` will indicate that you want the
+observations, and
+
+- ``pixels_only=False`` will indicate that you want the
 observations to be returned as well.
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 74-83
+.. GENERATED FROM PYTHON SOURCE LINES 77-86
 
 .. code-block:: Python
 
@@ -137,8 +140,6 @@ observations to be returned as well.
 
  .. code-block:: none
 
-    /pytorch/rl/torchrl/envs/common.py:2989: DeprecationWarning: Your wrapper was not given a device. Currently, this value will default to 'cpu'. From v0.5 it will default to `None`. With a device of None, no device casting is performed and the resulting tensordicts are deviceless. Please set your device accordingly.
-      warnings.warn(
     TensorDict(
         fields={
             action: Tensor(shape=torch.Size([3, 2]), device=cpu, dtype=torch.int64, is_shared=False),
@@ -152,20 +153,20 @@ observations to be returned as well.
                     terminated: Tensor(shape=torch.Size([3, 1]), device=cpu, dtype=torch.bool, is_shared=False),
                     truncated: Tensor(shape=torch.Size([3, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
                 batch_size=torch.Size([3]),
-                device=cpu,
+                device=None,
                 is_shared=False),
             observation: Tensor(shape=torch.Size([3, 4]), device=cpu, dtype=torch.float32, is_shared=False),
             pixels: Tensor(shape=torch.Size([3, 400, 600, 3]), device=cpu, dtype=torch.uint8, is_shared=False),
             terminated: Tensor(shape=torch.Size([3, 1]), device=cpu, dtype=torch.bool, is_shared=False),
             truncated: Tensor(shape=torch.Size([3, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
         batch_size=torch.Size([3]),
-        device=cpu,
+        device=None,
         is_shared=False)
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 84-89
+.. GENERATED FROM PYTHON SOURCE LINES 87-92
 
 We now have built an environment that renders images with its observations.
 To record videos, we will need to combine that environment with a recorder
@@ -173,7 +174,7 @@ and the logger (the logger providing the backend to save the video).
 This will happen within a transformed environment, like the one we saw in
 the :ref:`first tutorial <gs_env_ted>`.
 
-.. GENERATED FROM PYTHON SOURCE LINES 89-95
+.. GENERATED FROM PYTHON SOURCE LINES 92-98
 
 .. code-block:: Python
 
@@ -190,13 +191,13 @@ the :ref:`first tutorial <gs_env_ted>`.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 96-99
+.. GENERATED FROM PYTHON SOURCE LINES 99-102
 
 When running this environment, all the ``"pixels"`` entries will be saved in
-a local buffer and dumped in a video on demand (it is important that you
-call this method when appropriate):
+a local buffer (i.e. RAM) and dumped in a video on demand (to prevent excessive
+RAM usage, you are advised to call this method whenever appropriate!):
 
-.. GENERATED FROM PYTHON SOURCE LINES 99-104
+.. GENERATED FROM PYTHON SOURCE LINES 102-107
 
 .. code-block:: Python
 
@@ -212,10 +213,12 @@ call this method when appropriate):
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 105-112
+.. GENERATED FROM PYTHON SOURCE LINES 108-117
 
 In this specific case, the video format can be chosen when instantiating
 the CSVLogger.
+
+(If you want to customise how your video is recorded, have a look at :ref:`our knowledge base <ref_knowledge_base>`.)
 
 This is all we wanted to cover in the getting started tutorial.
 You should now be ready to code your
@@ -225,9 +228,9 @@ You should now be ready to code your
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 13.730 seconds)
+   **Total running time of the script:** (0 minutes 13.812 seconds)
 
-**Estimated memory usage:**  46 MB
+**Estimated memory usage:**  348 MB
 
 
 .. _sphx_glr_download_tutorials_getting-started-4.py:
@@ -243,6 +246,10 @@ You should now be ready to code your
     .. container:: sphx-glr-download sphx-glr-download-python
 
       :download:`Download Python source code: getting-started-4.py <getting-started-4.py>`
+
+    .. container:: sphx-glr-download sphx-glr-download-zip
+
+      :download:`Download zipped: getting-started-4.zip <getting-started-4.zip>`
 
 
 .. only:: html

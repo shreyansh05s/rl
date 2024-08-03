@@ -11,7 +11,7 @@
         :class: sphx-glr-download-link-note
 
         :ref:`Go to the end <sphx_glr_download_tutorials_getting-started-2.py>`
-        to download the full example code
+        to download the full example code.
 
 .. rst-class:: sphx-glr-example-title
 
@@ -57,9 +57,9 @@ RL objective functions
 ----------------------
 
 In RL, innovation typically involves the exploration of novel methods
-for optimizing a policy (i.e., new sota-implementations), rather than focusing
+for optimizing a policy (i.e., new algorithms), rather than focusing
 on new architectures, as seen in other domains. Within TorchRL,
-these sota-implementations are encapsulated within loss modules. A loss
+these algorithms are encapsulated within loss modules. A loss
 module orchestrates the various components of your algorithm and
 yields a set of loss values that can be backpropagated
 through to train the corresponding components.
@@ -107,13 +107,6 @@ we need to get a trainable loss module:
 
 
 
-
-.. rst-class:: sphx-glr-script-out
-
- .. code-block:: none
-
-    /pytorch/rl/torchrl/envs/common.py:2989: DeprecationWarning: Your wrapper was not given a device. Currently, this value will default to 'cpu'. From v0.5 it will default to `None`. With a device of None, no device casting is performed and the resulting tensordicts are deviceless. Please set your device accordingly.
-      warnings.warn(
 
 
 
@@ -223,13 +216,6 @@ per module if that is your choice).
 
 
 
-.. rst-class:: sphx-glr-script-out
-
- .. code-block:: none
-
-    /pytorch/rl/env/lib/python3.8/site-packages/torch/_custom_ops.py:253: DeprecationWarning: torch.library.impl_abstract was renamed to torch.library.register_fake. Please use that instead; we will remove torch.library.impl_abstract in a future version of PyTorch.
-      return torch.library.impl_abstract(qualname, func, _stacklevel=2)
-
 
 
 
@@ -259,7 +245,7 @@ Further considerations: Target parameters
 -----------------------------------------
 
 Another important aspect to consider is the presence of target parameters
-in off-policy sota-implementations like DDPG. Target parameters typically represent
+in off-policy algorithms like DDPG. Target parameters typically represent
 a delayed or smoothed version of the parameters over time, and they play
 a crucial role in value estimation during policy training. Utilizing target
 parameters for policy training often proves to be significantly more
@@ -322,9 +308,9 @@ To further explore the topic, have a look at:
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 23.683 seconds)
+   **Total running time of the script:** (0 minutes 25.302 seconds)
 
-**Estimated memory usage:**  22 MB
+**Estimated memory usage:**  320 MB
 
 
 .. _sphx_glr_download_tutorials_getting-started-2.py:
@@ -340,6 +326,10 @@ To further explore the topic, have a look at:
     .. container:: sphx-glr-download sphx-glr-download-python
 
       :download:`Download Python source code: getting-started-2.py <getting-started-2.py>`
+
+    .. container:: sphx-glr-download sphx-glr-download-zip
+
+      :download:`Download zipped: getting-started-2.zip <getting-started-2.zip>`
 
 
 .. only:: html

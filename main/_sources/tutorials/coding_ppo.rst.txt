@@ -11,7 +11,7 @@
         :class: sphx-glr-download-link-note
 
         :ref:`Go to the end <sphx_glr_download_tutorials_coding_ppo.py>`
-        to download the full example code
+        to download the full example code.
 
 .. rst-class:: sphx-glr-example-title
 
@@ -45,12 +45,12 @@ Key learnings:
 
 We will cover six crucial components of TorchRL:
 
-* `environments <https://pytorch.org/rl/reference/envs.html>`__
-* `transforms <https://pytorch.org/rl/reference/envs.html#transforms>`__
-* `models (policy and value function) <https://pytorch.org/rl/reference/modules.html>`__
-* `loss modules <https://pytorch.org/rl/reference/objectives.html>`__
-* `data collectors <https://pytorch.org/rl/reference/collectors.html>`__
-* `replay buffers <https://pytorch.org/rl/reference/data.html#replay-buffers>`__
+* :ref:`environments <Environment-API>`
+* :ref:`transforms <transforms>`
+* :ref:`models <ref_modules>`
+* :ref:`loss modules <ref_objectives>`
+* :ref:`data collectors <ref_collectors>`
+* :ref:`replay buffers <ref_buffers>`
 
 .. GENERATED FROM PYTHON SOURCE LINES 39-107
 
@@ -463,7 +463,9 @@ everything an environment requires to execute a single step.
                 high=Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.int64, contiguous=True)),
             device=cpu,
             dtype=torch.int64,
-            domain=continuous), device=cpu, shape=torch.Size([]))
+            domain=continuous),
+        device=cpu,
+        shape=torch.Size([]))
     reward_spec: UnboundedContinuousTensorSpec(
         shape=torch.Size([1]),
         space=ContinuousBox(
@@ -481,7 +483,9 @@ everything an environment requires to execute a single step.
                     high=Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.int64, contiguous=True)),
                 device=cpu,
                 dtype=torch.int64,
-                domain=continuous), device=cpu, shape=torch.Size([])),
+                domain=continuous),
+            device=cpu,
+            shape=torch.Size([])),
         full_action_spec: CompositeSpec(
             action: BoundedTensorSpec(
                 shape=torch.Size([1]),
@@ -490,7 +494,11 @@ everything an environment requires to execute a single step.
                     high=Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, contiguous=True)),
                 device=cpu,
                 dtype=torch.float32,
-                domain=continuous), device=cpu, shape=torch.Size([])), device=cpu, shape=torch.Size([]))
+                domain=continuous),
+            device=cpu,
+            shape=torch.Size([])),
+        device=cpu,
+        shape=torch.Size([]))
     action_spec (as defined by input_spec): BoundedTensorSpec(
         shape=torch.Size([1]),
         space=ContinuousBox(
@@ -692,8 +700,8 @@ what ``in_key`` string should be used for every keyword argument that is to be u
         in_keys=["loc", "scale"],
         distribution_class=TanhNormal,
         distribution_kwargs={
-            "min": env.action_spec.space.low,
-            "max": env.action_spec.space.high,
+            "low": env.action_spec.space.low,
+            "high": env.action_spec.space.high,
         },
         return_log_prob=True,
         # we'll need the log-prob for the numerator of the importance weights
@@ -803,7 +811,7 @@ and where to write it:
 Data collector
 --------------
 
-TorchRL provides a set of `DataCollector classes <https://pytorch.org/rl/reference/collectors.html>`__.
+TorchRL provides a set of :ref:`DataCollector classes <ref_collectors>`.
 Briefly, these classes execute three operations: reset an environment,
 compute an action given the latest observation, execute a step in the environment,
 and repeat the last two steps until the environment signals a stop (or reaches
@@ -856,7 +864,7 @@ that are 100% oblivious to the actual specificities of the rollout content.
 Replay buffer
 -------------
 
-Replay buffers are a common building piece of off-policy RL sota-implementations.
+Replay buffers are a common building piece of off-policy RL algorithms.
 In on-policy contexts, a replay buffer is refilled every time a batch of
 data is collected, and its data is repeatedly consumed for a certain number
 of epochs.
@@ -1048,7 +1056,7 @@ The steps include:
 
  .. code-block:: none
 
-      0%|          | 0/10000 [00:00<?, ?it/s]     10%|█         | 1000/10000 [00:02<00:19, 466.78it/s]    eval cumulative reward:  110.7495 (init:  110.7495), eval step-count: 11, average reward= 9.0913 (init= 9.0913), step count (max): 11, lr policy:  0.0003:  10%|█         | 1000/10000 [00:02<00:19, 466.78it/s]    eval cumulative reward:  110.7495 (init:  110.7495), eval step-count: 11, average reward= 9.0913 (init= 9.0913), step count (max): 11, lr policy:  0.0003:  20%|██        | 2000/10000 [00:04<00:16, 472.35it/s]    eval cumulative reward:  110.7495 (init:  110.7495), eval step-count: 11, average reward= 9.1186 (init= 9.0913), step count (max): 12, lr policy:  0.0003:  20%|██        | 2000/10000 [00:04<00:16, 472.35it/s]    eval cumulative reward:  110.7495 (init:  110.7495), eval step-count: 11, average reward= 9.1186 (init= 9.0913), step count (max): 12, lr policy:  0.0003:  30%|███       | 3000/10000 [00:06<00:14, 476.08it/s]    eval cumulative reward:  110.7495 (init:  110.7495), eval step-count: 11, average reward= 9.1470 (init= 9.0913), step count (max): 13, lr policy:  0.0003:  30%|███       | 3000/10000 [00:06<00:14, 476.08it/s]    eval cumulative reward:  110.7495 (init:  110.7495), eval step-count: 11, average reward= 9.1470 (init= 9.0913), step count (max): 13, lr policy:  0.0003:  40%|████      | 4000/10000 [00:08<00:12, 478.61it/s]    eval cumulative reward:  110.7495 (init:  110.7495), eval step-count: 11, average reward= 9.1746 (init= 9.0913), step count (max): 27, lr policy:  0.0002:  40%|████      | 4000/10000 [00:08<00:12, 478.61it/s]    eval cumulative reward:  110.7495 (init:  110.7495), eval step-count: 11, average reward= 9.1746 (init= 9.0913), step count (max): 27, lr policy:  0.0002:  50%|█████     | 5000/10000 [00:10<00:10, 480.99it/s]    eval cumulative reward:  110.7495 (init:  110.7495), eval step-count: 11, average reward= 9.2108 (init= 9.0913), step count (max): 22, lr policy:  0.0002:  50%|█████     | 5000/10000 [00:10<00:10, 480.99it/s]    eval cumulative reward:  110.7495 (init:  110.7495), eval step-count: 11, average reward= 9.2108 (init= 9.0913), step count (max): 22, lr policy:  0.0002:  60%|██████    | 6000/10000 [00:12<00:08, 483.60it/s]    eval cumulative reward:  110.7495 (init:  110.7495), eval step-count: 11, average reward= 9.2345 (init= 9.0913), step count (max): 33, lr policy:  0.0001:  60%|██████    | 6000/10000 [00:12<00:08, 483.60it/s]    eval cumulative reward:  110.7495 (init:  110.7495), eval step-count: 11, average reward= 9.2345 (init= 9.0913), step count (max): 33, lr policy:  0.0001:  70%|███████   | 7000/10000 [00:14<00:06, 485.58it/s]    eval cumulative reward:  110.7495 (init:  110.7495), eval step-count: 11, average reward= 9.2483 (init= 9.0913), step count (max): 41, lr policy:  0.0001:  70%|███████   | 7000/10000 [00:14<00:06, 485.58it/s]    eval cumulative reward:  110.7495 (init:  110.7495), eval step-count: 11, average reward= 9.2483 (init= 9.0913), step count (max): 41, lr policy:  0.0001:  80%|████████  | 8000/10000 [00:16<00:04, 474.62it/s]    eval cumulative reward:  110.7495 (init:  110.7495), eval step-count: 11, average reward= 9.2396 (init= 9.0913), step count (max): 35, lr policy:  0.0001:  80%|████████  | 8000/10000 [00:16<00:04, 474.62it/s]    eval cumulative reward:  110.7495 (init:  110.7495), eval step-count: 11, average reward= 9.2396 (init= 9.0913), step count (max): 35, lr policy:  0.0001:  90%|█████████ | 9000/10000 [00:18<00:02, 479.08it/s]    eval cumulative reward:  110.7495 (init:  110.7495), eval step-count: 11, average reward= 9.2476 (init= 9.0913), step count (max): 40, lr policy:  0.0000:  90%|█████████ | 9000/10000 [00:18<00:02, 479.08it/s]    eval cumulative reward:  110.7495 (init:  110.7495), eval step-count: 11, average reward= 9.2476 (init= 9.0913), step count (max): 40, lr policy:  0.0000: 100%|██████████| 10000/10000 [00:20<00:00, 482.95it/s]    eval cumulative reward:  110.7495 (init:  110.7495), eval step-count: 11, average reward= 9.2533 (init= 9.0913), step count (max): 47, lr policy:  0.0000: 100%|██████████| 10000/10000 [00:20<00:00, 482.95it/s]
+      0%|          | 0/10000 [00:00<?, ?it/s]     10%|█         | 1000/10000 [00:02<00:18, 475.26it/s]    eval cumulative reward:  82.5649 (init:  82.5649), eval step-count: 8, average reward= 9.0919 (init= 9.0919), step count (max): 17, lr policy:  0.0003:  10%|█         | 1000/10000 [00:02<00:18, 475.26it/s]    eval cumulative reward:  82.5649 (init:  82.5649), eval step-count: 8, average reward= 9.0919 (init= 9.0919), step count (max): 17, lr policy:  0.0003:  20%|██        | 2000/10000 [00:04<00:16, 479.28it/s]    eval cumulative reward:  82.5649 (init:  82.5649), eval step-count: 8, average reward= 9.1089 (init= 9.0919), step count (max): 13, lr policy:  0.0003:  20%|██        | 2000/10000 [00:04<00:16, 479.28it/s]    eval cumulative reward:  82.5649 (init:  82.5649), eval step-count: 8, average reward= 9.1089 (init= 9.0919), step count (max): 13, lr policy:  0.0003:  30%|███       | 3000/10000 [00:06<00:14, 484.08it/s]    eval cumulative reward:  82.5649 (init:  82.5649), eval step-count: 8, average reward= 9.1539 (init= 9.0919), step count (max): 15, lr policy:  0.0003:  30%|███       | 3000/10000 [00:06<00:14, 484.08it/s]    eval cumulative reward:  82.5649 (init:  82.5649), eval step-count: 8, average reward= 9.1539 (init= 9.0919), step count (max): 15, lr policy:  0.0003:  40%|████      | 4000/10000 [00:08<00:12, 487.49it/s]    eval cumulative reward:  82.5649 (init:  82.5649), eval step-count: 8, average reward= 9.1841 (init= 9.0919), step count (max): 16, lr policy:  0.0002:  40%|████      | 4000/10000 [00:08<00:12, 487.49it/s]    eval cumulative reward:  82.5649 (init:  82.5649), eval step-count: 8, average reward= 9.1841 (init= 9.0919), step count (max): 16, lr policy:  0.0002:  50%|█████     | 5000/10000 [00:10<00:10, 490.50it/s]    eval cumulative reward:  82.5649 (init:  82.5649), eval step-count: 8, average reward= 9.1942 (init= 9.0919), step count (max): 21, lr policy:  0.0002:  50%|█████     | 5000/10000 [00:10<00:10, 490.50it/s]    eval cumulative reward:  82.5649 (init:  82.5649), eval step-count: 8, average reward= 9.1942 (init= 9.0919), step count (max): 21, lr policy:  0.0002:  60%|██████    | 6000/10000 [00:12<00:08, 492.98it/s]    eval cumulative reward:  82.5649 (init:  82.5649), eval step-count: 8, average reward= 9.2305 (init= 9.0919), step count (max): 32, lr policy:  0.0001:  60%|██████    | 6000/10000 [00:12<00:08, 492.98it/s]    eval cumulative reward:  82.5649 (init:  82.5649), eval step-count: 8, average reward= 9.2305 (init= 9.0919), step count (max): 32, lr policy:  0.0001:  70%|███████   | 7000/10000 [00:14<00:06, 494.61it/s]    eval cumulative reward:  82.5649 (init:  82.5649), eval step-count: 8, average reward= 9.2378 (init= 9.0919), step count (max): 28, lr policy:  0.0001:  70%|███████   | 7000/10000 [00:14<00:06, 494.61it/s]    eval cumulative reward:  82.5649 (init:  82.5649), eval step-count: 8, average reward= 9.2378 (init= 9.0919), step count (max): 28, lr policy:  0.0001:  80%|████████  | 8000/10000 [00:16<00:04, 496.25it/s]    eval cumulative reward:  82.5649 (init:  82.5649), eval step-count: 8, average reward= 9.2423 (init= 9.0919), step count (max): 42, lr policy:  0.0001:  80%|████████  | 8000/10000 [00:16<00:04, 496.25it/s]    eval cumulative reward:  82.5649 (init:  82.5649), eval step-count: 8, average reward= 9.2423 (init= 9.0919), step count (max): 42, lr policy:  0.0001:  90%|█████████ | 9000/10000 [00:18<00:02, 483.87it/s]    eval cumulative reward:  82.5649 (init:  82.5649), eval step-count: 8, average reward= 9.2484 (init= 9.0919), step count (max): 48, lr policy:  0.0000:  90%|█████████ | 9000/10000 [00:18<00:02, 483.87it/s]    eval cumulative reward:  82.5649 (init:  82.5649), eval step-count: 8, average reward= 9.2484 (init= 9.0919), step count (max): 48, lr policy:  0.0000: 100%|██████████| 10000/10000 [00:20<00:00, 489.03it/s]    eval cumulative reward:  82.5649 (init:  82.5649), eval step-count: 8, average reward= 9.2482 (init= 9.0919), step count (max): 43, lr policy:  0.0000: 100%|██████████| 10000/10000 [00:20<00:00, 489.03it/s]
 
 
 
@@ -1119,9 +1127,9 @@ If you want to experiment with this tutorial a bit more, you can apply the follo
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (1 minutes 24.936 seconds)
+   **Total running time of the script:** (1 minutes 29.505 seconds)
 
-**Estimated memory usage:**  10 MB
+**Estimated memory usage:**  318 MB
 
 
 .. _sphx_glr_download_tutorials_coding_ppo.py:
@@ -1137,6 +1145,10 @@ If you want to experiment with this tutorial a bit more, you can apply the follo
     .. container:: sphx-glr-download sphx-glr-download-python
 
       :download:`Download Python source code: coding_ppo.py <coding_ppo.py>`
+
+    .. container:: sphx-glr-download sphx-glr-download-zip
+
+      :download:`Download zipped: coding_ppo.zip <coding_ppo.zip>`
 
 
 .. only:: html

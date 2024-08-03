@@ -11,7 +11,7 @@
         :class: sphx-glr-download-link-note
 
         :ref:`Go to the end <sphx_glr_download_tutorials_getting-started-1.py>`
-        to download the full example code
+        to download the full example code.
 
 .. rst-class:: sphx-glr-example-title
 
@@ -123,13 +123,13 @@ run in the environment:
                     terminated: Tensor(shape=torch.Size([10, 1]), device=cpu, dtype=torch.bool, is_shared=False),
                     truncated: Tensor(shape=torch.Size([10, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
                 batch_size=torch.Size([10]),
-                device=cpu,
+                device=None,
                 is_shared=False),
             observation: Tensor(shape=torch.Size([10, 3]), device=cpu, dtype=torch.float32, is_shared=False),
             terminated: Tensor(shape=torch.Size([10, 1]), device=cpu, dtype=torch.bool, is_shared=False),
             truncated: Tensor(shape=torch.Size([10, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
         batch_size=torch.Size([10]),
-        device=cpu,
+        device=None,
         is_shared=False)
 
 
@@ -182,13 +182,13 @@ with many common environments straightforward:
                     terminated: Tensor(shape=torch.Size([10, 1]), device=cpu, dtype=torch.bool, is_shared=False),
                     truncated: Tensor(shape=torch.Size([10, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
                 batch_size=torch.Size([10]),
-                device=cpu,
+                device=None,
                 is_shared=False),
             observation: Tensor(shape=torch.Size([10, 3]), device=cpu, dtype=torch.float32, is_shared=False),
             terminated: Tensor(shape=torch.Size([10, 1]), device=cpu, dtype=torch.bool, is_shared=False),
             truncated: Tensor(shape=torch.Size([10, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
         batch_size=torch.Size([10]),
-        device=cpu,
+        device=None,
         is_shared=False)
 
 
@@ -238,7 +238,7 @@ topic, it is treated in :ref:`a separate tutorial <RNN_tuto>`.
 Probabilistic policies
 ----------------------
 
-Policy-optimization sota-implementations like
+Policy-optimization algorithms like
 `PPO <https://arxiv.org/abs/1707.06347>`_ require the policy to be
 stochastic: unlike in the examples above, the module now encodes a map from
 the observation space to a parameter space encoding a distribution over the
@@ -303,7 +303,7 @@ normal distribution using three components:
                     terminated: Tensor(shape=torch.Size([10, 1]), device=cpu, dtype=torch.bool, is_shared=False),
                     truncated: Tensor(shape=torch.Size([10, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
                 batch_size=torch.Size([10]),
-                device=cpu,
+                device=None,
                 is_shared=False),
             observation: Tensor(shape=torch.Size([10, 3]), device=cpu, dtype=torch.float32, is_shared=False),
             sample_log_prob: Tensor(shape=torch.Size([10, 1]), device=cpu, dtype=torch.float32, is_shared=False),
@@ -311,7 +311,7 @@ normal distribution using three components:
             terminated: Tensor(shape=torch.Size([10, 1]), device=cpu, dtype=torch.bool, is_shared=False),
             truncated: Tensor(shape=torch.Size([10, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
         batch_size=torch.Size([10]),
-        device=cpu,
+        device=None,
         is_shared=False)
 
 
@@ -323,7 +323,7 @@ There are a few things to note about this rollout:
 
 - Since we asked for it during the construction of the actor, the
   log-probability of the actions given the distribution at that time is
-  also written. This is necessary for sota-implementations like PPO.
+  also written. This is necessary for algorithms like PPO.
 - The parameters of the distribution are returned within the output
   tensordict too under the ``"loc"`` and ``"scale"`` entries.
 
@@ -366,8 +366,8 @@ exploitation, but deterministic policies won't. Fortunately, TorchRL can
 also palliate to this with its exploration modules.
 We will take the example of the :class:`~torchrl.modules.EGreedyModule`
 exploration module (check also
-:class:`~torchrl.modules.AdditiveGaussianWrapper` and
-:class:`~torchrl.modules.OrnsteinUhlenbeckProcessWrapper`).
+:class:`~torchrl.modules.AdditiveGaussianModule` and
+:class:`~torchrl.modules.OrnsteinUhlenbeckProcessModule`).
 To see this module in action, let's revert to a deterministic policy:
 
 .. GENERATED FROM PYTHON SOURCE LINES 197-203
@@ -575,13 +575,13 @@ output. We should find an ``"action_value"`` as well as a
                     terminated: Tensor(shape=torch.Size([3, 1]), device=cpu, dtype=torch.bool, is_shared=False),
                     truncated: Tensor(shape=torch.Size([3, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
                 batch_size=torch.Size([3]),
-                device=cpu,
+                device=None,
                 is_shared=False),
             observation: Tensor(shape=torch.Size([3, 4]), device=cpu, dtype=torch.float32, is_shared=False),
             terminated: Tensor(shape=torch.Size([3, 1]), device=cpu, dtype=torch.bool, is_shared=False),
             truncated: Tensor(shape=torch.Size([3, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
         batch_size=torch.Size([3]),
-        device=cpu,
+        device=None,
         is_shared=False)
 
 
@@ -633,9 +633,9 @@ Next steps:
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 45.110 seconds)
+   **Total running time of the script:** (0 minutes 48.690 seconds)
 
-**Estimated memory usage:**  8 MB
+**Estimated memory usage:**  316 MB
 
 
 .. _sphx_glr_download_tutorials_getting-started-1.py:
@@ -651,6 +651,10 @@ Next steps:
     .. container:: sphx-glr-download sphx-glr-download-python
 
       :download:`Download Python source code: getting-started-1.py <getting-started-1.py>`
+
+    .. container:: sphx-glr-download sphx-glr-download-zip
+
+      :download:`Download zipped: getting-started-1.zip <getting-started-1.zip>`
 
 
 .. only:: html
