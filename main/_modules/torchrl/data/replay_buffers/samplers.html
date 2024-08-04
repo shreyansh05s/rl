@@ -1487,12 +1487,10 @@
             <span class="c1"># We first try with the traj_key</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">storage</span><span class="p">,</span> <span class="n">TensorStorage</span><span class="p">):</span>
-                    <span class="n">trajectory</span> <span class="o">=</span> <span class="n">storage</span><span class="p">[:]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_used_traj_key</span><span class="p">)</span>
+                    <span class="n">trajectory</span> <span class="o">=</span> <span class="n">storage</span><span class="p">[:][</span><span class="bp">self</span><span class="o">.</span><span class="n">_used_traj_key</span><span class="p">]</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">try</span><span class="p">:</span>
-                        <span class="n">trajectory</span> <span class="o">=</span> <span class="n">storage</span><span class="p">[:]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">traj_key</span><span class="p">)</span>
-                    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                        <span class="k">raise</span>
+                        <span class="n">trajectory</span> <span class="o">=</span> <span class="n">storage</span><span class="p">[:][</span><span class="bp">self</span><span class="o">.</span><span class="n">traj_key</span><span class="p">]</span>
                     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
                             <span class="s2">&quot;Could not get a tensordict out of the storage, which is required for SliceSampler to compute the trajectories.&quot;</span>
@@ -1514,9 +1512,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="n">done</span> <span class="o">=</span> <span class="n">storage</span><span class="p">[:]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">end_key</span><span class="p">)</span>
-                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                    <span class="k">raise</span>
+                    <span class="n">done</span> <span class="o">=</span> <span class="n">storage</span><span class="p">[:][</span><span class="bp">self</span><span class="o">.</span><span class="n">end_key</span><span class="p">]</span>
                 <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
                         <span class="s2">&quot;Could not get a tensordict out of the storage, which is required for SliceSampler to compute the trajectories.&quot;</span>
