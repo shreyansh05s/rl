@@ -440,6 +440,7 @@
     <span class="n">TensorDictBase</span><span class="p">,</span>
     <span class="n">unravel_key</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="kn">from</span> <span class="nn">tensordict.base</span> <span class="kn">import</span> <span class="n">NO_DEFAULT</span>
 <span class="kn">from</span> <span class="nn">tensordict.utils</span> <span class="kn">import</span> <span class="n">_getitem_batch_size</span><span class="p">,</span> <span class="n">NestedKey</span>
 <span class="kn">from</span> <span class="nn">torchrl._utils</span> <span class="kn">import</span> <span class="n">_make_ordinal_device</span><span class="p">,</span> <span class="n">get_binary_env_var</span>
 
@@ -480,8 +481,6 @@
     <span class="s2">&quot; If you are interested in this feature please submit&quot;</span>
     <span class="s2">&quot; an issue at https://github.com/pytorch/rl/issues&quot;</span>
 <span class="p">)</span>
-
-<span class="n">NO_DEFAULT</span> <span class="o">=</span> <span class="nb">object</span><span class="p">()</span>
 
 
 <span class="k">def</span> <span class="nf">_default_dtype_and_device</span><span class="p">(</span>
@@ -4523,7 +4522,7 @@
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_specs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">item</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">)</span> <span class="ow">and</span> <span class="n">item</span><span class="o">.</span><span class="n">is_empty</span><span class="p">()):</span>
                 <span class="k">continue</span>
-            <span class="n">val_item</span> <span class="o">=</span> <span class="n">val</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="n">val_item</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">NO_DEFAULT</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">item</span><span class="o">.</span><span class="n">is_in</span><span class="p">(</span><span class="n">val_item</span><span class="p">):</span>
                 <span class="k">return</span> <span class="kc">False</span>
         <span class="k">return</span> <span class="kc">True</span></div>
