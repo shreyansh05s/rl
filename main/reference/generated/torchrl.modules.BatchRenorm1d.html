@@ -6,10 +6,11 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Overview: module code &mdash; torchrl main documentation</title>
+  <title>BatchRenorm1d &mdash; torchrl main documentation</title>
   
 
   
@@ -25,19 +26,21 @@
 
   
 
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <!-- <link rel="stylesheet" href="../_static/pygments.css" type="text/css" /> -->
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/sg_gallery.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/sg_gallery-binder.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/sg_gallery-dataframe.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/sg_gallery-rendered-html.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!-- <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" /> -->
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/sg_gallery.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/sg_gallery-binder.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/sg_gallery-dataframe.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/sg_gallery-rendered-html.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" type="text/css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
-    <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
+  <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="DTActor" href="torchrl.modules.DTActor.html" />
+    <link rel="prev" title="Squeeze2dLayer" href="torchrl.modules.Squeeze2dLayer.html" />
   <!-- Google Tag Manager -->
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -48,16 +51,16 @@
   
 
   
-  <script src="../_static/js/modernizr.min.js"></script>
+  <script src="../../_static/js/modernizr.min.js"></script>
 
   <!-- Preload the theme fonts -->
 
-<link rel="preload" href="../_static/fonts/FreightSans/freight-sans-book.woff2" as="font" type="font/woff2" crossorigin="anonymous">
-<link rel="preload" href="../_static/fonts/FreightSans/freight-sans-medium.woff2" as="font" type="font/woff2" crossorigin="anonymous">
-<link rel="preload" href="../_static/fonts/IBMPlexMono/IBMPlexMono-Medium.woff2" as="font" type="font/woff2" crossorigin="anonymous">
-<link rel="preload" href="../_static/fonts/FreightSans/freight-sans-bold.woff2" as="font" type="font/woff2" crossorigin="anonymous">
-<link rel="preload" href="../_static/fonts/FreightSans/freight-sans-medium-italic.woff2" as="font" type="font/woff2" crossorigin="anonymous">
-<link rel="preload" href="../_static/fonts/IBMPlexMono/IBMPlexMono-SemiBold.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="../../_static/fonts/FreightSans/freight-sans-book.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="../../_static/fonts/FreightSans/freight-sans-medium.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="../../_static/fonts/IBMPlexMono/IBMPlexMono-Medium.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="../../_static/fonts/FreightSans/freight-sans-bold.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="../../_static/fonts/FreightSans/freight-sans-medium-italic.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="../../_static/fonts/IBMPlexMono/IBMPlexMono-SemiBold.woff2" as="font" type="font/woff2" crossorigin="anonymous">
 
 <!-- Preload the katex fonts -->
 
@@ -268,7 +271,7 @@
           <div class="pytorch-left-menu-search">
             
     <div class="version">
-      <a href="../../versions.html"><span style="font-size:110%">main (0.5.0) &#x25BC</span></a>
+      <a href="../../../versions.html"><span style="font-size:110%">main (0.5.0) &#x25BC</span></a>
     </div>
     
 
@@ -277,7 +280,7 @@
 
 
 <div role="search">
-  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search Docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
@@ -293,36 +296,36 @@
             
             
               <ul>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/getting-started-0.html">Get started with Environments, TED and transforms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/getting-started-1.html">Get started with TorchRL’s modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/getting-started-2.html">Getting started with model optimization</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/getting-started-3.html">Get started with data collection and storage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/getting-started-4.html">Get started with logging</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/getting-started-5.html">Get started with your own first training loop</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/getting-started-0.html">Get started with Environments, TED and transforms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/getting-started-1.html">Get started with TorchRL’s modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/getting-started-2.html">Getting started with model optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/getting-started-3.html">Get started with data collection and storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/getting-started-4.html">Get started with logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/getting-started-5.html">Get started with your own first training loop</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/coding_ppo.html">Reinforcement Learning (PPO) with TorchRL Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/pendulum.html">Pendulum: Writing your environment and transforms with TorchRL</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/torchrl_demo.html">Introduction to TorchRL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/coding_ppo.html">Reinforcement Learning (PPO) with TorchRL Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/pendulum.html">Pendulum: Writing your environment and transforms with TorchRL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/torchrl_demo.html">Introduction to TorchRL</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/multiagent_ppo.html">Multi-Agent Reinforcement Learning (PPO) with TorchRL Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/torchrl_envs.html">TorchRL envs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/pretrained_models.html">Using pretrained models</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/dqn_with_rnn.html">Recurrent DQN: Training recurrent policies</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/rb_tutorial.html">Using Replay Buffers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/multiagent_ppo.html">Multi-Agent Reinforcement Learning (PPO) with TorchRL Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/torchrl_envs.html">TorchRL envs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/pretrained_models.html">Using pretrained models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/dqn_with_rnn.html">Recurrent DQN: Training recurrent policies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/rb_tutorial.html">Using Replay Buffers</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/multiagent_competitive_ddpg.html">Competitive Multi-Agent Reinforcement Learning (DDPG) with TorchRL Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/multi_task.html">Task-specific policy in multi-task environments</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/coding_ddpg.html">TorchRL objectives: Coding a DDPG loss</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/coding_dqn.html">TorchRL trainer: A DQN example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/multiagent_competitive_ddpg.html">Competitive Multi-Agent Reinforcement Learning (DDPG) with TorchRL Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/multi_task.html">Task-specific policy in multi-task environments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/coding_ddpg.html">TorchRL objectives: Coding a DDPG loss</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/coding_dqn.html">TorchRL trainer: A DQN example</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../reference/index.html">API Reference</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../reference/knowledge_base.html">Knowledge Base</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../knowledge_base.html">Knowledge Base</a></li>
 </ul>
 
             
@@ -355,7 +358,7 @@
   <ul class="pytorch-breadcrumbs">
     
       <li>
-        <a href="../index.html">
+        <a href="../../index.html">
           
             Docs
           
@@ -363,10 +366,18 @@
       </li>
 
         
-      <li>Overview: module code</li>
+          <li><a href="../index.html">API Reference</a> &gt;</li>
+        
+          <li><a href="../modules.html">torchrl.modules package</a> &gt;</li>
+        
+      <li>BatchRenorm1d</li>
     
     
       <li class="pytorch-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/reference/generated/torchrl.modules.BatchRenorm1d.rst.txt" rel="nofollow"><img src="../../_static/images/view-page-source-icon.svg"></a>
+          
         
       </li>
     
@@ -397,127 +408,73 @@
             <div role="main" class="main-content" itemscope="itemscope" itemtype="http://schema.org/Article">
              <article itemprop="articleBody" id="pytorch-article" class="pytorch-article">
               
-  <h1>All modules for which code is available</h1>
-<ul><li><a href="tensordict/nn/utils.html">tensordict.nn.utils</a></li>
-<li><a href="torchrl/_utils.html">torchrl._utils</a></li>
-<li><a href="torchrl/collectors/collectors.html">torchrl.collectors.collectors</a></li>
-<li><a href="torchrl/collectors/distributed/generic.html">torchrl.collectors.distributed.generic</a></li>
-<li><a href="torchrl/collectors/distributed/ray.html">torchrl.collectors.distributed.ray</a></li>
-<li><a href="torchrl/collectors/distributed/rpc.html">torchrl.collectors.distributed.rpc</a></li>
-<li><a href="torchrl/collectors/distributed/sync.html">torchrl.collectors.distributed.sync</a></li>
-<li><a href="torchrl/collectors/distributed/utils.html">torchrl.collectors.distributed.utils</a></li>
-<li><a href="torchrl/collectors/utils.html">torchrl.collectors.utils</a></li>
-<li><a href="torchrl/data/datasets/atari_dqn.html">torchrl.data.datasets.atari_dqn</a></li>
-<li><a href="torchrl/data/datasets/common.html">torchrl.data.datasets.common</a></li>
-<li><a href="torchrl/data/datasets/d4rl.html">torchrl.data.datasets.d4rl</a></li>
-<li><a href="torchrl/data/datasets/gen_dgrl.html">torchrl.data.datasets.gen_dgrl</a></li>
-<li><a href="torchrl/data/datasets/minari_data.html">torchrl.data.datasets.minari_data</a></li>
-<li><a href="torchrl/data/datasets/openml.html">torchrl.data.datasets.openml</a></li>
-<li><a href="torchrl/data/datasets/openx.html">torchrl.data.datasets.openx</a></li>
-<li><a href="torchrl/data/datasets/roboset.html">torchrl.data.datasets.roboset</a></li>
-<li><a href="torchrl/data/datasets/vd4rl.html">torchrl.data.datasets.vd4rl</a></li>
-<li><a href="torchrl/data/postprocs/postprocs.html">torchrl.data.postprocs.postprocs</a></li>
-<li><a href="torchrl/data/replay_buffers/checkpointers.html">torchrl.data.replay_buffers.checkpointers</a></li>
-<li><a href="torchrl/data/replay_buffers/replay_buffers.html">torchrl.data.replay_buffers.replay_buffers</a></li>
-<li><a href="torchrl/data/replay_buffers/samplers.html">torchrl.data.replay_buffers.samplers</a></li>
-<li><a href="torchrl/data/replay_buffers/storages.html">torchrl.data.replay_buffers.storages</a></li>
-<li><a href="torchrl/data/replay_buffers/utils.html">torchrl.data.replay_buffers.utils</a></li>
-<li><a href="torchrl/data/replay_buffers/writers.html">torchrl.data.replay_buffers.writers</a></li>
-<li><a href="torchrl/data/rlhf/dataset.html">torchrl.data.rlhf.dataset</a></li>
-<li><a href="torchrl/data/rlhf/prompt.html">torchrl.data.rlhf.prompt</a></li>
-<li><a href="torchrl/data/rlhf/reward.html">torchrl.data.rlhf.reward</a></li>
-<li><a href="torchrl/data/rlhf/utils.html">torchrl.data.rlhf.utils</a></li>
-<li><a href="torchrl/data/tensor_specs.html">torchrl.data.tensor_specs</a></li>
-<li><a href="torchrl/data/utils.html">torchrl.data.utils</a></li>
-<li><a href="torchrl/envs/batched_envs.html">torchrl.envs.batched_envs</a></li>
-<li><a href="torchrl/envs/common.html">torchrl.envs.common</a></li>
-<li><a href="torchrl/envs/custom/pendulum.html">torchrl.envs.custom.pendulum</a></li>
-<li><a href="torchrl/envs/custom/tictactoeenv.html">torchrl.envs.custom.tictactoeenv</a></li>
-<li><a href="torchrl/envs/env_creator.html">torchrl.envs.env_creator</a></li>
-<li><a href="torchrl/envs/gym_like.html">torchrl.envs.gym_like</a></li>
-<li><a href="torchrl/envs/libs/brax.html">torchrl.envs.libs.brax</a></li>
-<li><a href="torchrl/envs/libs/dm_control.html">torchrl.envs.libs.dm_control</a></li>
-<li><a href="torchrl/envs/libs/envpool.html">torchrl.envs.libs.envpool</a></li>
-<li><a href="torchrl/envs/libs/gym.html">torchrl.envs.libs.gym</a></li>
-<li><a href="torchrl/envs/libs/habitat.html">torchrl.envs.libs.habitat</a></li>
-<li><a href="torchrl/envs/libs/isaacgym.html">torchrl.envs.libs.isaacgym</a></li>
-<li><a href="torchrl/envs/libs/jumanji.html">torchrl.envs.libs.jumanji</a></li>
-<li><a href="torchrl/envs/libs/meltingpot.html">torchrl.envs.libs.meltingpot</a></li>
-<li><a href="torchrl/envs/libs/openml.html">torchrl.envs.libs.openml</a></li>
-<li><a href="torchrl/envs/libs/pettingzoo.html">torchrl.envs.libs.pettingzoo</a></li>
-<li><a href="torchrl/envs/libs/robohive.html">torchrl.envs.libs.robohive</a></li>
-<li><a href="torchrl/envs/libs/smacv2.html">torchrl.envs.libs.smacv2</a></li>
-<li><a href="torchrl/envs/libs/vmas.html">torchrl.envs.libs.vmas</a></li>
-<li><a href="torchrl/envs/model_based/common.html">torchrl.envs.model_based.common</a></li>
-<li><a href="torchrl/envs/model_based/dreamer.html">torchrl.envs.model_based.dreamer</a></li>
-<li><a href="torchrl/envs/transforms/gym_transforms.html">torchrl.envs.transforms.gym_transforms</a></li>
-<li><a href="torchrl/envs/transforms/r3m.html">torchrl.envs.transforms.r3m</a></li>
-<li><a href="torchrl/envs/transforms/rb_transforms.html">torchrl.envs.transforms.rb_transforms</a></li>
-<li><a href="torchrl/envs/transforms/rlhf.html">torchrl.envs.transforms.rlhf</a></li>
-<li><a href="torchrl/envs/transforms/transforms.html">torchrl.envs.transforms.transforms</a></li>
-<li><a href="torchrl/envs/transforms/vc1.html">torchrl.envs.transforms.vc1</a></li>
-<li><a href="torchrl/envs/transforms/vip.html">torchrl.envs.transforms.vip</a></li>
-<li><a href="torchrl/envs/utils.html">torchrl.envs.utils</a></li>
-<li><a href="torchrl/modules/distributions/continuous.html">torchrl.modules.distributions.continuous</a></li>
-<li><a href="torchrl/modules/distributions/discrete.html">torchrl.modules.distributions.discrete</a></li>
-<li><a href="torchrl/modules/models/batchrenorm.html">torchrl.modules.models.batchrenorm</a></li>
-<li><a href="torchrl/modules/models/decision_transformer.html">torchrl.modules.models.decision_transformer</a></li>
-<li><a href="torchrl/modules/models/exploration.html">torchrl.modules.models.exploration</a></li>
-<li><a href="torchrl/modules/models/model_based.html">torchrl.modules.models.model_based</a></li>
-<li><a href="torchrl/modules/models/models.html">torchrl.modules.models.models</a></li>
-<li><a href="torchrl/modules/models/multiagent.html">torchrl.modules.models.multiagent</a></li>
-<li><a href="torchrl/modules/models/utils.html">torchrl.modules.models.utils</a></li>
-<li><a href="torchrl/modules/planners/cem.html">torchrl.modules.planners.cem</a></li>
-<li><a href="torchrl/modules/planners/common.html">torchrl.modules.planners.common</a></li>
-<li><a href="torchrl/modules/planners/mppi.html">torchrl.modules.planners.mppi</a></li>
-<li><a href="torchrl/modules/tensordict_module/actors.html">torchrl.modules.tensordict_module.actors</a></li>
-<li><a href="torchrl/modules/tensordict_module/common.html">torchrl.modules.tensordict_module.common</a></li>
-<li><a href="torchrl/modules/tensordict_module/exploration.html">torchrl.modules.tensordict_module.exploration</a></li>
-<li><a href="torchrl/modules/tensordict_module/probabilistic.html">torchrl.modules.tensordict_module.probabilistic</a></li>
-<li><a href="torchrl/modules/tensordict_module/rnn.html">torchrl.modules.tensordict_module.rnn</a></li>
-<li><a href="torchrl/modules/tensordict_module/sequence.html">torchrl.modules.tensordict_module.sequence</a></li>
-<li><a href="torchrl/modules/tensordict_module/world_models.html">torchrl.modules.tensordict_module.world_models</a></li>
-<li><a href="torchrl/modules/utils/mappings.html">torchrl.modules.utils.mappings</a></li>
-<li><a href="torchrl/modules/utils/utils.html">torchrl.modules.utils.utils</a></li>
-<li><a href="torchrl/objectives/a2c.html">torchrl.objectives.a2c</a></li>
-<li><a href="torchrl/objectives/common.html">torchrl.objectives.common</a></li>
-<li><a href="torchrl/objectives/cql.html">torchrl.objectives.cql</a></li>
-<li><a href="torchrl/objectives/crossq.html">torchrl.objectives.crossq</a></li>
-<li><a href="torchrl/objectives/ddpg.html">torchrl.objectives.ddpg</a></li>
-<li><a href="torchrl/objectives/decision_transformer.html">torchrl.objectives.decision_transformer</a></li>
-<li><a href="torchrl/objectives/dqn.html">torchrl.objectives.dqn</a></li>
-<li><a href="torchrl/objectives/dreamer.html">torchrl.objectives.dreamer</a></li>
-<li><a href="torchrl/objectives/gail.html">torchrl.objectives.gail</a></li>
-<li><a href="torchrl/objectives/iql.html">torchrl.objectives.iql</a></li>
-<li><a href="torchrl/objectives/multiagent/qmixer.html">torchrl.objectives.multiagent.qmixer</a></li>
-<li><a href="torchrl/objectives/ppo.html">torchrl.objectives.ppo</a></li>
-<li><a href="torchrl/objectives/redq.html">torchrl.objectives.redq</a></li>
-<li><a href="torchrl/objectives/reinforce.html">torchrl.objectives.reinforce</a></li>
-<li><a href="torchrl/objectives/sac.html">torchrl.objectives.sac</a></li>
-<li><a href="torchrl/objectives/td3.html">torchrl.objectives.td3</a></li>
-<li><a href="torchrl/objectives/td3_bc.html">torchrl.objectives.td3_bc</a></li>
-<li><a href="torchrl/objectives/utils.html">torchrl.objectives.utils</a></li>
-<li><a href="torchrl/objectives/value/advantages.html">torchrl.objectives.value.advantages</a></li>
-<li><a href="torchrl/objectives/value/functional.html">torchrl.objectives.value.functional</a></li>
-<li><a href="torchrl/record/loggers/common.html">torchrl.record.loggers.common</a></li>
-<li><a href="torchrl/record/loggers/csv.html">torchrl.record.loggers.csv</a></li>
-<li><a href="torchrl/record/loggers/mlflow.html">torchrl.record.loggers.mlflow</a></li>
-<li><a href="torchrl/record/loggers/tensorboard.html">torchrl.record.loggers.tensorboard</a></li>
-<li><a href="torchrl/record/loggers/utils.html">torchrl.record.loggers.utils</a></li>
-<li><a href="torchrl/record/loggers/wandb.html">torchrl.record.loggers.wandb</a></li>
-<li><a href="torchrl/record/recorder.html">torchrl.record.recorder</a></li>
-<li><a href="torchrl/trainers/helpers/collectors.html">torchrl.trainers.helpers.collectors</a></li>
-<li><a href="torchrl/trainers/helpers/envs.html">torchrl.trainers.helpers.envs</a></li>
-<li><a href="torchrl/trainers/helpers/losses.html">torchrl.trainers.helpers.losses</a></li>
-<li><a href="torchrl/trainers/helpers/replay_buffer.html">torchrl.trainers.helpers.replay_buffer</a></li>
-<li><a href="torchrl/trainers/helpers/trainers.html">torchrl.trainers.helpers.trainers</a></li>
-<li><a href="torchrl/trainers/trainers.html">torchrl.trainers.trainers</a></li>
+  <section id="batchrenorm1d">
+<h1>BatchRenorm1d<a class="headerlink" href="#batchrenorm1d" title="Permalink to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="torchrl.modules.BatchRenorm1d">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">torchrl.modules.</span></span><span class="sig-name descname"><span class="pre">BatchRenorm1d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_features</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">momentum</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1e-05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_r</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_d</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warmup_steps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smooth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/torchrl/modules/models/batchrenorm.html#BatchRenorm1d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.modules.BatchRenorm1d" title="Permalink to this definition">¶</a></dt>
+<dd><p>BatchRenorm Module (<a class="reference external" href="https://arxiv.org/abs/1702.03275">https://arxiv.org/abs/1702.03275</a>).</p>
+<p>The code is adapted from <a class="reference external" href="https://github.com/google-research/corenet">https://github.com/google-research/corenet</a></p>
+<p>BatchRenorm is an enhanced version of the standard BatchNorm. Unlike BatchNorm,
+it utilizes running statistics to normalize batches after an initial warmup phase.
+This approach reduces the impact of “outlier” batches that may occur during
+extended training periods, making BatchRenorm more robust for long training runs.</p>
+<p>During the warmup phase, BatchRenorm functions identically to a BatchNorm layer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>num_features</strong> (<em>int</em>) – Number of features in the input tensor.</p>
+</dd>
+<dt class="field-even">Keyword Arguments<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>momentum</strong> (<a class="reference internal" href="torchrl.data.MultiStep.html#torchrl.data.MultiStep.float" title="torchrl.data.MultiStep.float"><em>float</em></a><em>, </em><em>optional</em>) – Momentum factor for computing the running mean and variance.
+Defaults to <code class="docutils literal notranslate"><span class="pre">0.01</span></code>.</p></li>
+<li><p><strong>eps</strong> (<a class="reference internal" href="torchrl.data.MultiStep.html#torchrl.data.MultiStep.float" title="torchrl.data.MultiStep.float"><em>float</em></a><em>, </em><em>optional</em>) – Small value added to the variance to avoid division by zero.
+Defaults to <code class="docutils literal notranslate"><span class="pre">1e-5</span></code>.</p></li>
+<li><p><strong>max_r</strong> (<a class="reference internal" href="torchrl.data.MultiStep.html#torchrl.data.MultiStep.float" title="torchrl.data.MultiStep.float"><em>float</em></a><em>, </em><em>optional</em>) – Maximum value for the scaling factor r.
+Defaults to <code class="docutils literal notranslate"><span class="pre">3.0</span></code>.</p></li>
+<li><p><strong>max_d</strong> (<a class="reference internal" href="torchrl.data.MultiStep.html#torchrl.data.MultiStep.float" title="torchrl.data.MultiStep.float"><em>float</em></a><em>, </em><em>optional</em>) – Maximum value for the bias factor d.
+Defaults to <code class="docutils literal notranslate"><span class="pre">5.0</span></code>.</p></li>
+<li><p><strong>warmup_steps</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of warm-up steps for the running mean and variance.
+Defaults to <code class="docutils literal notranslate"><span class="pre">10000</span></code>.</p></li>
+<li><p><strong>smooth</strong> (<em>bool</em><em>, </em><em>optional</em>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code>, the behaviour smoothly transitions from regular
+batch-norm (when <code class="docutils literal notranslate"><span class="pre">iter=0</span></code>) to batch-renorm (when <code class="docutils literal notranslate"><span class="pre">iter=warmup_steps</span></code>).
+Otherwise, the behaviour will transition from batch-norm to batch-renorm when
+<code class="docutils literal notranslate"><span class="pre">iter=warmup_steps</span></code>. Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
 </ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="torchrl.modules.BatchRenorm1d.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.4)"><span class="pre">Tensor</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.4)"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="../../_modules/torchrl/modules/models/batchrenorm.html#BatchRenorm1d.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.modules.BatchRenorm1d.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
 
              </article>
              
             </div>
             <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="torchrl.modules.DTActor.html" class="btn btn-neutral float-right" title="DTActor" accesskey="n" rel="next">Next <img src="../../_static/images/chevron-right-orange.svg" class="next-page"></a>
+      
+      
+        <a href="torchrl.modules.Squeeze2dLayer.html" class="btn btn-neutral" title="Squeeze2dLayer" accesskey="p" rel="prev"><img src="../../_static/images/chevron-right-orange.svg" class="previous-page"> Previous</a>
+      
+    </div>
   
 
   
@@ -548,7 +505,10 @@
         <div class="pytorch-content-right" id="pytorch-content-right">
           <div class="pytorch-right-menu" id="pytorch-right-menu">
             <div class="pytorch-side-scroll" id="pytorch-side-scroll-right">
-              
+              <ul>
+<li><a class="reference internal" href="#">BatchRenorm1d</a></li>
+</ul>
+
             </div>
           </div>
         </div>
@@ -561,21 +521,21 @@
   
 
      
-       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-         <script src="../_static/jquery.js"></script>
-         <script src="../_static/underscore.js"></script>
-         <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-         <script src="../_static/doctools.js"></script>
-         <script src="../_static/design-tabs.js"></script>
+       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+         <script src="../../_static/jquery.js"></script>
+         <script src="../../_static/underscore.js"></script>
+         <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+         <script src="../../_static/doctools.js"></script>
+         <script src="../../_static/design-tabs.js"></script>
      
 
   
 
-  <script type="text/javascript" src="../_static/js/vendor/popper.min.js"></script>
-  <script type="text/javascript" src="../_static/js/vendor/bootstrap.min.js"></script>
+  <script type="text/javascript" src="../../_static/js/vendor/popper.min.js"></script>
+  <script type="text/javascript" src="../../_static/js/vendor/bootstrap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
-  <script type="text/javascript" src="../_static/js/theme.js"></script>
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
   <script type="text/javascript">
       jQuery(function () {
@@ -728,7 +688,7 @@
   <div class="cookie-banner-wrapper">
   <div class="container">
     <p class="gdpr-notice">To analyze traffic and optimize your experience, we serve cookies on this site. By clicking or navigating, you agree to allow our usage of cookies. As the current maintainers of this site, Facebook’s Cookies Policy applies. Learn more, including about available controls: <a href="https://www.facebook.com/policies/cookies/">Cookies Policy</a>.</p>
-    <img class="close-button" src="../_static/images/pytorch-x.svg">
+    <img class="close-button" src="../../_static/images/pytorch-x.svg">
   </div>
 </div>
 
@@ -861,7 +821,7 @@
 
   <!-- End Mobile Menu -->
 
-  <script type="text/javascript" src="../_static/js/vendor/anchor.min.js"></script>
+  <script type="text/javascript" src="../../_static/js/vendor/anchor.min.js"></script>
 
   <script type="text/javascript">
     $(document).ready(function() {

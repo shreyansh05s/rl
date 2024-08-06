@@ -9,7 +9,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Overview: module code &mdash; torchrl main documentation</title>
+  <title>torchrl.modules.models.batchrenorm &mdash; torchrl main documentation</title>
   
 
   
@@ -25,19 +25,19 @@
 
   
 
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <!-- <link rel="stylesheet" href="../_static/pygments.css" type="text/css" /> -->
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/sg_gallery.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/sg_gallery-binder.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/sg_gallery-dataframe.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/sg_gallery-rendered-html.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <!-- <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" /> -->
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/sg_gallery.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/sg_gallery-binder.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/sg_gallery-dataframe.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/sg_gallery-rendered-html.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" type="text/css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
-    <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
+  <link rel="stylesheet" href="../../../../_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
   <!-- Google Tag Manager -->
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -48,16 +48,16 @@
   
 
   
-  <script src="../_static/js/modernizr.min.js"></script>
+  <script src="../../../../_static/js/modernizr.min.js"></script>
 
   <!-- Preload the theme fonts -->
 
-<link rel="preload" href="../_static/fonts/FreightSans/freight-sans-book.woff2" as="font" type="font/woff2" crossorigin="anonymous">
-<link rel="preload" href="../_static/fonts/FreightSans/freight-sans-medium.woff2" as="font" type="font/woff2" crossorigin="anonymous">
-<link rel="preload" href="../_static/fonts/IBMPlexMono/IBMPlexMono-Medium.woff2" as="font" type="font/woff2" crossorigin="anonymous">
-<link rel="preload" href="../_static/fonts/FreightSans/freight-sans-bold.woff2" as="font" type="font/woff2" crossorigin="anonymous">
-<link rel="preload" href="../_static/fonts/FreightSans/freight-sans-medium-italic.woff2" as="font" type="font/woff2" crossorigin="anonymous">
-<link rel="preload" href="../_static/fonts/IBMPlexMono/IBMPlexMono-SemiBold.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="../../../../_static/fonts/FreightSans/freight-sans-book.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="../../../../_static/fonts/FreightSans/freight-sans-medium.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="../../../../_static/fonts/IBMPlexMono/IBMPlexMono-Medium.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="../../../../_static/fonts/FreightSans/freight-sans-bold.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="../../../../_static/fonts/FreightSans/freight-sans-medium-italic.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="../../../../_static/fonts/IBMPlexMono/IBMPlexMono-SemiBold.woff2" as="font" type="font/woff2" crossorigin="anonymous">
 
 <!-- Preload the katex fonts -->
 
@@ -268,7 +268,7 @@
           <div class="pytorch-left-menu-search">
             
     <div class="version">
-      <a href="../../versions.html"><span style="font-size:110%">main (0.5.0) &#x25BC</span></a>
+      <a href="../../../../../versions.html"><span style="font-size:110%">main (0.5.0) &#x25BC</span></a>
     </div>
     
 
@@ -277,7 +277,7 @@
 
 
 <div role="search">
-  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
     <input type="text" name="q" placeholder="Search Docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
@@ -293,36 +293,36 @@
             
             
               <ul>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/getting-started-0.html">Get started with Environments, TED and transforms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/getting-started-1.html">Get started with TorchRL’s modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/getting-started-2.html">Getting started with model optimization</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/getting-started-3.html">Get started with data collection and storage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/getting-started-4.html">Get started with logging</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/getting-started-5.html">Get started with your own first training loop</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/getting-started-0.html">Get started with Environments, TED and transforms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/getting-started-1.html">Get started with TorchRL’s modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/getting-started-2.html">Getting started with model optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/getting-started-3.html">Get started with data collection and storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/getting-started-4.html">Get started with logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/getting-started-5.html">Get started with your own first training loop</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/coding_ppo.html">Reinforcement Learning (PPO) with TorchRL Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/pendulum.html">Pendulum: Writing your environment and transforms with TorchRL</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/torchrl_demo.html">Introduction to TorchRL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/coding_ppo.html">Reinforcement Learning (PPO) with TorchRL Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/pendulum.html">Pendulum: Writing your environment and transforms with TorchRL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/torchrl_demo.html">Introduction to TorchRL</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/multiagent_ppo.html">Multi-Agent Reinforcement Learning (PPO) with TorchRL Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/torchrl_envs.html">TorchRL envs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/pretrained_models.html">Using pretrained models</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/dqn_with_rnn.html">Recurrent DQN: Training recurrent policies</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/rb_tutorial.html">Using Replay Buffers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/multiagent_ppo.html">Multi-Agent Reinforcement Learning (PPO) with TorchRL Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/torchrl_envs.html">TorchRL envs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/pretrained_models.html">Using pretrained models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/dqn_with_rnn.html">Recurrent DQN: Training recurrent policies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/rb_tutorial.html">Using Replay Buffers</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/multiagent_competitive_ddpg.html">Competitive Multi-Agent Reinforcement Learning (DDPG) with TorchRL Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/multi_task.html">Task-specific policy in multi-task environments</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/coding_ddpg.html">TorchRL objectives: Coding a DDPG loss</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/coding_dqn.html">TorchRL trainer: A DQN example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/multiagent_competitive_ddpg.html">Competitive Multi-Agent Reinforcement Learning (DDPG) with TorchRL Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/multi_task.html">Task-specific policy in multi-task environments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/coding_ddpg.html">TorchRL objectives: Coding a DDPG loss</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/coding_dqn.html">TorchRL trainer: A DQN example</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../reference/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../reference/index.html">API Reference</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../reference/knowledge_base.html">Knowledge Base</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../reference/knowledge_base.html">Knowledge Base</a></li>
 </ul>
 
             
@@ -355,7 +355,7 @@
   <ul class="pytorch-breadcrumbs">
     
       <li>
-        <a href="../index.html">
+        <a href="../../../../index.html">
           
             Docs
           
@@ -363,7 +363,9 @@
       </li>
 
         
-      <li>Overview: module code</li>
+          <li><a href="../../../index.html">Module code</a> &gt;</li>
+        
+      <li>torchrl.modules.models.batchrenorm</li>
     
     
       <li class="pytorch-breadcrumbs-aside">
@@ -397,122 +399,125 @@
             <div role="main" class="main-content" itemscope="itemscope" itemtype="http://schema.org/Article">
              <article itemprop="articleBody" id="pytorch-article" class="pytorch-article">
               
-  <h1>All modules for which code is available</h1>
-<ul><li><a href="tensordict/nn/utils.html">tensordict.nn.utils</a></li>
-<li><a href="torchrl/_utils.html">torchrl._utils</a></li>
-<li><a href="torchrl/collectors/collectors.html">torchrl.collectors.collectors</a></li>
-<li><a href="torchrl/collectors/distributed/generic.html">torchrl.collectors.distributed.generic</a></li>
-<li><a href="torchrl/collectors/distributed/ray.html">torchrl.collectors.distributed.ray</a></li>
-<li><a href="torchrl/collectors/distributed/rpc.html">torchrl.collectors.distributed.rpc</a></li>
-<li><a href="torchrl/collectors/distributed/sync.html">torchrl.collectors.distributed.sync</a></li>
-<li><a href="torchrl/collectors/distributed/utils.html">torchrl.collectors.distributed.utils</a></li>
-<li><a href="torchrl/collectors/utils.html">torchrl.collectors.utils</a></li>
-<li><a href="torchrl/data/datasets/atari_dqn.html">torchrl.data.datasets.atari_dqn</a></li>
-<li><a href="torchrl/data/datasets/common.html">torchrl.data.datasets.common</a></li>
-<li><a href="torchrl/data/datasets/d4rl.html">torchrl.data.datasets.d4rl</a></li>
-<li><a href="torchrl/data/datasets/gen_dgrl.html">torchrl.data.datasets.gen_dgrl</a></li>
-<li><a href="torchrl/data/datasets/minari_data.html">torchrl.data.datasets.minari_data</a></li>
-<li><a href="torchrl/data/datasets/openml.html">torchrl.data.datasets.openml</a></li>
-<li><a href="torchrl/data/datasets/openx.html">torchrl.data.datasets.openx</a></li>
-<li><a href="torchrl/data/datasets/roboset.html">torchrl.data.datasets.roboset</a></li>
-<li><a href="torchrl/data/datasets/vd4rl.html">torchrl.data.datasets.vd4rl</a></li>
-<li><a href="torchrl/data/postprocs/postprocs.html">torchrl.data.postprocs.postprocs</a></li>
-<li><a href="torchrl/data/replay_buffers/checkpointers.html">torchrl.data.replay_buffers.checkpointers</a></li>
-<li><a href="torchrl/data/replay_buffers/replay_buffers.html">torchrl.data.replay_buffers.replay_buffers</a></li>
-<li><a href="torchrl/data/replay_buffers/samplers.html">torchrl.data.replay_buffers.samplers</a></li>
-<li><a href="torchrl/data/replay_buffers/storages.html">torchrl.data.replay_buffers.storages</a></li>
-<li><a href="torchrl/data/replay_buffers/utils.html">torchrl.data.replay_buffers.utils</a></li>
-<li><a href="torchrl/data/replay_buffers/writers.html">torchrl.data.replay_buffers.writers</a></li>
-<li><a href="torchrl/data/rlhf/dataset.html">torchrl.data.rlhf.dataset</a></li>
-<li><a href="torchrl/data/rlhf/prompt.html">torchrl.data.rlhf.prompt</a></li>
-<li><a href="torchrl/data/rlhf/reward.html">torchrl.data.rlhf.reward</a></li>
-<li><a href="torchrl/data/rlhf/utils.html">torchrl.data.rlhf.utils</a></li>
-<li><a href="torchrl/data/tensor_specs.html">torchrl.data.tensor_specs</a></li>
-<li><a href="torchrl/data/utils.html">torchrl.data.utils</a></li>
-<li><a href="torchrl/envs/batched_envs.html">torchrl.envs.batched_envs</a></li>
-<li><a href="torchrl/envs/common.html">torchrl.envs.common</a></li>
-<li><a href="torchrl/envs/custom/pendulum.html">torchrl.envs.custom.pendulum</a></li>
-<li><a href="torchrl/envs/custom/tictactoeenv.html">torchrl.envs.custom.tictactoeenv</a></li>
-<li><a href="torchrl/envs/env_creator.html">torchrl.envs.env_creator</a></li>
-<li><a href="torchrl/envs/gym_like.html">torchrl.envs.gym_like</a></li>
-<li><a href="torchrl/envs/libs/brax.html">torchrl.envs.libs.brax</a></li>
-<li><a href="torchrl/envs/libs/dm_control.html">torchrl.envs.libs.dm_control</a></li>
-<li><a href="torchrl/envs/libs/envpool.html">torchrl.envs.libs.envpool</a></li>
-<li><a href="torchrl/envs/libs/gym.html">torchrl.envs.libs.gym</a></li>
-<li><a href="torchrl/envs/libs/habitat.html">torchrl.envs.libs.habitat</a></li>
-<li><a href="torchrl/envs/libs/isaacgym.html">torchrl.envs.libs.isaacgym</a></li>
-<li><a href="torchrl/envs/libs/jumanji.html">torchrl.envs.libs.jumanji</a></li>
-<li><a href="torchrl/envs/libs/meltingpot.html">torchrl.envs.libs.meltingpot</a></li>
-<li><a href="torchrl/envs/libs/openml.html">torchrl.envs.libs.openml</a></li>
-<li><a href="torchrl/envs/libs/pettingzoo.html">torchrl.envs.libs.pettingzoo</a></li>
-<li><a href="torchrl/envs/libs/robohive.html">torchrl.envs.libs.robohive</a></li>
-<li><a href="torchrl/envs/libs/smacv2.html">torchrl.envs.libs.smacv2</a></li>
-<li><a href="torchrl/envs/libs/vmas.html">torchrl.envs.libs.vmas</a></li>
-<li><a href="torchrl/envs/model_based/common.html">torchrl.envs.model_based.common</a></li>
-<li><a href="torchrl/envs/model_based/dreamer.html">torchrl.envs.model_based.dreamer</a></li>
-<li><a href="torchrl/envs/transforms/gym_transforms.html">torchrl.envs.transforms.gym_transforms</a></li>
-<li><a href="torchrl/envs/transforms/r3m.html">torchrl.envs.transforms.r3m</a></li>
-<li><a href="torchrl/envs/transforms/rb_transforms.html">torchrl.envs.transforms.rb_transforms</a></li>
-<li><a href="torchrl/envs/transforms/rlhf.html">torchrl.envs.transforms.rlhf</a></li>
-<li><a href="torchrl/envs/transforms/transforms.html">torchrl.envs.transforms.transforms</a></li>
-<li><a href="torchrl/envs/transforms/vc1.html">torchrl.envs.transforms.vc1</a></li>
-<li><a href="torchrl/envs/transforms/vip.html">torchrl.envs.transforms.vip</a></li>
-<li><a href="torchrl/envs/utils.html">torchrl.envs.utils</a></li>
-<li><a href="torchrl/modules/distributions/continuous.html">torchrl.modules.distributions.continuous</a></li>
-<li><a href="torchrl/modules/distributions/discrete.html">torchrl.modules.distributions.discrete</a></li>
-<li><a href="torchrl/modules/models/batchrenorm.html">torchrl.modules.models.batchrenorm</a></li>
-<li><a href="torchrl/modules/models/decision_transformer.html">torchrl.modules.models.decision_transformer</a></li>
-<li><a href="torchrl/modules/models/exploration.html">torchrl.modules.models.exploration</a></li>
-<li><a href="torchrl/modules/models/model_based.html">torchrl.modules.models.model_based</a></li>
-<li><a href="torchrl/modules/models/models.html">torchrl.modules.models.models</a></li>
-<li><a href="torchrl/modules/models/multiagent.html">torchrl.modules.models.multiagent</a></li>
-<li><a href="torchrl/modules/models/utils.html">torchrl.modules.models.utils</a></li>
-<li><a href="torchrl/modules/planners/cem.html">torchrl.modules.planners.cem</a></li>
-<li><a href="torchrl/modules/planners/common.html">torchrl.modules.planners.common</a></li>
-<li><a href="torchrl/modules/planners/mppi.html">torchrl.modules.planners.mppi</a></li>
-<li><a href="torchrl/modules/tensordict_module/actors.html">torchrl.modules.tensordict_module.actors</a></li>
-<li><a href="torchrl/modules/tensordict_module/common.html">torchrl.modules.tensordict_module.common</a></li>
-<li><a href="torchrl/modules/tensordict_module/exploration.html">torchrl.modules.tensordict_module.exploration</a></li>
-<li><a href="torchrl/modules/tensordict_module/probabilistic.html">torchrl.modules.tensordict_module.probabilistic</a></li>
-<li><a href="torchrl/modules/tensordict_module/rnn.html">torchrl.modules.tensordict_module.rnn</a></li>
-<li><a href="torchrl/modules/tensordict_module/sequence.html">torchrl.modules.tensordict_module.sequence</a></li>
-<li><a href="torchrl/modules/tensordict_module/world_models.html">torchrl.modules.tensordict_module.world_models</a></li>
-<li><a href="torchrl/modules/utils/mappings.html">torchrl.modules.utils.mappings</a></li>
-<li><a href="torchrl/modules/utils/utils.html">torchrl.modules.utils.utils</a></li>
-<li><a href="torchrl/objectives/a2c.html">torchrl.objectives.a2c</a></li>
-<li><a href="torchrl/objectives/common.html">torchrl.objectives.common</a></li>
-<li><a href="torchrl/objectives/cql.html">torchrl.objectives.cql</a></li>
-<li><a href="torchrl/objectives/crossq.html">torchrl.objectives.crossq</a></li>
-<li><a href="torchrl/objectives/ddpg.html">torchrl.objectives.ddpg</a></li>
-<li><a href="torchrl/objectives/decision_transformer.html">torchrl.objectives.decision_transformer</a></li>
-<li><a href="torchrl/objectives/dqn.html">torchrl.objectives.dqn</a></li>
-<li><a href="torchrl/objectives/dreamer.html">torchrl.objectives.dreamer</a></li>
-<li><a href="torchrl/objectives/gail.html">torchrl.objectives.gail</a></li>
-<li><a href="torchrl/objectives/iql.html">torchrl.objectives.iql</a></li>
-<li><a href="torchrl/objectives/multiagent/qmixer.html">torchrl.objectives.multiagent.qmixer</a></li>
-<li><a href="torchrl/objectives/ppo.html">torchrl.objectives.ppo</a></li>
-<li><a href="torchrl/objectives/redq.html">torchrl.objectives.redq</a></li>
-<li><a href="torchrl/objectives/reinforce.html">torchrl.objectives.reinforce</a></li>
-<li><a href="torchrl/objectives/sac.html">torchrl.objectives.sac</a></li>
-<li><a href="torchrl/objectives/td3.html">torchrl.objectives.td3</a></li>
-<li><a href="torchrl/objectives/td3_bc.html">torchrl.objectives.td3_bc</a></li>
-<li><a href="torchrl/objectives/utils.html">torchrl.objectives.utils</a></li>
-<li><a href="torchrl/objectives/value/advantages.html">torchrl.objectives.value.advantages</a></li>
-<li><a href="torchrl/objectives/value/functional.html">torchrl.objectives.value.functional</a></li>
-<li><a href="torchrl/record/loggers/common.html">torchrl.record.loggers.common</a></li>
-<li><a href="torchrl/record/loggers/csv.html">torchrl.record.loggers.csv</a></li>
-<li><a href="torchrl/record/loggers/mlflow.html">torchrl.record.loggers.mlflow</a></li>
-<li><a href="torchrl/record/loggers/tensorboard.html">torchrl.record.loggers.tensorboard</a></li>
-<li><a href="torchrl/record/loggers/utils.html">torchrl.record.loggers.utils</a></li>
-<li><a href="torchrl/record/loggers/wandb.html">torchrl.record.loggers.wandb</a></li>
-<li><a href="torchrl/record/recorder.html">torchrl.record.recorder</a></li>
-<li><a href="torchrl/trainers/helpers/collectors.html">torchrl.trainers.helpers.collectors</a></li>
-<li><a href="torchrl/trainers/helpers/envs.html">torchrl.trainers.helpers.envs</a></li>
-<li><a href="torchrl/trainers/helpers/losses.html">torchrl.trainers.helpers.losses</a></li>
-<li><a href="torchrl/trainers/helpers/replay_buffer.html">torchrl.trainers.helpers.replay_buffer</a></li>
-<li><a href="torchrl/trainers/helpers/trainers.html">torchrl.trainers.helpers.trainers</a></li>
-<li><a href="torchrl/trainers/trainers.html">torchrl.trainers.trainers</a></li>
-</ul>
+  <h1>Source code for torchrl.modules.models.batchrenorm</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (c) Meta Platforms, Inc. and affiliates.</span>
+<span class="c1">#</span>
+<span class="c1"># This source code is licensed under the MIT license found in the</span>
+<span class="c1"># LICENSE file in the root directory of this source tree.</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
+
+
+<div class="viewcode-block" id="BatchRenorm1d"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.BatchRenorm1d.html#torchrl.modules.BatchRenorm1d">[docs]</a><span class="k">class</span> <span class="nc">BatchRenorm1d</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;BatchRenorm Module (https://arxiv.org/abs/1702.03275).</span>
+
+<span class="sd">    The code is adapted from https://github.com/google-research/corenet</span>
+
+<span class="sd">    BatchRenorm is an enhanced version of the standard BatchNorm. Unlike BatchNorm,</span>
+<span class="sd">    it utilizes running statistics to normalize batches after an initial warmup phase.</span>
+<span class="sd">    This approach reduces the impact of &quot;outlier&quot; batches that may occur during</span>
+<span class="sd">    extended training periods, making BatchRenorm more robust for long training runs.</span>
+
+<span class="sd">    During the warmup phase, BatchRenorm functions identically to a BatchNorm layer.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        num_features (int): Number of features in the input tensor.</span>
+
+<span class="sd">    Keyword Args:</span>
+<span class="sd">        momentum (float, optional): Momentum factor for computing the running mean and variance.</span>
+<span class="sd">            Defaults to ``0.01``.</span>
+<span class="sd">        eps (float, optional): Small value added to the variance to avoid division by zero.</span>
+<span class="sd">            Defaults to ``1e-5``.</span>
+<span class="sd">        max_r (float, optional): Maximum value for the scaling factor r.</span>
+<span class="sd">            Defaults to ``3.0``.</span>
+<span class="sd">        max_d (float, optional): Maximum value for the bias factor d.</span>
+<span class="sd">            Defaults to ``5.0``.</span>
+<span class="sd">        warmup_steps (int, optional): Number of warm-up steps for the running mean and variance.</span>
+<span class="sd">            Defaults to ``10000``.</span>
+<span class="sd">        smooth (bool, optional): if ``True``, the behaviour smoothly transitions from regular</span>
+<span class="sd">            batch-norm (when ``iter=0``) to batch-renorm (when ``iter=warmup_steps``).</span>
+<span class="sd">            Otherwise, the behaviour will transition from batch-norm to batch-renorm when</span>
+<span class="sd">            ``iter=warmup_steps``. Defaults to ``False``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">num_features</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">momentum</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">,</span>
+        <span class="n">eps</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-5</span><span class="p">,</span>
+        <span class="n">max_r</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">3.0</span><span class="p">,</span>
+        <span class="n">max_d</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">5.0</span><span class="p">,</span>
+        <span class="n">warmup_steps</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10000</span><span class="p">,</span>
+        <span class="n">smooth</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_features</span> <span class="o">=</span> <span class="n">num_features</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eps</span> <span class="o">=</span> <span class="n">eps</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">momentum</span> <span class="o">=</span> <span class="n">momentum</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_r</span> <span class="o">=</span> <span class="n">max_r</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_d</span> <span class="o">=</span> <span class="n">max_d</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">warmup_steps</span> <span class="o">=</span> <span class="n">warmup_steps</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">smooth</span> <span class="o">=</span> <span class="n">smooth</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span>
+            <span class="s2">&quot;running_mean&quot;</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">num_features</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span>
+            <span class="s2">&quot;running_var&quot;</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">num_features</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">&quot;num_batches_tracked&quot;</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">int64</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weight</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">num_features</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bias</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">num_features</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">))</span>
+
+<div class="viewcode-block" id="BatchRenorm1d.forward"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.BatchRenorm1d.html#torchrl.modules.BatchRenorm1d.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">x</span><span class="o">.</span><span class="n">dim</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;The </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> expects a 2D (or more) tensor, got </span><span class="si">{</span><span class="n">x</span><span class="o">.</span><span class="n">dim</span><span class="p">()</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">view_dims</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">+</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">dim</span><span class="p">()</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">_v</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">v</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">view_dims</span><span class="p">)</span>
+
+        <span class="n">running_std</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">running_var</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">eps</span><span class="p">)</span><span class="o">.</span><span class="n">sqrt_</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">training</span><span class="p">:</span>
+            <span class="n">reduce_dims</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">dim</span><span class="p">())</span> <span class="k">if</span> <span class="n">i</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="n">b_mean</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">reduce_dims</span><span class="p">)</span>
+            <span class="n">b_var</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">reduce_dims</span><span class="p">,</span> <span class="n">unbiased</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">b_std</span> <span class="o">=</span> <span class="p">(</span><span class="n">b_var</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">eps</span><span class="p">)</span><span class="o">.</span><span class="n">sqrt_</span><span class="p">()</span>
+
+            <span class="n">r</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">clamp</span><span class="p">((</span><span class="n">b_std</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span> <span class="o">/</span> <span class="n">running_std</span><span class="p">),</span> <span class="mi">1</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_r</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_r</span><span class="p">)</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">b_mean</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">running_mean</span><span class="p">)</span> <span class="o">/</span> <span class="n">running_std</span><span class="p">,</span>
+                <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">max_d</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">max_d</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Compute warmup factor (0 during warmup, 1 after warmup)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">warmup_steps</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">smooth</span><span class="p">:</span>
+                    <span class="n">warmup_factor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_batches_tracked</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">warmup_steps</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">warmup_factor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_batches_tracked</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">warmup_steps</span>
+                <span class="n">r</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="p">(</span><span class="n">r</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">warmup_factor</span>
+                <span class="n">d</span> <span class="o">=</span> <span class="n">d</span> <span class="o">*</span> <span class="n">warmup_factor</span>
+
+            <span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">_v</span><span class="p">(</span><span class="n">b_mean</span><span class="p">))</span> <span class="o">/</span> <span class="n">_v</span><span class="p">(</span><span class="n">b_std</span><span class="p">)</span> <span class="o">*</span> <span class="n">_v</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="o">+</span> <span class="n">_v</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+
+            <span class="n">unbiased_var</span> <span class="o">=</span> <span class="n">b_var</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span> <span class="o">*</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">running_var</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">momentum</span> <span class="o">*</span> <span class="p">(</span><span class="n">unbiased_var</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">running_var</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">running_mean</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">momentum</span> <span class="o">*</span> <span class="p">(</span><span class="n">b_mean</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">running_mean</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">num_batches_tracked</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">num_batches_tracked</span><span class="o">.</span><span class="n">clamp_max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">warmup_steps</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">_v</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">running_mean</span><span class="p">))</span> <span class="o">/</span> <span class="n">_v</span><span class="p">(</span><span class="n">running_std</span><span class="p">)</span>
+
+        <span class="n">x</span> <span class="o">=</span> <span class="n">_v</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weight</span><span class="p">)</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="n">_v</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bias</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span></div></div>
+</pre></div>
 
              </article>
              
@@ -561,21 +566,21 @@
   
 
      
-       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-         <script src="../_static/jquery.js"></script>
-         <script src="../_static/underscore.js"></script>
-         <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-         <script src="../_static/doctools.js"></script>
-         <script src="../_static/design-tabs.js"></script>
+       <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+         <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+         <script src="../../../../_static/jquery.js"></script>
+         <script src="../../../../_static/underscore.js"></script>
+         <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+         <script src="../../../../_static/doctools.js"></script>
+         <script src="../../../../_static/design-tabs.js"></script>
      
 
   
 
-  <script type="text/javascript" src="../_static/js/vendor/popper.min.js"></script>
-  <script type="text/javascript" src="../_static/js/vendor/bootstrap.min.js"></script>
+  <script type="text/javascript" src="../../../../_static/js/vendor/popper.min.js"></script>
+  <script type="text/javascript" src="../../../../_static/js/vendor/bootstrap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
-  <script type="text/javascript" src="../_static/js/theme.js"></script>
+  <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
 
   <script type="text/javascript">
       jQuery(function () {
@@ -728,7 +733,7 @@
   <div class="cookie-banner-wrapper">
   <div class="container">
     <p class="gdpr-notice">To analyze traffic and optimize your experience, we serve cookies on this site. By clicking or navigating, you agree to allow our usage of cookies. As the current maintainers of this site, Facebook’s Cookies Policy applies. Learn more, including about available controls: <a href="https://www.facebook.com/policies/cookies/">Cookies Policy</a>.</p>
-    <img class="close-button" src="../_static/images/pytorch-x.svg">
+    <img class="close-button" src="../../../../_static/images/pytorch-x.svg">
   </div>
 </div>
 
@@ -861,7 +866,7 @@
 
   <!-- End Mobile Menu -->
 
-  <script type="text/javascript" src="../_static/js/vendor/anchor.min.js"></script>
+  <script type="text/javascript" src="../../../../_static/js/vendor/anchor.min.js"></script>
 
   <script type="text/javascript">
     $(document).ready(function() {

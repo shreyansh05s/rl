@@ -1616,7 +1616,7 @@ Specialized Classes
         td_module(td)
         print("random:", td["action"])
 
-    with set_exploration_type(ExplorationType.MODE):
+    with set_exploration_type(ExplorationType.DETERMINISTIC):
         td_module(td)
         print("mode:", td["action"])
 
@@ -2166,7 +2166,7 @@ The library is on PyPI: *pip install torchrl*
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (3 minutes 50.027 seconds)
+   **Total running time of the script:** (3 minutes 50.246 seconds)
 
 **Estimated memory usage:**  324 MB
 

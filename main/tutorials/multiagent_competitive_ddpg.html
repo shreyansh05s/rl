@@ -1371,7 +1371,7 @@ The steps include:</p>
             <span class="n">target_updaters</span><span class="p">[</span><span class="n">group</span><span class="p">]</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
 
         <span class="c1"># Exploration sigma anneal update</span>
-        <span class="n">exploration_policies</span><span class="p">[</span><span class="n">group</span><span class="p">]</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">current_frames</span><span class="p">)</span>
+        <span class="n">exploration_policies</span><span class="p">[</span><span class="n">group</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">current_frames</span><span class="p">)</span>
 
     <span class="c1"># Stop training a certain group when a condition is met (e.g., number of training iterations)</span>
     <span class="k">if</span> <span class="n">iteration</span> <span class="o">==</span> <span class="n">iteration_when_stop_training_evaders</span><span class="p">:</span>
@@ -1400,14 +1400,17 @@ The steps include:</p>
     <span class="n">pbar</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="sphx-glr-script-out highlight-pytb notranslate"><div class="highlight"><pre><span></span><span class="gt">Traceback (most recent call last):</span>
-  File <span class="nb">&quot;/pytorch/rl/docs/source/reference/generated/tutorials/multiagent_competitive_ddpg.py&quot;</span>, line <span class="m">820</span>, in <span class="n">&lt;module&gt;</span>
-<span class="w">    </span><span class="n">exploration_policies</span><span class="p">[</span><span class="n">group</span><span class="p">]</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">current_frames</span><span class="p">)</span>
-  File <span class="nb">&quot;/pytorch/rl/env/lib/python3.8/site-packages/tensordict/nn/common.py&quot;</span>, line <span class="m">1307</span>, in <span class="n">__getattr__</span>
-<span class="w">    </span><span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__getattr__</span><span class="p">(</span><span class="s2">&quot;module&quot;</span><span class="p">),</span> <span class="n">name</span><span class="p">)</span>
-  File <span class="nb">&quot;/pytorch/rl/env/lib/python3.8/site-packages/torch/nn/modules/module.py&quot;</span>, line <span class="m">1914</span>, in <span class="n">__getattr__</span>
-<span class="w">    </span><span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
-<span class="gr">AttributeError</span>: <span class="n">&#39;ModuleList&#39; object has no attribute &#39;step&#39;</span>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>episode_reward_mean_adversary = 0, episode_reward_mean_agent = 0:   0%|          | 0/10 [00:00&lt;?, ?it/s]
+episode_reward_mean_adversary = 1.0, episode_reward_mean_agent = -1.0:  10%|█         | 1/10 [00:02&lt;00:25,  2.78s/it]
+episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  20%|██        | 2/10 [00:05&lt;00:22,  2.86s/it]
+episode_reward_mean_adversary = 1.0, episode_reward_mean_agent = -1.0:  30%|███       | 3/10 [00:08&lt;00:20,  2.89s/it]
+episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  40%|████      | 4/10 [00:11&lt;00:17,  2.90s/it]
+episode_reward_mean_adversary = 2.0, episode_reward_mean_agent = -2.0:  50%|█████     | 5/10 [00:14&lt;00:14,  2.90s/it]
+episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  60%|██████    | 6/10 [00:17&lt;00:11,  2.89s/it]
+episode_reward_mean_adversary = 2.0, episode_reward_mean_agent = -2.0:  70%|███████   | 7/10 [00:19&lt;00:07,  2.64s/it]
+episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  80%|████████  | 8/10 [00:21&lt;00:04,  2.48s/it]
+episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  90%|█████████ | 9/10 [00:23&lt;00:02,  2.36s/it]
+episode_reward_mean_adversary = 1.0, episode_reward_mean_agent = -1.0: 100%|██████████| 10/10 [00:25&lt;00:00,  2.27s/it]
 </pre></div>
 </div>
 </section>
@@ -1431,7 +1434,7 @@ proceed with the rest of the screen.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-</section>
+<img src="../_images/sphx_glr_multiagent_competitive_ddpg_001.png" srcset="../_images/sphx_glr_multiagent_competitive_ddpg_001.png" alt="multiagent competitive ddpg" class = "sphx-glr-single-img"/></section>
 <section id="render">
 <h2>Render<a class="headerlink" href="#render" title="Permalink to this heading">¶</a></h2>
 <p><em>Rendering instruction are for VMAS</em>, aka when running with <code class="docutils literal notranslate"><span class="pre">use_vmas=True</span></code>.</p>
@@ -1459,7 +1462,7 @@ logger <cite>video_logger</cite>. Note that this code may require some external 
         <span class="n">env_with_render</span> <span class="o">=</span> <span class="n">env_with_render</span><span class="o">.</span><span class="n">append_transform</span><span class="p">(</span>
             <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">VideoRecorder</span></a><span class="p">(</span><span class="n">logger</span><span class="o">=</span><span class="n">video_logger</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="s2">&quot;vmas_rendered&quot;</span><span class="p">)</span>
         <span class="p">)</span>
-        <span class="k">with</span> <span class="n">set_exploration_type</span><span class="p">(</span><span class="n">ExplorationType</span><span class="o">.</span><span class="n">MODE</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">set_exploration_type</span><span class="p">(</span><span class="n">ExplorationType</span><span class="o">.</span><span class="n">DETERMINISTIC</span><span class="p">):</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Rendering rollout...&quot;</span><span class="p">)</span>
             <span class="n">env_with_render</span><span class="o">.</span><span class="n">rollout</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="n">policy</span><span class="o">=</span><span class="n">agents_exploration_policy</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Saving the video...&quot;</span><span class="p">)</span>
@@ -1493,8 +1496,8 @@ Here are a few videos of some possible scenarios you can try in VMAS.</p>
 <p><span class="caption-text">Scenarios available in <a class="reference external" href="https://github.com/proroklab/VectorizedMultiAgentSimulator">VMAS</a></span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 59.949 seconds)</p>
-<p><strong>Estimated memory usage:</strong>  4310 MB</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (1 minutes 31.585 seconds)</p>
+<p><strong>Estimated memory usage:</strong>  320 MB</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-tutorials-multiagent-competitive-ddpg-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/f3b53654a2b96b82010dd96f73ff5151/multiagent_competitive_ddpg.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">multiagent_competitive_ddpg.ipynb</span></code></a></p>

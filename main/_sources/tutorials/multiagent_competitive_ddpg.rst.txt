@@ -1286,7 +1286,7 @@ The steps include:
                 target_updaters[group].step()
 
             # Exploration sigma anneal update
-            exploration_policies[group].step(current_frames)
+            exploration_policies[group][-1].step(current_frames)
 
         # Stop training a certain group when a condition is met (e.g., number of training iterations)
         if iteration == iteration_when_stop_training_evaders:
@@ -1316,19 +1316,13 @@ The steps include:
 
 
 
+
+
 .. rst-class:: sphx-glr-script-out
 
-.. code-block:: pytb
+ .. code-block:: none
 
-    Traceback (most recent call last):
-      File "/pytorch/rl/docs/source/reference/generated/tutorials/multiagent_competitive_ddpg.py", line 820, in <module>
-        exploration_policies[group].step(current_frames)
-      File "/pytorch/rl/env/lib/python3.8/site-packages/tensordict/nn/common.py", line 1307, in __getattr__
-        return getattr(super().__getattr__("module"), name)
-      File "/pytorch/rl/env/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1914, in __getattr__
-        raise AttributeError(
-    AttributeError: 'ModuleList' object has no attribute 'step'
-
+    episode_reward_mean_adversary = 0, episode_reward_mean_agent = 0:   0%|          | 0/10 [00:00<?, ?it/s]    episode_reward_mean_adversary = 1.0, episode_reward_mean_agent = -1.0:  10%|█         | 1/10 [00:02<00:25,  2.78s/it]    episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  20%|██        | 2/10 [00:05<00:22,  2.86s/it]     episode_reward_mean_adversary = 1.0, episode_reward_mean_agent = -1.0:  30%|███       | 3/10 [00:08<00:20,  2.89s/it]    episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  40%|████      | 4/10 [00:11<00:17,  2.90s/it]     episode_reward_mean_adversary = 2.0, episode_reward_mean_agent = -2.0:  50%|█████     | 5/10 [00:14<00:14,  2.90s/it]    episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  60%|██████    | 6/10 [00:17<00:11,  2.89s/it]     episode_reward_mean_adversary = 2.0, episode_reward_mean_agent = -2.0:  70%|███████   | 7/10 [00:19<00:07,  2.64s/it]    episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  80%|████████  | 8/10 [00:21<00:04,  2.48s/it]     episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  90%|█████████ | 9/10 [00:23<00:02,  2.36s/it]    episode_reward_mean_adversary = 1.0, episode_reward_mean_agent = -1.0: 100%|██████████| 10/10 [00:25<00:00,  2.27s/it]
 
 
 
@@ -1362,6 +1356,17 @@ proceed with the rest of the screen.
         axs[i].legend()
     axs[-1].set_xlabel("Training iterations")
     plt.show()
+
+
+
+
+.. image-sg:: /tutorials/images/sphx_glr_multiagent_competitive_ddpg_001.png
+   :alt: multiagent competitive ddpg
+   :srcset: /tutorials/images/sphx_glr_multiagent_competitive_ddpg_001.png
+   :class: sphx-glr-single-img
+
+
+
 
 
 .. GENERATED FROM PYTHON SOURCE LINES 874-886
@@ -1403,13 +1408,19 @@ logger `video_logger`. Note that this code may require some external dependencie
             env_with_render = env_with_render.append_transform(
                 VideoRecorder(logger=video_logger, tag="vmas_rendered")
             )
-            with set_exploration_type(ExplorationType.MODE):
+            with set_exploration_type(ExplorationType.DETERMINISTIC):
                 print("Rendering rollout...")
                 env_with_render.rollout(100, policy=agents_exploration_policy)
             print("Saving the video...")
             env_with_render.transform.dump()
             print("Saved! Saved directory tree:")
             video_logger.print_log_dir()
+
+
+
+
+
+
 
 
 
@@ -1447,9 +1458,9 @@ Here are a few videos of some possible scenarios you can try in VMAS.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 59.949 seconds)
+   **Total running time of the script:** (1 minutes 31.585 seconds)
 
-**Estimated memory usage:**  4310 MB
+**Estimated memory usage:**  320 MB
 
 
 .. _sphx_glr_download_tutorials_multiagent_competitive_ddpg.py:
