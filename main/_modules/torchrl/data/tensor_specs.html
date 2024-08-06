@@ -408,6 +408,7 @@
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">import</span> <span class="nn">abc</span>
+<span class="kn">import</span> <span class="nn">enum</span>
 <span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Iterable</span>
@@ -481,6 +482,15 @@
     <span class="s2">&quot; If you are interested in this feature please submit&quot;</span>
     <span class="s2">&quot; an issue at https://github.com/pytorch/rl/issues&quot;</span>
 <span class="p">)</span>
+
+
+<span class="c1"># Akin to TD&#39;s NO_DEFAULT but won&#39;t raise a KeyError when found in a TD or used as default</span>
+<span class="k">class</span> <span class="nc">_NoDefault</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">IntEnum</span><span class="p">):</span>
+    <span class="n">ZERO</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">ONE</span> <span class="o">=</span> <span class="mi">1</span>
+
+
+<span class="n">NO_DEFAULT_RL</span> <span class="o">=</span> <span class="n">_NoDefault</span><span class="o">.</span><span class="n">ONE</span>
 
 
 <span class="k">def</span> <span class="nf">_default_dtype_and_device</span><span class="p">(</span>
