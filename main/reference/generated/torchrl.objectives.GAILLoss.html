@@ -10,7 +10,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>DiscreteCQLLoss &mdash; torchrl main documentation</title>
+  <title>GAILLoss &mdash; torchrl main documentation</title>
   
 
   
@@ -39,8 +39,8 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="GAILLoss" href="torchrl.objectives.GAILLoss.html" />
-    <link rel="prev" title="CQLLoss" href="torchrl.objectives.CQLLoss.html" />
+    <link rel="next" title="DTLoss" href="torchrl.objectives.DTLoss.html" />
+    <link rel="prev" title="DiscreteCQLLoss" href="torchrl.objectives.DiscreteCQLLoss.html" />
   <!-- Google Tag Manager -->
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -370,13 +370,13 @@
         
           <li><a href="../objectives.html">torchrl.objectives package</a> &gt;</li>
         
-      <li>DiscreteCQLLoss</li>
+      <li>GAILLoss</li>
     
     
       <li class="pytorch-breadcrumbs-aside">
         
             
-            <a href="../../_sources/reference/generated/torchrl.objectives.DiscreteCQLLoss.rst.txt" rel="nofollow"><img src="../../_static/images/view-page-source-icon.svg"></a>
+            <a href="../../_sources/reference/generated/torchrl.objectives.GAILLoss.rst.txt" rel="nofollow"><img src="../../_static/images/view-page-source-icon.svg"></a>
           
         
       </li>
@@ -408,28 +408,21 @@
             <div role="main" class="main-content" itemscope="itemscope" itemtype="http://schema.org/Article">
              <article itemprop="articleBody" id="pytorch-article" class="pytorch-article">
               
-  <section id="discretecqlloss">
-<h1>DiscreteCQLLoss<a class="headerlink" href="#discretecqlloss" title="Permalink to this heading">¶</a></h1>
+  <section id="gailloss">
+<h1>GAILLoss<a class="headerlink" href="#gailloss" title="Permalink to this heading">¶</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="torchrl.objectives.DiscreteCQLLoss">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">torchrl.objectives.</span></span><span class="sig-name descname"><span class="pre">DiscreteCQLLoss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/torchrl/objectives/cql.html#DiscreteCQLLoss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.objectives.DiscreteCQLLoss" title="Permalink to this definition">¶</a></dt>
-<dd><p>TorchRL implementation of the discrete CQL loss.</p>
-<p>This class implements the discrete conservative Q-learning (CQL) loss function, as presented in the paper
-“Conservative Q-Learning for Offline Reinforcement Learning” (<a class="reference external" href="https://arxiv.org/abs/2006.04779">https://arxiv.org/abs/2006.04779</a>).</p>
+<dt class="sig sig-object py" id="torchrl.objectives.GAILLoss">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">torchrl.objectives.</span></span><span class="sig-name descname"><span class="pre">GAILLoss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/torchrl/objectives/gail.html#GAILLoss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.objectives.GAILLoss" title="Permalink to this definition">¶</a></dt>
+<dd><p>TorchRL implementation of the Generative Adversarial Imitation Learning (GAIL) loss.</p>
+<p>Presented in <cite>“Generative Adversarial Imitation Learning” &lt;https://arxiv.org/pdf/1606.03476&gt;</cite></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>value_network</strong> (<em>Union</em><em>[</em><a class="reference internal" href="torchrl.modules.tensordict_module.QValueActor.html#torchrl.modules.tensordict_module.QValueActor" title="torchrl.modules.tensordict_module.QValueActor"><em>QValueActor</em></a><em>, </em><em>nn.Module</em><em>]</em>) – The Q-value network used to estimate state-action values.</p>
+<dd class="field-odd"><p><strong>discriminator_network</strong> (<em>TensorDictModule</em>) – stochastic actor</p>
 </dd>
 <dt class="field-even">Keyword Arguments<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>loss_function</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) – The distance function used to calculate the distance between the predicted
-Q-values and the target Q-values. Defaults to <code class="docutils literal notranslate"><span class="pre">l2</span></code>.</p></li>
-<li><p><strong>delay_value</strong> (<em>bool</em>) – Whether to separate the target Q value
-networks from the Q value networks used for data collection.
-Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
-<li><p><strong>gamma</strong> (<a class="reference internal" href="torchrl.data.MultiStep.html#torchrl.data.MultiStep.float" title="torchrl.data.MultiStep.float"><em>float</em></a><em>, </em><em>optional</em>) – Discount factor. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
-<li><p><strong>action_space</strong> – The action space of the environment. If None, it is inferred from the value network.
-Defaults to None.</p></li>
+<li><p><strong>use_grad_penalty</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to use gradient penalty. Default: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>gp_lambda</strong> (<a class="reference internal" href="torchrl.data.MultiStep.html#torchrl.data.MultiStep.float" title="torchrl.data.MultiStep.float"><em>float</em></a><em>, </em><em>optional</em>) – Gradient penalty lambda. Default: <code class="docutils literal notranslate"><span class="pre">10</span></code>.</p></li>
 <li><p><strong>reduction</strong> (<em>str</em><em>, </em><em>optional</em>) – Specifies the reduction to apply to the output:
 <code class="docutils literal notranslate"><span class="pre">&quot;none&quot;</span></code> | <code class="docutils literal notranslate"><span class="pre">&quot;mean&quot;</span></code> | <code class="docutils literal notranslate"><span class="pre">&quot;sum&quot;</span></code>. <code class="docutils literal notranslate"><span class="pre">&quot;none&quot;</span></code>: no reduction will be applied,
 <code class="docutils literal notranslate"><span class="pre">&quot;mean&quot;</span></code>: the sum of the output will be divided by the number of
@@ -437,123 +430,13 @@ elements in the output, <code class="docutils literal notranslate"><span class="
 </ul>
 </dd>
 </dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.modules</span> <span class="kn">import</span> <span class="n">MLP</span><span class="p">,</span> <span class="n">QValueActor</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.data</span> <span class="kn">import</span> <span class="n">OneHotDiscreteTensorSpec</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.objectives</span> <span class="kn">import</span> <span class="n">DiscreteCQLLoss</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">n_obs</span><span class="p">,</span> <span class="n">n_act</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">value_net</span> <span class="o">=</span> <span class="n">MLP</span><span class="p">(</span><span class="n">in_features</span><span class="o">=</span><span class="n">n_obs</span><span class="p">,</span> <span class="n">out_features</span><span class="o">=</span><span class="n">n_act</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">spec</span> <span class="o">=</span> <span class="n">OneHotDiscreteTensorSpec</span><span class="p">(</span><span class="n">n_act</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">actor</span> <span class="o">=</span> <span class="n">QValueActor</span><span class="p">(</span><span class="n">value_net</span><span class="p">,</span> <span class="n">in_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;observation&quot;</span><span class="p">],</span> <span class="n">action_space</span><span class="o">=</span><span class="n">spec</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">loss</span> <span class="o">=</span> <span class="n">DiscreteCQLLoss</span><span class="p">(</span><span class="n">actor</span><span class="p">,</span> <span class="n">action_space</span><span class="o">=</span><span class="n">spec</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">batch</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="p">({</span>
-<span class="gp">... </span>    <span class="s2">&quot;observation&quot;</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="o">*</span><span class="n">batch</span><span class="p">,</span> <span class="n">n_obs</span><span class="p">),</span>
-<span class="gp">... </span>    <span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="n">spec</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">batch</span><span class="p">),</span>
-<span class="gp">... </span>    <span class="p">(</span><span class="s2">&quot;next&quot;</span><span class="p">,</span> <span class="s2">&quot;observation&quot;</span><span class="p">):</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="o">*</span><span class="n">batch</span><span class="p">,</span> <span class="n">n_obs</span><span class="p">),</span>
-<span class="gp">... </span>    <span class="p">(</span><span class="s2">&quot;next&quot;</span><span class="p">,</span> <span class="s2">&quot;done&quot;</span><span class="p">):</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="o">*</span><span class="n">batch</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">),</span>
-<span class="gp">... </span>    <span class="p">(</span><span class="s2">&quot;next&quot;</span><span class="p">,</span> <span class="s2">&quot;terminated&quot;</span><span class="p">):</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="o">*</span><span class="n">batch</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">),</span>
-<span class="gp">... </span>    <span class="p">(</span><span class="s2">&quot;next&quot;</span><span class="p">,</span> <span class="s2">&quot;reward&quot;</span><span class="p">):</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="o">*</span><span class="n">batch</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="gp">... </span><span class="p">},</span> <span class="n">batch</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">loss</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-<span class="go">TensorDict(</span>
-<span class="go">    fields={</span>
-<span class="go">        loss_cql: Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, is_shared=False),</span>
-<span class="go">        loss_qvalue: Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, is_shared=False),</span>
-<span class="go">        pred_value: Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, is_shared=False),</span>
-<span class="go">        target_value: Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, is_shared=False),</span>
-<span class="go">        td_error: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, is_shared=False)},</span>
-<span class="go">    batch_size=torch.Size([]),</span>
-<span class="go">    device=None,</span>
-<span class="go">    is_shared=False)</span>
-</pre></div>
-</div>
-<p>This class is compatible with non-tensordict based modules too and can be
-used without recurring to any tensordict-related primitive. In this case,
-the expected keyword arguments are:
-<code class="docutils literal notranslate"><span class="pre">[&quot;observation&quot;,</span> <span class="pre">&quot;next_observation&quot;,</span> <span class="pre">&quot;action&quot;,</span> <span class="pre">&quot;next_reward&quot;,</span> <span class="pre">&quot;next_done&quot;,</span> <span class="pre">&quot;next_terminated&quot;]</span></code>,
-and a single loss value is returned.</p>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.objectives</span> <span class="kn">import</span> <span class="n">DiscreteCQLLoss</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.data</span> <span class="kn">import</span> <span class="n">OneHotDiscreteTensorSpec</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">torch</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">n_obs</span> <span class="o">=</span> <span class="mi">3</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">n_action</span> <span class="o">=</span> <span class="mi">4</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">action_spec</span> <span class="o">=</span> <span class="n">OneHotDiscreteTensorSpec</span><span class="p">(</span><span class="n">n_action</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">value_network</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">n_obs</span><span class="p">,</span> <span class="n">n_action</span><span class="p">)</span> <span class="c1"># a simple value model</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">dcql_loss</span> <span class="o">=</span> <span class="n">DiscreteCQLLoss</span><span class="p">(</span><span class="n">value_network</span><span class="p">,</span> <span class="n">action_space</span><span class="o">=</span><span class="n">action_spec</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># define data</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">observation</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">n_obs</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">next_observation</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">n_obs</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">action</span> <span class="o">=</span> <span class="n">action_spec</span><span class="o">.</span><span class="n">rand</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">next_reward</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">next_done</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">next_terminated</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">loss_val</span> <span class="o">=</span> <span class="n">dcql_loss</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="n">observation</span><span class="o">=</span><span class="n">observation</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">next_observation</span><span class="o">=</span><span class="n">next_observation</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">next_reward</span><span class="o">=</span><span class="n">next_reward</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">next_done</span><span class="o">=</span><span class="n">next_done</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">next_terminated</span><span class="o">=</span><span class="n">next_terminated</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">action</span><span class="o">=</span><span class="n">action</span><span class="p">)</span>
-</pre></div>
-</div>
 <dl class="py method">
-<dt class="sig sig-object py" id="torchrl.objectives.DiscreteCQLLoss.forward">
-<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensordict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TensorDictBase</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">TensorDict</span></span></span><a class="reference internal" href="../../_modules/torchrl/objectives/cql.html#DiscreteCQLLoss.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.objectives.DiscreteCQLLoss.forward" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes the (DQN) CQL loss given a tensordict sampled from the replay buffer.</p>
-<dl class="simple">
-<dt>This function will also write a “td_error” key that can be used by prioritized replay buffers to assign</dt><dd><p>a priority to items in the tensordict.</p>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>tensordict</strong> (<em>TensorDictBase</em>) – a tensordict with keys [“action”] and the in_keys of
-the value network (observations, “done”, “terminated”, “reward” in a “next” tensordict).</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>a tensor containing the CQL loss.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="torchrl.objectives.DiscreteCQLLoss.make_value_estimator">
-<span class="sig-name descname"><span class="pre">make_value_estimator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="torchrl.objectives.ValueEstimators.html#torchrl.objectives.ValueEstimators" title="torchrl.objectives.utils.ValueEstimators"><span class="pre">ValueEstimators</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">hyperparams</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/torchrl/objectives/cql.html#DiscreteCQLLoss.make_value_estimator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.objectives.DiscreteCQLLoss.make_value_estimator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Value-function constructor.</p>
-<p>If the non-default value function is wanted, it must be built using
-this method.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>value_type</strong> (<a class="reference internal" href="torchrl.objectives.ValueEstimators.html#torchrl.objectives.ValueEstimators" title="torchrl.objectives.ValueEstimators"><em>ValueEstimators</em></a>) – A <a class="reference internal" href="torchrl.objectives.ValueEstimators.html#torchrl.objectives.ValueEstimators" title="torchrl.objectives.utils.ValueEstimators"><code class="xref py py-class docutils literal notranslate"><span class="pre">ValueEstimators</span></code></a>
-enum type indicating the value function to use. If none is provided,
-the default stored in the <code class="docutils literal notranslate"><span class="pre">default_value_estimator</span></code>
-attribute will be used. The resulting value estimator class
-will be registered in <code class="docutils literal notranslate"><span class="pre">self.value_type</span></code>, allowing
-future refinements.</p></li>
-<li><p><strong>**hyperparams</strong> – hyperparameters to use for the value function.
-If not provided, the value indicated by
-<a class="reference internal" href="torchrl.objectives.default_value_kwargs.html#torchrl.objectives.default_value_kwargs" title="torchrl.objectives.utils.default_value_kwargs"><code class="xref py py-func docutils literal notranslate"><span class="pre">default_value_kwargs()</span></code></a> will be
-used.</p></li>
-</ul>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.objectives</span> <span class="kn">import</span> <span class="n">DQNLoss</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># initialize the DQN loss</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">actor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">dqn_loss</span> <span class="o">=</span> <span class="n">DQNLoss</span><span class="p">(</span><span class="n">actor</span><span class="p">,</span> <span class="n">action_space</span><span class="o">=</span><span class="s2">&quot;one-hot&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># updating the parameters of the default value estimator</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">dqn_loss</span><span class="o">.</span><span class="n">make_value_estimator</span><span class="p">(</span><span class="n">gamma</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">dqn_loss</span><span class="o">.</span><span class="n">make_value_estimator</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="n">ValueEstimators</span><span class="o">.</span><span class="n">TD1</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">gamma</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># if we want to change the gamma value</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">dqn_loss</span><span class="o">.</span><span class="n">make_value_estimator</span><span class="p">(</span><span class="n">dqn_loss</span><span class="o">.</span><span class="n">value_type</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span>
-</pre></div>
-</div>
+<dt class="sig sig-object py" id="torchrl.objectives.GAILLoss.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensordict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TensorDictBase</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">TensorDictBase</span></span></span><a class="reference internal" href="../../_modules/torchrl/objectives/gail.html#GAILLoss.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.objectives.GAILLoss.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>The forward method.</p>
+<p>Computes the discriminator loss and gradient penalty if <cite>use_grad_penalty</cite> is set to True. If <cite>use_grad_penalty</cite> is set to True, the detached gradient penalty loss is also returned for logging purposes.
+To see what keys are expected in the input tensordict and what keys are expected as output, check the
+class’s <cite>“in_keys”</cite> and <cite>“out_keys”</cite> attributes.</p>
 </dd></dl>
 
 </dd></dl>
@@ -568,10 +451,10 @@ used.</p></li>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="torchrl.objectives.GAILLoss.html" class="btn btn-neutral float-right" title="GAILLoss" accesskey="n" rel="next">Next <img src="../../_static/images/chevron-right-orange.svg" class="next-page"></a>
+        <a href="torchrl.objectives.DTLoss.html" class="btn btn-neutral float-right" title="DTLoss" accesskey="n" rel="next">Next <img src="../../_static/images/chevron-right-orange.svg" class="next-page"></a>
       
       
-        <a href="torchrl.objectives.CQLLoss.html" class="btn btn-neutral" title="CQLLoss" accesskey="p" rel="prev"><img src="../../_static/images/chevron-right-orange.svg" class="previous-page"> Previous</a>
+        <a href="torchrl.objectives.DiscreteCQLLoss.html" class="btn btn-neutral" title="DiscreteCQLLoss" accesskey="p" rel="prev"><img src="../../_static/images/chevron-right-orange.svg" class="previous-page"> Previous</a>
       
     </div>
   
@@ -605,7 +488,7 @@ used.</p></li>
           <div class="pytorch-right-menu" id="pytorch-right-menu">
             <div class="pytorch-side-scroll" id="pytorch-side-scroll-right">
               <ul>
-<li><a class="reference internal" href="#">DiscreteCQLLoss</a></li>
+<li><a class="reference internal" href="#">GAILLoss</a></li>
 </ul>
 
             </div>
