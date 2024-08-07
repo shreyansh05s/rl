@@ -415,12 +415,7 @@
 
 <span class="kn">from</span> <span class="nn">tensordict</span> <span class="kn">import</span> <span class="n">TensorDict</span><span class="p">,</span> <span class="n">TensorDictBase</span>
 <span class="kn">from</span> <span class="nn">torchrl._utils</span> <span class="kn">import</span> <span class="n">logger</span> <span class="k">as</span> <span class="n">torchrl_logger</span>
-<span class="kn">from</span> <span class="nn">torchrl.data.tensor_specs</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">CompositeSpec</span><span class="p">,</span>
-    <span class="n">DiscreteTensorSpec</span><span class="p">,</span>
-    <span class="n">TensorSpec</span><span class="p">,</span>
-    <span class="n">UnboundedContinuousTensorSpec</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">torchrl.data.tensor_specs</span> <span class="kn">import</span> <span class="n">Categorical</span><span class="p">,</span> <span class="n">Composite</span><span class="p">,</span> <span class="n">TensorSpec</span><span class="p">,</span> <span class="n">Unbounded</span>
 <span class="kn">from</span> <span class="nn">torchrl.envs.common</span> <span class="kn">import</span> <span class="n">_EnvWrapper</span>
 <span class="kn">from</span> <span class="nn">torchrl.envs.utils</span> <span class="kn">import</span> <span class="n">_classproperty</span>
 
@@ -437,8 +432,8 @@
 <span class="sd">    Args:</span>
 <span class="sd">        env (envpool.python.envpool.EnvPoolMixin): the envpool to wrap.</span>
 <span class="sd">        categorical_action_encoding (bool, optional): if ``True``, categorical</span>
-<span class="sd">            specs will be converted to the TorchRL equivalent (:class:`torchrl.data.DiscreteTensorSpec`),</span>
-<span class="sd">            otherwise a one-hot encoding will be used (:class:`torchrl.data.OneHotTensorSpec`).</span>
+<span class="sd">            specs will be converted to the TorchRL equivalent (:class:`torchrl.data.Categorical`),</span>
+<span class="sd">            otherwise a one-hot encoding will be used (:class:`torchrl.data.OneHot`).</span>
 <span class="sd">            Defaults to ``False``.</span>
 
 <span class="sd">    Keyword Args:</span>
@@ -563,7 +558,7 @@
         <span class="k">return</span> <span class="n">action_spec</span>
 
     <span class="k">def</span> <span class="nf">_get_output_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorSpec</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">CompositeSpec</span><span class="p">(</span>
+        <span class="k">return</span> <span class="n">Composite</span><span class="p">(</span>
             <span class="n">full_observation_spec</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_observation_spec</span><span class="p">(),</span>
             <span class="n">full_reward_spec</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_reward_spec</span><span class="p">(),</span>
             <span class="n">full_done_spec</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_done_spec</span><span class="p">(),</span>
@@ -582,9 +577,9 @@
             <span class="n">categorical_action_encoding</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">observation_spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_shape_to_spec</span><span class="p">(</span><span class="n">observation_spec</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">observation_spec</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">observation_spec</span><span class="p">,</span> <span class="n">Composite</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">observation_spec</span>
-        <span class="k">return</span> <span class="n">CompositeSpec</span><span class="p">(</span>
+        <span class="k">return</span> <span class="n">Composite</span><span class="p">(</span>
             <span class="n">observation</span><span class="o">=</span><span class="n">observation_spec</span><span class="p">,</span>
             <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span><span class="p">,),</span>
             <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
@@ -594,19 +589,19 @@
         <span class="k">return</span> <span class="n">spec</span><span class="o">.</span><span class="n">expand</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span><span class="p">,</span> <span class="o">*</span><span class="n">spec</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">_get_reward_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorSpec</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">UnboundedContinuousTensorSpec</span><span class="p">(</span>
+        <span class="k">return</span> <span class="n">Unbounded</span><span class="p">(</span>
             <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
             <span class="n">shape</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span>
         <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_get_done_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorSpec</span><span class="p">:</span>
-        <span class="n">spec</span> <span class="o">=</span> <span class="n">DiscreteTensorSpec</span><span class="p">(</span>
+        <span class="n">spec</span> <span class="o">=</span> <span class="n">Categorical</span><span class="p">(</span>
             <span class="mi">2</span><span class="p">,</span>
             <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
             <span class="n">shape</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span>
             <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="k">return</span> <span class="n">CompositeSpec</span><span class="p">(</span>
+        <span class="k">return</span> <span class="n">Composite</span><span class="p">(</span>
             <span class="n">done</span><span class="o">=</span><span class="n">spec</span><span class="p">,</span>
             <span class="n">truncated</span><span class="o">=</span><span class="n">spec</span><span class="o">.</span><span class="n">clone</span><span class="p">(),</span>
             <span class="n">terminated</span><span class="o">=</span><span class="n">spec</span><span class="o">.</span><span class="n">clone</span><span class="p">(),</span>
@@ -737,8 +732,8 @@
 <span class="sd">        create_env_kwargs (Dict[str, Any], optional): kwargs to be passed to envpool</span>
 <span class="sd">            environment constructor.</span>
 <span class="sd">        categorical_action_encoding (bool, optional): if ``True``, categorical</span>
-<span class="sd">            specs will be converted to the TorchRL equivalent (:class:`torchrl.data.DiscreteTensorSpec`),</span>
-<span class="sd">            otherwise a one-hot encoding will be used (:class:`torchrl.data.OneHotTensorSpec`).</span>
+<span class="sd">            specs will be converted to the TorchRL equivalent (:class:`torchrl.data.Categorical`),</span>
+<span class="sd">            otherwise a one-hot encoding will be used (:class:`torchrl.data.OneHot`).</span>
 <span class="sd">            Defaults to ``False``.</span>
 <span class="sd">        disable_env_checker (bool, optional): for gym &gt; 0.24 only. If ``True`` (default</span>
 <span class="sd">            for these versions), the environment checker won&#39;t be run.</span>

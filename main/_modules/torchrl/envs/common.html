@@ -427,12 +427,7 @@
     <span class="n">seed_generator</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="kn">from</span> <span class="nn">torchrl.data.tensor_specs</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">CompositeSpec</span><span class="p">,</span>
-    <span class="n">DiscreteTensorSpec</span><span class="p">,</span>
-    <span class="n">TensorSpec</span><span class="p">,</span>
-    <span class="n">UnboundedContinuousTensorSpec</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">torchrl.data.tensor_specs</span> <span class="kn">import</span> <span class="n">Categorical</span><span class="p">,</span> <span class="n">Composite</span><span class="p">,</span> <span class="n">TensorSpec</span><span class="p">,</span> <span class="n">Unbounded</span>
 <span class="kn">from</span> <span class="nn">torchrl.data.utils</span> <span class="kn">import</span> <span class="n">DEVICE_TYPING</span>
 <span class="kn">from</span> <span class="nn">torchrl.envs.utils</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">_make_compatible_policy</span><span class="p">,</span>
@@ -464,7 +459,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">,</span>
-        <span class="n">specs</span><span class="p">:</span> <span class="n">CompositeSpec</span><span class="p">,</span>
+        <span class="n">specs</span><span class="p">:</span> <span class="n">Composite</span><span class="p">,</span>
         <span class="n">batch_size</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">,</span>
         <span class="n">env_str</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">device</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
@@ -493,7 +488,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_tensordict</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
 
     <span class="nd">@specs</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">specs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">CompositeSpec</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">specs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Composite</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_specs</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
@@ -614,29 +609,29 @@
 <span class="sd">            be done after a call to :meth:`~.reset` is made. Defaults to ``False``.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        done_spec (CompositeSpec): equivalent to ``full_done_spec`` as all</span>
+<span class="sd">        done_spec (Composite): equivalent to ``full_done_spec`` as all</span>
 <span class="sd">            ``done_specs`` contain at least a ``&quot;done&quot;`` and a ``&quot;terminated&quot;`` entry</span>
 <span class="sd">        action_spec (TensorSpec): the spec of the action. Links to the spec of the leaf</span>
 <span class="sd">            action if only one action tensor is to be expected. Otherwise links to</span>
 <span class="sd">            ``full_action_spec``.</span>
-<span class="sd">        observation_spec (CompositeSpec): equivalent to ``full_observation_spec``.</span>
+<span class="sd">        observation_spec (Composite): equivalent to ``full_observation_spec``.</span>
 <span class="sd">        reward_spec (TensorSpec): the spec of the reward. Links to the spec of the leaf</span>
 <span class="sd">            reward if only one reward tensor is to be expected. Otherwise links to</span>
 <span class="sd">            ``full_reward_spec``.</span>
-<span class="sd">        state_spec (CompositeSpec): equivalent to ``full_state_spec``.</span>
-<span class="sd">        full_done_spec (CompositeSpec): a composite spec such that ``full_done_spec.zero()``</span>
+<span class="sd">        state_spec (Composite): equivalent to ``full_state_spec``.</span>
+<span class="sd">        full_done_spec (Composite): a composite spec such that ``full_done_spec.zero()``</span>
 <span class="sd">            returns a tensordict containing only the leaves encoding the done status of the</span>
 <span class="sd">            environment.</span>
-<span class="sd">        full_action_spec (CompositeSpec): a composite spec such that ``full_action_spec.zero()``</span>
+<span class="sd">        full_action_spec (Composite): a composite spec such that ``full_action_spec.zero()``</span>
 <span class="sd">            returns a tensordict containing only the leaves encoding the action of the</span>
 <span class="sd">            environment.</span>
-<span class="sd">        full_observation_spec (CompositeSpec): a composite spec such that ``full_observation_spec.zero()``</span>
+<span class="sd">        full_observation_spec (Composite): a composite spec such that ``full_observation_spec.zero()``</span>
 <span class="sd">            returns a tensordict containing only the leaves encoding the observation of the</span>
 <span class="sd">            environment.</span>
-<span class="sd">        full_reward_spec (CompositeSpec): a composite spec such that ``full_reward_spec.zero()``</span>
+<span class="sd">        full_reward_spec (Composite): a composite spec such that ``full_reward_spec.zero()``</span>
 <span class="sd">            returns a tensordict containing only the leaves encoding the reward of the</span>
 <span class="sd">            environment.</span>
-<span class="sd">        full_state_spec (CompositeSpec): a composite spec such that ``full_state_spec.zero()``</span>
+<span class="sd">        full_state_spec (Composite): a composite spec such that ``full_state_spec.zero()``</span>
 <span class="sd">            returns a tensordict containing only the leaves encoding the inputs (actions</span>
 <span class="sd">            excluded) of the environment.</span>
 <span class="sd">        batch_size (torch.Size): The batch-size of the environment.</span>
@@ -655,9 +650,9 @@
 <span class="sd">        &gt;&gt;&gt; from torchrl.envs import EnvBase</span>
 <span class="sd">        &gt;&gt;&gt; class CounterEnv(EnvBase):</span>
 <span class="sd">        ...     def __init__(self, batch_size=(), device=None, **kwargs):</span>
-<span class="sd">        ...         self.observation_spec = CompositeSpec(</span>
-<span class="sd">        ...             count=UnboundedContinuousTensorSpec(batch_size, device=device, dtype=torch.int64))</span>
-<span class="sd">        ...         self.action_spec = UnboundedContinuousTensorSpec(batch_size, device=device, dtype=torch.int8)</span>
+<span class="sd">        ...         self.observation_spec = Composite(</span>
+<span class="sd">        ...             count=Unbounded(batch_size, device=device, dtype=torch.int64))</span>
+<span class="sd">        ...         self.action_spec = Unbounded(batch_size, device=device, dtype=torch.int8)</span>
 <span class="sd">        ...         # done spec and reward spec are set automatically</span>
 <span class="sd">        ...     def _step(self, tensordict):</span>
 <span class="sd">        ...</span>
@@ -666,10 +661,10 @@
 <span class="sd">        &gt;&gt;&gt; env.batch_size  # how many envs are run at once</span>
 <span class="sd">        torch.Size([])</span>
 <span class="sd">        &gt;&gt;&gt; env.input_spec</span>
-<span class="sd">        CompositeSpec(</span>
+<span class="sd">        Composite(</span>
 <span class="sd">            full_state_spec: None,</span>
-<span class="sd">            full_action_spec: CompositeSpec(</span>
-<span class="sd">                action: BoundedTensorSpec(</span>
+<span class="sd">            full_action_spec: Composite(</span>
+<span class="sd">                action: BoundedContinuous(</span>
 <span class="sd">                    shape=torch.Size([1]),</span>
 <span class="sd">                    space=ContinuousBox(</span>
 <span class="sd">                        low=Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, contiguous=True),</span>
@@ -678,7 +673,7 @@
 <span class="sd">                    dtype=torch.float32,</span>
 <span class="sd">                    domain=continuous), device=cpu, shape=torch.Size([])), device=cpu, shape=torch.Size([]))</span>
 <span class="sd">        &gt;&gt;&gt; env.action_spec</span>
-<span class="sd">        BoundedTensorSpec(</span>
+<span class="sd">        BoundedContinuous(</span>
 <span class="sd">            shape=torch.Size([1]),</span>
 <span class="sd">            space=ContinuousBox(</span>
 <span class="sd">                low=Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, contiguous=True),</span>
@@ -687,8 +682,8 @@
 <span class="sd">            dtype=torch.float32,</span>
 <span class="sd">            domain=continuous)</span>
 <span class="sd">        &gt;&gt;&gt; env.observation_spec</span>
-<span class="sd">        CompositeSpec(</span>
-<span class="sd">            observation: BoundedTensorSpec(</span>
+<span class="sd">        Composite(</span>
+<span class="sd">            observation: BoundedContinuous(</span>
 <span class="sd">                shape=torch.Size([3]),</span>
 <span class="sd">                space=ContinuousBox(</span>
 <span class="sd">                    low=Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float32, contiguous=True),</span>
@@ -697,14 +692,14 @@
 <span class="sd">                dtype=torch.float32,</span>
 <span class="sd">                domain=continuous), device=cpu, shape=torch.Size([]))</span>
 <span class="sd">        &gt;&gt;&gt; env.reward_spec</span>
-<span class="sd">        UnboundedContinuousTensorSpec(</span>
+<span class="sd">        UnboundedContinuous(</span>
 <span class="sd">            shape=torch.Size([1]),</span>
 <span class="sd">            space=None,</span>
 <span class="sd">            device=cpu,</span>
 <span class="sd">            dtype=torch.float32,</span>
 <span class="sd">            domain=continuous)</span>
 <span class="sd">        &gt;&gt;&gt; env.done_spec</span>
-<span class="sd">        DiscreteTensorSpec(</span>
+<span class="sd">        Categorical(</span>
 <span class="sd">            shape=torch.Size([1]),</span>
 <span class="sd">            space=DiscreteBox(n=2),</span>
 <span class="sd">            device=cpu,</span>
@@ -712,16 +707,16 @@
 <span class="sd">            domain=discrete)</span>
 <span class="sd">        &gt;&gt;&gt; # the output_spec contains all the expected outputs</span>
 <span class="sd">        &gt;&gt;&gt; env.output_spec</span>
-<span class="sd">        CompositeSpec(</span>
-<span class="sd">            full_reward_spec: CompositeSpec(</span>
-<span class="sd">                reward: UnboundedContinuousTensorSpec(</span>
+<span class="sd">        Composite(</span>
+<span class="sd">            full_reward_spec: Composite(</span>
+<span class="sd">                reward: UnboundedContinuous(</span>
 <span class="sd">                    shape=torch.Size([1]),</span>
 <span class="sd">                    space=None,</span>
 <span class="sd">                    device=cpu,</span>
 <span class="sd">                    dtype=torch.float32,</span>
 <span class="sd">                    domain=continuous), device=cpu, shape=torch.Size([])),</span>
-<span class="sd">            full_observation_spec: CompositeSpec(</span>
-<span class="sd">                observation: BoundedTensorSpec(</span>
+<span class="sd">            full_observation_spec: Composite(</span>
+<span class="sd">                observation: BoundedContinuous(</span>
 <span class="sd">                    shape=torch.Size([3]),</span>
 <span class="sd">                    space=ContinuousBox(</span>
 <span class="sd">                        low=Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float32, contiguous=True),</span>
@@ -729,8 +724,8 @@
 <span class="sd">                    device=cpu,</span>
 <span class="sd">                    dtype=torch.float32,</span>
 <span class="sd">                    domain=continuous), device=cpu, shape=torch.Size([])),</span>
-<span class="sd">            full_done_spec: CompositeSpec(</span>
-<span class="sd">                done: DiscreteTensorSpec(</span>
+<span class="sd">            full_done_spec: Composite(</span>
+<span class="sd">                done: Categorical(</span>
 <span class="sd">                    shape=torch.Size([1]),</span>
 <span class="sd">                    space=DiscreteBox(n=2),</span>
 <span class="sd">                    device=cpu,</span>
@@ -946,10 +941,10 @@
 <span class="sd">            &gt;&gt;&gt; from torchrl.envs.libs.gym import GymEnv</span>
 <span class="sd">            &gt;&gt;&gt; env = GymEnv(&quot;Pendulum-v1&quot;)</span>
 <span class="sd">            &gt;&gt;&gt; env.input_spec</span>
-<span class="sd">            CompositeSpec(</span>
+<span class="sd">            Composite(</span>
 <span class="sd">                full_state_spec: None,</span>
-<span class="sd">                full_action_spec: CompositeSpec(</span>
-<span class="sd">                    action: BoundedTensorSpec(</span>
+<span class="sd">                full_action_spec: Composite(</span>
+<span class="sd">                    action: BoundedContinuous(</span>
 <span class="sd">                        shape=torch.Size([1]),</span>
 <span class="sd">                        space=ContinuousBox(</span>
 <span class="sd">                            low=Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, contiguous=True),</span>
@@ -962,7 +957,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">input_spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_input_spec&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">input_spec</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">input_spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">(</span>
+            <span class="n">input_spec</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">(</span>
                 <span class="n">full_state_spec</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                 <span class="n">shape</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span>
                 <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
@@ -993,16 +988,16 @@
 <span class="sd">            &gt;&gt;&gt; from torchrl.envs.libs.gym import GymEnv</span>
 <span class="sd">            &gt;&gt;&gt; env = GymEnv(&quot;Pendulum-v1&quot;)</span>
 <span class="sd">            &gt;&gt;&gt; env.output_spec</span>
-<span class="sd">            CompositeSpec(</span>
-<span class="sd">                full_reward_spec: CompositeSpec(</span>
-<span class="sd">                    reward: UnboundedContinuousTensorSpec(</span>
+<span class="sd">            Composite(</span>
+<span class="sd">                full_reward_spec: Composite(</span>
+<span class="sd">                    reward: UnboundedContinuous(</span>
 <span class="sd">                        shape=torch.Size([1]),</span>
 <span class="sd">                        space=None,</span>
 <span class="sd">                        device=cpu,</span>
 <span class="sd">                        dtype=torch.float32,</span>
 <span class="sd">                        domain=continuous), device=cpu, shape=torch.Size([])),</span>
-<span class="sd">                full_observation_spec: CompositeSpec(</span>
-<span class="sd">                    observation: BoundedTensorSpec(</span>
+<span class="sd">                full_observation_spec: Composite(</span>
+<span class="sd">                    observation: BoundedContinuous(</span>
 <span class="sd">                        shape=torch.Size([3]),</span>
 <span class="sd">                        space=ContinuousBox(</span>
 <span class="sd">                            low=Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float32, contiguous=True),</span>
@@ -1010,8 +1005,8 @@
 <span class="sd">                        device=cpu,</span>
 <span class="sd">                        dtype=torch.float32,</span>
 <span class="sd">                        domain=continuous), device=cpu, shape=torch.Size([])),</span>
-<span class="sd">                full_done_spec: CompositeSpec(</span>
-<span class="sd">                    done: DiscreteTensorSpec(</span>
+<span class="sd">                full_done_spec: Composite(</span>
+<span class="sd">                    done: Categorical(</span>
 <span class="sd">                        shape=torch.Size([1]),</span>
 <span class="sd">                        space=DiscreteBox(n=2),</span>
 <span class="sd">                        device=cpu,</span>
@@ -1022,7 +1017,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">output_spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_output_spec&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">output_spec</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">output_spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">(</span>
+            <span class="n">output_spec</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">(</span>
                 <span class="n">shape</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span>
                 <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
             <span class="p">)</span><span class="o">.</span><span class="n">lock_</span><span class="p">()</span>
@@ -1090,9 +1085,9 @@
 
 <span class="sd">        If the action spec is provided as a simple spec, this will be returned.</span>
 
-<span class="sd">            &gt;&gt;&gt; env.action_spec = UnboundedContinuousTensorSpec(1)</span>
+<span class="sd">            &gt;&gt;&gt; env.action_spec = Unbounded(1)</span>
 <span class="sd">            &gt;&gt;&gt; env.action_spec</span>
-<span class="sd">            UnboundedContinuousTensorSpec(</span>
+<span class="sd">            UnboundedContinuous(</span>
 <span class="sd">                shape=torch.Size([1]),</span>
 <span class="sd">                space=ContinuousBox(</span>
 <span class="sd">                    low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True),</span>
@@ -1104,9 +1099,9 @@
 <span class="sd">        If the action spec is provided as a composite spec and contains only one leaf,</span>
 <span class="sd">        this function will return just the leaf.</span>
 
-<span class="sd">            &gt;&gt;&gt; env.action_spec = CompositeSpec({&quot;nested&quot;: {&quot;action&quot;: UnboundedContinuousTensorSpec(1)}})</span>
+<span class="sd">            &gt;&gt;&gt; env.action_spec = Composite({&quot;nested&quot;: {&quot;action&quot;: Unbounded(1)}})</span>
 <span class="sd">            &gt;&gt;&gt; env.action_spec</span>
-<span class="sd">            UnboundedContinuousTensorSpec(</span>
+<span class="sd">            UnboundedContinuous(</span>
 <span class="sd">                shape=torch.Size([1]),</span>
 <span class="sd">                space=ContinuousBox(</span>
 <span class="sd">                    low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True),</span>
@@ -1118,11 +1113,11 @@
 <span class="sd">        If the action spec is provided as a composite spec and has more than one leaf,</span>
 <span class="sd">        this function will return the whole spec.</span>
 
-<span class="sd">            &gt;&gt;&gt; env.action_spec = CompositeSpec({&quot;nested&quot;: {&quot;action&quot;: UnboundedContinuousTensorSpec(1), &quot;another_action&quot;: DiscreteTensorSpec(1)}})</span>
+<span class="sd">            &gt;&gt;&gt; env.action_spec = Composite({&quot;nested&quot;: {&quot;action&quot;: Unbounded(1), &quot;another_action&quot;: Categorical(1)}})</span>
 <span class="sd">            &gt;&gt;&gt; env.action_spec</span>
-<span class="sd">            CompositeSpec(</span>
-<span class="sd">                nested: CompositeSpec(</span>
-<span class="sd">                    action: UnboundedContinuousTensorSpec(</span>
+<span class="sd">            Composite(</span>
+<span class="sd">                nested: Composite(</span>
+<span class="sd">                    action: UnboundedContinuous(</span>
 <span class="sd">                        shape=torch.Size([1]),</span>
 <span class="sd">                        space=ContinuousBox(</span>
 <span class="sd">                            low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True),</span>
@@ -1130,7 +1125,7 @@
 <span class="sd">                        device=cpu,</span>
 <span class="sd">                        dtype=torch.float32,</span>
 <span class="sd">                        domain=continuous),</span>
-<span class="sd">                    another_action: DiscreteTensorSpec(</span>
+<span class="sd">                    another_action: Categorical(</span>
 <span class="sd">                        shape=torch.Size([]),</span>
 <span class="sd">                        space=DiscreteBox(n=1),</span>
 <span class="sd">                        device=cpu,</span>
@@ -1147,7 +1142,7 @@
 <span class="sd">            &gt;&gt;&gt; from torchrl.envs.libs.gym import GymEnv</span>
 <span class="sd">            &gt;&gt;&gt; env = GymEnv(&quot;Pendulum-v1&quot;)</span>
 <span class="sd">            &gt;&gt;&gt; env.action_spec</span>
-<span class="sd">            BoundedTensorSpec(</span>
+<span class="sd">            BoundedContinuous(</span>
 <span class="sd">                shape=torch.Size([1]),</span>
 <span class="sd">                space=ContinuousBox(</span>
 <span class="sd">                    low=Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, contiguous=True),</span>
@@ -1196,16 +1191,16 @@
                     <span class="sa">f</span><span class="s2">&quot;The value of spec.shape (</span><span class="si">{</span><span class="n">value</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">) must match the env batch size (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="si">}</span><span class="s2">).&quot;</span>
                 <span class="p">)</span>
 
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Composite</span><span class="p">):</span>
                 <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="n">values</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>  <span class="c1"># noqa: B007</span>
                     <span class="k">break</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                        <span class="s2">&quot;An empty CompositeSpec was passed for the action spec. &quot;</span>
+                        <span class="s2">&quot;An empty Composite was passed for the action spec. &quot;</span>
                         <span class="s2">&quot;This is currently not permitted.&quot;</span>
                     <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">value</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">(</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">(</span>
                     <span class="n">action</span><span class="o">=</span><span class="n">value</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span> <span class="n">shape</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span>
                 <span class="p">)</span>
 
@@ -1214,10 +1209,10 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">input_spec</span><span class="o">.</span><span class="n">lock_</span><span class="p">()</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">full_action_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CompositeSpec</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">full_action_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Composite</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The full action spec.</span>
 
-<span class="sd">        ``full_action_spec`` is a :class:`~torchrl.data.CompositeSpec`` instance</span>
+<span class="sd">        ``full_action_spec`` is a :class:`~torchrl.data.Composite`` instance</span>
 <span class="sd">        that contains all the action entries.</span>
 
 <span class="sd">        Examples:</span>
@@ -1226,8 +1221,8 @@
 <span class="sd">            ...     break</span>
 <span class="sd">            &gt;&gt;&gt; env = BraxEnv(envname)</span>
 <span class="sd">            &gt;&gt;&gt; env.full_action_spec</span>
-<span class="sd">        CompositeSpec(</span>
-<span class="sd">            action: BoundedTensorSpec(</span>
+<span class="sd">        Composite(</span>
+<span class="sd">            action: BoundedContinuous(</span>
 <span class="sd">                shape=torch.Size([8]),</span>
 <span class="sd">                space=ContinuousBox(</span>
 <span class="sd">                    low=Tensor(shape=torch.Size([8]), device=cpu, dtype=torch.float32, contiguous=True),</span>
@@ -1240,7 +1235,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_spec</span><span class="p">[</span><span class="s2">&quot;full_action_spec&quot;</span><span class="p">]</span>
 
     <span class="nd">@full_action_spec</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">full_action_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spec</span><span class="p">:</span> <span class="n">CompositeSpec</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">full_action_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spec</span><span class="p">:</span> <span class="n">Composite</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">action_spec</span> <span class="o">=</span> <span class="n">spec</span>
 
     <span class="c1"># Reward spec</span>
@@ -1283,9 +1278,9 @@
 
 <span class="sd">        If the reward spec is provided as a simple spec, this will be returned.</span>
 
-<span class="sd">            &gt;&gt;&gt; env.reward_spec = UnboundedContinuousTensorSpec(1)</span>
+<span class="sd">            &gt;&gt;&gt; env.reward_spec = Unbounded(1)</span>
 <span class="sd">            &gt;&gt;&gt; env.reward_spec</span>
-<span class="sd">            UnboundedContinuousTensorSpec(</span>
+<span class="sd">            UnboundedContinuous(</span>
 <span class="sd">                shape=torch.Size([1]),</span>
 <span class="sd">                space=ContinuousBox(</span>
 <span class="sd">                    low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True),</span>
@@ -1297,9 +1292,9 @@
 <span class="sd">        If the reward spec is provided as a composite spec and contains only one leaf,</span>
 <span class="sd">        this function will return just the leaf.</span>
 
-<span class="sd">            &gt;&gt;&gt; env.reward_spec = CompositeSpec({&quot;nested&quot;: {&quot;reward&quot;: UnboundedContinuousTensorSpec(1)}})</span>
+<span class="sd">            &gt;&gt;&gt; env.reward_spec = Composite({&quot;nested&quot;: {&quot;reward&quot;: Unbounded(1)}})</span>
 <span class="sd">            &gt;&gt;&gt; env.reward_spec</span>
-<span class="sd">            UnboundedContinuousTensorSpec(</span>
+<span class="sd">            UnboundedContinuous(</span>
 <span class="sd">                shape=torch.Size([1]),</span>
 <span class="sd">                space=ContinuousBox(</span>
 <span class="sd">                    low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True),</span>
@@ -1311,11 +1306,11 @@
 <span class="sd">        If the reward spec is provided as a composite spec and has more than one leaf,</span>
 <span class="sd">        this function will return the whole spec.</span>
 
-<span class="sd">            &gt;&gt;&gt; env.reward_spec = CompositeSpec({&quot;nested&quot;: {&quot;reward&quot;: UnboundedContinuousTensorSpec(1), &quot;another_reward&quot;: DiscreteTensorSpec(1)}})</span>
+<span class="sd">            &gt;&gt;&gt; env.reward_spec = Composite({&quot;nested&quot;: {&quot;reward&quot;: Unbounded(1), &quot;another_reward&quot;: Categorical(1)}})</span>
 <span class="sd">            &gt;&gt;&gt; env.reward_spec</span>
-<span class="sd">            CompositeSpec(</span>
-<span class="sd">                nested: CompositeSpec(</span>
-<span class="sd">                    reward: UnboundedContinuousTensorSpec(</span>
+<span class="sd">            Composite(</span>
+<span class="sd">                nested: Composite(</span>
+<span class="sd">                    reward: UnboundedContinuous(</span>
 <span class="sd">                        shape=torch.Size([1]),</span>
 <span class="sd">                        space=ContinuousBox(</span>
 <span class="sd">                            low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True),</span>
@@ -1323,7 +1318,7 @@
 <span class="sd">                        device=cpu,</span>
 <span class="sd">                        dtype=torch.float32,</span>
 <span class="sd">                        domain=continuous),</span>
-<span class="sd">                    another_reward: DiscreteTensorSpec(</span>
+<span class="sd">                    another_reward: Categorical(</span>
 <span class="sd">                        shape=torch.Size([]),</span>
 <span class="sd">                        space=DiscreteBox(n=1),</span>
 <span class="sd">                        device=cpu,</span>
@@ -1340,7 +1335,7 @@
 <span class="sd">            &gt;&gt;&gt; from torchrl.envs.libs.gym import GymEnv</span>
 <span class="sd">            &gt;&gt;&gt; env = GymEnv(&quot;Pendulum-v1&quot;)</span>
 <span class="sd">            &gt;&gt;&gt; env.reward_spec</span>
-<span class="sd">            UnboundedContinuousTensorSpec(</span>
+<span class="sd">            UnboundedContinuous(</span>
 <span class="sd">                shape=torch.Size([1]),</span>
 <span class="sd">                space=None,</span>
 <span class="sd">                device=cpu,</span>
@@ -1354,7 +1349,7 @@
             <span class="c1"># this will be raised if there is not full_reward_spec (unlikely) or no reward_key</span>
             <span class="c1"># Since output_spec is lazily populated with an empty composite spec for</span>
             <span class="c1"># reward_spec, the second case is much more likely to occur.</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">reward_spec</span> <span class="o">=</span> <span class="n">UnboundedContinuousTensorSpec</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reward_spec</span> <span class="o">=</span> <span class="n">Unbounded</span><span class="p">(</span>
                 <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
                 <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
             <span class="p">)</span>
@@ -1384,16 +1379,16 @@
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;The value of spec.shape (</span><span class="si">{</span><span class="n">value</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">) must match the env batch size (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="si">}</span><span class="s2">).&quot;</span>
                 <span class="p">)</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Composite</span><span class="p">):</span>
                 <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="n">values</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>  <span class="c1"># noqa: B007</span>
                     <span class="k">break</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                        <span class="s2">&quot;An empty CompositeSpec was passed for the reward spec. &quot;</span>
+                        <span class="s2">&quot;An empty Composite was passed for the reward spec. &quot;</span>
                         <span class="s2">&quot;This is currently not permitted.&quot;</span>
                     <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">value</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">(</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">(</span>
                     <span class="n">reward</span><span class="o">=</span><span class="n">value</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span> <span class="n">shape</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span>
                 <span class="p">)</span>
             <span class="k">for</span> <span class="n">leaf</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="n">values</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
@@ -1409,10 +1404,10 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">output_spec</span><span class="o">.</span><span class="n">lock_</span><span class="p">()</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">full_reward_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CompositeSpec</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">full_reward_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Composite</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The full reward spec.</span>
 
-<span class="sd">        ``full_reward_spec`` is a :class:`~torchrl.data.CompositeSpec`` instance</span>
+<span class="sd">        ``full_reward_spec`` is a :class:`~torchrl.data.Composite`` instance</span>
 <span class="sd">        that contains all the reward entries.</span>
 
 <span class="sd">        Examples:</span>
@@ -1421,9 +1416,9 @@
 <span class="sd">            &gt;&gt;&gt; base_env = GymWrapper(gymnasium.make(&quot;Pendulum-v1&quot;))</span>
 <span class="sd">            &gt;&gt;&gt; env = TransformedEnv(base_env, RenameTransform(&quot;reward&quot;, (&quot;nested&quot;, &quot;reward&quot;)))</span>
 <span class="sd">            &gt;&gt;&gt; env.full_reward_spec</span>
-<span class="sd">            CompositeSpec(</span>
-<span class="sd">                nested: CompositeSpec(</span>
-<span class="sd">                    reward: UnboundedContinuousTensorSpec(</span>
+<span class="sd">            Composite(</span>
+<span class="sd">                nested: Composite(</span>
+<span class="sd">                    reward: UnboundedContinuous(</span>
 <span class="sd">                        shape=torch.Size([1]),</span>
 <span class="sd">                        space=ContinuousBox(</span>
 <span class="sd">                            low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True),</span>
@@ -1436,7 +1431,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_spec</span><span class="p">[</span><span class="s2">&quot;full_reward_spec&quot;</span><span class="p">]</span>
 
     <span class="nd">@full_reward_spec</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">full_reward_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spec</span><span class="p">:</span> <span class="n">CompositeSpec</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">full_reward_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spec</span><span class="p">:</span> <span class="n">Composite</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reward_spec</span> <span class="o">=</span> <span class="n">spec</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">spec</span>
 
     <span class="c1"># done spec</span>
@@ -1470,10 +1465,10 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">done_keys</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">full_done_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CompositeSpec</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">full_done_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Composite</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The full done spec.</span>
 
-<span class="sd">        ``full_done_spec`` is a :class:`~torchrl.data.CompositeSpec`` instance</span>
+<span class="sd">        ``full_done_spec`` is a :class:`~torchrl.data.Composite`` instance</span>
 <span class="sd">        that contains all the done entries.</span>
 <span class="sd">        It can be used to generate fake data with a structure that mimics the</span>
 <span class="sd">        one obtained at runtime.</span>
@@ -1483,14 +1478,14 @@
 <span class="sd">            &gt;&gt;&gt; from torchrl.envs import GymWrapper</span>
 <span class="sd">            &gt;&gt;&gt; env = GymWrapper(gymnasium.make(&quot;Pendulum-v1&quot;))</span>
 <span class="sd">            &gt;&gt;&gt; env.full_done_spec</span>
-<span class="sd">            CompositeSpec(</span>
-<span class="sd">                done: DiscreteTensorSpec(</span>
+<span class="sd">            Composite(</span>
+<span class="sd">                done: Categorical(</span>
 <span class="sd">                    shape=torch.Size([1]),</span>
 <span class="sd">                    space=DiscreteBox(n=2),</span>
 <span class="sd">                    device=cpu,</span>
 <span class="sd">                    dtype=torch.bool,</span>
 <span class="sd">                    domain=discrete),</span>
-<span class="sd">                truncated: DiscreteTensorSpec(</span>
+<span class="sd">                truncated: Categorical(</span>
 <span class="sd">                    shape=torch.Size([1]),</span>
 <span class="sd">                    space=DiscreteBox(n=2),</span>
 <span class="sd">                    device=cpu,</span>
@@ -1501,7 +1496,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_spec</span><span class="p">[</span><span class="s2">&quot;full_done_spec&quot;</span><span class="p">]</span>
 
     <span class="nd">@full_done_spec</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">full_done_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spec</span><span class="p">:</span> <span class="n">CompositeSpec</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">full_done_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spec</span><span class="p">:</span> <span class="n">Composite</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">done_spec</span> <span class="o">=</span> <span class="n">spec</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">spec</span>
 
     <span class="c1"># Done spec: done specs belong to output_spec</span>
@@ -1513,9 +1508,9 @@
 
 <span class="sd">        If the done spec is provided as a simple spec, this will be returned.</span>
 
-<span class="sd">            &gt;&gt;&gt; env.done_spec = DiscreteTensorSpec(2, dtype=torch.bool)</span>
+<span class="sd">            &gt;&gt;&gt; env.done_spec = Categorical(2, dtype=torch.bool)</span>
 <span class="sd">            &gt;&gt;&gt; env.done_spec</span>
-<span class="sd">            DiscreteTensorSpec(</span>
+<span class="sd">            Categorical(</span>
 <span class="sd">                shape=torch.Size([]),</span>
 <span class="sd">                space=DiscreteBox(n=2),</span>
 <span class="sd">                device=cpu,</span>
@@ -1525,9 +1520,9 @@
 <span class="sd">        If the done spec is provided as a composite spec and contains only one leaf,</span>
 <span class="sd">        this function will return just the leaf.</span>
 
-<span class="sd">            &gt;&gt;&gt; env.done_spec = CompositeSpec({&quot;nested&quot;: {&quot;done&quot;: DiscreteTensorSpec(2, dtype=torch.bool)}})</span>
+<span class="sd">            &gt;&gt;&gt; env.done_spec = Composite({&quot;nested&quot;: {&quot;done&quot;: Categorical(2, dtype=torch.bool)}})</span>
 <span class="sd">            &gt;&gt;&gt; env.done_spec</span>
-<span class="sd">            DiscreteTensorSpec(</span>
+<span class="sd">            Categorical(</span>
 <span class="sd">                shape=torch.Size([]),</span>
 <span class="sd">                space=DiscreteBox(n=2),</span>
 <span class="sd">                device=cpu,</span>
@@ -1537,17 +1532,17 @@
 <span class="sd">        If the done spec is provided as a composite spec and has more than one leaf,</span>
 <span class="sd">        this function will return the whole spec.</span>
 
-<span class="sd">            &gt;&gt;&gt; env.done_spec = CompositeSpec({&quot;nested&quot;: {&quot;done&quot;: DiscreteTensorSpec(2, dtype=torch.bool), &quot;another_done&quot;: DiscreteTensorSpec(2, dtype=torch.bool)}})</span>
+<span class="sd">            &gt;&gt;&gt; env.done_spec = Composite({&quot;nested&quot;: {&quot;done&quot;: Categorical(2, dtype=torch.bool), &quot;another_done&quot;: Categorical(2, dtype=torch.bool)}})</span>
 <span class="sd">            &gt;&gt;&gt; env.done_spec</span>
-<span class="sd">            CompositeSpec(</span>
-<span class="sd">                nested: CompositeSpec(</span>
-<span class="sd">                    done: DiscreteTensorSpec(</span>
+<span class="sd">            Composite(</span>
+<span class="sd">                nested: Composite(</span>
+<span class="sd">                    done: Categorical(</span>
 <span class="sd">                        shape=torch.Size([]),</span>
 <span class="sd">                        space=DiscreteBox(n=2),</span>
 <span class="sd">                        device=cpu,</span>
 <span class="sd">                        dtype=torch.bool,</span>
 <span class="sd">                        domain=discrete),</span>
-<span class="sd">                    another_done: DiscreteTensorSpec(</span>
+<span class="sd">                    another_done: Categorical(</span>
 <span class="sd">                        shape=torch.Size([]),</span>
 <span class="sd">                        space=DiscreteBox(n=2),</span>
 <span class="sd">                        device=cpu,</span>
@@ -1564,7 +1559,7 @@
 <span class="sd">            &gt;&gt;&gt; from torchrl.envs.libs.gym import GymEnv</span>
 <span class="sd">            &gt;&gt;&gt; env = GymEnv(&quot;Pendulum-v1&quot;)</span>
 <span class="sd">            &gt;&gt;&gt; env.done_spec</span>
-<span class="sd">            DiscreteTensorSpec(</span>
+<span class="sd">            Categorical(</span>
 <span class="sd">                shape=torch.Size([1]),</span>
 <span class="sd">                space=DiscreteBox(n=2),</span>
 <span class="sd">                device=cpu,</span>
@@ -1587,16 +1582,16 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">full_done_spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_spec</span><span class="p">[</span><span class="s2">&quot;full_done_spec&quot;</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="n">full_done_spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">(</span>
+            <span class="n">full_done_spec</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">(</span>
                 <span class="n">shape</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">output_spec</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">output_spec</span><span class="o">.</span><span class="n">device</span>
             <span class="p">)</span>
-            <span class="n">full_done_spec</span><span class="p">[</span><span class="s2">&quot;done&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">DiscreteTensorSpec</span><span class="p">(</span>
+            <span class="n">full_done_spec</span><span class="p">[</span><span class="s2">&quot;done&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Categorical</span><span class="p">(</span>
                 <span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
                 <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="o">*</span><span class="n">full_done_spec</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
                 <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">,</span>
                 <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
             <span class="p">)</span>
-            <span class="n">full_done_spec</span><span class="p">[</span><span class="s2">&quot;terminated&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">DiscreteTensorSpec</span><span class="p">(</span>
+            <span class="n">full_done_spec</span><span class="p">[</span><span class="s2">&quot;terminated&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Categorical</span><span class="p">(</span>
                 <span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
                 <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="o">*</span><span class="n">full_done_spec</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
                 <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">,</span>
@@ -1617,7 +1612,7 @@
                     <span class="n">spec</span><span class="p">[</span><span class="s2">&quot;terminated&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
                 <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;terminated&quot;</span> <span class="ow">and</span> <span class="s2">&quot;done&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">spec</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
                     <span class="n">spec</span><span class="p">[</span><span class="s2">&quot;done&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
-                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">):</span>
+                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">Composite</span><span class="p">):</span>
                     <span class="n">check_local_done</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">shape</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -1631,10 +1626,10 @@
 
             <span class="c1"># if the spec is empty, we need to add a done and terminated manually</span>
             <span class="k">if</span> <span class="n">spec</span><span class="o">.</span><span class="n">is_empty</span><span class="p">():</span>
-                <span class="n">spec</span><span class="p">[</span><span class="s2">&quot;done&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">DiscreteTensorSpec</span><span class="p">(</span>
+                <span class="n">spec</span><span class="p">[</span><span class="s2">&quot;done&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Categorical</span><span class="p">(</span>
                     <span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="o">*</span><span class="n">spec</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span>
                 <span class="p">)</span>
-                <span class="n">spec</span><span class="p">[</span><span class="s2">&quot;terminated&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">DiscreteTensorSpec</span><span class="p">(</span>
+                <span class="n">spec</span><span class="p">[</span><span class="s2">&quot;terminated&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Categorical</span><span class="p">(</span>
                     <span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="o">*</span><span class="n">spec</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span>
                 <span class="p">)</span>
 
@@ -1662,16 +1657,16 @@
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;The value of spec.shape (</span><span class="si">{</span><span class="n">value</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">) must match the env batch size (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="si">}</span><span class="s2">).&quot;</span>
                 <span class="p">)</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Composite</span><span class="p">):</span>
                 <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="n">values</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>  <span class="c1"># noqa: B007</span>
                     <span class="k">break</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                        <span class="s2">&quot;An empty CompositeSpec was passed for the done spec. &quot;</span>
+                        <span class="s2">&quot;An empty Composite was passed for the done spec. &quot;</span>
                         <span class="s2">&quot;This is currently not permitted.&quot;</span>
                     <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">value</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">(</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">(</span>
                     <span class="n">done</span><span class="o">=</span><span class="n">value</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
                     <span class="n">terminated</span><span class="o">=</span><span class="n">value</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
                     <span class="n">shape</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span>
@@ -1692,10 +1687,10 @@
 
     <span class="c1"># observation spec: observation specs belong to output_spec</span>
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">observation_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CompositeSpec</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">observation_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Composite</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Observation spec.</span>
 
-<span class="sd">        Must be a :class:`torchrl.data.CompositeSpec` instance.</span>
+<span class="sd">        Must be a :class:`torchrl.data.Composite` instance.</span>
 <span class="sd">        The keys listed in the spec are directly accessible after reset and step.</span>
 
 <span class="sd">        In TorchRL, even though they are not properly speaking &quot;observations&quot;</span>
@@ -1709,8 +1704,8 @@
 <span class="sd">            &gt;&gt;&gt; from torchrl.envs.libs.gym import GymEnv</span>
 <span class="sd">            &gt;&gt;&gt; env = GymEnv(&quot;Pendulum-v1&quot;)</span>
 <span class="sd">            &gt;&gt;&gt; env.observation_spec</span>
-<span class="sd">            CompositeSpec(</span>
-<span class="sd">                observation: BoundedTensorSpec(</span>
+<span class="sd">            Composite(</span>
+<span class="sd">                observation: BoundedContinuous(</span>
 <span class="sd">                    shape=torch.Size([3]),</span>
 <span class="sd">                    space=ContinuousBox(</span>
 <span class="sd">                        low=Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float32, contiguous=True),</span>
@@ -1722,7 +1717,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">observation_spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_spec</span><span class="p">[</span><span class="s2">&quot;full_observation_spec&quot;</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">observation_spec</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">observation_spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+            <span class="n">observation_spec</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">output_spec</span><span class="o">.</span><span class="n">unlock_</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">output_spec</span><span class="p">[</span><span class="s2">&quot;full_observation_spec&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">observation_spec</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">output_spec</span><span class="o">.</span><span class="n">lock_</span><span class="p">()</span>
@@ -1732,7 +1727,7 @@
     <span class="k">def</span> <span class="nf">observation_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">TensorSpec</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">output_spec</span><span class="o">.</span><span class="n">unlock_</span><span class="p">()</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Composite</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;The type of an observation_spec must be Composite.&quot;</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">value</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
@@ -1750,19 +1745,19 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">output_spec</span><span class="o">.</span><span class="n">lock_</span><span class="p">()</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">full_observation_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CompositeSpec</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">full_observation_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Composite</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">observation_spec</span>
 
     <span class="nd">@full_observation_spec</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">full_observation_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spec</span><span class="p">:</span> <span class="n">CompositeSpec</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">full_observation_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spec</span><span class="p">:</span> <span class="n">Composite</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">observation_spec</span> <span class="o">=</span> <span class="n">spec</span>
 
     <span class="c1"># state spec: state specs belong to input_spec</span>
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">state_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CompositeSpec</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">state_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Composite</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;State spec.</span>
 
-<span class="sd">        Must be a :class:`torchrl.data.CompositeSpec` instance.</span>
+<span class="sd">        Must be a :class:`torchrl.data.Composite` instance.</span>
 <span class="sd">        The keys listed here should be provided as input alongside actions to the environment.</span>
 
 <span class="sd">        In TorchRL, even though they are not properly speaking &quot;state&quot;</span>
@@ -1778,10 +1773,10 @@
 <span class="sd">            ...     break</span>
 <span class="sd">            &gt;&gt;&gt; env = BraxEnv(envname)</span>
 <span class="sd">            &gt;&gt;&gt; env.state_spec</span>
-<span class="sd">            CompositeSpec(</span>
-<span class="sd">                state: CompositeSpec(</span>
-<span class="sd">                    pipeline_state: CompositeSpec(</span>
-<span class="sd">                        q: UnboundedContinuousTensorSpec(</span>
+<span class="sd">            Composite(</span>
+<span class="sd">                state: Composite(</span>
+<span class="sd">                    pipeline_state: Composite(</span>
+<span class="sd">                        q: UnboundedContinuous(</span>
 <span class="sd">                            shape=torch.Size([15]),</span>
 <span class="sd">                            space=None,</span>
 <span class="sd">                            device=cpu,</span>
@@ -1793,14 +1788,14 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">state_spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_spec</span><span class="p">[</span><span class="s2">&quot;full_state_spec&quot;</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">state_spec</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">state_spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+            <span class="n">state_spec</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">input_spec</span><span class="o">.</span><span class="n">unlock_</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">input_spec</span><span class="p">[</span><span class="s2">&quot;full_state_spec&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">state_spec</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">input_spec</span><span class="o">.</span><span class="n">lock_</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">state_spec</span>
 
     <span class="nd">@state_spec</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">state_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">CompositeSpec</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">state_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Composite</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">input_spec</span><span class="o">.</span><span class="n">unlock_</span><span class="p">()</span>
             <span class="k">try</span><span class="p">:</span>
@@ -1808,12 +1803,12 @@
             <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
                 <span class="k">pass</span>
             <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">input_spec</span><span class="p">[</span><span class="s2">&quot;full_state_spec&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">input_spec</span><span class="p">[</span><span class="s2">&quot;full_state_spec&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">(</span>
                     <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span>
                 <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">device</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_spec</span><span class="o">.</span><span class="n">device</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Composite</span><span class="p">):</span>
                     <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;The type of an state_spec must be Composite.&quot;</span><span class="p">)</span>
                 <span class="k">elif</span> <span class="n">value</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
@@ -1830,10 +1825,10 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">input_spec</span><span class="o">.</span><span class="n">lock_</span><span class="p">()</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">full_state_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CompositeSpec</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">full_state_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Composite</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The full state spec.</span>
 
-<span class="sd">        ``full_state_spec`` is a :class:`~torchrl.data.CompositeSpec`` instance</span>
+<span class="sd">        ``full_state_spec`` is a :class:`~torchrl.data.Composite`` instance</span>
 <span class="sd">        that contains all the state entries (ie, the input data that is not action).</span>
 
 <span class="sd">        Examples:</span>
@@ -1842,10 +1837,10 @@
 <span class="sd">            ...     break</span>
 <span class="sd">            &gt;&gt;&gt; env = BraxEnv(envname)</span>
 <span class="sd">            &gt;&gt;&gt; env.full_state_spec</span>
-<span class="sd">            CompositeSpec(</span>
-<span class="sd">                state: CompositeSpec(</span>
-<span class="sd">                    pipeline_state: CompositeSpec(</span>
-<span class="sd">                        q: UnboundedContinuousTensorSpec(</span>
+<span class="sd">            Composite(</span>
+<span class="sd">                state: Composite(</span>
+<span class="sd">                    pipeline_state: Composite(</span>
+<span class="sd">                        q: UnboundedContinuous(</span>
 <span class="sd">                            shape=torch.Size([15]),</span>
 <span class="sd">                            space=None,</span>
 <span class="sd">                            device=cpu,</span>
@@ -1857,7 +1852,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">state_spec</span>
 
     <span class="nd">@full_state_spec</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">full_state_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spec</span><span class="p">:</span> <span class="n">CompositeSpec</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">full_state_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spec</span><span class="p">:</span> <span class="n">Composite</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">state_spec</span> <span class="o">=</span> <span class="n">spec</span>
 
 <div class="viewcode-block" id="EnvBase.step"><a class="viewcode-back" href="../../../reference/generated/torchrl.envs.EnvBase.html#torchrl.envs.EnvBase.step">[docs]</a>    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
@@ -1896,7 +1891,7 @@
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">_complete_done</span><span class="p">(</span>
-        <span class="bp">cls</span><span class="p">,</span> <span class="n">done_spec</span><span class="p">:</span> <span class="n">CompositeSpec</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">TensorDictBase</span>
+        <span class="bp">cls</span><span class="p">,</span> <span class="n">done_spec</span><span class="p">:</span> <span class="n">Composite</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">TensorDictBase</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Completes the data structure at step time to put missing done keys.&quot;&quot;&quot;</span>
         <span class="c1"># by default, if a done key is missing, it is assumed that it is False</span>
@@ -1910,7 +1905,7 @@
         <span class="n">i</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">done_spec</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>  <span class="c1"># noqa: B007</span>
             <span class="n">val</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">Composite</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="bp">cls</span><span class="o">.</span><span class="n">_complete_done</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
                 <span class="k">continue</span>
@@ -2702,14 +2697,14 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">tensordict</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">specs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CompositeSpec</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">specs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Composite</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a Composite container where all the environment are present.</span>
 
 <span class="sd">        This feature allows one to create an environment, retrieve all of the specs in a single data container and then</span>
 <span class="sd">        erase the environment from the workspace.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">CompositeSpec</span><span class="p">(</span>
+        <span class="k">return</span> <span class="n">Composite</span><span class="p">(</span>
             <span class="n">output_spec</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">output_spec</span><span class="p">,</span>
             <span class="n">input_spec</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">input_spec</span><span class="p">,</span>
             <span class="n">shape</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span>
@@ -3571,7 +3566,7 @@
     <span class="k">return</span>
 
 
-<span class="k">def</span> <span class="nf">_has_dynamic_specs</span><span class="p">(</span><span class="n">spec</span><span class="p">:</span> <span class="n">CompositeSpec</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_has_dynamic_specs</span><span class="p">(</span><span class="n">spec</span><span class="p">:</span> <span class="n">Composite</span><span class="p">):</span>
     <span class="kn">from</span> <span class="nn">tensordict.base</span> <span class="kn">import</span> <span class="n">_NESTED_TENSORS_AS_LISTS</span>
 
     <span class="k">return</span> <span class="nb">any</span><span class="p">(</span>

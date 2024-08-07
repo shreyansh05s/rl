@@ -445,7 +445,7 @@
 
 <span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; from tensordict import TensorDict</span>
-<span class="sd">        &gt;&gt;&gt; from torchrl.data import CompositeSpec, UnboundedContinuousTensorSpec</span>
+<span class="sd">        &gt;&gt;&gt; from torchrl.data import Composite, Unbounded</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.envs.model_based import ModelBasedEnvBase</span>
 <span class="sd">        &gt;&gt;&gt; from tensordict.nn import TensorDictModule</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.modules import ValueOperator</span>
@@ -453,14 +453,14 @@
 <span class="sd">        &gt;&gt;&gt; class MyMBEnv(ModelBasedEnvBase):</span>
 <span class="sd">        ...     def __init__(self, world_model, device=&quot;cpu&quot;, dtype=None, batch_size=None):</span>
 <span class="sd">        ...         super().__init__(world_model, device=device, dtype=dtype, batch_size=batch_size)</span>
-<span class="sd">        ...         self.state_spec = CompositeSpec(</span>
-<span class="sd">        ...             hidden_observation=UnboundedContinuousTensorSpec((4,))</span>
+<span class="sd">        ...         self.state_spec = Composite(</span>
+<span class="sd">        ...             hidden_observation=Unbounded((4,))</span>
 <span class="sd">        ...         )</span>
-<span class="sd">        ...         self.observation_spec = CompositeSpec(</span>
-<span class="sd">        ...             hidden_observation=UnboundedContinuousTensorSpec((4,))</span>
+<span class="sd">        ...         self.observation_spec = Composite(</span>
+<span class="sd">        ...             hidden_observation=Unbounded((4,))</span>
 <span class="sd">        ...         )</span>
-<span class="sd">        ...         self.action_spec = UnboundedContinuousTensorSpec((1,))</span>
-<span class="sd">        ...         self.reward_spec = UnboundedContinuousTensorSpec((1,))</span>
+<span class="sd">        ...         self.action_spec = Unbounded((1,))</span>
+<span class="sd">        ...         self.reward_spec = Unbounded((1,))</span>
 <span class="sd">        ...</span>
 <span class="sd">        ...     def _reset(self, tensordict: TensorDict) -&gt; TensorDict:</span>
 <span class="sd">        ...         tensordict = TensorDict(</span>

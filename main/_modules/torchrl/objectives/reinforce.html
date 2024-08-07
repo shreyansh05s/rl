@@ -502,7 +502,7 @@
 <span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; import torch</span>
 <span class="sd">        &gt;&gt;&gt; from torch import nn</span>
-<span class="sd">        &gt;&gt;&gt; from torchrl.data.tensor_specs import UnboundedContinuousTensorSpec</span>
+<span class="sd">        &gt;&gt;&gt; from torchrl.data.tensor_specs import Unbounded</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.modules.distributions import NormalParamExtractor, TanhNormal</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.modules.tensordict_module.actors import ProbabilisticActor, ValueOperator</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.modules.tensordict_module.common import SafeModule</span>
@@ -517,7 +517,7 @@
 <span class="sd">        ...     distribution_class=TanhNormal,</span>
 <span class="sd">        ...     return_log_prob=True,</span>
 <span class="sd">        ...     in_keys=[&quot;loc&quot;, &quot;scale&quot;],</span>
-<span class="sd">        ...     spec=UnboundedContinuousTensorSpec(n_act),)</span>
+<span class="sd">        ...     spec=Unbounded(n_act),)</span>
 <span class="sd">        &gt;&gt;&gt; loss = ReinforceLoss(actor_net, value_net)</span>
 <span class="sd">        &gt;&gt;&gt; batch = 2</span>
 <span class="sd">        &gt;&gt;&gt; data = TensorDict({</span>
@@ -548,7 +548,7 @@
 <span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; import torch</span>
 <span class="sd">        &gt;&gt;&gt; from torch import nn</span>
-<span class="sd">        &gt;&gt;&gt; from torchrl.data.tensor_specs import UnboundedContinuousTensorSpec</span>
+<span class="sd">        &gt;&gt;&gt; from torchrl.data.tensor_specs import Unbounded</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.modules.distributions import NormalParamExtractor, TanhNormal</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.modules.tensordict_module.actors import ProbabilisticActor, ValueOperator</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.modules.tensordict_module.common import SafeModule</span>
@@ -562,7 +562,7 @@
 <span class="sd">        ...     distribution_class=TanhNormal,</span>
 <span class="sd">        ...     return_log_prob=True,</span>
 <span class="sd">        ...     in_keys=[&quot;loc&quot;, &quot;scale&quot;],</span>
-<span class="sd">        ...     spec=UnboundedContinuousTensorSpec(n_act),)</span>
+<span class="sd">        ...     spec=Unbounded(n_act),)</span>
 <span class="sd">        &gt;&gt;&gt; loss = ReinforceLoss(actor_net, value_net)</span>
 <span class="sd">        &gt;&gt;&gt; batch = 2</span>
 <span class="sd">        &gt;&gt;&gt; loss_actor, loss_value = loss(</span>

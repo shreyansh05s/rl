@@ -452,12 +452,12 @@
 <span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; import torch</span>
 <span class="sd">        &gt;&gt;&gt; from torch import nn</span>
-<span class="sd">        &gt;&gt;&gt; from torchrl.data import BoundedTensorSpec</span>
+<span class="sd">        &gt;&gt;&gt; from torchrl.data import Bounded</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.modules.tensordict_module.actors import Actor, ValueOperator</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.objectives.ddpg import DDPGLoss</span>
 <span class="sd">        &gt;&gt;&gt; from tensordict import TensorDict</span>
 <span class="sd">        &gt;&gt;&gt; n_act, n_obs = 4, 3</span>
-<span class="sd">        &gt;&gt;&gt; spec = BoundedTensorSpec(-torch.ones(n_act), torch.ones(n_act), (n_act,))</span>
+<span class="sd">        &gt;&gt;&gt; spec = Bounded(-torch.ones(n_act), torch.ones(n_act), (n_act,))</span>
 <span class="sd">        &gt;&gt;&gt; actor = Actor(spec=spec, module=nn.Linear(n_obs, n_act))</span>
 <span class="sd">        &gt;&gt;&gt; class ValueClass(nn.Module):</span>
 <span class="sd">        ...     def __init__(self):</span>
@@ -502,12 +502,12 @@
 <span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; import torch</span>
 <span class="sd">        &gt;&gt;&gt; from torch import nn</span>
-<span class="sd">        &gt;&gt;&gt; from torchrl.data import BoundedTensorSpec</span>
+<span class="sd">        &gt;&gt;&gt; from torchrl.data import Bounded</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.modules.tensordict_module.actors import Actor, ValueOperator</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.objectives.ddpg import DDPGLoss</span>
 <span class="sd">        &gt;&gt;&gt; _ = torch.manual_seed(42)</span>
 <span class="sd">        &gt;&gt;&gt; n_act, n_obs = 4, 3</span>
-<span class="sd">        &gt;&gt;&gt; spec = BoundedTensorSpec(-torch.ones(n_act), torch.ones(n_act), (n_act,))</span>
+<span class="sd">        &gt;&gt;&gt; spec = Bounded(-torch.ones(n_act), torch.ones(n_act), (n_act,))</span>
 <span class="sd">        &gt;&gt;&gt; actor = Actor(spec=spec, module=nn.Linear(n_obs, n_act))</span>
 <span class="sd">        &gt;&gt;&gt; class ValueClass(nn.Module):</span>
 <span class="sd">        ...     def __init__(self):</span>

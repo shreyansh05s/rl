@@ -410,7 +410,7 @@
 <span class="kn">from</span> <span class="nn">tensordict.nn</span> <span class="kn">import</span> <span class="n">TensorDictModule</span><span class="p">,</span> <span class="n">TensorDictSequential</span>
 <span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span>
 
-<span class="kn">from</span> <span class="nn">torchrl.data.tensor_specs</span> <span class="kn">import</span> <span class="n">CompositeSpec</span>
+<span class="kn">from</span> <span class="nn">torchrl.data.tensor_specs</span> <span class="kn">import</span> <span class="n">Composite</span>
 <span class="kn">from</span> <span class="nn">torchrl.modules.tensordict_module.common</span> <span class="kn">import</span> <span class="n">SafeModule</span>
 
 
@@ -435,11 +435,11 @@
 <span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; import torch</span>
 <span class="sd">        &gt;&gt;&gt; from tensordict import TensorDict</span>
-<span class="sd">        &gt;&gt;&gt; from torchrl.data import CompositeSpec, UnboundedContinuousTensorSpec</span>
+<span class="sd">        &gt;&gt;&gt; from torchrl.data import Composite, Unbounded</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.modules import TanhNormal, SafeSequential, TensorDictModule, NormalParamExtractor</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.modules.tensordict_module import SafeProbabilisticModule</span>
 <span class="sd">        &gt;&gt;&gt; td = TensorDict({&quot;input&quot;: torch.randn(3, 4)}, [3,])</span>
-<span class="sd">        &gt;&gt;&gt; spec1 = CompositeSpec(hidden=UnboundedContinuousTensorSpec(4), loc=None, scale=None)</span>
+<span class="sd">        &gt;&gt;&gt; spec1 = Composite(hidden=Unbounded(4), loc=None, scale=None)</span>
 <span class="sd">        &gt;&gt;&gt; net1 = nn.Sequential(torch.nn.Linear(4, 8), NormalParamExtractor())</span>
 <span class="sd">        &gt;&gt;&gt; module1 = TensorDictModule(net1, in_keys=[&quot;input&quot;], out_keys=[&quot;loc&quot;, &quot;scale&quot;])</span>
 <span class="sd">        &gt;&gt;&gt; td_module1 = SafeProbabilisticModule(</span>
@@ -450,7 +450,7 @@
 <span class="sd">        ...     distribution_class=TanhNormal,</span>
 <span class="sd">        ...     return_log_prob=True,</span>
 <span class="sd">        ... )</span>
-<span class="sd">        &gt;&gt;&gt; spec2 = UnboundedContinuousTensorSpec(8)</span>
+<span class="sd">        &gt;&gt;&gt; spec2 = Unbounded(8)</span>
 <span class="sd">        &gt;&gt;&gt; module2 = torch.nn.Linear(4, 8)</span>
 <span class="sd">        &gt;&gt;&gt; td_module2 = TensorDictModule(</span>
 <span class="sd">        ...    module=module2,</span>
@@ -476,12 +476,12 @@
 <span class="sd">            is_shared=False)</span>
 <span class="sd">        &gt;&gt;&gt; # The module spec aggregates all the input specs:</span>
 <span class="sd">        &gt;&gt;&gt; print(td_module.spec)</span>
-<span class="sd">        CompositeSpec(</span>
-<span class="sd">            hidden: UnboundedContinuousTensorSpec(</span>
+<span class="sd">        Composite(</span>
+<span class="sd">            hidden: UnboundedContinuous(</span>
 <span class="sd">                shape=torch.Size([4]), space=None, device=cpu, dtype=torch.float32, domain=continuous),</span>
 <span class="sd">            loc: None,</span>
 <span class="sd">            scale: None,</span>
-<span class="sd">            output: UnboundedContinuousTensorSpec(</span>
+<span class="sd">            output: UnboundedContinuous(</span>
 <span class="sd">                shape=torch.Size([8]), space=None, device=cpu, dtype=torch.float32, domain=continuous))</span>
 
 <span class="sd">    In the vmap case:</span>
@@ -514,12 +514,12 @@
 
         <span class="n">in_keys</span><span class="p">,</span> <span class="n">out_keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_in_and_out_keys</span><span class="p">(</span><span class="n">modules</span><span class="p">)</span>
 
-        <span class="n">spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">()</span>
+        <span class="n">spec</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">module</span> <span class="ow">in</span> <span class="n">modules</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">spec</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">spec</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-                <span class="n">spec</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">CompositeSpec</span><span class="p">({</span><span class="n">key</span><span class="p">:</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">module</span><span class="o">.</span><span class="n">out_keys</span><span class="p">}))</span>
+                <span class="n">spec</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">Composite</span><span class="p">({</span><span class="n">key</span><span class="p">:</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">module</span><span class="o">.</span><span class="n">out_keys</span><span class="p">}))</span>
 
         <span class="nb">super</span><span class="p">(</span><span class="n">TensorDictSequential</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">spec</span><span class="o">=</span><span class="n">spec</span><span class="p">,</span>

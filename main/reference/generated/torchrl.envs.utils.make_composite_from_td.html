@@ -413,11 +413,11 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="torchrl.envs.utils.make_composite_from_td">
 <span class="sig-prename descclassname"><span class="pre">torchrl.envs.utils.</span></span><span class="sig-name descname"><span class="pre">make_composite_from_td</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unsqueeze_null_shapes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/torchrl/envs/utils.html#make_composite_from_td"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.envs.utils.make_composite_from_td" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates a CompositeSpec instance from a tensordict, assuming all values are unbounded.</p>
+<dd><p>Creates a Composite instance from a tensordict, assuming all values are unbounded.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> (<em>tensordict.TensorDict</em>) – a tensordict to be mapped onto a CompositeSpec.</p></li>
+<li><p><strong>data</strong> (<em>tensordict.TensorDict</em>) – a tensordict to be mapped onto a Composite.</p></li>
 <li><p><strong>unsqueeze_null_shapes</strong> (<em>bool</em><em>, </em><em>optional</em>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code>, every empty shape will be
 unsqueezed to (1,). Defaults to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 </ul>
@@ -432,15 +432,15 @@ unsqueezed to (1,). Defaults to <code class="docutils literal notranslate"><span
 <span class="gp">... </span><span class="p">},</span> <span class="p">[])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">spec</span> <span class="o">=</span> <span class="n">make_composite_from_td</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span>
-<span class="go">CompositeSpec(</span>
-<span class="go">    obs: UnboundedContinuousTensorSpec(</span>
+<span class="go">Composite(</span>
+<span class="go">    obs: UnboundedContinuous(</span>
 <span class="go">         shape=torch.Size([3]), space=None, device=cpu, dtype=torch.float32, domain=continuous),</span>
-<span class="go">    action: UnboundedContinuousTensorSpec(</span>
+<span class="go">    action: UnboundedContinuous(</span>
 <span class="go">         shape=torch.Size([2]), space=None, device=cpu, dtype=torch.int32, domain=continuous),</span>
-<span class="go">    next: CompositeSpec(</span>
-<span class="go">        obs: UnboundedContinuousTensorSpec(</span>
+<span class="go">    next: Composite(</span>
+<span class="go">        obs: UnboundedContinuous(</span>
 <span class="go">             shape=torch.Size([3]), space=None, device=cpu, dtype=torch.float32, domain=continuous),</span>
-<span class="go">        reward: UnboundedContinuousTensorSpec(</span>
+<span class="go">        reward: UnboundedContinuous(</span>
 <span class="go">             shape=torch.Size([1]), space=ContinuousBox(low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True), high=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True)), device=cpu, dtype=torch.float32, domain=continuous), device=cpu, shape=torch.Size([])), device=cpu, shape=torch.Size([]))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">zero</span><span class="p">()</span> <span class="o">==</span> <span class="n">data</span><span class="o">.</span><span class="n">zero_</span><span class="p">())</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
 </pre></div>

@@ -417,11 +417,7 @@
 <span class="kn">from</span> <span class="nn">tensordict</span> <span class="kn">import</span> <span class="n">TensorDict</span><span class="p">,</span> <span class="n">TensorDictBase</span>
 <span class="kn">from</span> <span class="nn">torchrl._utils</span> <span class="kn">import</span> <span class="n">logger</span> <span class="k">as</span> <span class="n">torchrl_logger</span>
 
-<span class="kn">from</span> <span class="nn">torchrl.data.tensor_specs</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">CompositeSpec</span><span class="p">,</span>
-    <span class="n">TensorSpec</span><span class="p">,</span>
-    <span class="n">UnboundedContinuousTensorSpec</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">torchrl.data.tensor_specs</span> <span class="kn">import</span> <span class="n">Composite</span><span class="p">,</span> <span class="n">TensorSpec</span><span class="p">,</span> <span class="n">Unbounded</span>
 <span class="kn">from</span> <span class="nn">torchrl.envs.common</span> <span class="kn">import</span> <span class="n">_EnvWrapper</span><span class="p">,</span> <span class="n">EnvBase</span>
 
 
@@ -446,10 +442,10 @@
 <span class="sd">    Args:</span>
 <span class="sd">        keys (list of keys, optional): If provided, the list of keys to get from</span>
 <span class="sd">            the info dictionary. Defaults to all keys.</span>
-<span class="sd">        spec (List[TensorSpec], Dict[str, TensorSpec] or CompositeSpec, optional):</span>
+<span class="sd">        spec (List[TensorSpec], Dict[str, TensorSpec] or Composite, optional):</span>
 <span class="sd">            If a list of specs is provided, each spec will be matched to its</span>
-<span class="sd">            correspondent key to form a :class:`torchrl.data.CompositeSpec`.</span>
-<span class="sd">            If not provided, a composite spec with :class:`~torchrl.data.UnboundedContinuousTensorSpec`</span>
+<span class="sd">            correspondent key to form a :class:`torchrl.data.Composite`.</span>
+<span class="sd">            If not provided, a composite spec with :class:`~torchrl.data.Unbounded`</span>
 <span class="sd">            specs will lazyly be created.</span>
 <span class="sd">        ignore_private (bool, optional): If ``True``, private infos (starting with</span>
 <span class="sd">            an underscore) will be ignored. Defaults to ``True``.</span>
@@ -474,10 +470,7 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">keys</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">spec</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">TensorSpec</span><span class="p">]</span>
-        <span class="o">|</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">TensorSpec</span><span class="p">]</span>
-        <span class="o">|</span> <span class="n">CompositeSpec</span>
-        <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">spec</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">TensorSpec</span><span class="p">]</span> <span class="o">|</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">TensorSpec</span><span class="p">]</span> <span class="o">|</span> <span class="n">Composite</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">ignore_private</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ignore_private</span> <span class="o">=</span> <span class="n">ignore_private</span>
@@ -489,19 +482,17 @@
         <span class="k">if</span> <span class="n">spec</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">keys</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">_info_spec</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">elif</span> <span class="n">spec</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">_info_spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">(</span>
-                <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">UnboundedContinuousTensorSpec</span><span class="p">(())</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">},</span> <span class="n">shape</span><span class="o">=</span><span class="p">[]</span>
-            <span class="p">)</span>
-        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">):</span>
+            <span class="n">_info_spec</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">({</span><span class="n">key</span><span class="p">:</span> <span class="n">Unbounded</span><span class="p">(())</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">},</span> <span class="n">shape</span><span class="o">=</span><span class="p">[])</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">Composite</span><span class="p">):</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">keys</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                     <span class="s2">&quot;If specifying specs for info keys with a sequence, the &quot;</span>
                     <span class="s2">&quot;length of the sequence must match the number of keys&quot;</span>
                 <span class="p">)</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-                <span class="n">_info_spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">[])</span>
+                <span class="n">_info_spec</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">[])</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">_info_spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">(</span>
+                <span class="n">_info_spec</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">(</span>
                     <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">spec</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">spec</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">spec</span><span class="p">)},</span> <span class="n">shape</span><span class="o">=</span><span class="p">[]</span>
                 <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -523,7 +514,7 @@
                 <span class="n">keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">keys</span> <span class="o">=</span> <span class="n">keys</span>
         <span class="c1"># create an info_spec only if there is none</span>
-        <span class="n">info_spec</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">info_spec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">CompositeSpec</span><span class="p">()</span>
+        <span class="n">info_spec</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">info_spec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">Composite</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">info_dict</span><span class="p">:</span>
                 <span class="n">val</span> <span class="o">=</span> <span class="n">info_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
@@ -532,7 +523,7 @@
                 <span class="n">tensordict</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">info_spec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">val</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-                    <span class="n">info_spec</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">UnboundedContinuousTensorSpec</span><span class="p">(</span>
+                    <span class="n">info_spec</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">Unbounded</span><span class="p">(</span>
                         <span class="n">val</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">val</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">val</span><span class="o">.</span><span class="n">dtype</span>
                     <span class="p">)</span>
             <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">info_spec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>

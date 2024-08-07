@@ -415,14 +415,14 @@
 <span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">Tensor</span>
 
 <span class="kn">from</span> <span class="nn">torchrl.data.tensor_specs</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">BinaryDiscreteTensorSpec</span><span class="p">,</span>
-    <span class="n">CompositeSpec</span><span class="p">,</span>
-    <span class="n">DiscreteTensorSpec</span><span class="p">,</span>
-    <span class="n">LazyStackedCompositeSpec</span><span class="p">,</span>
-    <span class="n">LazyStackedTensorSpec</span><span class="p">,</span>
-    <span class="n">MultiDiscreteTensorSpec</span><span class="p">,</span>
-    <span class="n">MultiOneHotDiscreteTensorSpec</span><span class="p">,</span>
-    <span class="n">OneHotDiscreteTensorSpec</span><span class="p">,</span>
+    <span class="n">Binary</span><span class="p">,</span>
+    <span class="n">Categorical</span><span class="p">,</span>
+    <span class="n">Composite</span><span class="p">,</span>
+    <span class="n">MultiCategorical</span><span class="p">,</span>
+    <span class="n">MultiOneHot</span><span class="p">,</span>
+    <span class="n">OneHot</span><span class="p">,</span>
+    <span class="n">Stacked</span><span class="p">,</span>
+    <span class="n">StackedComposite</span><span class="p">,</span>
     <span class="n">TensorSpec</span><span class="p">,</span>
 <span class="p">)</span>
 
@@ -452,10 +452,10 @@
 
 
 <span class="n">ACTION_SPACE_MAP</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="n">OneHotDiscreteTensorSpec</span><span class="p">:</span> <span class="s2">&quot;one_hot&quot;</span><span class="p">,</span>
-    <span class="n">MultiOneHotDiscreteTensorSpec</span><span class="p">:</span> <span class="s2">&quot;mult_one_hot&quot;</span><span class="p">,</span>
-    <span class="n">BinaryDiscreteTensorSpec</span><span class="p">:</span> <span class="s2">&quot;binary&quot;</span><span class="p">,</span>
-    <span class="n">DiscreteTensorSpec</span><span class="p">:</span> <span class="s2">&quot;categorical&quot;</span><span class="p">,</span>
+    <span class="n">OneHot</span><span class="p">:</span> <span class="s2">&quot;one_hot&quot;</span><span class="p">,</span>
+    <span class="n">MultiOneHot</span><span class="p">:</span> <span class="s2">&quot;mult_one_hot&quot;</span><span class="p">,</span>
+    <span class="n">Binary</span><span class="p">:</span> <span class="s2">&quot;binary&quot;</span><span class="p">,</span>
+    <span class="n">Categorical</span><span class="p">:</span> <span class="s2">&quot;categorical&quot;</span><span class="p">,</span>
     <span class="s2">&quot;one_hot&quot;</span><span class="p">:</span> <span class="s2">&quot;one_hot&quot;</span><span class="p">,</span>
     <span class="s2">&quot;one-hot&quot;</span><span class="p">:</span> <span class="s2">&quot;one_hot&quot;</span><span class="p">,</span>
     <span class="s2">&quot;mult_one_hot&quot;</span><span class="p">:</span> <span class="s2">&quot;mult_one_hot&quot;</span><span class="p">,</span>
@@ -464,7 +464,7 @@
     <span class="s2">&quot;multi-one-hot&quot;</span><span class="p">:</span> <span class="s2">&quot;mult_one_hot&quot;</span><span class="p">,</span>
     <span class="s2">&quot;binary&quot;</span><span class="p">:</span> <span class="s2">&quot;binary&quot;</span><span class="p">,</span>
     <span class="s2">&quot;categorical&quot;</span><span class="p">:</span> <span class="s2">&quot;categorical&quot;</span><span class="p">,</span>
-    <span class="n">MultiDiscreteTensorSpec</span><span class="p">:</span> <span class="s2">&quot;multi_categorical&quot;</span><span class="p">,</span>
+    <span class="n">MultiCategorical</span><span class="p">:</span> <span class="s2">&quot;multi_categorical&quot;</span><span class="p">,</span>
     <span class="s2">&quot;multi_categorical&quot;</span><span class="p">:</span> <span class="s2">&quot;multi_categorical&quot;</span><span class="p">,</span>
     <span class="s2">&quot;multi-categorical&quot;</span><span class="p">:</span> <span class="s2">&quot;multi_categorical&quot;</span><span class="p">,</span>
     <span class="s2">&quot;multi_discrete&quot;</span><span class="p">:</span> <span class="s2">&quot;multi_categorical&quot;</span><span class="p">,</span>
@@ -473,14 +473,14 @@
 
 
 <div class="viewcode-block" id="consolidate_spec"><a class="viewcode-back" href="../../../reference/generated/torchrl.data.consolidate_spec.html#torchrl.data.consolidate_spec">[docs]</a><span class="k">def</span> <span class="nf">consolidate_spec</span><span class="p">(</span>
-    <span class="n">spec</span><span class="p">:</span> <span class="n">CompositeSpec</span><span class="p">,</span>
+    <span class="n">spec</span><span class="p">:</span> <span class="n">Composite</span><span class="p">,</span>
     <span class="n">recurse_through_entries</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">recurse_through_stack</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Given a TensorSpec, removes exclusive keys by adding 0 shaped specs.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        spec (CompositeSpec): the spec to be consolidated.</span>
+<span class="sd">        spec (Composite): the spec to be consolidated.</span>
 <span class="sd">        recurse_through_entries (bool): if True, call the function recursively on all entries of the spec.</span>
 <span class="sd">            Default is True.</span>
 <span class="sd">        recurse_through_stack (bool): if True, if the provided spec is lazy, the function recursively</span>
@@ -489,10 +489,10 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">spec</span> <span class="o">=</span> <span class="n">spec</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
 
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="p">(</span><span class="n">CompositeSpec</span><span class="p">,</span> <span class="n">LazyStackedCompositeSpec</span><span class="p">)):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="p">(</span><span class="n">Composite</span><span class="p">,</span> <span class="n">StackedComposite</span><span class="p">)):</span>
         <span class="k">return</span> <span class="n">spec</span>
 
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">LazyStackedCompositeSpec</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">StackedComposite</span><span class="p">):</span>
         <span class="n">keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>  <span class="c1"># shared keys</span>
         <span class="n">exclusive_keys_per_spec</span> <span class="o">=</span> <span class="p">[</span>
             <span class="nb">set</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">_specs</span><span class="p">))</span>
@@ -530,7 +530,7 @@
 
     <span class="k">if</span> <span class="n">recurse_through_entries</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">spec</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="n">CompositeSpec</span><span class="p">,</span> <span class="n">LazyStackedCompositeSpec</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="n">Composite</span><span class="p">,</span> <span class="n">StackedComposite</span><span class="p">)):</span>
                 <span class="n">spec</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
                     <span class="n">key</span><span class="p">,</span>
                     <span class="n">consolidate_spec</span><span class="p">(</span>
@@ -547,16 +547,16 @@
                 <span class="s2">&quot;Found same key in lazy specs corresponding to entries with different classes&quot;</span>
             <span class="p">)</span>
     <span class="n">spec</span> <span class="o">=</span> <span class="n">specs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="p">(</span><span class="n">CompositeSpec</span><span class="p">,</span> <span class="n">LazyStackedCompositeSpec</span><span class="p">)):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="p">(</span><span class="n">Composite</span><span class="p">,</span> <span class="n">StackedComposite</span><span class="p">)):</span>
         <span class="c1"># the exclusive key has values which are CompositeSpecs -&gt;</span>
         <span class="c1"># we create an empty composite spec with same batch size</span>
         <span class="k">return</span> <span class="n">spec</span><span class="o">.</span><span class="n">empty</span><span class="p">()</span>
-    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">LazyStackedTensorSpec</span><span class="p">):</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">Stacked</span><span class="p">):</span>
         <span class="c1"># the exclusive key has values which are LazyStackedTensorSpecs -&gt;</span>
         <span class="c1"># we create a LazyStackedTensorSpec with the same shape (aka same -1s) as the first in the list.</span>
         <span class="c1"># this will not add any new -1s when they are stacked</span>
         <span class="n">shape</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">shape</span><span class="p">[:</span> <span class="n">spec</span><span class="o">.</span><span class="n">stack_dim</span><span class="p">])</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">shape</span><span class="p">[</span><span class="n">spec</span><span class="o">.</span><span class="n">stack_dim</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:])</span>
-        <span class="k">return</span> <span class="n">LazyStackedTensorSpec</span><span class="p">(</span>
+        <span class="k">return</span> <span class="n">Stacked</span><span class="p">(</span>
             <span class="o">*</span><span class="p">[</span><span class="n">_empty_like_spec</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">_specs</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">spec</span><span class="o">.</span><span class="n">_specs</span><span class="p">],</span>
             <span class="n">dim</span><span class="o">=</span><span class="n">spec</span><span class="o">.</span><span class="n">stack_dim</span><span class="p">,</span>
         <span class="p">)</span>
@@ -593,14 +593,14 @@
 <span class="sd">        spec (TensorSpec): the spec to check</span>
 <span class="sd">        recurse (bool): if True, check recursively in nested specs. Default is True.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">LazyStackedCompositeSpec</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">StackedComposite</span><span class="p">):</span>
         <span class="n">keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
         <span class="k">for</span> <span class="n">inner_td</span> <span class="ow">in</span> <span class="n">spec</span><span class="o">.</span><span class="n">_specs</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">recurse</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">check_no_exclusive_keys</span><span class="p">(</span><span class="n">inner_td</span><span class="p">):</span>
                 <span class="k">return</span> <span class="kc">False</span>
             <span class="k">if</span> <span class="nb">set</span><span class="p">(</span><span class="n">inner_td</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">!=</span> <span class="n">keys</span><span class="p">:</span>
                 <span class="k">return</span> <span class="kc">False</span>
-    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">)</span> <span class="ow">and</span> <span class="n">recurse</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">Composite</span><span class="p">)</span> <span class="ow">and</span> <span class="n">recurse</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">spec</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">check_no_exclusive_keys</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
                 <span class="k">return</span> <span class="kc">False</span>
@@ -616,9 +616,9 @@
 <span class="sd">        spec (TensorSpec): the spec to check</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="p">(</span><span class="n">LazyStackedTensorSpec</span><span class="p">,</span> <span class="n">LazyStackedCompositeSpec</span><span class="p">)):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="p">(</span><span class="n">Stacked</span><span class="p">,</span> <span class="n">StackedComposite</span><span class="p">)):</span>
         <span class="k">return</span> <span class="kc">True</span>
-    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">):</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">Composite</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">inner_spec</span> <span class="ow">in</span> <span class="n">spec</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">contains_lazy_spec</span><span class="p">(</span><span class="n">inner_spec</span><span class="p">):</span>
                 <span class="k">return</span> <span class="kc">True</span>
@@ -655,7 +655,7 @@
 <span class="k">def</span> <span class="nf">_process_action_space_spec</span><span class="p">(</span><span class="n">action_space</span><span class="p">,</span> <span class="n">spec</span><span class="p">):</span>
     <span class="n">original_spec</span> <span class="o">=</span> <span class="n">spec</span>
     <span class="n">composite_spec</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">Composite</span><span class="p">):</span>
         <span class="c1"># this will break whenever our action is more complex than a single tensor</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">if</span> <span class="s2">&quot;action&quot;</span> <span class="ow">in</span> <span class="n">spec</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
@@ -676,8 +676,8 @@
                 <span class="s2">&quot;with a leaf &#39;action&#39; entry. Otherwise, simply remove the spec and use the action_space only.&quot;</span>
             <span class="p">)</span>
     <span class="k">if</span> <span class="n">action_space</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">action_space</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;action_space cannot be of type CompositeSpec.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">action_space</span><span class="p">,</span> <span class="n">Composite</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;action_space cannot be of type Composite.&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="p">(</span>
             <span class="n">spec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
             <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">action_space</span><span class="p">,</span> <span class="n">TensorSpec</span><span class="p">)</span>
@@ -707,7 +707,7 @@
 
 <span class="k">def</span> <span class="nf">_find_action_space</span><span class="p">(</span><span class="n">action_space</span><span class="p">):</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">action_space</span><span class="p">,</span> <span class="n">TensorSpec</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">action_space</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">action_space</span><span class="p">,</span> <span class="n">Composite</span><span class="p">):</span>
             <span class="k">if</span> <span class="s2">&quot;action&quot;</span> <span class="ow">in</span> <span class="n">action_space</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
                 <span class="n">_key</span> <span class="o">=</span> <span class="s2">&quot;action&quot;</span>
             <span class="k">else</span><span class="p">:</span>

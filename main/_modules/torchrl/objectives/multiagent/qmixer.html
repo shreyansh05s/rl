@@ -465,9 +465,9 @@
 <span class="sd">            create a double DQN. Default is ``False``.</span>
 <span class="sd">        action_space (str or TensorSpec, optional): Action space. Must be one of</span>
 <span class="sd">            ``&quot;one-hot&quot;``, ``&quot;mult_one_hot&quot;``, ``&quot;binary&quot;`` or ``&quot;categorical&quot;``,</span>
-<span class="sd">            or an instance of the corresponding specs (:class:`torchrl.data.OneHotDiscreteTensorSpec`,</span>
-<span class="sd">            :class:`torchrl.data.MultiOneHotDiscreteTensorSpec`,</span>
-<span class="sd">            :class:`torchrl.data.BinaryDiscreteTensorSpec` or :class:`torchrl.data.DiscreteTensorSpec`).</span>
+<span class="sd">            or an instance of the corresponding specs (:class:`torchrl.data.OneHot`,</span>
+<span class="sd">            :class:`torchrl.data.MultiOneHot`,</span>
+<span class="sd">            :class:`torchrl.data.Binary` or :class:`torchrl.data.Categorical`).</span>
 <span class="sd">            If not provided, an attempt to retrieve it from the value network</span>
 <span class="sd">            will be made.</span>
 <span class="sd">        priority_key (NestedKey, optional): [Deprecated, use .set_keys(priority_key=priority_key) instead]</span>

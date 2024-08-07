@@ -455,10 +455,10 @@
 <span class="sd">        ... def main():</span>
 <span class="sd">        ...     from torchrl.envs.utils import RandomPolicy</span>
 <span class="sd">                from torchrl.envs.libs.gym import GymEnv</span>
-<span class="sd">        ...     from torchrl.data import BoundedTensorSpec</span>
+<span class="sd">        ...     from torchrl.data import BoundedContinuous</span>
 <span class="sd">        ...     collector = DistributedDataCollector(</span>
 <span class="sd">        ...         [EnvCreator(lambda: GymEnv(&quot;Pendulum-v1&quot;))] * num_jobs,</span>
-<span class="sd">        ...         policy=RandomPolicy(BoundedTensorSpec(-1, 1, shape=(1,))),</span>
+<span class="sd">        ...         policy=RandomPolicy(BoundedContinuous(-1, 1, shape=(1,))),</span>
 <span class="sd">        ...         launcher=&quot;submitit_delayed&quot;,</span>
 <span class="sd">        ...     )</span>
 <span class="sd">        ...     for data in collector:</span>

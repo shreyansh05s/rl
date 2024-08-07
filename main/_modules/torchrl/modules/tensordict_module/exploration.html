@@ -418,7 +418,7 @@
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">tensordict.utils</span> <span class="kn">import</span> <span class="n">expand_as_right</span><span class="p">,</span> <span class="n">expand_right</span><span class="p">,</span> <span class="n">NestedKey</span>
 
-<span class="kn">from</span> <span class="nn">torchrl.data.tensor_specs</span> <span class="kn">import</span> <span class="n">CompositeSpec</span><span class="p">,</span> <span class="n">TensorSpec</span>
+<span class="kn">from</span> <span class="nn">torchrl.data.tensor_specs</span> <span class="kn">import</span> <span class="n">Composite</span><span class="p">,</span> <span class="n">TensorSpec</span>
 <span class="kn">from</span> <span class="nn">torchrl.envs.utils</span> <span class="kn">import</span> <span class="n">exploration_type</span><span class="p">,</span> <span class="n">ExplorationType</span>
 <span class="kn">from</span> <span class="nn">torchrl.modules.tensordict_module.common</span> <span class="kn">import</span> <span class="n">_forward_hook_safe_action</span>
 
@@ -466,9 +466,9 @@
 <span class="sd">        &gt;&gt;&gt; from tensordict import TensorDict</span>
 <span class="sd">        &gt;&gt;&gt; from tensordict.nn import TensorDictSequential</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.modules import EGreedyModule, Actor</span>
-<span class="sd">        &gt;&gt;&gt; from torchrl.data import BoundedTensorSpec</span>
+<span class="sd">        &gt;&gt;&gt; from torchrl.data import Bounded</span>
 <span class="sd">        &gt;&gt;&gt; torch.manual_seed(0)</span>
-<span class="sd">        &gt;&gt;&gt; spec = BoundedTensorSpec(-1, 1, torch.Size([4]))</span>
+<span class="sd">        &gt;&gt;&gt; spec = Bounded(-1, 1, torch.Size([4]))</span>
 <span class="sd">        &gt;&gt;&gt; module = torch.nn.Linear(4, 4, bias=False)</span>
 <span class="sd">        &gt;&gt;&gt; policy = Actor(spec=spec, module=module)</span>
 <span class="sd">        &gt;&gt;&gt; explorative_policy = TensorDictSequential(policy,  EGreedyModule(eps_init=0.2))</span>
@@ -517,8 +517,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">&quot;eps&quot;</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">as_tensor</span><span class="p">([</span><span class="n">eps_init</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="n">spec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">out_keys</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">({</span><span class="n">action_key</span><span class="p">:</span> <span class="n">spec</span><span class="p">},</span> <span class="n">shape</span><span class="o">=</span><span class="n">spec</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">Composite</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">out_keys</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">spec</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">({</span><span class="n">action_key</span><span class="p">:</span> <span class="n">spec</span><span class="p">},</span> <span class="n">shape</span><span class="o">=</span><span class="n">spec</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_spec</span> <span class="o">=</span> <span class="n">spec</span>
 
     <span class="nd">@property</span>
@@ -557,7 +557,7 @@
             <span class="n">cond</span> <span class="o">=</span> <span class="n">expand_as_right</span><span class="p">(</span><span class="n">cond</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
             <span class="n">spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spec</span>
             <span class="k">if</span> <span class="n">spec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">Composite</span><span class="p">):</span>
                     <span class="n">spec</span> <span class="o">=</span> <span class="n">spec</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">action_key</span><span class="p">]</span>
                 <span class="k">if</span> <span class="n">spec</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">out</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
                     <span class="c1"># In batched envs if the spec is passed unbatched, the rand() will not</span>
@@ -616,9 +616,9 @@
 <span class="sd">        &gt;&gt;&gt; import torch</span>
 <span class="sd">        &gt;&gt;&gt; from tensordict import TensorDict</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.modules import EGreedyWrapper, Actor</span>
-<span class="sd">        &gt;&gt;&gt; from torchrl.data import BoundedTensorSpec</span>
+<span class="sd">        &gt;&gt;&gt; from torchrl.data import Bounded</span>
 <span class="sd">        &gt;&gt;&gt; torch.manual_seed(0)</span>
-<span class="sd">        &gt;&gt;&gt; spec = BoundedTensorSpec(-1, 1, torch.Size([4]))</span>
+<span class="sd">        &gt;&gt;&gt; spec = Bounded(-1, 1, torch.Size([4]))</span>
 <span class="sd">        &gt;&gt;&gt; module = torch.nn.Linear(4, 4, bias=False)</span>
 <span class="sd">        &gt;&gt;&gt; policy = Actor(spec=spec, module=module)</span>
 <span class="sd">        &gt;&gt;&gt; explorative_policy = EGreedyWrapper(policy, eps_init=0.2)</span>
@@ -669,7 +669,7 @@
 <span class="sd">        mean (float, optional): mean of each output element’s normal distribution.</span>
 <span class="sd">        std (float, optional): standard deviation of each output element’s normal distribution.</span>
 <span class="sd">        action_key (NestedKey, optional): if the policy module has more than one output key,</span>
-<span class="sd">            its output spec will be of type CompositeSpec. One needs to know where to</span>
+<span class="sd">            its output spec will be of type Composite. One needs to know where to</span>
 <span class="sd">            find the action spec.</span>
 <span class="sd">            Default is &quot;action&quot;.</span>
 <span class="sd">        spec (TensorSpec, optional): if provided, the sampled action will be</span>
@@ -725,8 +725,8 @@
                 <span class="sa">f</span><span class="s2">&quot;The action key </span><span class="si">{</span><span class="n">action_key</span><span class="si">}</span><span class="s2"> was not found in the td_module out_keys </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">td_module</span><span class="o">.</span><span class="n">out_keys</span><span class="si">}</span><span class="s2">.&quot;</span>
             <span class="p">)</span>
         <span class="k">if</span> <span class="n">spec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">out_keys</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">({</span><span class="n">action_key</span><span class="p">:</span> <span class="n">spec</span><span class="p">},</span> <span class="n">shape</span><span class="o">=</span><span class="n">spec</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">Composite</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">out_keys</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">spec</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">({</span><span class="n">action_key</span><span class="p">:</span> <span class="n">spec</span><span class="p">},</span> <span class="n">shape</span><span class="o">=</span><span class="n">spec</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_spec</span> <span class="o">=</span> <span class="n">spec</span>
         <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">td_module</span><span class="p">,</span> <span class="s2">&quot;_spec&quot;</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">td_module</span><span class="o">.</span><span class="n">_spec</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
@@ -737,7 +737,7 @@
             <span class="k">if</span> <span class="n">action_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spec</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_spec</span><span class="p">[</span><span class="n">action_key</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">({</span><span class="n">key</span><span class="p">:</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">policy</span><span class="o">.</span><span class="n">out_keys</span><span class="p">})</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_spec</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">({</span><span class="n">key</span><span class="p">:</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">policy</span><span class="o">.</span><span class="n">out_keys</span><span class="p">})</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">safe</span> <span class="o">=</span> <span class="n">safe</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">safe</span><span class="p">:</span>
@@ -812,7 +812,7 @@
 
 <span class="sd">    Keyword Args:</span>
 <span class="sd">        action_key (NestedKey, optional): if the policy module has more than one output key,</span>
-<span class="sd">            its output spec will be of type CompositeSpec. One needs to know where to</span>
+<span class="sd">            its output spec will be of type Composite. One needs to know where to</span>
 <span class="sd">            find the action spec.</span>
 <span class="sd">            default: &quot;action&quot;</span>
 
@@ -855,8 +855,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">&quot;sigma&quot;</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="n">sigma_init</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="n">spec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">out_keys</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">({</span><span class="n">action_key</span><span class="p">:</span> <span class="n">spec</span><span class="p">},</span> <span class="n">shape</span><span class="o">=</span><span class="n">spec</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">Composite</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">out_keys</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">spec</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">({</span><span class="n">action_key</span><span class="p">:</span> <span class="n">spec</span><span class="p">},</span> <span class="n">shape</span><span class="o">=</span><span class="n">spec</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;spec cannot be None.&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_spec</span> <span class="o">=</span> <span class="n">spec</span>
@@ -972,10 +972,10 @@
 <span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; import torch</span>
 <span class="sd">        &gt;&gt;&gt; from tensordict import TensorDict</span>
-<span class="sd">        &gt;&gt;&gt; from torchrl.data import BoundedTensorSpec</span>
+<span class="sd">        &gt;&gt;&gt; from torchrl.data import Bounded</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.modules import OrnsteinUhlenbeckProcessWrapper, Actor</span>
 <span class="sd">        &gt;&gt;&gt; torch.manual_seed(0)</span>
-<span class="sd">        &gt;&gt;&gt; spec = BoundedTensorSpec(-1, 1, torch.Size([4]))</span>
+<span class="sd">        &gt;&gt;&gt; spec = Bounded(-1, 1, torch.Size([4]))</span>
 <span class="sd">        &gt;&gt;&gt; module = torch.nn.Linear(4, 4, bias=False)</span>
 <span class="sd">        &gt;&gt;&gt; policy = Actor(module=module, spec=spec)</span>
 <span class="sd">        &gt;&gt;&gt; explorative_policy = OrnsteinUhlenbeckProcessWrapper(policy)</span>
@@ -1049,8 +1049,8 @@
         <span class="n">steps_key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ou</span><span class="o">.</span><span class="n">steps_key</span>
 
         <span class="k">if</span> <span class="n">spec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">out_keys</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">({</span><span class="n">action_key</span><span class="p">:</span> <span class="n">spec</span><span class="p">},</span> <span class="n">shape</span><span class="o">=</span><span class="n">spec</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">Composite</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">out_keys</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">spec</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">({</span><span class="n">action_key</span><span class="p">:</span> <span class="n">spec</span><span class="p">},</span> <span class="n">shape</span><span class="o">=</span><span class="n">spec</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_spec</span> <span class="o">=</span> <span class="n">spec</span>
         <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">td_module</span><span class="p">,</span> <span class="s2">&quot;_spec&quot;</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">td_module</span><span class="o">.</span><span class="n">_spec</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
@@ -1061,7 +1061,7 @@
             <span class="k">if</span> <span class="n">action_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spec</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_spec</span><span class="p">[</span><span class="n">action_key</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">({</span><span class="n">key</span><span class="p">:</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">policy</span><span class="o">.</span><span class="n">out_keys</span><span class="p">})</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_spec</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">({</span><span class="n">key</span><span class="p">:</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">policy</span><span class="o">.</span><span class="n">out_keys</span><span class="p">})</span>
         <span class="n">ou_specs</span> <span class="o">=</span> <span class="p">{</span>
             <span class="n">noise_key</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">steps_key</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
@@ -1185,10 +1185,10 @@
 <span class="sd">        &gt;&gt;&gt; import torch</span>
 <span class="sd">        &gt;&gt;&gt; from tensordict import TensorDict</span>
 <span class="sd">        &gt;&gt;&gt; from tensordict.nn import TensorDictSequential</span>
-<span class="sd">        &gt;&gt;&gt; from torchrl.data import BoundedTensorSpec</span>
+<span class="sd">        &gt;&gt;&gt; from torchrl.data import Bounded</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.modules import OrnsteinUhlenbeckProcessModule, Actor</span>
 <span class="sd">        &gt;&gt;&gt; torch.manual_seed(0)</span>
-<span class="sd">        &gt;&gt;&gt; spec = BoundedTensorSpec(-1, 1, torch.Size([4]))</span>
+<span class="sd">        &gt;&gt;&gt; spec = Bounded(-1, 1, torch.Size([4]))</span>
 <span class="sd">        &gt;&gt;&gt; module = torch.nn.Linear(4, 4, bias=False)</span>
 <span class="sd">        &gt;&gt;&gt; policy = Actor(module=module, spec=spec)</span>
 <span class="sd">        &gt;&gt;&gt; ou = OrnsteinUhlenbeckProcessModule(spec=spec)</span>
@@ -1253,8 +1253,8 @@
         <span class="n">steps_key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ou</span><span class="o">.</span><span class="n">steps_key</span>
 
         <span class="k">if</span> <span class="n">spec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">out_keys</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">({</span><span class="n">action_key</span><span class="p">:</span> <span class="n">spec</span><span class="p">},</span> <span class="n">shape</span><span class="o">=</span><span class="n">spec</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">Composite</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">out_keys</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">spec</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">({</span><span class="n">action_key</span><span class="p">:</span> <span class="n">spec</span><span class="p">},</span> <span class="n">shape</span><span class="o">=</span><span class="n">spec</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_spec</span> <span class="o">=</span> <span class="n">spec</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;spec cannot be None.&quot;</span><span class="p">)</span>

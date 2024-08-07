@@ -420,7 +420,7 @@
 <span class="kn">from</span> <span class="nn">tensordict.nn</span> <span class="kn">import</span> <span class="n">dispatch</span><span class="p">,</span> <span class="n">TensorDictModule</span>
 <span class="kn">from</span> <span class="nn">tensordict.utils</span> <span class="kn">import</span> <span class="n">NestedKey</span>
 <span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">Tensor</span>
-<span class="kn">from</span> <span class="nn">torchrl.data.tensor_specs</span> <span class="kn">import</span> <span class="n">CompositeSpec</span><span class="p">,</span> <span class="n">TensorSpec</span>
+<span class="kn">from</span> <span class="nn">torchrl.data.tensor_specs</span> <span class="kn">import</span> <span class="n">Composite</span><span class="p">,</span> <span class="n">TensorSpec</span>
 <span class="kn">from</span> <span class="nn">torchrl.data.utils</span> <span class="kn">import</span> <span class="n">_find_action_space</span>
 <span class="kn">from</span> <span class="nn">torchrl.envs.utils</span> <span class="kn">import</span> <span class="n">ExplorationType</span><span class="p">,</span> <span class="n">set_exploration_type</span>
 <span class="kn">from</span> <span class="nn">torchrl.modules</span> <span class="kn">import</span> <span class="n">ProbabilisticActor</span>
@@ -519,14 +519,14 @@
 <span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; import torch</span>
 <span class="sd">        &gt;&gt;&gt; from torch import nn</span>
-<span class="sd">        &gt;&gt;&gt; from torchrl.data import BoundedTensorSpec</span>
+<span class="sd">        &gt;&gt;&gt; from torchrl.data import Bounded</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.modules.distributions import NormalParamExtractor, TanhNormal</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.modules.tensordict_module.actors import ProbabilisticActor, ValueOperator</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.modules.tensordict_module.common import SafeModule</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.objectives.sac import SACLoss</span>
 <span class="sd">        &gt;&gt;&gt; from tensordict import TensorDict</span>
 <span class="sd">        &gt;&gt;&gt; n_act, n_obs = 4, 3</span>
-<span class="sd">        &gt;&gt;&gt; spec = BoundedTensorSpec(-torch.ones(n_act), torch.ones(n_act), (n_act,))</span>
+<span class="sd">        &gt;&gt;&gt; spec = Bounded(-torch.ones(n_act), torch.ones(n_act), (n_act,))</span>
 <span class="sd">        &gt;&gt;&gt; net = nn.Sequential(nn.Linear(n_obs, 2 * n_act), NormalParamExtractor())</span>
 <span class="sd">        &gt;&gt;&gt; module = SafeModule(net, in_keys=[&quot;observation&quot;], out_keys=[&quot;loc&quot;, &quot;scale&quot;])</span>
 <span class="sd">        &gt;&gt;&gt; actor = ProbabilisticActor(</span>
@@ -582,14 +582,14 @@
 <span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; import torch</span>
 <span class="sd">        &gt;&gt;&gt; from torch import nn</span>
-<span class="sd">        &gt;&gt;&gt; from torchrl.data import BoundedTensorSpec</span>
+<span class="sd">        &gt;&gt;&gt; from torchrl.data import Bounded</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.modules.distributions import NormalParamExtractor, TanhNormal</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.modules.tensordict_module.actors import ProbabilisticActor, ValueOperator</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.modules.tensordict_module.common import SafeModule</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.objectives.sac import SACLoss</span>
 <span class="sd">        &gt;&gt;&gt; _ = torch.manual_seed(42)</span>
 <span class="sd">        &gt;&gt;&gt; n_act, n_obs = 4, 3</span>
-<span class="sd">        &gt;&gt;&gt; spec = BoundedTensorSpec(-torch.ones(n_act), torch.ones(n_act), (n_act,))</span>
+<span class="sd">        &gt;&gt;&gt; spec = Bounded(-torch.ones(n_act), torch.ones(n_act), (n_act,))</span>
 <span class="sd">        &gt;&gt;&gt; net = nn.Sequential(nn.Linear(n_obs, 2 * n_act), NormalParamExtractor())</span>
 <span class="sd">        &gt;&gt;&gt; module = SafeModule(net, in_keys=[&quot;observation&quot;], out_keys=[&quot;loc&quot;, &quot;scale&quot;])</span>
 <span class="sd">        &gt;&gt;&gt; actor = ProbabilisticActor(</span>
@@ -842,8 +842,8 @@
                     <span class="s2">&quot;the target entropy explicitely or provide the spec of the &quot;</span>
                     <span class="s2">&quot;action tensor in the actor network.&quot;</span>
                 <span class="p">)</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">action_spec</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">):</span>
-                <span class="n">action_spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">({</span><span class="bp">self</span><span class="o">.</span><span class="n">tensor_keys</span><span class="o">.</span><span class="n">action</span><span class="p">:</span> <span class="n">action_spec</span><span class="p">})</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">action_spec</span><span class="p">,</span> <span class="n">Composite</span><span class="p">):</span>
+                <span class="n">action_spec</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">({</span><span class="bp">self</span><span class="o">.</span><span class="n">tensor_keys</span><span class="o">.</span><span class="n">action</span><span class="p">:</span> <span class="n">action_spec</span><span class="p">})</span>
             <span class="k">if</span> <span class="p">(</span>
                 <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tensor_keys</span><span class="o">.</span><span class="n">action</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span>
                 <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tensor_keys</span><span class="o">.</span><span class="n">action</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span>
@@ -1220,9 +1220,9 @@
 <span class="sd">        qvalue_network (TensorDictModule): a single Q-value network that will be multiplicated as many times as needed.</span>
 <span class="sd">        action_space (str or TensorSpec): Action space. Must be one of</span>
 <span class="sd">            ``&quot;one-hot&quot;``, ``&quot;mult_one_hot&quot;``, ``&quot;binary&quot;`` or ``&quot;categorical&quot;``,</span>
-<span class="sd">            or an instance of the corresponding specs (:class:`torchrl.data.OneHotDiscreteTensorSpec`,</span>
-<span class="sd">            :class:`torchrl.data.MultiOneHotDiscreteTensorSpec`,</span>
-<span class="sd">            :class:`torchrl.data.BinaryDiscreteTensorSpec` or :class:`torchrl.data.DiscreteTensorSpec`).</span>
+<span class="sd">            or an instance of the corresponding specs (:class:`torchrl.data.OneHot`,</span>
+<span class="sd">            :class:`torchrl.data.MultiOneHot`,</span>
+<span class="sd">            :class:`torchrl.data.Binary` or :class:`torchrl.data.Categorical`).</span>
 <span class="sd">        num_actions (int, optional): number of actions in the action space.</span>
 <span class="sd">            To be provided if target_entropy is set to &quot;auto&quot;.</span>
 <span class="sd">        num_qvalue_nets (int, optional): Number of Q-value networks to be trained. Default is 2.</span>
@@ -1254,7 +1254,7 @@
 <span class="sd">    Examples:</span>
 <span class="sd">    &gt;&gt;&gt; import torch</span>
 <span class="sd">    &gt;&gt;&gt; from torch import nn</span>
-<span class="sd">    &gt;&gt;&gt; from torchrl.data.tensor_specs import OneHotDiscreteTensorSpec</span>
+<span class="sd">    &gt;&gt;&gt; from torchrl.data.tensor_specs import OneHot</span>
 <span class="sd">    &gt;&gt;&gt; from torchrl.modules.distributions import NormalParamExtractor, OneHotCategorical</span>
 <span class="sd">    &gt;&gt;&gt; from torchrl.modules.tensordict_module.actors import ProbabilisticActor, ValueOperator</span>
 <span class="sd">    &gt;&gt;&gt; from torchrl.modules.tensordict_module.common import SafeModule</span>
@@ -1262,7 +1262,7 @@
 <span class="sd">    &gt;&gt;&gt; from tensordict import TensorDict</span>
 <span class="sd">    &gt;&gt;&gt; from tensordict.nn import TensorDictModule</span>
 <span class="sd">    &gt;&gt;&gt; n_act, n_obs = 4, 3</span>
-<span class="sd">    &gt;&gt;&gt; spec = OneHotDiscreteTensorSpec(n_act)</span>
+<span class="sd">    &gt;&gt;&gt; spec = OneHot(n_act)</span>
 <span class="sd">    &gt;&gt;&gt; module = TensorDictModule(nn.Linear(n_obs, n_act), in_keys=[&quot;observation&quot;], out_keys=[&quot;logits&quot;])</span>
 <span class="sd">    &gt;&gt;&gt; actor = ProbabilisticActor(</span>
 <span class="sd">    ...     module=module,</span>
@@ -1311,13 +1311,13 @@
 <span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; import torch</span>
 <span class="sd">        &gt;&gt;&gt; from torch import nn</span>
-<span class="sd">        &gt;&gt;&gt; from torchrl.data.tensor_specs import OneHotDiscreteTensorSpec</span>
+<span class="sd">        &gt;&gt;&gt; from torchrl.data.tensor_specs import OneHot</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.modules.distributions import NormalParamExtractor, OneHotCategorical</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.modules.tensordict_module.actors import ProbabilisticActor, ValueOperator</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.modules.tensordict_module.common import SafeModule</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.objectives.sac import DiscreteSACLoss</span>
 <span class="sd">        &gt;&gt;&gt; n_act, n_obs = 4, 3</span>
-<span class="sd">        &gt;&gt;&gt; spec = OneHotDiscreteTensorSpec(n_act)</span>
+<span class="sd">        &gt;&gt;&gt; spec = OneHot(n_act)</span>
 <span class="sd">        &gt;&gt;&gt; net = nn.Sequential(nn.Linear(n_obs, 2 * n_act), NormalParamExtractor())</span>
 <span class="sd">        &gt;&gt;&gt; module = SafeModule(net, in_keys=[&quot;observation&quot;], out_keys=[&quot;logits&quot;])</span>
 <span class="sd">        &gt;&gt;&gt; actor = ProbabilisticActor(</span>

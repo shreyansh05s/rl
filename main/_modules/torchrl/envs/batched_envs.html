@@ -438,7 +438,7 @@
     <span class="n">logger</span> <span class="k">as</span> <span class="n">torchrl_logger</span><span class="p">,</span>
     <span class="n">VERBOSE</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">torchrl.data.tensor_specs</span> <span class="kn">import</span> <span class="n">CompositeSpec</span><span class="p">,</span> <span class="n">NonTensorSpec</span>
+<span class="kn">from</span> <span class="nn">torchrl.data.tensor_specs</span> <span class="kn">import</span> <span class="n">Composite</span><span class="p">,</span> <span class="n">NonTensor</span>
 <span class="kn">from</span> <span class="nn">torchrl.data.utils</span> <span class="kn">import</span> <span class="n">CloudpickleWrapper</span><span class="p">,</span> <span class="n">contains_lazy_spec</span><span class="p">,</span> <span class="n">DEVICE_TYPING</span>
 <span class="kn">from</span> <span class="nn">torchrl.envs.common</span> <span class="kn">import</span> <span class="n">_do_nothing</span><span class="p">,</span> <span class="n">_EnvPostInit</span><span class="p">,</span> <span class="n">EnvBase</span><span class="p">,</span> <span class="n">EnvMetaData</span>
 <span class="kn">from</span> <span class="nn">torchrl.envs.env_creator</span> <span class="kn">import</span> <span class="n">get_env_metadata</span>
@@ -952,7 +952,7 @@
 
         <span class="bp">cls</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
-        <span class="k">def</span> <span class="nf">_check_for_empty_spec</span><span class="p">(</span><span class="n">specs</span><span class="p">:</span> <span class="n">CompositeSpec</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">_check_for_empty_spec</span><span class="p">(</span><span class="n">specs</span><span class="p">:</span> <span class="n">Composite</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">subspec</span> <span class="ow">in</span> <span class="p">(</span>
                 <span class="s2">&quot;full_state_spec&quot;</span><span class="p">,</span>
                 <span class="s2">&quot;full_action_spec&quot;</span><span class="p">,</span>
@@ -961,9 +961,9 @@
                 <span class="s2">&quot;full_observation_spec&quot;</span><span class="p">,</span>
             <span class="p">):</span>
                 <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">spec</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span>
-                    <span class="nb">list</span><span class="p">(</span><span class="n">specs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">subspec</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">CompositeSpec</span><span class="p">())</span><span class="o">.</span><span class="n">items</span><span class="p">(</span><span class="kc">True</span><span class="p">))</span>
+                    <span class="nb">list</span><span class="p">(</span><span class="n">specs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">subspec</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">Composite</span><span class="p">())</span><span class="o">.</span><span class="n">items</span><span class="p">(</span><span class="kc">True</span><span class="p">))</span>
                 <span class="p">):</span>
-                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">)</span> <span class="ow">and</span> <span class="n">spec</span><span class="o">.</span><span class="n">is_empty</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">Composite</span><span class="p">)</span> <span class="ow">and</span> <span class="n">spec</span><span class="o">.</span><span class="n">is_empty</span><span class="p">():</span>
                         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
                             <span class="sa">f</span><span class="s2">&quot;The environment passed to </span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> has empty specs in </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">. Consider using &quot;</span>
                             <span class="sa">f</span><span class="s2">&quot;torchrl.envs.transforms.RemoveEmptySpecs to remove the empty specs.&quot;</span>
@@ -1077,7 +1077,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">full_done_spec</span><span class="p">,</span>
         <span class="p">):</span>
             <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">_spec</span> <span class="ow">in</span> <span class="n">spec</span><span class="o">.</span><span class="n">items</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">_spec</span><span class="p">,</span> <span class="n">NonTensorSpec</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">_spec</span><span class="p">,</span> <span class="n">NonTensor</span><span class="p">):</span>
                     <span class="n">non_tensor_keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_non_tensor_keys</span> <span class="o">=</span> <span class="n">non_tensor_keys</span>
 

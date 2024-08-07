@@ -408,11 +408,7 @@
 
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">from</span> <span class="nn">tensordict</span> <span class="kn">import</span> <span class="n">TensorDict</span><span class="p">,</span> <span class="n">TensorDictBase</span>
-<span class="kn">from</span> <span class="nn">torchrl.data.tensor_specs</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">BoundedTensorSpec</span><span class="p">,</span>
-    <span class="n">CompositeSpec</span><span class="p">,</span>
-    <span class="n">UnboundedContinuousTensorSpec</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">torchrl.data.tensor_specs</span> <span class="kn">import</span> <span class="n">Bounded</span><span class="p">,</span> <span class="n">Composite</span><span class="p">,</span> <span class="n">Unbounded</span>
 <span class="kn">from</span> <span class="nn">torchrl.envs.common</span> <span class="kn">import</span> <span class="n">EnvBase</span>
 <span class="kn">from</span> <span class="nn">torchrl.envs.utils</span> <span class="kn">import</span> <span class="n">make_composite_from_td</span>
 
@@ -423,125 +419,193 @@
 <span class="sd">    See the Pendulum tutorial for more details: :ref:`tutorial &lt;pendulum_tuto&gt;`.</span>
 
 <span class="sd">    Specs:</span>
-<span class="sd">        CompositeSpec(</span>
-<span class="sd">            output_spec: CompositeSpec(</span>
-<span class="sd">                full_observation_spec: CompositeSpec(</span>
-<span class="sd">                    th: BoundedTensorSpec(</span>
+<span class="sd">        &gt;&gt;&gt; env = PendulumEnv()</span>
+<span class="sd">        &gt;&gt;&gt; env.specs</span>
+<span class="sd">        Composite(</span>
+<span class="sd">            output_spec: Composite(</span>
+<span class="sd">                full_observation_spec: Composite(</span>
+<span class="sd">                    th: BoundedContinuous(</span>
 <span class="sd">                        shape=torch.Size([]),</span>
 <span class="sd">                        space=ContinuousBox(</span>
-<span class="sd">                            low=Tensor(shape=torch.Size([]), dtype=torch.float32, contiguous=True),</span>
-<span class="sd">                            high=Tensor(shape=torch.Size([]), dtype=torch.float32, contiguous=True)),</span>
+<span class="sd">                            low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True),</span>
+<span class="sd">                            high=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True)),</span>
+<span class="sd">                        device=cpu,</span>
 <span class="sd">                        dtype=torch.float32,</span>
 <span class="sd">                        domain=continuous),</span>
-<span class="sd">                    thdot: BoundedTensorSpec(</span>
+<span class="sd">                    thdot: BoundedContinuous(</span>
 <span class="sd">                        shape=torch.Size([]),</span>
 <span class="sd">                        space=ContinuousBox(</span>
-<span class="sd">                            low=Tensor(shape=torch.Size([]), dtype=torch.float32, contiguous=True),</span>
-<span class="sd">                            high=Tensor(shape=torch.Size([]), dtype=torch.float32, contiguous=True)),</span>
+<span class="sd">                            low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True),</span>
+<span class="sd">                            high=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True)),</span>
+<span class="sd">                        device=cpu,</span>
 <span class="sd">                        dtype=torch.float32,</span>
 <span class="sd">                        domain=continuous),</span>
-<span class="sd">                    params: CompositeSpec(</span>
-<span class="sd">                        max_speed: UnboundedContinuousTensorSpec(</span>
+<span class="sd">                    params: Composite(</span>
+<span class="sd">                        max_speed: UnboundedDiscrete(</span>
 <span class="sd">                            shape=torch.Size([]),</span>
+<span class="sd">                            space=ContinuousBox(</span>
+<span class="sd">                                low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.int64, contiguous=True),</span>
+<span class="sd">                                high=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.int64, contiguous=True)),</span>
+<span class="sd">                            device=cpu,</span>
 <span class="sd">                            dtype=torch.int64,</span>
 <span class="sd">                            domain=discrete),</span>
-<span class="sd">                        max_torque: UnboundedContinuousTensorSpec(</span>
+<span class="sd">                        max_torque: UnboundedContinuous(</span>
 <span class="sd">                            shape=torch.Size([]),</span>
+<span class="sd">                            space=ContinuousBox(</span>
+<span class="sd">                                low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True),</span>
+<span class="sd">                                high=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True)),</span>
+<span class="sd">                            device=cpu,</span>
 <span class="sd">                            dtype=torch.float32,</span>
 <span class="sd">                            domain=continuous),</span>
-<span class="sd">                        dt: UnboundedContinuousTensorSpec(</span>
+<span class="sd">                        dt: UnboundedContinuous(</span>
 <span class="sd">                            shape=torch.Size([]),</span>
+<span class="sd">                            space=ContinuousBox(</span>
+<span class="sd">                                low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True),</span>
+<span class="sd">                                high=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True)),</span>
+<span class="sd">                            device=cpu,</span>
 <span class="sd">                            dtype=torch.float32,</span>
 <span class="sd">                            domain=continuous),</span>
-<span class="sd">                        g: UnboundedContinuousTensorSpec(</span>
+<span class="sd">                        g: UnboundedContinuous(</span>
 <span class="sd">                            shape=torch.Size([]),</span>
+<span class="sd">                            space=ContinuousBox(</span>
+<span class="sd">                                low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True),</span>
+<span class="sd">                                high=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True)),</span>
+<span class="sd">                            device=cpu,</span>
 <span class="sd">                            dtype=torch.float32,</span>
 <span class="sd">                            domain=continuous),</span>
-<span class="sd">                        m: UnboundedContinuousTensorSpec(</span>
+<span class="sd">                        m: UnboundedContinuous(</span>
 <span class="sd">                            shape=torch.Size([]),</span>
+<span class="sd">                            space=ContinuousBox(</span>
+<span class="sd">                                low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True),</span>
+<span class="sd">                                high=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True)),</span>
+<span class="sd">                            device=cpu,</span>
 <span class="sd">                            dtype=torch.float32,</span>
 <span class="sd">                            domain=continuous),</span>
-<span class="sd">                        l: UnboundedContinuousTensorSpec(</span>
+<span class="sd">                        l: UnboundedContinuous(</span>
 <span class="sd">                            shape=torch.Size([]),</span>
+<span class="sd">                            space=ContinuousBox(</span>
+<span class="sd">                                low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True),</span>
+<span class="sd">                                high=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True)),</span>
+<span class="sd">                            device=cpu,</span>
 <span class="sd">                            dtype=torch.float32,</span>
 <span class="sd">                            domain=continuous),</span>
+<span class="sd">                        device=None,</span>
 <span class="sd">                        shape=torch.Size([])),</span>
+<span class="sd">                    device=None,</span>
 <span class="sd">                    shape=torch.Size([])),</span>
-<span class="sd">                full_reward_spec: CompositeSpec(</span>
-<span class="sd">                    reward: UnboundedContinuousTensorSpec(</span>
+<span class="sd">                full_reward_spec: Composite(</span>
+<span class="sd">                    reward: UnboundedContinuous(</span>
 <span class="sd">                        shape=torch.Size([1]),</span>
 <span class="sd">                        space=ContinuousBox(</span>
-<span class="sd">                            low=Tensor(shape=torch.Size([1]), dtype=torch.float32, contiguous=True),</span>
-<span class="sd">                            high=Tensor(shape=torch.Size([1]), dtype=torch.float32, contiguous=True)),</span>
+<span class="sd">                            low=Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, contiguous=True),</span>
+<span class="sd">                            high=Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, contiguous=True)),</span>
+<span class="sd">                        device=cpu,</span>
 <span class="sd">                        dtype=torch.float32,</span>
 <span class="sd">                        domain=continuous),</span>
+<span class="sd">                    device=None,</span>
 <span class="sd">                    shape=torch.Size([])),</span>
-<span class="sd">                full_done_spec: CompositeSpec(</span>
-<span class="sd">                    done: DiscreteTensorSpec(</span>
+<span class="sd">                full_done_spec: Composite(</span>
+<span class="sd">                    done: Categorical(</span>
 <span class="sd">                        shape=torch.Size([1]),</span>
-<span class="sd">                        space=DiscreteBox(n=2),</span>
+<span class="sd">                        space=CategoricalBox(n=2),</span>
+<span class="sd">                        device=cpu,</span>
 <span class="sd">                        dtype=torch.bool,</span>
 <span class="sd">                        domain=discrete),</span>
-<span class="sd">                    terminated: DiscreteTensorSpec(</span>
+<span class="sd">                    terminated: Categorical(</span>
 <span class="sd">                        shape=torch.Size([1]),</span>
-<span class="sd">                        space=DiscreteBox(n=2),</span>
+<span class="sd">                        space=CategoricalBox(n=2),</span>
+<span class="sd">                        device=cpu,</span>
 <span class="sd">                        dtype=torch.bool,</span>
 <span class="sd">                        domain=discrete),</span>
+<span class="sd">                    device=None,</span>
 <span class="sd">                    shape=torch.Size([])),</span>
+<span class="sd">                device=None,</span>
 <span class="sd">                shape=torch.Size([])),</span>
-<span class="sd">            input_spec: CompositeSpec(</span>
-<span class="sd">                full_state_spec: CompositeSpec(</span>
-<span class="sd">                    th: BoundedTensorSpec(</span>
+<span class="sd">            input_spec: Composite(</span>
+<span class="sd">                full_state_spec: Composite(</span>
+<span class="sd">                    th: BoundedContinuous(</span>
 <span class="sd">                        shape=torch.Size([]),</span>
 <span class="sd">                        space=ContinuousBox(</span>
-<span class="sd">                            low=Tensor(shape=torch.Size([]), dtype=torch.float32, contiguous=True),</span>
-<span class="sd">                            high=Tensor(shape=torch.Size([]), dtype=torch.float32, contiguous=True)),</span>
+<span class="sd">                            low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True),</span>
+<span class="sd">                            high=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True)),</span>
+<span class="sd">                        device=cpu,</span>
 <span class="sd">                        dtype=torch.float32,</span>
 <span class="sd">                        domain=continuous),</span>
-<span class="sd">                    thdot: BoundedTensorSpec(</span>
+<span class="sd">                    thdot: BoundedContinuous(</span>
 <span class="sd">                        shape=torch.Size([]),</span>
 <span class="sd">                        space=ContinuousBox(</span>
-<span class="sd">                            low=Tensor(shape=torch.Size([]), dtype=torch.float32, contiguous=True),</span>
-<span class="sd">                            high=Tensor(shape=torch.Size([]), dtype=torch.float32, contiguous=True)),</span>
+<span class="sd">                            low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True),</span>
+<span class="sd">                            high=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True)),</span>
+<span class="sd">                        device=cpu,</span>
 <span class="sd">                        dtype=torch.float32,</span>
 <span class="sd">                        domain=continuous),</span>
-<span class="sd">                    params: CompositeSpec(</span>
-<span class="sd">                        max_speed: UnboundedContinuousTensorSpec(</span>
+<span class="sd">                    params: Composite(</span>
+<span class="sd">                        max_speed: UnboundedDiscrete(</span>
 <span class="sd">                            shape=torch.Size([]),</span>
+<span class="sd">                            space=ContinuousBox(</span>
+<span class="sd">                                low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.int64, contiguous=True),</span>
+<span class="sd">                                high=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.int64, contiguous=True)),</span>
+<span class="sd">                            device=cpu,</span>
 <span class="sd">                            dtype=torch.int64,</span>
 <span class="sd">                            domain=discrete),</span>
-<span class="sd">                        max_torque: UnboundedContinuousTensorSpec(</span>
+<span class="sd">                        max_torque: UnboundedContinuous(</span>
 <span class="sd">                            shape=torch.Size([]),</span>
+<span class="sd">                            space=ContinuousBox(</span>
+<span class="sd">                                low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True),</span>
+<span class="sd">                                high=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True)),</span>
+<span class="sd">                            device=cpu,</span>
 <span class="sd">                            dtype=torch.float32,</span>
 <span class="sd">                            domain=continuous),</span>
-<span class="sd">                        dt: UnboundedContinuousTensorSpec(</span>
+<span class="sd">                        dt: UnboundedContinuous(</span>
 <span class="sd">                            shape=torch.Size([]),</span>
+<span class="sd">                            space=ContinuousBox(</span>
+<span class="sd">                                low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True),</span>
+<span class="sd">                                high=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True)),</span>
+<span class="sd">                            device=cpu,</span>
 <span class="sd">                            dtype=torch.float32,</span>
 <span class="sd">                            domain=continuous),</span>
-<span class="sd">                        g: UnboundedContinuousTensorSpec(</span>
+<span class="sd">                        g: UnboundedContinuous(</span>
 <span class="sd">                            shape=torch.Size([]),</span>
+<span class="sd">                            space=ContinuousBox(</span>
+<span class="sd">                                low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True),</span>
+<span class="sd">                                high=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True)),</span>
+<span class="sd">                            device=cpu,</span>
 <span class="sd">                            dtype=torch.float32,</span>
 <span class="sd">                            domain=continuous),</span>
-<span class="sd">                        m: UnboundedContinuousTensorSpec(</span>
+<span class="sd">                        m: UnboundedContinuous(</span>
 <span class="sd">                            shape=torch.Size([]),</span>
+<span class="sd">                            space=ContinuousBox(</span>
+<span class="sd">                                low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True),</span>
+<span class="sd">                                high=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True)),</span>
+<span class="sd">                            device=cpu,</span>
 <span class="sd">                            dtype=torch.float32,</span>
 <span class="sd">                            domain=continuous),</span>
-<span class="sd">                        l: UnboundedContinuousTensorSpec(</span>
+<span class="sd">                        l: UnboundedContinuous(</span>
 <span class="sd">                            shape=torch.Size([]),</span>
+<span class="sd">                            space=ContinuousBox(</span>
+<span class="sd">                                low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True),</span>
+<span class="sd">                                high=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True)),</span>
+<span class="sd">                            device=cpu,</span>
 <span class="sd">                            dtype=torch.float32,</span>
 <span class="sd">                            domain=continuous),</span>
+<span class="sd">                        device=None,</span>
 <span class="sd">                        shape=torch.Size([])),</span>
+<span class="sd">                    device=None,</span>
 <span class="sd">                    shape=torch.Size([])),</span>
-<span class="sd">                full_action_spec: CompositeSpec(</span>
-<span class="sd">                    action: BoundedTensorSpec(</span>
+<span class="sd">                full_action_spec: Composite(</span>
+<span class="sd">                    action: BoundedContinuous(</span>
 <span class="sd">                        shape=torch.Size([1]),</span>
 <span class="sd">                        space=ContinuousBox(</span>
-<span class="sd">                            low=Tensor(shape=torch.Size([1]), dtype=torch.float32, contiguous=True),</span>
-<span class="sd">                            high=Tensor(shape=torch.Size([1]), dtype=torch.float32, contiguous=True)),</span>
+<span class="sd">                            low=Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, contiguous=True),</span>
+<span class="sd">                            high=Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, contiguous=True)),</span>
+<span class="sd">                        device=cpu,</span>
 <span class="sd">                        dtype=torch.float32,</span>
 <span class="sd">                        domain=continuous),</span>
+<span class="sd">                    device=None,</span>
 <span class="sd">                    shape=torch.Size([])),</span>
+<span class="sd">                device=None,</span>
 <span class="sd">                shape=torch.Size([])),</span>
+<span class="sd">            device=None,</span>
 <span class="sd">            shape=torch.Size([]))</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -642,14 +706,14 @@
 
     <span class="k">def</span> <span class="nf">_make_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">td_params</span><span class="p">):</span>
         <span class="c1"># Under the hood, this will populate self.output_spec[&quot;observation&quot;]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">observation_spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">(</span>
-            <span class="n">th</span><span class="o">=</span><span class="n">BoundedTensorSpec</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">observation_spec</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">(</span>
+            <span class="n">th</span><span class="o">=</span><span class="n">Bounded</span><span class="p">(</span>
                 <span class="n">low</span><span class="o">=-</span><span class="n">torch</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span>
                 <span class="n">high</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span>
                 <span class="n">shape</span><span class="o">=</span><span class="p">(),</span>
                 <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
             <span class="p">),</span>
-            <span class="n">thdot</span><span class="o">=</span><span class="n">BoundedTensorSpec</span><span class="p">(</span>
+            <span class="n">thdot</span><span class="o">=</span><span class="n">Bounded</span><span class="p">(</span>
                 <span class="n">low</span><span class="o">=-</span><span class="n">td_params</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">,</span> <span class="s2">&quot;max_speed&quot;</span><span class="p">],</span>
                 <span class="n">high</span><span class="o">=</span><span class="n">td_params</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">,</span> <span class="s2">&quot;max_speed&quot;</span><span class="p">],</span>
                 <span class="n">shape</span><span class="o">=</span><span class="p">(),</span>
@@ -667,22 +731,22 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">state_spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">observation_spec</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
         <span class="c1"># action-spec will be automatically wrapped in input_spec when</span>
         <span class="c1"># `self.action_spec = spec` will be called supported</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">action_spec</span> <span class="o">=</span> <span class="n">BoundedTensorSpec</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">action_spec</span> <span class="o">=</span> <span class="n">Bounded</span><span class="p">(</span>
             <span class="n">low</span><span class="o">=-</span><span class="n">td_params</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">,</span> <span class="s2">&quot;max_torque&quot;</span><span class="p">],</span>
             <span class="n">high</span><span class="o">=</span><span class="n">td_params</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">,</span> <span class="s2">&quot;max_torque&quot;</span><span class="p">],</span>
             <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,),</span>
             <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">reward_spec</span> <span class="o">=</span> <span class="n">UnboundedContinuousTensorSpec</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="o">*</span><span class="n">td_params</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reward_spec</span> <span class="o">=</span> <span class="n">Unbounded</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="o">*</span><span class="n">td_params</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">make_composite_from_td</span><span class="p">(</span><span class="n">td</span><span class="p">):</span>
         <span class="c1"># custom function to convert a ``tensordict`` in a similar spec structure</span>
         <span class="c1"># of unbounded values.</span>
-        <span class="n">composite</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">(</span>
+        <span class="n">composite</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">(</span>
             <span class="p">{</span>
                 <span class="n">key</span><span class="p">:</span> <span class="n">make_composite_from_td</span><span class="p">(</span><span class="n">tensor</span><span class="p">)</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tensor</span><span class="p">,</span> <span class="n">TensorDictBase</span><span class="p">)</span>
-                <span class="k">else</span> <span class="n">UnboundedContinuousTensorSpec</span><span class="p">(</span>
+                <span class="k">else</span> <span class="n">Unbounded</span><span class="p">(</span>
                     <span class="n">dtype</span><span class="o">=</span><span class="n">tensor</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">tensor</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">tensor</span><span class="o">.</span><span class="n">shape</span>
                 <span class="p">)</span>
                 <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">tensor</span> <span class="ow">in</span> <span class="n">td</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>

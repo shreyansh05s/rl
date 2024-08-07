@@ -413,11 +413,7 @@
 <span class="kn">from</span> <span class="nn">packaging</span> <span class="kn">import</span> <span class="n">version</span>
 <span class="kn">from</span> <span class="nn">tensordict</span> <span class="kn">import</span> <span class="n">TensorDict</span><span class="p">,</span> <span class="n">TensorDictBase</span>
 
-<span class="kn">from</span> <span class="nn">torchrl.data.tensor_specs</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">BoundedTensorSpec</span><span class="p">,</span>
-    <span class="n">CompositeSpec</span><span class="p">,</span>
-    <span class="n">UnboundedContinuousTensorSpec</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">torchrl.data.tensor_specs</span> <span class="kn">import</span> <span class="n">Bounded</span><span class="p">,</span> <span class="n">Composite</span><span class="p">,</span> <span class="n">Unbounded</span>
 <span class="kn">from</span> <span class="nn">torchrl.envs.common</span> <span class="kn">import</span> <span class="n">_EnvWrapper</span>
 <span class="kn">from</span> <span class="nn">torchrl.envs.libs.jax_utils</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">_extract_spec</span><span class="p">,</span>
@@ -457,8 +453,8 @@
 <span class="sd">    Args:</span>
 <span class="sd">        env (brax.envs.base.PipelineEnv): the environment to wrap.</span>
 <span class="sd">        categorical_action_encoding (bool, optional): if ``True``, categorical</span>
-<span class="sd">            specs will be converted to the TorchRL equivalent (:class:`torchrl.data.DiscreteTensorSpec`),</span>
-<span class="sd">            otherwise a one-hot encoding will be used (:class:`torchrl.data.OneHotTensorSpec`).</span>
+<span class="sd">            specs will be converted to the TorchRL equivalent (:class:`torchrl.data.Categorical`),</span>
+<span class="sd">            otherwise a one-hot encoding will be used (:class:`torchrl.data.OneHot`).</span>
 <span class="sd">            Defaults to ``False``.</span>
 
 <span class="sd">    Keyword Args:</span>
@@ -657,7 +653,7 @@
         <span class="k">return</span> <span class="n">state_spec</span>
 
     <span class="k">def</span> <span class="nf">_make_specs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">env</span><span class="p">:</span> <span class="s2">&quot;brax.envs.env.Env&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># noqa: F821</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">action_spec</span> <span class="o">=</span> <span class="n">BoundedTensorSpec</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">action_spec</span> <span class="o">=</span> <span class="n">Bounded</span><span class="p">(</span>
             <span class="n">low</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
             <span class="n">high</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
             <span class="n">shape</span><span class="o">=</span><span class="p">(</span>
@@ -666,15 +662,15 @@
             <span class="p">),</span>
             <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">reward_spec</span> <span class="o">=</span> <span class="n">UnboundedContinuousTensorSpec</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reward_spec</span> <span class="o">=</span> <span class="n">Unbounded</span><span class="p">(</span>
             <span class="n">shape</span><span class="o">=</span><span class="p">[</span>
                 <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span>
                 <span class="mi">1</span><span class="p">,</span>
             <span class="p">],</span>
             <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">observation_spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">(</span>
-            <span class="n">observation</span><span class="o">=</span><span class="n">UnboundedContinuousTensorSpec</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">observation_spec</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">(</span>
+            <span class="n">observation</span><span class="o">=</span><span class="n">Unbounded</span><span class="p">(</span>
                 <span class="n">shape</span><span class="o">=</span><span class="p">(</span>
                     <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span>
                     <span class="n">env</span><span class="o">.</span><span class="n">observation_size</span><span class="p">,</span>
@@ -841,8 +837,8 @@
 <span class="sd">        env_name (str): the environment name of the env to wrap. Must be part of</span>
 <span class="sd">            :attr:`~.available_envs`.</span>
 <span class="sd">        categorical_action_encoding (bool, optional): if ``True``, categorical</span>
-<span class="sd">            specs will be converted to the TorchRL equivalent (:class:`torchrl.data.DiscreteTensorSpec`),</span>
-<span class="sd">            otherwise a one-hot encoding will be used (:class:`torchrl.data.OneHotTensorSpec`).</span>
+<span class="sd">            specs will be converted to the TorchRL equivalent (:class:`torchrl.data.Categorical`),</span>
+<span class="sd">            otherwise a one-hot encoding will be used (:class:`torchrl.data.OneHot`).</span>
 <span class="sd">            Defaults to ``False``.</span>
 
 <span class="sd">    Keyword Args:</span>

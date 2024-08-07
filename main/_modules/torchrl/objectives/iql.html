@@ -475,14 +475,14 @@
 <span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; import torch</span>
 <span class="sd">        &gt;&gt;&gt; from torch import nn</span>
-<span class="sd">        &gt;&gt;&gt; from torchrl.data import BoundedTensorSpec</span>
+<span class="sd">        &gt;&gt;&gt; from torchrl.data import Bounded</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.modules.distributions import NormalParamExtractor, TanhNormal</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.modules.tensordict_module.actors import ProbabilisticActor, ValueOperator</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.modules.tensordict_module.common import SafeModule</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.objectives.iql import IQLLoss</span>
 <span class="sd">        &gt;&gt;&gt; from tensordict import TensorDict</span>
 <span class="sd">        &gt;&gt;&gt; n_act, n_obs = 4, 3</span>
-<span class="sd">        &gt;&gt;&gt; spec = BoundedTensorSpec(-torch.ones(n_act), torch.ones(n_act), (n_act,))</span>
+<span class="sd">        &gt;&gt;&gt; spec = Bounded(-torch.ones(n_act), torch.ones(n_act), (n_act,))</span>
 <span class="sd">        &gt;&gt;&gt; net = nn.Sequential(nn.Linear(n_obs, 2 * n_act), NormalParamExtractor())</span>
 <span class="sd">        &gt;&gt;&gt; module = SafeModule(net, in_keys=[&quot;observation&quot;], out_keys=[&quot;loc&quot;, &quot;scale&quot;])</span>
 <span class="sd">        &gt;&gt;&gt; actor = ProbabilisticActor(</span>
@@ -538,14 +538,14 @@
 <span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; import torch</span>
 <span class="sd">        &gt;&gt;&gt; from torch import nn</span>
-<span class="sd">        &gt;&gt;&gt; from torchrl.data import BoundedTensorSpec</span>
+<span class="sd">        &gt;&gt;&gt; from torchrl.data import Bounded</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.modules.distributions import NormalParamExtractor, TanhNormal</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.modules.tensordict_module.actors import ProbabilisticActor, ValueOperator</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.modules.tensordict_module.common import SafeModule</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.objectives.iql import IQLLoss</span>
 <span class="sd">        &gt;&gt;&gt; _ = torch.manual_seed(42)</span>
 <span class="sd">        &gt;&gt;&gt; n_act, n_obs = 4, 3</span>
-<span class="sd">        &gt;&gt;&gt; spec = BoundedTensorSpec(-torch.ones(n_act), torch.ones(n_act), (n_act,))</span>
+<span class="sd">        &gt;&gt;&gt; spec = Bounded(-torch.ones(n_act), torch.ones(n_act), (n_act,))</span>
 <span class="sd">        &gt;&gt;&gt; net = nn.Sequential(nn.Linear(n_obs, 2 * n_act), NormalParamExtractor())</span>
 <span class="sd">        &gt;&gt;&gt; module = SafeModule(net, in_keys=[&quot;observation&quot;], out_keys=[&quot;loc&quot;, &quot;scale&quot;])</span>
 <span class="sd">        &gt;&gt;&gt; actor = ProbabilisticActor(</span>
@@ -943,9 +943,9 @@
 <span class="sd">    Keyword Args:</span>
 <span class="sd">        action_space (str or TensorSpec): Action space. Must be one of</span>
 <span class="sd">                ``&quot;one-hot&quot;``, ``&quot;mult_one_hot&quot;``, ``&quot;binary&quot;`` or ``&quot;categorical&quot;``,</span>
-<span class="sd">                or an instance of the corresponding specs (:class:`torchrl.data.OneHotDiscreteTensorSpec`,</span>
-<span class="sd">                :class:`torchrl.data.MultiOneHotDiscreteTensorSpec`,</span>
-<span class="sd">                :class:`torchrl.data.BinaryDiscreteTensorSpec` or :class:`torchrl.data.DiscreteTensorSpec`).</span>
+<span class="sd">                or an instance of the corresponding specs (:class:`torchrl.data.OneHot`,</span>
+<span class="sd">                :class:`torchrl.data.MultiOneHot`,</span>
+<span class="sd">                :class:`torchrl.data.Binary` or :class:`torchrl.data.Categorical`).</span>
 <span class="sd">        num_qvalue_nets (integer, optional): number of Q-Value networks used.</span>
 <span class="sd">            Defaults to ``2``.</span>
 <span class="sd">        loss_function (str, optional): loss function to be used with</span>
@@ -971,14 +971,14 @@
 <span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; import torch</span>
 <span class="sd">        &gt;&gt;&gt; from torch import nn</span>
-<span class="sd">        &gt;&gt;&gt; from torchrl.data.tensor_specs import OneHotDiscreteTensorSpec</span>
+<span class="sd">        &gt;&gt;&gt; from torchrl.data.tensor_specs import OneHot</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.modules.distributions.discrete import OneHotCategorical</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.modules.tensordict_module.actors import ProbabilisticActor</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.modules.tensordict_module.common import SafeModule</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.objectives.iql import DiscreteIQLLoss</span>
 <span class="sd">        &gt;&gt;&gt; from tensordict import TensorDict</span>
 <span class="sd">        &gt;&gt;&gt; n_act, n_obs = 4, 3</span>
-<span class="sd">        &gt;&gt;&gt; spec = OneHotDiscreteTensorSpec(n_act)</span>
+<span class="sd">        &gt;&gt;&gt; spec = OneHot(n_act)</span>
 <span class="sd">        &gt;&gt;&gt; module = SafeModule(nn.Linear(n_obs, n_act), in_keys=[&quot;observation&quot;], out_keys=[&quot;logits&quot;])</span>
 <span class="sd">        &gt;&gt;&gt; actor = ProbabilisticActor(</span>
 <span class="sd">        ...     module=module,</span>
@@ -1029,14 +1029,14 @@
 <span class="sd">        &gt;&gt;&gt; import torch</span>
 <span class="sd">        &gt;&gt;&gt; import torch</span>
 <span class="sd">        &gt;&gt;&gt; from torch import nn</span>
-<span class="sd">        &gt;&gt;&gt; from torchrl.data.tensor_specs import OneHotDiscreteTensorSpec</span>
+<span class="sd">        &gt;&gt;&gt; from torchrl.data.tensor_specs import OneHot</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.modules.distributions.discrete import OneHotCategorical</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.modules.tensordict_module.actors import ProbabilisticActor</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.modules.tensordict_module.common import SafeModule</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.objectives.iql import DiscreteIQLLoss</span>
 <span class="sd">        &gt;&gt;&gt; _ = torch.manual_seed(42)</span>
 <span class="sd">        &gt;&gt;&gt; n_act, n_obs = 4, 3</span>
-<span class="sd">        &gt;&gt;&gt; spec = OneHotDiscreteTensorSpec(n_act)</span>
+<span class="sd">        &gt;&gt;&gt; spec = OneHot(n_act)</span>
 <span class="sd">        &gt;&gt;&gt; module = SafeModule(nn.Linear(n_obs, n_act), in_keys=[&quot;observation&quot;], out_keys=[&quot;logits&quot;])</span>
 <span class="sd">        &gt;&gt;&gt; actor = ProbabilisticActor(</span>
 <span class="sd">        ...     module=module,</span>

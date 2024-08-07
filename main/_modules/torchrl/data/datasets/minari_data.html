@@ -427,12 +427,7 @@
 <span class="kn">from</span> <span class="nn">torchrl.data.replay_buffers.samplers</span> <span class="kn">import</span> <span class="n">Sampler</span>
 <span class="kn">from</span> <span class="nn">torchrl.data.replay_buffers.storages</span> <span class="kn">import</span> <span class="n">TensorStorage</span>
 <span class="kn">from</span> <span class="nn">torchrl.data.replay_buffers.writers</span> <span class="kn">import</span> <span class="n">ImmutableDatasetWriter</span><span class="p">,</span> <span class="n">Writer</span>
-<span class="kn">from</span> <span class="nn">torchrl.data.tensor_specs</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">BoundedTensorSpec</span><span class="p">,</span>
-    <span class="n">CompositeSpec</span><span class="p">,</span>
-    <span class="n">DiscreteTensorSpec</span><span class="p">,</span>
-    <span class="n">UnboundedContinuousTensorSpec</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">torchrl.data.tensor_specs</span> <span class="kn">import</span> <span class="n">Bounded</span><span class="p">,</span> <span class="n">Categorical</span><span class="p">,</span> <span class="n">Composite</span><span class="p">,</span> <span class="n">Unbounded</span>
 <span class="kn">from</span> <span class="nn">torchrl.envs.utils</span> <span class="kn">import</span> <span class="n">_classproperty</span>
 
 <span class="n">_has_tqdm</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">find_spec</span><span class="p">(</span><span class="s2">&quot;tqdm&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
@@ -800,24 +795,22 @@
     <span class="k">if</span> <span class="n">spec</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span>
     <span class="k">if</span> <span class="n">spec</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Dict&quot;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">CompositeSpec</span><span class="p">(</span>
+        <span class="k">return</span> <span class="n">Composite</span><span class="p">(</span>
             <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">_proc_spec</span><span class="p">(</span><span class="n">subspec</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">subspec</span> <span class="ow">in</span> <span class="n">spec</span><span class="p">[</span><span class="s2">&quot;subspaces&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
         <span class="p">)</span>
     <span class="k">elif</span> <span class="n">spec</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Box&quot;</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">item</span> <span class="o">==</span> <span class="o">-</span><span class="nb">float</span><span class="p">(</span><span class="s2">&quot;inf&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">spec</span><span class="p">[</span><span class="s2">&quot;low&quot;</span><span class="p">])</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span>
             <span class="n">item</span> <span class="o">==</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;inf&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">spec</span><span class="p">[</span><span class="s2">&quot;high&quot;</span><span class="p">]</span>
         <span class="p">):</span>
-            <span class="k">return</span> <span class="n">UnboundedContinuousTensorSpec</span><span class="p">(</span>
-                <span class="n">spec</span><span class="p">[</span><span class="s2">&quot;shape&quot;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">_DTYPE_DIR</span><span class="p">[</span><span class="n">spec</span><span class="p">[</span><span class="s2">&quot;dtype&quot;</span><span class="p">]]</span>
-            <span class="p">)</span>
-        <span class="k">return</span> <span class="n">BoundedTensorSpec</span><span class="p">(</span>
+            <span class="k">return</span> <span class="n">Unbounded</span><span class="p">(</span><span class="n">spec</span><span class="p">[</span><span class="s2">&quot;shape&quot;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">_DTYPE_DIR</span><span class="p">[</span><span class="n">spec</span><span class="p">[</span><span class="s2">&quot;dtype&quot;</span><span class="p">]])</span>
+        <span class="k">return</span> <span class="n">Bounded</span><span class="p">(</span>
             <span class="n">shape</span><span class="o">=</span><span class="n">spec</span><span class="p">[</span><span class="s2">&quot;shape&quot;</span><span class="p">],</span>
             <span class="n">low</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">as_tensor</span><span class="p">(</span><span class="n">spec</span><span class="p">[</span><span class="s2">&quot;low&quot;</span><span class="p">]),</span>
             <span class="n">high</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">as_tensor</span><span class="p">(</span><span class="n">spec</span><span class="p">[</span><span class="s2">&quot;high&quot;</span><span class="p">]),</span>
             <span class="n">dtype</span><span class="o">=</span><span class="n">_DTYPE_DIR</span><span class="p">[</span><span class="n">spec</span><span class="p">[</span><span class="s2">&quot;dtype&quot;</span><span class="p">]],</span>
         <span class="p">)</span>
     <span class="k">elif</span> <span class="n">spec</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Discrete&quot;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">DiscreteTensorSpec</span><span class="p">(</span>
+        <span class="k">return</span> <span class="n">Categorical</span><span class="p">(</span>
             <span class="n">spec</span><span class="p">[</span><span class="s2">&quot;n&quot;</span><span class="p">],</span> <span class="n">shape</span><span class="o">=</span><span class="n">spec</span><span class="p">[</span><span class="s2">&quot;shape&quot;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">_DTYPE_DIR</span><span class="p">[</span><span class="n">spec</span><span class="p">[</span><span class="s2">&quot;dtype&quot;</span><span class="p">]]</span>
         <span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>

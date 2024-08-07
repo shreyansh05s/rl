@@ -449,24 +449,26 @@ everything an environment requires to execute a single step.
 
  .. code-block:: none
 
-    observation_spec: CompositeSpec(
-        observation: UnboundedContinuousTensorSpec(
+    observation_spec: Composite(
+        observation: UnboundedContinuous(
             shape=torch.Size([11]),
-            space=None,
+            space=ContinuousBox(
+                low=Tensor(shape=torch.Size([11]), device=cpu, dtype=torch.float32, contiguous=True),
+                high=Tensor(shape=torch.Size([11]), device=cpu, dtype=torch.float32, contiguous=True)),
             device=cpu,
             dtype=torch.float32,
             domain=continuous),
-        step_count: BoundedTensorSpec(
+        step_count: BoundedDiscrete(
             shape=torch.Size([1]),
             space=ContinuousBox(
                 low=Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.int64, contiguous=True),
                 high=Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.int64, contiguous=True)),
             device=cpu,
             dtype=torch.int64,
-            domain=continuous),
+            domain=discrete),
         device=cpu,
         shape=torch.Size([]))
-    reward_spec: UnboundedContinuousTensorSpec(
+    reward_spec: UnboundedContinuous(
         shape=torch.Size([1]),
         space=ContinuousBox(
             low=Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, contiguous=True),
@@ -474,20 +476,20 @@ everything an environment requires to execute a single step.
         device=cpu,
         dtype=torch.float32,
         domain=continuous)
-    input_spec: CompositeSpec(
-        full_state_spec: CompositeSpec(
-            step_count: BoundedTensorSpec(
+    input_spec: Composite(
+        full_state_spec: Composite(
+            step_count: BoundedDiscrete(
                 shape=torch.Size([1]),
                 space=ContinuousBox(
                     low=Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.int64, contiguous=True),
                     high=Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.int64, contiguous=True)),
                 device=cpu,
                 dtype=torch.int64,
-                domain=continuous),
+                domain=discrete),
             device=cpu,
             shape=torch.Size([])),
-        full_action_spec: CompositeSpec(
-            action: BoundedTensorSpec(
+        full_action_spec: Composite(
+            action: BoundedContinuous(
                 shape=torch.Size([1]),
                 space=ContinuousBox(
                     low=Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, contiguous=True),
@@ -499,7 +501,7 @@ everything an environment requires to execute a single step.
             shape=torch.Size([])),
         device=cpu,
         shape=torch.Size([]))
-    action_spec (as defined by input_spec): BoundedTensorSpec(
+    action_spec (as defined by input_spec): BoundedContinuous(
         shape=torch.Size([1]),
         space=ContinuousBox(
             low=Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, contiguous=True),
@@ -1056,7 +1058,7 @@ The steps include:
 
  .. code-block:: none
 
-      0%|          | 0/10000 [00:00<?, ?it/s]     10%|█         | 1000/10000 [00:02<00:19, 467.12it/s]    eval cumulative reward:  92.4660 (init:  92.4660), eval step-count: 9, average reward= 9.0930 (init= 9.0930), step count (max): 14, lr policy:  0.0003:  10%|█         | 1000/10000 [00:02<00:19, 467.12it/s]    eval cumulative reward:  92.4660 (init:  92.4660), eval step-count: 9, average reward= 9.0930 (init= 9.0930), step count (max): 14, lr policy:  0.0003:  20%|██        | 2000/10000 [00:04<00:16, 473.19it/s]    eval cumulative reward:  92.4660 (init:  92.4660), eval step-count: 9, average reward= 9.1212 (init= 9.0930), step count (max): 14, lr policy:  0.0003:  20%|██        | 2000/10000 [00:04<00:16, 473.19it/s]    eval cumulative reward:  92.4660 (init:  92.4660), eval step-count: 9, average reward= 9.1212 (init= 9.0930), step count (max): 14, lr policy:  0.0003:  30%|███       | 3000/10000 [00:06<00:14, 478.12it/s]    eval cumulative reward:  92.4660 (init:  92.4660), eval step-count: 9, average reward= 9.1549 (init= 9.0930), step count (max): 17, lr policy:  0.0003:  30%|███       | 3000/10000 [00:06<00:14, 478.12it/s]    eval cumulative reward:  92.4660 (init:  92.4660), eval step-count: 9, average reward= 9.1549 (init= 9.0930), step count (max): 17, lr policy:  0.0003:  40%|████      | 4000/10000 [00:08<00:12, 480.44it/s]    eval cumulative reward:  92.4660 (init:  92.4660), eval step-count: 9, average reward= 9.1876 (init= 9.0930), step count (max): 17, lr policy:  0.0002:  40%|████      | 4000/10000 [00:08<00:12, 480.44it/s]    eval cumulative reward:  92.4660 (init:  92.4660), eval step-count: 9, average reward= 9.1876 (init= 9.0930), step count (max): 17, lr policy:  0.0002:  50%|█████     | 5000/10000 [00:10<00:10, 483.38it/s]    eval cumulative reward:  92.4660 (init:  92.4660), eval step-count: 9, average reward= 9.1981 (init= 9.0930), step count (max): 28, lr policy:  0.0002:  50%|█████     | 5000/10000 [00:10<00:10, 483.38it/s]    eval cumulative reward:  92.4660 (init:  92.4660), eval step-count: 9, average reward= 9.1981 (init= 9.0930), step count (max): 28, lr policy:  0.0002:  60%|██████    | 6000/10000 [00:12<00:08, 485.29it/s]    eval cumulative reward:  92.4660 (init:  92.4660), eval step-count: 9, average reward= 9.2177 (init= 9.0930), step count (max): 26, lr policy:  0.0001:  60%|██████    | 6000/10000 [00:12<00:08, 485.29it/s]    eval cumulative reward:  92.4660 (init:  92.4660), eval step-count: 9, average reward= 9.2177 (init= 9.0930), step count (max): 26, lr policy:  0.0001:  70%|███████   | 7000/10000 [00:14<00:06, 487.49it/s]    eval cumulative reward:  92.4660 (init:  92.4660), eval step-count: 9, average reward= 9.2297 (init= 9.0930), step count (max): 35, lr policy:  0.0001:  70%|███████   | 7000/10000 [00:14<00:06, 487.49it/s]    eval cumulative reward:  92.4660 (init:  92.4660), eval step-count: 9, average reward= 9.2297 (init= 9.0930), step count (max): 35, lr policy:  0.0001:  80%|████████  | 8000/10000 [00:16<00:04, 487.64it/s]    eval cumulative reward:  92.4660 (init:  92.4660), eval step-count: 9, average reward= 9.2357 (init= 9.0930), step count (max): 32, lr policy:  0.0001:  80%|████████  | 8000/10000 [00:16<00:04, 487.64it/s]    eval cumulative reward:  92.4660 (init:  92.4660), eval step-count: 9, average reward= 9.2357 (init= 9.0930), step count (max): 32, lr policy:  0.0001:  90%|█████████ | 9000/10000 [00:18<00:02, 474.75it/s]    eval cumulative reward:  92.4660 (init:  92.4660), eval step-count: 9, average reward= 9.2486 (init= 9.0930), step count (max): 42, lr policy:  0.0000:  90%|█████████ | 9000/10000 [00:18<00:02, 474.75it/s]    eval cumulative reward:  92.4660 (init:  92.4660), eval step-count: 9, average reward= 9.2486 (init= 9.0930), step count (max): 42, lr policy:  0.0000: 100%|██████████| 10000/10000 [00:20<00:00, 478.40it/s]    eval cumulative reward:  92.4660 (init:  92.4660), eval step-count: 9, average reward= 9.2446 (init= 9.0930), step count (max): 40, lr policy:  0.0000: 100%|██████████| 10000/10000 [00:20<00:00, 478.40it/s]
+      0%|          | 0/10000 [00:00<?, ?it/s]     10%|█         | 1000/10000 [00:02<00:19, 469.99it/s]    eval cumulative reward:  148.4660 (init:  148.4660), eval step-count: 15, average reward= 9.0866 (init= 9.0866), step count (max): 13, lr policy:  0.0003:  10%|█         | 1000/10000 [00:02<00:19, 469.99it/s]    eval cumulative reward:  148.4660 (init:  148.4660), eval step-count: 15, average reward= 9.0866 (init= 9.0866), step count (max): 13, lr policy:  0.0003:  20%|██        | 2000/10000 [00:04<00:16, 474.80it/s]    eval cumulative reward:  148.4660 (init:  148.4660), eval step-count: 15, average reward= 9.1198 (init= 9.0866), step count (max): 17, lr policy:  0.0003:  20%|██        | 2000/10000 [00:04<00:16, 474.80it/s]    eval cumulative reward:  148.4660 (init:  148.4660), eval step-count: 15, average reward= 9.1198 (init= 9.0866), step count (max): 17, lr policy:  0.0003:  30%|███       | 3000/10000 [00:06<00:14, 479.96it/s]    eval cumulative reward:  148.4660 (init:  148.4660), eval step-count: 15, average reward= 9.1548 (init= 9.0866), step count (max): 15, lr policy:  0.0003:  30%|███       | 3000/10000 [00:06<00:14, 479.96it/s]    eval cumulative reward:  148.4660 (init:  148.4660), eval step-count: 15, average reward= 9.1548 (init= 9.0866), step count (max): 15, lr policy:  0.0003:  40%|████      | 4000/10000 [00:08<00:12, 483.70it/s]    eval cumulative reward:  148.4660 (init:  148.4660), eval step-count: 15, average reward= 9.1826 (init= 9.0866), step count (max): 20, lr policy:  0.0002:  40%|████      | 4000/10000 [00:08<00:12, 483.70it/s]    eval cumulative reward:  148.4660 (init:  148.4660), eval step-count: 15, average reward= 9.1826 (init= 9.0866), step count (max): 20, lr policy:  0.0002:  50%|█████     | 5000/10000 [00:10<00:10, 485.52it/s]    eval cumulative reward:  148.4660 (init:  148.4660), eval step-count: 15, average reward= 9.2111 (init= 9.0866), step count (max): 36, lr policy:  0.0002:  50%|█████     | 5000/10000 [00:10<00:10, 485.52it/s]    eval cumulative reward:  148.4660 (init:  148.4660), eval step-count: 15, average reward= 9.2111 (init= 9.0866), step count (max): 36, lr policy:  0.0002:  60%|██████    | 6000/10000 [00:12<00:08, 487.23it/s]    eval cumulative reward:  148.4660 (init:  148.4660), eval step-count: 15, average reward= 9.2229 (init= 9.0866), step count (max): 34, lr policy:  0.0001:  60%|██████    | 6000/10000 [00:12<00:08, 487.23it/s]    eval cumulative reward:  148.4660 (init:  148.4660), eval step-count: 15, average reward= 9.2229 (init= 9.0866), step count (max): 34, lr policy:  0.0001:  70%|███████   | 7000/10000 [00:14<00:06, 487.65it/s]    eval cumulative reward:  148.4660 (init:  148.4660), eval step-count: 15, average reward= 9.2306 (init= 9.0866), step count (max): 29, lr policy:  0.0001:  70%|███████   | 7000/10000 [00:14<00:06, 487.65it/s]    eval cumulative reward:  148.4660 (init:  148.4660), eval step-count: 15, average reward= 9.2306 (init= 9.0866), step count (max): 29, lr policy:  0.0001:  80%|████████  | 8000/10000 [00:16<00:04, 488.47it/s]    eval cumulative reward:  148.4660 (init:  148.4660), eval step-count: 15, average reward= 9.2347 (init= 9.0866), step count (max): 32, lr policy:  0.0001:  80%|████████  | 8000/10000 [00:16<00:04, 488.47it/s]    eval cumulative reward:  148.4660 (init:  148.4660), eval step-count: 15, average reward= 9.2347 (init= 9.0866), step count (max): 32, lr policy:  0.0001:  90%|█████████ | 9000/10000 [00:18<00:02, 476.48it/s]    eval cumulative reward:  148.4660 (init:  148.4660), eval step-count: 15, average reward= 9.2504 (init= 9.0866), step count (max): 39, lr policy:  0.0000:  90%|█████████ | 9000/10000 [00:18<00:02, 476.48it/s]    eval cumulative reward:  148.4660 (init:  148.4660), eval step-count: 15, average reward= 9.2504 (init= 9.0866), step count (max): 39, lr policy:  0.0000: 100%|██████████| 10000/10000 [00:20<00:00, 480.94it/s]    eval cumulative reward:  148.4660 (init:  148.4660), eval step-count: 15, average reward= 9.2563 (init= 9.0866), step count (max): 42, lr policy:  0.0000: 100%|██████████| 10000/10000 [00:20<00:00, 480.94it/s]
 
 
 
@@ -1127,7 +1129,7 @@ If you want to experiment with this tutorial a bit more, you can apply the follo
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (1 minutes 26.837 seconds)
+   **Total running time of the script:** (1 minutes 24.532 seconds)
 
 **Estimated memory usage:**  318 MB
 

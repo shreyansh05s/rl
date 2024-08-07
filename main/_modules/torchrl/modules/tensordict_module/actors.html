@@ -424,7 +424,7 @@
 <span class="kn">from</span> <span class="nn">torch.distributions</span> <span class="kn">import</span> <span class="n">Categorical</span>
 
 <span class="kn">from</span> <span class="nn">torchrl._utils</span> <span class="kn">import</span> <span class="n">_replace_last</span>
-<span class="kn">from</span> <span class="nn">torchrl.data.tensor_specs</span> <span class="kn">import</span> <span class="n">CompositeSpec</span><span class="p">,</span> <span class="n">TensorSpec</span>
+<span class="kn">from</span> <span class="nn">torchrl.data.tensor_specs</span> <span class="kn">import</span> <span class="n">Composite</span><span class="p">,</span> <span class="n">TensorSpec</span>
 <span class="kn">from</span> <span class="nn">torchrl.data.utils</span> <span class="kn">import</span> <span class="n">_process_action_space_spec</span>
 <span class="kn">from</span> <span class="nn">torchrl.modules.tensordict_module.common</span> <span class="kn">import</span> <span class="n">DistributionalDQNnet</span><span class="p">,</span> <span class="n">SafeModule</span>
 <span class="kn">from</span> <span class="nn">torchrl.modules.tensordict_module.probabilistic</span> <span class="kn">import</span> <span class="p">(</span>
@@ -439,8 +439,8 @@
 
 <span class="sd">    The Actor class comes with default values for the out_keys (``[&quot;action&quot;]``)</span>
 <span class="sd">    and if the spec is provided but not as a</span>
-<span class="sd">    :class:`~torchrl.data.CompositeSpec` object, it will be</span>
-<span class="sd">    automatically translated into ``spec = CompositeSpec(action=spec)``.</span>
+<span class="sd">    :class:`~torchrl.data.Composite` object, it will be</span>
+<span class="sd">    automatically translated into ``spec = Composite(action=spec)``.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        module (nn.Module): a :class:`~torch.nn.Module` used to map the input to</span>
@@ -472,11 +472,11 @@
 <span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; import torch</span>
 <span class="sd">        &gt;&gt;&gt; from tensordict import TensorDict</span>
-<span class="sd">        &gt;&gt;&gt; from torchrl.data import UnboundedContinuousTensorSpec</span>
+<span class="sd">        &gt;&gt;&gt; from torchrl.data import Unbounded</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.modules import Actor</span>
 <span class="sd">        &gt;&gt;&gt; torch.manual_seed(0)</span>
 <span class="sd">        &gt;&gt;&gt; td = TensorDict({&quot;observation&quot;: torch.randn(3, 4)}, [3,])</span>
-<span class="sd">        &gt;&gt;&gt; action_spec = UnboundedContinuousTensorSpec(4)</span>
+<span class="sd">        &gt;&gt;&gt; action_spec = Unbounded(4)</span>
 <span class="sd">        &gt;&gt;&gt; module = torch.nn.Linear(4, 4)</span>
 <span class="sd">        &gt;&gt;&gt; td_module = Actor(</span>
 <span class="sd">        ...    module=module,</span>
@@ -513,9 +513,9 @@
         <span class="k">if</span> <span class="p">(</span>
             <span class="s2">&quot;action&quot;</span> <span class="ow">in</span> <span class="n">out_keys</span>
             <span class="ow">and</span> <span class="n">spec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-            <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">Composite</span><span class="p">)</span>
         <span class="p">):</span>
-            <span class="n">spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="n">spec</span><span class="p">)</span>
+            <span class="n">spec</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="n">spec</span><span class="p">)</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">module</span><span class="p">,</span>
@@ -530,8 +530,8 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;General class for probabilistic actors in RL.</span>
 
 <span class="sd">    The Actor class comes with default values for the out_keys ([&quot;action&quot;])</span>
-<span class="sd">    and if the spec is provided but not as a CompositeSpec object, it will be</span>
-<span class="sd">    automatically translated into :obj:`spec = CompositeSpec(action=spec)`</span>
+<span class="sd">    and if the spec is provided but not as a Composite object, it will be</span>
+<span class="sd">    automatically translated into :obj:`spec = Composite(action=spec)`</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        module (nn.Module): a :class:`torch.nn.Module` used to map the input to</span>
@@ -607,10 +607,10 @@
 <span class="sd">        &gt;&gt;&gt; import torch</span>
 <span class="sd">        &gt;&gt;&gt; from tensordict import TensorDict</span>
 <span class="sd">        &gt;&gt;&gt; from tensordict.nn import TensorDictModule</span>
-<span class="sd">        &gt;&gt;&gt; from torchrl.data import BoundedTensorSpec</span>
+<span class="sd">        &gt;&gt;&gt; from torchrl.data import Bounded</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.modules import ProbabilisticActor, NormalParamExtractor, TanhNormal</span>
 <span class="sd">        &gt;&gt;&gt; td = TensorDict({&quot;observation&quot;: torch.randn(3, 4)}, [3,])</span>
-<span class="sd">        &gt;&gt;&gt; action_spec = BoundedTensorSpec(shape=torch.Size([4]),</span>
+<span class="sd">        &gt;&gt;&gt; action_spec = Bounded(shape=torch.Size([4]),</span>
 <span class="sd">        ...    low=-1, high=1)</span>
 <span class="sd">        &gt;&gt;&gt; module = nn.Sequential(torch.nn.Linear(4, 8), NormalParamExtractor())</span>
 <span class="sd">        &gt;&gt;&gt; tensordict_module = TensorDictModule(module, in_keys=[&quot;observation&quot;], out_keys=[&quot;loc&quot;, &quot;scale&quot;])</span>
@@ -784,12 +784,8 @@
                     <span class="n">out_keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">distribution_map</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">out_keys</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;action&quot;</span><span class="p">]</span>
-        <span class="k">if</span> <span class="p">(</span>
-            <span class="nb">len</span><span class="p">(</span><span class="n">out_keys</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
-            <span class="ow">and</span> <span class="n">spec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-            <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">)</span>
-        <span class="p">):</span>
-            <span class="n">spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">({</span><span class="n">out_keys</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> <span class="n">spec</span><span class="p">})</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">out_keys</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">spec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">Composite</span><span class="p">):</span>
+            <span class="n">spec</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">({</span><span class="n">out_keys</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> <span class="n">spec</span><span class="p">})</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">module</span><span class="p">,</span>
@@ -826,7 +822,7 @@
 <span class="sd">        &gt;&gt;&gt; import torch</span>
 <span class="sd">        &gt;&gt;&gt; from tensordict import TensorDict</span>
 <span class="sd">        &gt;&gt;&gt; from torch import nn</span>
-<span class="sd">        &gt;&gt;&gt; from torchrl.data import UnboundedContinuousTensorSpec</span>
+<span class="sd">        &gt;&gt;&gt; from torchrl.data import Unbounded</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.modules import ValueOperator</span>
 <span class="sd">        &gt;&gt;&gt; td = TensorDict({&quot;observation&quot;: torch.randn(3, 4), &quot;action&quot;: torch.randn(3, 2)}, [3,])</span>
 <span class="sd">        &gt;&gt;&gt; class CustomModule(nn.Module):</span>
@@ -979,22 +975,22 @@
             <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">out_keys</span> <span class="o">=</span> <span class="n">out_keys</span>
         <span class="n">action_key</span> <span class="o">=</span> <span class="n">out_keys</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">):</span>
-            <span class="n">spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">({</span><span class="n">action_key</span><span class="p">:</span> <span class="n">spec</span><span class="p">})</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">Composite</span><span class="p">):</span>
+            <span class="n">spec</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">({</span><span class="n">action_key</span><span class="p">:</span> <span class="n">spec</span><span class="p">})</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">register_spec</span><span class="p">(</span><span class="n">safe</span><span class="o">=</span><span class="n">safe</span><span class="p">,</span> <span class="n">spec</span><span class="o">=</span><span class="n">spec</span><span class="p">)</span>
 
     <span class="n">register_spec</span> <span class="o">=</span> <span class="n">SafeModule</span><span class="o">.</span><span class="n">register_spec</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">spec</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CompositeSpec</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">spec</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Composite</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spec</span>
 
     <span class="nd">@spec</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spec</span><span class="p">:</span> <span class="n">CompositeSpec</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spec</span><span class="p">:</span> <span class="n">Composite</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">Composite</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Trying to set an object of type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span><span class="si">}</span><span class="s2"> as a tensorspec but expected a CompositeSpec instance.&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Trying to set an object of type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span><span class="si">}</span><span class="s2"> as a tensorspec but expected a Composite instance.&quot;</span>
             <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_spec</span> <span class="o">=</span> <span class="n">spec</span>
 
@@ -1293,13 +1289,13 @@
 <span class="sd">        &gt;&gt;&gt; import torch</span>
 <span class="sd">        &gt;&gt;&gt; from tensordict import TensorDict</span>
 <span class="sd">        &gt;&gt;&gt; from torch import nn</span>
-<span class="sd">        &gt;&gt;&gt; from torchrl.data import OneHotDiscreteTensorSpec</span>
+<span class="sd">        &gt;&gt;&gt; from torchrl.data import OneHot</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.modules.tensordict_module.actors import QValueHook, Actor</span>
 <span class="sd">        &gt;&gt;&gt; td = TensorDict({&#39;observation&#39;: torch.randn(5, 4)}, [5])</span>
 <span class="sd">        &gt;&gt;&gt; module = nn.Linear(4, 4)</span>
 <span class="sd">        &gt;&gt;&gt; hook = QValueHook(&quot;one_hot&quot;)</span>
 <span class="sd">        &gt;&gt;&gt; module.register_forward_hook(hook)</span>
-<span class="sd">        &gt;&gt;&gt; action_spec = OneHotDiscreteTensorSpec(4)</span>
+<span class="sd">        &gt;&gt;&gt; action_spec = OneHot(4)</span>
 <span class="sd">        &gt;&gt;&gt; qvalue_actor = Actor(module=module, spec=action_spec, out_keys=[&quot;action&quot;, &quot;action_value&quot;])</span>
 <span class="sd">        &gt;&gt;&gt; td = qvalue_actor(td)</span>
 <span class="sd">        &gt;&gt;&gt; print(td)</span>
@@ -1377,7 +1373,7 @@
 <span class="sd">        &gt;&gt;&gt; import torch</span>
 <span class="sd">        &gt;&gt;&gt; from tensordict import TensorDict</span>
 <span class="sd">        &gt;&gt;&gt; from torch import nn</span>
-<span class="sd">        &gt;&gt;&gt; from torchrl.data import OneHotDiscreteTensorSpec</span>
+<span class="sd">        &gt;&gt;&gt; from torchrl.data import OneHot</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.modules.tensordict_module.actors import DistributionalQValueHook, Actor</span>
 <span class="sd">        &gt;&gt;&gt; td = TensorDict({&#39;observation&#39;: torch.randn(5, 4)}, [5])</span>
 <span class="sd">        &gt;&gt;&gt; nbins = 3</span>
@@ -1391,7 +1387,7 @@
 <span class="sd">        ...</span>
 <span class="sd">        &gt;&gt;&gt; module = CustomDistributionalQval()</span>
 <span class="sd">        &gt;&gt;&gt; params = TensorDict.from_module(module)</span>
-<span class="sd">        &gt;&gt;&gt; action_spec = OneHotDiscreteTensorSpec(4)</span>
+<span class="sd">        &gt;&gt;&gt; action_spec = OneHot(4)</span>
 <span class="sd">        &gt;&gt;&gt; hook = DistributionalQValueHook(&quot;one_hot&quot;, support = torch.arange(nbins))</span>
 <span class="sd">        &gt;&gt;&gt; module.register_forward_hook(hook)</span>
 <span class="sd">        &gt;&gt;&gt; qvalue_actor = Actor(module=module, spec=action_spec, out_keys=[&quot;action&quot;, &quot;action_value&quot;])</span>
@@ -1487,12 +1483,12 @@
 <span class="sd">        &gt;&gt;&gt; import torch</span>
 <span class="sd">        &gt;&gt;&gt; from tensordict import TensorDict</span>
 <span class="sd">        &gt;&gt;&gt; from torch import nn</span>
-<span class="sd">        &gt;&gt;&gt; from torchrl.data import OneHotDiscreteTensorSpec</span>
+<span class="sd">        &gt;&gt;&gt; from torchrl.data import OneHot</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.modules.tensordict_module.actors import QValueActor</span>
 <span class="sd">        &gt;&gt;&gt; td = TensorDict({&#39;observation&#39;: torch.randn(5, 4)}, [5])</span>
 <span class="sd">        &gt;&gt;&gt; # with a regular nn.Module</span>
 <span class="sd">        &gt;&gt;&gt; module = nn.Linear(4, 4)</span>
-<span class="sd">        &gt;&gt;&gt; action_spec = OneHotDiscreteTensorSpec(4)</span>
+<span class="sd">        &gt;&gt;&gt; action_spec = OneHot(4)</span>
 <span class="sd">        &gt;&gt;&gt; qvalue_actor = QValueActor(module=module, spec=action_spec)</span>
 <span class="sd">        &gt;&gt;&gt; td = qvalue_actor(td)</span>
 <span class="sd">        &gt;&gt;&gt; print(td)</span>
@@ -1508,7 +1504,7 @@
 <span class="sd">        &gt;&gt;&gt; # with a TensorDictModule</span>
 <span class="sd">        &gt;&gt;&gt; td = TensorDict({&#39;obs&#39;: torch.randn(5, 4)}, [5])</span>
 <span class="sd">        &gt;&gt;&gt; module = TensorDictModule(lambda x: x, in_keys=[&quot;obs&quot;], out_keys=[&quot;action_value&quot;])</span>
-<span class="sd">        &gt;&gt;&gt; action_spec = OneHotDiscreteTensorSpec(4)</span>
+<span class="sd">        &gt;&gt;&gt; action_spec = OneHot(4)</span>
 <span class="sd">        &gt;&gt;&gt; qvalue_actor = QValueActor(module=module, spec=action_spec)</span>
 <span class="sd">        &gt;&gt;&gt; td = qvalue_actor(td)</span>
 <span class="sd">        &gt;&gt;&gt; print(td)</span>
@@ -1563,13 +1559,13 @@
                 <span class="n">module</span><span class="p">,</span> <span class="n">in_keys</span><span class="o">=</span><span class="n">in_keys</span><span class="p">,</span> <span class="n">out_keys</span><span class="o">=</span><span class="p">[</span><span class="n">action_value_key</span><span class="p">]</span>
             <span class="p">)</span>
         <span class="k">if</span> <span class="n">spec</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">()</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">):</span>
+            <span class="n">spec</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">Composite</span><span class="p">):</span>
             <span class="n">spec</span> <span class="o">=</span> <span class="n">spec</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
             <span class="k">if</span> <span class="s2">&quot;action&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">spec</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
                 <span class="n">spec</span><span class="p">[</span><span class="s2">&quot;action&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="n">spec</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">spec</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">spec</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="n">spec</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">spec</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
         <span class="n">spec</span><span class="p">[</span><span class="n">action_value_key</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">spec</span><span class="p">[</span><span class="s2">&quot;chosen_action_value&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">qvalue</span> <span class="o">=</span> <span class="n">QValueModule</span><span class="p">(</span>
@@ -1639,7 +1635,7 @@
 <span class="sd">        &gt;&gt;&gt; from tensordict import TensorDict</span>
 <span class="sd">        &gt;&gt;&gt; from tensordict.nn import TensorDictModule, TensorDictSequential</span>
 <span class="sd">        &gt;&gt;&gt; from torch import nn</span>
-<span class="sd">        &gt;&gt;&gt; from torchrl.data import OneHotDiscreteTensorSpec</span>
+<span class="sd">        &gt;&gt;&gt; from torchrl.data import OneHot</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.modules import DistributionalQValueActor, MLP</span>
 <span class="sd">        &gt;&gt;&gt; td = TensorDict({&#39;observation&#39;: torch.randn(5, 4)}, [5])</span>
 <span class="sd">        &gt;&gt;&gt; nbins = 3</span>
@@ -1649,7 +1645,7 @@
 <span class="sd">        ...     TensorDictModule(module, [&quot;observation&quot;], [&quot;action_value&quot;]),</span>
 <span class="sd">        ...     TensorDictModule(lambda x: x.log_softmax(-2), [&quot;action_value&quot;], [&quot;action_value&quot;]),</span>
 <span class="sd">        ... )</span>
-<span class="sd">        &gt;&gt;&gt; action_spec = OneHotDiscreteTensorSpec(4)</span>
+<span class="sd">        &gt;&gt;&gt; action_spec = OneHot(4)</span>
 <span class="sd">        &gt;&gt;&gt; qvalue_actor = DistributionalQValueActor(</span>
 <span class="sd">        ...     module=module,</span>
 <span class="sd">        ...     spec=action_spec,</span>
@@ -1701,13 +1697,13 @@
                 <span class="n">module</span><span class="p">,</span> <span class="n">in_keys</span><span class="o">=</span><span class="n">in_keys</span><span class="p">,</span> <span class="n">out_keys</span><span class="o">=</span><span class="p">[</span><span class="n">action_value_key</span><span class="p">]</span>
             <span class="p">)</span>
         <span class="k">if</span> <span class="n">spec</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">()</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">):</span>
+            <span class="n">spec</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">Composite</span><span class="p">):</span>
             <span class="n">spec</span> <span class="o">=</span> <span class="n">spec</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
             <span class="k">if</span> <span class="s2">&quot;action&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">spec</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
                 <span class="n">spec</span><span class="p">[</span><span class="s2">&quot;action&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="n">spec</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">spec</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">spec</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="n">spec</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">spec</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
         <span class="n">spec</span><span class="p">[</span><span class="n">action_value_key</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="n">qvalue</span> <span class="o">=</span> <span class="n">DistributionalQValueModule</span><span class="p">(</span>
@@ -2250,8 +2246,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">return_to_go_key</span> <span class="o">=</span> <span class="s2">&quot;return_to_go&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">inference_context</span> <span class="o">=</span> <span class="n">inference_context</span>
         <span class="k">if</span> <span class="n">spec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">out_keys</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">({</span><span class="bp">self</span><span class="o">.</span><span class="n">action_key</span><span class="p">:</span> <span class="n">spec</span><span class="p">},</span> <span class="n">shape</span><span class="o">=</span><span class="n">spec</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">Composite</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">out_keys</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">spec</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">({</span><span class="bp">self</span><span class="o">.</span><span class="n">action_key</span><span class="p">:</span> <span class="n">spec</span><span class="p">},</span> <span class="n">shape</span><span class="o">=</span><span class="n">spec</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_spec</span> <span class="o">=</span> <span class="n">spec</span>
         <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">td_module</span><span class="p">,</span> <span class="s2">&quot;_spec&quot;</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">td_module</span><span class="o">.</span><span class="n">_spec</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
@@ -2262,7 +2258,7 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">action_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spec</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_spec</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">action_key</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">({</span><span class="n">key</span><span class="p">:</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">policy</span><span class="o">.</span><span class="n">out_keys</span><span class="p">})</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_spec</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">({</span><span class="n">key</span><span class="p">:</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">policy</span><span class="o">.</span><span class="n">out_keys</span><span class="p">})</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">checked</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="nd">@property</span>
@@ -2391,7 +2387,7 @@
 
 <span class="sd">    Keyword Args:</span>
 <span class="sd">        spec (TensorSpec, optional): if provided, the spec of the output.</span>
-<span class="sd">            If a CompositeSpec is provided, its key(s) must match the key(s)</span>
+<span class="sd">            If a Composite is provided, its key(s) must match the key(s)</span>
 <span class="sd">            in out_keys. Otherwise, the key(s) of out_keys are assumed and the</span>
 <span class="sd">            same spec is used for all outputs.</span>
 <span class="sd">        low (float, np.ndarray or torch.Tensor): the lower bound of the space.</span>
@@ -2429,8 +2425,8 @@
 <span class="sd">        &gt;&gt;&gt; data[&#39;action&#39;]</span>
 <span class="sd">        tensor([-2.0000,  0.9991,  1.0000, -2.0000, -1.9991])</span>
 <span class="sd">        &gt;&gt;&gt; # A spec can be provided</span>
-<span class="sd">        &gt;&gt;&gt; from torchrl.data import BoundedTensorSpec</span>
-<span class="sd">        &gt;&gt;&gt; spec = BoundedTensorSpec(low, high, shape=())</span>
+<span class="sd">        &gt;&gt;&gt; from torchrl.data import Bounded</span>
+<span class="sd">        &gt;&gt;&gt; spec = Bounded(low, high, shape=())</span>
 <span class="sd">        &gt;&gt;&gt; mod = TanhModule(</span>
 <span class="sd">        ...     in_keys=in_keys,</span>
 <span class="sd">        ...     low=low,</span>
@@ -2440,9 +2436,9 @@
 <span class="sd">        ... )</span>
 <span class="sd">        &gt;&gt;&gt; # One can also work with multiple keys</span>
 <span class="sd">        &gt;&gt;&gt; in_keys = [&#39;a&#39;, &#39;b&#39;]</span>
-<span class="sd">        &gt;&gt;&gt; spec = CompositeSpec(</span>
-<span class="sd">        ...     a=BoundedTensorSpec(-3, 0, shape=()),</span>
-<span class="sd">        ...     b=BoundedTensorSpec(0, 3, shape=()))</span>
+<span class="sd">        &gt;&gt;&gt; spec = Composite(</span>
+<span class="sd">        ...     a=Bounded(-3, 0, shape=()),</span>
+<span class="sd">        ...     b=Bounded(0, 3, shape=()))</span>
 <span class="sd">        &gt;&gt;&gt; mod = TanhModule(</span>
 <span class="sd">        ...     in_keys=in_keys,</span>
 <span class="sd">        ...     spec=spec,</span>
@@ -2479,13 +2475,13 @@
             <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">out_keys</span> <span class="o">=</span> <span class="n">out_keys</span>
         <span class="c1"># action_spec can be a composite spec or not</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">Composite</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">out_key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_keys</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">out_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">spec</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
                     <span class="n">spec</span><span class="p">[</span><span class="n">out_key</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># if one spec is present, we assume it is the same for all keys</span>
-            <span class="n">spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">(</span>
+            <span class="n">spec</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">(</span>
                 <span class="p">{</span><span class="n">out_key</span><span class="p">:</span> <span class="n">spec</span> <span class="k">for</span> <span class="n">out_key</span> <span class="ow">in</span> <span class="n">out_keys</span><span class="p">},</span>
             <span class="p">)</span>
 

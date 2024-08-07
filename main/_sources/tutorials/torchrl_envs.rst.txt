@@ -139,8 +139,8 @@ Reward and action do not have this restriction:
  .. code-block:: none
 
     Env observation_spec: 
-     CompositeSpec(
-        observation: BoundedTensorSpec(
+     Composite(
+        observation: BoundedContinuous(
             shape=torch.Size([3]),
             space=ContinuousBox(
                 low=Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float32, contiguous=True),
@@ -151,7 +151,7 @@ Reward and action do not have this restriction:
         device=None,
         shape=torch.Size([]))
     Env action_spec: 
-     BoundedTensorSpec(
+     BoundedContinuous(
         shape=torch.Size([1]),
         space=ContinuousBox(
             low=Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, contiguous=True),
@@ -160,9 +160,11 @@ Reward and action do not have this restriction:
         dtype=torch.float32,
         domain=continuous)
     Env reward_spec: 
-     UnboundedContinuousTensorSpec(
+     UnboundedContinuous(
         shape=torch.Size([1]),
-        space=None,
+        space=ContinuousBox(
+            low=Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, contiguous=True),
+            high=Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, contiguous=True)),
         device=cpu,
         dtype=torch.float32,
         domain=continuous)
@@ -218,7 +220,7 @@ uniformly distributed) numbers in that space:
  .. code-block:: none
 
     random action: 
-     tensor([-0.0981])
+     tensor([-1.7314])
 
 
 
@@ -249,22 +251,22 @@ these three signals:
 
  .. code-block:: none
 
-    CompositeSpec(
-        done: DiscreteTensorSpec(
+    Composite(
+        done: Categorical(
             shape=torch.Size([1]),
-            space=DiscreteBox(n=2),
+            space=CategoricalBox(n=2),
             device=cpu,
             dtype=torch.bool,
             domain=discrete),
-        terminated: DiscreteTensorSpec(
+        terminated: Categorical(
             shape=torch.Size([1]),
-            space=DiscreteBox(n=2),
+            space=CategoricalBox(n=2),
             device=cpu,
             dtype=torch.bool,
             domain=discrete),
-        truncated: DiscreteTensorSpec(
+        truncated: Categorical(
             shape=torch.Size([1]),
-            space=DiscreteBox(n=2),
+            space=CategoricalBox(n=2),
             device=cpu,
             dtype=torch.bool,
             domain=discrete),
@@ -713,7 +715,7 @@ argument that allows the user to quickly ask for image-based environments:
  .. code-block:: none
 
 
-    <matplotlib.image.AxesImage object at 0x7f30d2320a00>
+    <matplotlib.image.AxesImage object at 0x7f9ef5295a90>
 
 
 
@@ -799,17 +801,17 @@ Some environments only come in image-based format
     Traceback (most recent call last):
       File "/pytorch/rl/docs/source/reference/generated/tutorials/torchrl_envs.py", line 275, in <module>
         env = GymEnv("ALE/Pong-v5")
-      File "/pytorch/rl/torchrl/envs/libs/gym.py", line 571, in __call__
+      File "/pytorch/rl/torchrl/envs/libs/gym.py", line 564, in __call__
         instance: GymWrapper = super().__call__(*args, **kwargs)
-      File "/pytorch/rl/torchrl/envs/common.py", line 176, in __call__
+      File "/pytorch/rl/torchrl/envs/common.py", line 171, in __call__
         instance: EnvBase = super().__call__(*args, **kwargs)
-      File "/pytorch/rl/torchrl/envs/libs/gym.py", line 1371, in __init__
+      File "/pytorch/rl/torchrl/envs/libs/gym.py", line 1361, in __init__
         super().__init__(**kwargs)
-      File "/pytorch/rl/torchrl/envs/libs/gym.py", line 784, in __init__
+      File "/pytorch/rl/torchrl/envs/libs/gym.py", line 777, in __init__
         super().__init__(**kwargs)
-      File "/pytorch/rl/torchrl/envs/common.py", line 3047, in __init__
+      File "/pytorch/rl/torchrl/envs/common.py", line 3042, in __init__
         self._env = self._build_env(**kwargs)  # writes the self._env attribute
-      File "/pytorch/rl/torchrl/envs/libs/gym.py", line 1423, in _build_env
+      File "/pytorch/rl/torchrl/envs/libs/gym.py", line 1413, in _build_env
         env = self.lib.make(env_name, **kwargs)
       File "/pytorch/rl/env/lib/python3.8/site-packages/gym/envs/registration.py", line 569, in make
         _check_version_exists(ns, name, version)
@@ -1445,9 +1447,9 @@ This small difference will usually be absored throughout training.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (1 minutes 37.117 seconds)
+   **Total running time of the script:** (1 minutes 33.811 seconds)
 
-**Estimated memory usage:**  4117 MB
+**Estimated memory usage:**  2874 MB
 
 
 .. _sphx_glr_download_tutorials_torchrl_envs.py:

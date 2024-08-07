@@ -414,7 +414,7 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">from</span> <span class="nn">tensordict</span> <span class="kn">import</span> <span class="n">TensorDict</span>
-<span class="kn">from</span> <span class="nn">torchrl.data.tensor_specs</span> <span class="kn">import</span> <span class="n">UnboundedContinuousTensorSpec</span>
+<span class="kn">from</span> <span class="nn">torchrl.data.tensor_specs</span> <span class="kn">import</span> <span class="n">Unbounded</span>
 <span class="kn">from</span> <span class="nn">torchrl.envs.libs.gym</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">_AsyncMeta</span><span class="p">,</span>
     <span class="n">_gym_to_torchrl_spec_transform</span><span class="p">,</span>
@@ -482,8 +482,8 @@
 <span class="sd">    Args:</span>
 <span class="sd">        env_name (str): the environment name to build. Must be one of :attr:`.available_envs`</span>
 <span class="sd">        categorical_action_encoding (bool, optional): if ``True``, categorical</span>
-<span class="sd">            specs will be converted to the TorchRL equivalent (:class:`torchrl.data.DiscreteTensorSpec`),</span>
-<span class="sd">            otherwise a one-hot encoding will be used (:class:`torchrl.data.OneHotTensorSpec`).</span>
+<span class="sd">            specs will be converted to the TorchRL equivalent (:class:`torchrl.data.Categorical`),</span>
+<span class="sd">            otherwise a one-hot encoding will be used (:class:`torchrl.data.OneHot`).</span>
 <span class="sd">            Defaults to ``False``.</span>
 
 <span class="sd">    Keyword Args:</span>
@@ -707,7 +707,7 @@
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">observation_spec</span> <span class="o">=</span> <span class="n">observation_spec</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">reward_spec</span> <span class="o">=</span> <span class="n">UnboundedContinuousTensorSpec</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reward_spec</span> <span class="o">=</span> <span class="n">Unbounded</span><span class="p">(</span>
             <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,),</span>
             <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
         <span class="p">)</span>  <span class="c1"># default</span>

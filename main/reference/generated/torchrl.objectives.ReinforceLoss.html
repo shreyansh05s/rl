@@ -458,7 +458,7 @@ version of the value estimator. Defaults to <code class="docutils literal notran
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">torch</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.data.tensor_specs</span> <span class="kn">import</span> <span class="n">UnboundedContinuousTensorSpec</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.data.tensor_specs</span> <span class="kn">import</span> <span class="n">Unbounded</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.modules.distributions</span> <span class="kn">import</span> <span class="n">NormalParamExtractor</span><span class="p">,</span> <span class="n">TanhNormal</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.modules.tensordict_module.actors</span> <span class="kn">import</span> <span class="n">ProbabilisticActor</span><span class="p">,</span> <span class="n">ValueOperator</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.modules.tensordict_module.common</span> <span class="kn">import</span> <span class="n">SafeModule</span>
@@ -473,7 +473,7 @@ version of the value estimator. Defaults to <code class="docutils literal notran
 <span class="gp">... </span>    <span class="n">distribution_class</span><span class="o">=</span><span class="n">TanhNormal</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">return_log_prob</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">in_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;loc&quot;</span><span class="p">,</span> <span class="s2">&quot;scale&quot;</span><span class="p">],</span>
-<span class="gp">... </span>    <span class="n">spec</span><span class="o">=</span><span class="n">UnboundedContinuousTensorSpec</span><span class="p">(</span><span class="n">n_act</span><span class="p">),)</span>
+<span class="gp">... </span>    <span class="n">spec</span><span class="o">=</span><span class="n">Unbounded</span><span class="p">(</span><span class="n">n_act</span><span class="p">),)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">loss</span> <span class="o">=</span> <span class="n">ReinforceLoss</span><span class="p">(</span><span class="n">actor_net</span><span class="p">,</span> <span class="n">value_net</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">batch</span> <span class="o">=</span> <span class="mi">2</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="p">({</span>
@@ -504,7 +504,7 @@ The return value is a tuple of tensors in the following order: <code class="docu
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">torch</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.data.tensor_specs</span> <span class="kn">import</span> <span class="n">UnboundedContinuousTensorSpec</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.data.tensor_specs</span> <span class="kn">import</span> <span class="n">Unbounded</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.modules.distributions</span> <span class="kn">import</span> <span class="n">NormalParamExtractor</span><span class="p">,</span> <span class="n">TanhNormal</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.modules.tensordict_module.actors</span> <span class="kn">import</span> <span class="n">ProbabilisticActor</span><span class="p">,</span> <span class="n">ValueOperator</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.modules.tensordict_module.common</span> <span class="kn">import</span> <span class="n">SafeModule</span>
@@ -518,7 +518,7 @@ The return value is a tuple of tensors in the following order: <code class="docu
 <span class="gp">... </span>    <span class="n">distribution_class</span><span class="o">=</span><span class="n">TanhNormal</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">return_log_prob</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">in_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;loc&quot;</span><span class="p">,</span> <span class="s2">&quot;scale&quot;</span><span class="p">],</span>
-<span class="gp">... </span>    <span class="n">spec</span><span class="o">=</span><span class="n">UnboundedContinuousTensorSpec</span><span class="p">(</span><span class="n">n_act</span><span class="p">),)</span>
+<span class="gp">... </span>    <span class="n">spec</span><span class="o">=</span><span class="n">Unbounded</span><span class="p">(</span><span class="n">n_act</span><span class="p">),)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">loss</span> <span class="o">=</span> <span class="n">ReinforceLoss</span><span class="p">(</span><span class="n">actor_net</span><span class="p">,</span> <span class="n">value_net</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">batch</span> <span class="o">=</span> <span class="mi">2</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">loss_actor</span><span class="p">,</span> <span class="n">loss_value</span> <span class="o">=</span> <span class="n">loss</span><span class="p">(</span>

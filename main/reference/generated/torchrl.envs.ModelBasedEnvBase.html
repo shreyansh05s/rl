@@ -421,18 +421,18 @@ and to behave as a classical environment.</p>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">torch</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">tensordict</span> <span class="kn">import</span> <span class="n">TensorDict</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.data</span> <span class="kn">import</span> <span class="n">CompositeSpec</span><span class="p">,</span> <span class="n">UnboundedContinuousTensorSpec</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.data</span> <span class="kn">import</span> <span class="n">Composite</span><span class="p">,</span> <span class="n">Unbounded</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">MyMBEnv</span><span class="p">(</span><span class="n">ModelBasedEnvBase</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">world_model</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="gp">... </span>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">world_model</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">)</span>
-<span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">observation_spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">(</span>
-<span class="gp">... </span>            <span class="n">hidden_observation</span><span class="o">=</span><span class="n">UnboundedContinuousTensorSpec</span><span class="p">((</span><span class="mi">4</span><span class="p">,))</span>
+<span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">observation_spec</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">(</span>
+<span class="gp">... </span>            <span class="n">hidden_observation</span><span class="o">=</span><span class="n">Unbounded</span><span class="p">((</span><span class="mi">4</span><span class="p">,))</span>
 <span class="gp">... </span>        <span class="p">)</span>
-<span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">state_spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">(</span>
-<span class="gp">... </span>            <span class="n">hidden_observation</span><span class="o">=</span><span class="n">UnboundedContinuousTensorSpec</span><span class="p">((</span><span class="mi">4</span><span class="p">,)),</span>
+<span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">state_spec</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">(</span>
+<span class="gp">... </span>            <span class="n">hidden_observation</span><span class="o">=</span><span class="n">Unbounded</span><span class="p">((</span><span class="mi">4</span><span class="p">,)),</span>
 <span class="gp">... </span>        <span class="p">)</span>
-<span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">action_spec</span> <span class="o">=</span> <span class="n">UnboundedContinuousTensorSpec</span><span class="p">((</span><span class="mi">1</span><span class="p">,))</span>
-<span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">reward_spec</span> <span class="o">=</span> <span class="n">UnboundedContinuousTensorSpec</span><span class="p">((</span><span class="mi">1</span><span class="p">,))</span>
+<span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">action_spec</span> <span class="o">=</span> <span class="n">Unbounded</span><span class="p">((</span><span class="mi">1</span><span class="p">,))</span>
+<span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">reward_spec</span> <span class="o">=</span> <span class="n">Unbounded</span><span class="p">((</span><span class="mi">1</span><span class="p">,))</span>
 <span class="gp">...</span>
 <span class="gp">... </span>    <span class="k">def</span> <span class="nf">_reset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDict</span><span class="p">:</span>
 <span class="gp">... </span>        <span class="n">tensordict</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="p">({},</span>
@@ -479,10 +479,10 @@ and to behave as a classical environment.</p>
 </div>
 <dl class="simple">
 <dt>Properties:</dt><dd><ul class="simple">
-<li><p>observation_spec (CompositeSpec): sampling spec of the observations;</p></li>
+<li><p>observation_spec (Composite): sampling spec of the observations;</p></li>
 <li><p>action_spec (TensorSpec): sampling spec of the actions;</p></li>
 <li><p>reward_spec (TensorSpec): sampling spec of the rewards;</p></li>
-<li><p>input_spec (CompositeSpec): sampling spec of the inputs;</p></li>
+<li><p>input_spec (Composite): sampling spec of the inputs;</p></li>
 <li><p>batch_size (torch.Size): batch_size to be used by the env. If not set, the env accept tensordicts of all batch sizes.</p></li>
 <li><p>device (torch.device): device where the env input and output are expected to live</p></li>
 </ul>

@@ -638,7 +638,7 @@ Here are examples of using a replaybuffer with tensordicts.
  .. code-block:: none
 
 
-    tensor([1, 1])
+    tensor([0, 1])
 
 
 
@@ -668,7 +668,7 @@ Here are examples of using a replaybuffer with tensordicts.
 
  .. code-block:: none
 
-    0 1.0
+    0 0.06984967738389969
     1 0.28791671991348267
     2 0.0
 
@@ -988,7 +988,7 @@ Vectorized Environments
 
  .. code-block:: none
 
-    BoundedTensorSpec(
+    BoundedContinuous(
         shape=torch.Size([4, 1]),
         space=ContinuousBox(
             low=Tensor(shape=torch.Size([4, 1]), device=cpu, dtype=torch.float32, contiguous=True),
@@ -1445,10 +1445,10 @@ Specialized Classes
 
 
     torch.manual_seed(0)
-    from torchrl.data import BoundedTensorSpec
+    from torchrl.data import Bounded
     from torchrl.modules import SafeModule
 
-    spec = BoundedTensorSpec(-torch.ones(3), torch.ones(3))
+    spec = Bounded(-torch.ones(3), torch.ones(3))
     base_module = nn.Linear(5, 3)
     module = SafeModule(
         module=base_module, spec=spec, in_keys=["obs"], out_keys=["action"], safe=True
@@ -2166,9 +2166,9 @@ The library is on PyPI: *pip install torchrl*
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (3 minutes 50.246 seconds)
+   **Total running time of the script:** (4 minutes 20.429 seconds)
 
-**Estimated memory usage:**  324 MB
+**Estimated memory usage:**  387 MB
 
 
 .. _sphx_glr_download_tutorials_torchrl_demo.py:

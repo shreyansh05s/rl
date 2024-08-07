@@ -416,160 +416,196 @@
 <dd><p>A stateless Pendulum environment.</p>
 <p>See the Pendulum tutorial for more details: <a class="reference internal" href="../../tutorials/pendulum.html#pendulum-tuto"><span class="std std-ref">tutorial</span></a>.</p>
 <dl>
-<dt>Specs:</dt><dd><dl>
-<dt>CompositeSpec(</dt><dd><dl>
-<dt>output_spec: CompositeSpec(</dt><dd><dl>
-<dt>full_observation_spec: CompositeSpec(</dt><dd><dl>
-<dt>th: BoundedTensorSpec(</dt><dd><p>shape=torch.Size([]),
-space=ContinuousBox(</p>
-<blockquote>
-<div><p>low=Tensor(shape=torch.Size([]), dtype=torch.float32, contiguous=True),
-high=Tensor(shape=torch.Size([]), dtype=torch.float32, contiguous=True)),</p>
-</div></blockquote>
-<p>dtype=torch.float32,
-domain=continuous),</p>
-</dd>
-<dt>thdot: BoundedTensorSpec(</dt><dd><p>shape=torch.Size([]),
-space=ContinuousBox(</p>
-<blockquote>
-<div><p>low=Tensor(shape=torch.Size([]), dtype=torch.float32, contiguous=True),
-high=Tensor(shape=torch.Size([]), dtype=torch.float32, contiguous=True)),</p>
-</div></blockquote>
-<p>dtype=torch.float32,
-domain=continuous),</p>
-</dd>
-<dt>params: CompositeSpec(</dt><dd><dl class="simple">
-<dt>max_speed: UnboundedContinuousTensorSpec(</dt><dd><p>shape=torch.Size([]),
-dtype=torch.int64,
-domain=discrete),</p>
-</dd>
-<dt>max_torque: UnboundedContinuousTensorSpec(</dt><dd><p>shape=torch.Size([]),
-dtype=torch.float32,
-domain=continuous),</p>
-</dd>
-<dt>dt: UnboundedContinuousTensorSpec(</dt><dd><p>shape=torch.Size([]),
-dtype=torch.float32,
-domain=continuous),</p>
-</dd>
-<dt>g: UnboundedContinuousTensorSpec(</dt><dd><p>shape=torch.Size([]),
-dtype=torch.float32,
-domain=continuous),</p>
-</dd>
-<dt>m: UnboundedContinuousTensorSpec(</dt><dd><p>shape=torch.Size([]),
-dtype=torch.float32,
-domain=continuous),</p>
-</dd>
-<dt>l: UnboundedContinuousTensorSpec(</dt><dd><p>shape=torch.Size([]),
-dtype=torch.float32,
-domain=continuous),</p>
-</dd>
-</dl>
-<p>shape=torch.Size([])),</p>
-</dd>
-</dl>
-<p>shape=torch.Size([])),</p>
-</dd>
-<dt>full_reward_spec: CompositeSpec(</dt><dd><dl>
-<dt>reward: UnboundedContinuousTensorSpec(</dt><dd><p>shape=torch.Size([1]),
-space=ContinuousBox(</p>
-<blockquote>
-<div><p>low=Tensor(shape=torch.Size([1]), dtype=torch.float32, contiguous=True),
-high=Tensor(shape=torch.Size([1]), dtype=torch.float32, contiguous=True)),</p>
-</div></blockquote>
-<p>dtype=torch.float32,
-domain=continuous),</p>
-</dd>
-</dl>
-<p>shape=torch.Size([])),</p>
-</dd>
-<dt>full_done_spec: CompositeSpec(</dt><dd><dl class="simple">
-<dt>done: DiscreteTensorSpec(</dt><dd><p>shape=torch.Size([1]),
-space=DiscreteBox(n=2),
-dtype=torch.bool,
-domain=discrete),</p>
-</dd>
-<dt>terminated: DiscreteTensorSpec(</dt><dd><p>shape=torch.Size([1]),
-space=DiscreteBox(n=2),
-dtype=torch.bool,
-domain=discrete),</p>
-</dd>
-</dl>
-<p>shape=torch.Size([])),</p>
-</dd>
-</dl>
-<p>shape=torch.Size([])),</p>
-</dd>
-<dt>input_spec: CompositeSpec(</dt><dd><dl>
-<dt>full_state_spec: CompositeSpec(</dt><dd><dl>
-<dt>th: BoundedTensorSpec(</dt><dd><p>shape=torch.Size([]),
-space=ContinuousBox(</p>
-<blockquote>
-<div><p>low=Tensor(shape=torch.Size([]), dtype=torch.float32, contiguous=True),
-high=Tensor(shape=torch.Size([]), dtype=torch.float32, contiguous=True)),</p>
-</div></blockquote>
-<p>dtype=torch.float32,
-domain=continuous),</p>
-</dd>
-<dt>thdot: BoundedTensorSpec(</dt><dd><p>shape=torch.Size([]),
-space=ContinuousBox(</p>
-<blockquote>
-<div><p>low=Tensor(shape=torch.Size([]), dtype=torch.float32, contiguous=True),
-high=Tensor(shape=torch.Size([]), dtype=torch.float32, contiguous=True)),</p>
-</div></blockquote>
-<p>dtype=torch.float32,
-domain=continuous),</p>
-</dd>
-<dt>params: CompositeSpec(</dt><dd><dl class="simple">
-<dt>max_speed: UnboundedContinuousTensorSpec(</dt><dd><p>shape=torch.Size([]),
-dtype=torch.int64,
-domain=discrete),</p>
-</dd>
-<dt>max_torque: UnboundedContinuousTensorSpec(</dt><dd><p>shape=torch.Size([]),
-dtype=torch.float32,
-domain=continuous),</p>
-</dd>
-<dt>dt: UnboundedContinuousTensorSpec(</dt><dd><p>shape=torch.Size([]),
-dtype=torch.float32,
-domain=continuous),</p>
-</dd>
-<dt>g: UnboundedContinuousTensorSpec(</dt><dd><p>shape=torch.Size([]),
-dtype=torch.float32,
-domain=continuous),</p>
-</dd>
-<dt>m: UnboundedContinuousTensorSpec(</dt><dd><p>shape=torch.Size([]),
-dtype=torch.float32,
-domain=continuous),</p>
-</dd>
-<dt>l: UnboundedContinuousTensorSpec(</dt><dd><p>shape=torch.Size([]),
-dtype=torch.float32,
-domain=continuous),</p>
-</dd>
-</dl>
-<p>shape=torch.Size([])),</p>
-</dd>
-</dl>
-<p>shape=torch.Size([])),</p>
-</dd>
-<dt>full_action_spec: CompositeSpec(</dt><dd><dl>
-<dt>action: BoundedTensorSpec(</dt><dd><p>shape=torch.Size([1]),
-space=ContinuousBox(</p>
-<blockquote>
-<div><p>low=Tensor(shape=torch.Size([1]), dtype=torch.float32, contiguous=True),
-high=Tensor(shape=torch.Size([1]), dtype=torch.float32, contiguous=True)),</p>
-</div></blockquote>
-<p>dtype=torch.float32,
-domain=continuous),</p>
-</dd>
-</dl>
-<p>shape=torch.Size([])),</p>
-</dd>
-</dl>
-<p>shape=torch.Size([])),</p>
-</dd>
-</dl>
-<p>shape=torch.Size([]))</p>
-</dd>
-</dl>
+<dt>Specs:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">env</span> <span class="o">=</span> <span class="n">PendulumEnv</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">env</span><span class="o">.</span><span class="n">specs</span>
+<span class="go">Composite(</span>
+<span class="go">    output_spec: Composite(</span>
+<span class="go">        full_observation_spec: Composite(</span>
+<span class="go">            th: BoundedContinuous(</span>
+<span class="go">                shape=torch.Size([]),</span>
+<span class="go">                space=ContinuousBox(</span>
+<span class="go">                    low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True),</span>
+<span class="go">                    high=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True)),</span>
+<span class="go">                device=cpu,</span>
+<span class="go">                dtype=torch.float32,</span>
+<span class="go">                domain=continuous),</span>
+<span class="go">            thdot: BoundedContinuous(</span>
+<span class="go">                shape=torch.Size([]),</span>
+<span class="go">                space=ContinuousBox(</span>
+<span class="go">                    low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True),</span>
+<span class="go">                    high=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True)),</span>
+<span class="go">                device=cpu,</span>
+<span class="go">                dtype=torch.float32,</span>
+<span class="go">                domain=continuous),</span>
+<span class="go">            params: Composite(</span>
+<span class="go">                max_speed: UnboundedDiscrete(</span>
+<span class="go">                    shape=torch.Size([]),</span>
+<span class="go">                    space=ContinuousBox(</span>
+<span class="go">                        low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.int64, contiguous=True),</span>
+<span class="go">                        high=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.int64, contiguous=True)),</span>
+<span class="go">                    device=cpu,</span>
+<span class="go">                    dtype=torch.int64,</span>
+<span class="go">                    domain=discrete),</span>
+<span class="go">                max_torque: UnboundedContinuous(</span>
+<span class="go">                    shape=torch.Size([]),</span>
+<span class="go">                    space=ContinuousBox(</span>
+<span class="go">                        low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True),</span>
+<span class="go">                        high=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True)),</span>
+<span class="go">                    device=cpu,</span>
+<span class="go">                    dtype=torch.float32,</span>
+<span class="go">                    domain=continuous),</span>
+<span class="go">                dt: UnboundedContinuous(</span>
+<span class="go">                    shape=torch.Size([]),</span>
+<span class="go">                    space=ContinuousBox(</span>
+<span class="go">                        low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True),</span>
+<span class="go">                        high=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True)),</span>
+<span class="go">                    device=cpu,</span>
+<span class="go">                    dtype=torch.float32,</span>
+<span class="go">                    domain=continuous),</span>
+<span class="go">                g: UnboundedContinuous(</span>
+<span class="go">                    shape=torch.Size([]),</span>
+<span class="go">                    space=ContinuousBox(</span>
+<span class="go">                        low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True),</span>
+<span class="go">                        high=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True)),</span>
+<span class="go">                    device=cpu,</span>
+<span class="go">                    dtype=torch.float32,</span>
+<span class="go">                    domain=continuous),</span>
+<span class="go">                m: UnboundedContinuous(</span>
+<span class="go">                    shape=torch.Size([]),</span>
+<span class="go">                    space=ContinuousBox(</span>
+<span class="go">                        low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True),</span>
+<span class="go">                        high=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True)),</span>
+<span class="go">                    device=cpu,</span>
+<span class="go">                    dtype=torch.float32,</span>
+<span class="go">                    domain=continuous),</span>
+<span class="go">                l: UnboundedContinuous(</span>
+<span class="go">                    shape=torch.Size([]),</span>
+<span class="go">                    space=ContinuousBox(</span>
+<span class="go">                        low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True),</span>
+<span class="go">                        high=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True)),</span>
+<span class="go">                    device=cpu,</span>
+<span class="go">                    dtype=torch.float32,</span>
+<span class="go">                    domain=continuous),</span>
+<span class="go">                device=None,</span>
+<span class="go">                shape=torch.Size([])),</span>
+<span class="go">            device=None,</span>
+<span class="go">            shape=torch.Size([])),</span>
+<span class="go">        full_reward_spec: Composite(</span>
+<span class="go">            reward: UnboundedContinuous(</span>
+<span class="go">                shape=torch.Size([1]),</span>
+<span class="go">                space=ContinuousBox(</span>
+<span class="go">                    low=Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, contiguous=True),</span>
+<span class="go">                    high=Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, contiguous=True)),</span>
+<span class="go">                device=cpu,</span>
+<span class="go">                dtype=torch.float32,</span>
+<span class="go">                domain=continuous),</span>
+<span class="go">            device=None,</span>
+<span class="go">            shape=torch.Size([])),</span>
+<span class="go">        full_done_spec: Composite(</span>
+<span class="go">            done: Categorical(</span>
+<span class="go">                shape=torch.Size([1]),</span>
+<span class="go">                space=CategoricalBox(n=2),</span>
+<span class="go">                device=cpu,</span>
+<span class="go">                dtype=torch.bool,</span>
+<span class="go">                domain=discrete),</span>
+<span class="go">            terminated: Categorical(</span>
+<span class="go">                shape=torch.Size([1]),</span>
+<span class="go">                space=CategoricalBox(n=2),</span>
+<span class="go">                device=cpu,</span>
+<span class="go">                dtype=torch.bool,</span>
+<span class="go">                domain=discrete),</span>
+<span class="go">            device=None,</span>
+<span class="go">            shape=torch.Size([])),</span>
+<span class="go">        device=None,</span>
+<span class="go">        shape=torch.Size([])),</span>
+<span class="go">    input_spec: Composite(</span>
+<span class="go">        full_state_spec: Composite(</span>
+<span class="go">            th: BoundedContinuous(</span>
+<span class="go">                shape=torch.Size([]),</span>
+<span class="go">                space=ContinuousBox(</span>
+<span class="go">                    low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True),</span>
+<span class="go">                    high=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True)),</span>
+<span class="go">                device=cpu,</span>
+<span class="go">                dtype=torch.float32,</span>
+<span class="go">                domain=continuous),</span>
+<span class="go">            thdot: BoundedContinuous(</span>
+<span class="go">                shape=torch.Size([]),</span>
+<span class="go">                space=ContinuousBox(</span>
+<span class="go">                    low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True),</span>
+<span class="go">                    high=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True)),</span>
+<span class="go">                device=cpu,</span>
+<span class="go">                dtype=torch.float32,</span>
+<span class="go">                domain=continuous),</span>
+<span class="go">            params: Composite(</span>
+<span class="go">                max_speed: UnboundedDiscrete(</span>
+<span class="go">                    shape=torch.Size([]),</span>
+<span class="go">                    space=ContinuousBox(</span>
+<span class="go">                        low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.int64, contiguous=True),</span>
+<span class="go">                        high=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.int64, contiguous=True)),</span>
+<span class="go">                    device=cpu,</span>
+<span class="go">                    dtype=torch.int64,</span>
+<span class="go">                    domain=discrete),</span>
+<span class="go">                max_torque: UnboundedContinuous(</span>
+<span class="go">                    shape=torch.Size([]),</span>
+<span class="go">                    space=ContinuousBox(</span>
+<span class="go">                        low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True),</span>
+<span class="go">                        high=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True)),</span>
+<span class="go">                    device=cpu,</span>
+<span class="go">                    dtype=torch.float32,</span>
+<span class="go">                    domain=continuous),</span>
+<span class="go">                dt: UnboundedContinuous(</span>
+<span class="go">                    shape=torch.Size([]),</span>
+<span class="go">                    space=ContinuousBox(</span>
+<span class="go">                        low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True),</span>
+<span class="go">                        high=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True)),</span>
+<span class="go">                    device=cpu,</span>
+<span class="go">                    dtype=torch.float32,</span>
+<span class="go">                    domain=continuous),</span>
+<span class="go">                g: UnboundedContinuous(</span>
+<span class="go">                    shape=torch.Size([]),</span>
+<span class="go">                    space=ContinuousBox(</span>
+<span class="go">                        low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True),</span>
+<span class="go">                        high=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True)),</span>
+<span class="go">                    device=cpu,</span>
+<span class="go">                    dtype=torch.float32,</span>
+<span class="go">                    domain=continuous),</span>
+<span class="go">                m: UnboundedContinuous(</span>
+<span class="go">                    shape=torch.Size([]),</span>
+<span class="go">                    space=ContinuousBox(</span>
+<span class="go">                        low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True),</span>
+<span class="go">                        high=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True)),</span>
+<span class="go">                    device=cpu,</span>
+<span class="go">                    dtype=torch.float32,</span>
+<span class="go">                    domain=continuous),</span>
+<span class="go">                l: UnboundedContinuous(</span>
+<span class="go">                    shape=torch.Size([]),</span>
+<span class="go">                    space=ContinuousBox(</span>
+<span class="go">                        low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True),</span>
+<span class="go">                        high=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True)),</span>
+<span class="go">                    device=cpu,</span>
+<span class="go">                    dtype=torch.float32,</span>
+<span class="go">                    domain=continuous),</span>
+<span class="go">                device=None,</span>
+<span class="go">                shape=torch.Size([])),</span>
+<span class="go">            device=None,</span>
+<span class="go">            shape=torch.Size([])),</span>
+<span class="go">        full_action_spec: Composite(</span>
+<span class="go">            action: BoundedContinuous(</span>
+<span class="go">                shape=torch.Size([1]),</span>
+<span class="go">                space=ContinuousBox(</span>
+<span class="go">                    low=Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, contiguous=True),</span>
+<span class="go">                    high=Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, contiguous=True)),</span>
+<span class="go">                device=cpu,</span>
+<span class="go">                dtype=torch.float32,</span>
+<span class="go">                domain=continuous),</span>
+<span class="go">            device=None,</span>
+<span class="go">            shape=torch.Size([])),</span>
+<span class="go">        device=None,</span>
+<span class="go">        shape=torch.Size([])),</span>
+<span class="go">    device=None,</span>
+<span class="go">    shape=torch.Size([]))</span>
+</pre></div>
+</div>
 </dd>
 </dl>
 <dl class="py property">
@@ -594,9 +630,9 @@ domain=continuous),</p>
 <dd><p>The <code class="docutils literal notranslate"><span class="pre">action</span></code> spec.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">action_spec</span></code> is always stored as a composite spec.</p>
 <p>If the action spec is provided as a simple spec, this will be returned.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">env</span><span class="o">.</span><span class="n">action_spec</span> <span class="o">=</span> <span class="n">UnboundedContinuousTensorSpec</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">env</span><span class="o">.</span><span class="n">action_spec</span> <span class="o">=</span> <span class="n">Unbounded</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">env</span><span class="o">.</span><span class="n">action_spec</span>
-<span class="go">UnboundedContinuousTensorSpec(</span>
+<span class="go">UnboundedContinuous(</span>
 <span class="go">    shape=torch.Size([1]),</span>
 <span class="go">    space=ContinuousBox(</span>
 <span class="go">        low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True),</span>
@@ -608,9 +644,9 @@ domain=continuous),</p>
 </div>
 <p>If the action spec is provided as a composite spec and contains only one leaf,
 this function will return just the leaf.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">env</span><span class="o">.</span><span class="n">action_spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">({</span><span class="s2">&quot;nested&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="n">UnboundedContinuousTensorSpec</span><span class="p">(</span><span class="mi">1</span><span class="p">)}})</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">env</span><span class="o">.</span><span class="n">action_spec</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">({</span><span class="s2">&quot;nested&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="n">Unbounded</span><span class="p">(</span><span class="mi">1</span><span class="p">)}})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">env</span><span class="o">.</span><span class="n">action_spec</span>
-<span class="go">UnboundedContinuousTensorSpec(</span>
+<span class="go">UnboundedContinuous(</span>
 <span class="go">    shape=torch.Size([1]),</span>
 <span class="go">    space=ContinuousBox(</span>
 <span class="go">        low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True),</span>
@@ -622,11 +658,11 @@ this function will return just the leaf.</p>
 </div>
 <p>If the action spec is provided as a composite spec and has more than one leaf,
 this function will return the whole spec.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">env</span><span class="o">.</span><span class="n">action_spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">({</span><span class="s2">&quot;nested&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="n">UnboundedContinuousTensorSpec</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="s2">&quot;another_action&quot;</span><span class="p">:</span> <span class="n">DiscreteTensorSpec</span><span class="p">(</span><span class="mi">1</span><span class="p">)}})</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">env</span><span class="o">.</span><span class="n">action_spec</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">({</span><span class="s2">&quot;nested&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="n">Unbounded</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="s2">&quot;another_action&quot;</span><span class="p">:</span> <span class="n">Categorical</span><span class="p">(</span><span class="mi">1</span><span class="p">)}})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">env</span><span class="o">.</span><span class="n">action_spec</span>
-<span class="go">CompositeSpec(</span>
-<span class="go">    nested: CompositeSpec(</span>
-<span class="go">        action: UnboundedContinuousTensorSpec(</span>
+<span class="go">Composite(</span>
+<span class="go">    nested: Composite(</span>
+<span class="go">        action: UnboundedContinuous(</span>
 <span class="go">            shape=torch.Size([1]),</span>
 <span class="go">            space=ContinuousBox(</span>
 <span class="go">                low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True),</span>
@@ -634,7 +670,7 @@ this function will return the whole spec.</p>
 <span class="go">            device=cpu,</span>
 <span class="go">            dtype=torch.float32,</span>
 <span class="go">            domain=continuous),</span>
-<span class="go">        another_action: DiscreteTensorSpec(</span>
+<span class="go">        another_action: Categorical(</span>
 <span class="go">            shape=torch.Size([]),</span>
 <span class="go">            space=DiscreteBox(n=1),</span>
 <span class="go">            device=cpu,</span>
@@ -651,7 +687,7 @@ this function will return the whole spec.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.envs.libs.gym</span> <span class="kn">import</span> <span class="n">GymEnv</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">env</span> <span class="o">=</span> <span class="n">GymEnv</span><span class="p">(</span><span class="s2">&quot;Pendulum-v1&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">env</span><span class="o">.</span><span class="n">action_spec</span>
-<span class="go">BoundedTensorSpec(</span>
+<span class="go">BoundedContinuous(</span>
 <span class="go">    shape=torch.Size([1]),</span>
 <span class="go">    space=ContinuousBox(</span>
 <span class="go">        low=Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, contiguous=True),</span>
@@ -898,9 +934,9 @@ be read to determine a reset when it is absent.</p>
 <dd><p>The <code class="docutils literal notranslate"><span class="pre">done</span></code> spec.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">done_spec</span></code> is always stored as a composite spec.</p>
 <p>If the done spec is provided as a simple spec, this will be returned.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">env</span><span class="o">.</span><span class="n">done_spec</span> <span class="o">=</span> <span class="n">DiscreteTensorSpec</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">env</span><span class="o">.</span><span class="n">done_spec</span> <span class="o">=</span> <span class="n">Categorical</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">env</span><span class="o">.</span><span class="n">done_spec</span>
-<span class="go">DiscreteTensorSpec(</span>
+<span class="go">Categorical(</span>
 <span class="go">    shape=torch.Size([]),</span>
 <span class="go">    space=DiscreteBox(n=2),</span>
 <span class="go">    device=cpu,</span>
@@ -910,9 +946,9 @@ be read to determine a reset when it is absent.</p>
 </div>
 <p>If the done spec is provided as a composite spec and contains only one leaf,
 this function will return just the leaf.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">env</span><span class="o">.</span><span class="n">done_spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">({</span><span class="s2">&quot;nested&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;done&quot;</span><span class="p">:</span> <span class="n">DiscreteTensorSpec</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">)}})</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">env</span><span class="o">.</span><span class="n">done_spec</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">({</span><span class="s2">&quot;nested&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;done&quot;</span><span class="p">:</span> <span class="n">Categorical</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">)}})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">env</span><span class="o">.</span><span class="n">done_spec</span>
-<span class="go">DiscreteTensorSpec(</span>
+<span class="go">Categorical(</span>
 <span class="go">    shape=torch.Size([]),</span>
 <span class="go">    space=DiscreteBox(n=2),</span>
 <span class="go">    device=cpu,</span>
@@ -922,17 +958,17 @@ this function will return just the leaf.</p>
 </div>
 <p>If the done spec is provided as a composite spec and has more than one leaf,
 this function will return the whole spec.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">env</span><span class="o">.</span><span class="n">done_spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">({</span><span class="s2">&quot;nested&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;done&quot;</span><span class="p">:</span> <span class="n">DiscreteTensorSpec</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">),</span> <span class="s2">&quot;another_done&quot;</span><span class="p">:</span> <span class="n">DiscreteTensorSpec</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">)}})</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">env</span><span class="o">.</span><span class="n">done_spec</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">({</span><span class="s2">&quot;nested&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;done&quot;</span><span class="p">:</span> <span class="n">Categorical</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">),</span> <span class="s2">&quot;another_done&quot;</span><span class="p">:</span> <span class="n">Categorical</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">)}})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">env</span><span class="o">.</span><span class="n">done_spec</span>
-<span class="go">CompositeSpec(</span>
-<span class="go">    nested: CompositeSpec(</span>
-<span class="go">        done: DiscreteTensorSpec(</span>
+<span class="go">Composite(</span>
+<span class="go">    nested: Composite(</span>
+<span class="go">        done: Categorical(</span>
 <span class="go">            shape=torch.Size([]),</span>
 <span class="go">            space=DiscreteBox(n=2),</span>
 <span class="go">            device=cpu,</span>
 <span class="go">            dtype=torch.bool,</span>
 <span class="go">            domain=discrete),</span>
-<span class="go">        another_done: DiscreteTensorSpec(</span>
+<span class="go">        another_done: Categorical(</span>
 <span class="go">            shape=torch.Size([]),</span>
 <span class="go">            space=DiscreteBox(n=2),</span>
 <span class="go">            device=cpu,</span>
@@ -949,7 +985,7 @@ this function will return the whole spec.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.envs.libs.gym</span> <span class="kn">import</span> <span class="n">GymEnv</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">env</span> <span class="o">=</span> <span class="n">GymEnv</span><span class="p">(</span><span class="s2">&quot;Pendulum-v1&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">env</span><span class="o">.</span><span class="n">done_spec</span>
-<span class="go">DiscreteTensorSpec(</span>
+<span class="go">Categorical(</span>
 <span class="go">    shape=torch.Size([1]),</span>
 <span class="go">    space=DiscreteBox(n=2),</span>
 <span class="go">    device=cpu,</span>
@@ -1055,9 +1091,9 @@ registered hooks while the latter silently ignores them.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="torchrl.envs.PendulumEnv.full_action_spec">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">full_action_spec</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="torchrl.data.CompositeSpec.html#torchrl.data.CompositeSpec" title="torchrl.data.tensor_specs.CompositeSpec"><span class="pre">CompositeSpec</span></a></em><a class="headerlink" href="#torchrl.envs.PendulumEnv.full_action_spec" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">full_action_spec</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="torchrl.data.Composite.html#torchrl.data.Composite" title="torchrl.data.tensor_specs.Composite"><span class="pre">Composite</span></a></em><a class="headerlink" href="#torchrl.envs.PendulumEnv.full_action_spec" title="Permalink to this definition">¶</a></dt>
 <dd><p>The full action spec.</p>
-<p><code class="docutils literal notranslate"><span class="pre">full_action_spec</span></code> is a <code class="xref py py-class docutils literal notranslate"><span class="pre">CompositeSpec`</span></code> instance
+<p><code class="docutils literal notranslate"><span class="pre">full_action_spec</span></code> is a <code class="xref py py-class docutils literal notranslate"><span class="pre">Composite`</span></code> instance
 that contains all the action entries.</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.envs</span> <span class="kn">import</span> <span class="n">BraxEnv</span>
@@ -1068,8 +1104,8 @@ that contains all the action entries.</p>
 </pre></div>
 </div>
 <dl>
-<dt>CompositeSpec(</dt><dd><dl>
-<dt>action: BoundedTensorSpec(</dt><dd><p>shape=torch.Size([8]),
+<dt>Composite(</dt><dd><dl>
+<dt>action: BoundedContinuous(</dt><dd><p>shape=torch.Size([8]),
 space=ContinuousBox(</p>
 <blockquote>
 <div><p>low=Tensor(shape=torch.Size([8]), device=cpu, dtype=torch.float32, contiguous=True),
@@ -1086,9 +1122,9 @@ domain=continuous), device=cpu, shape=torch.Size([]))</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="torchrl.envs.PendulumEnv.full_done_spec">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">full_done_spec</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="torchrl.data.CompositeSpec.html#torchrl.data.CompositeSpec" title="torchrl.data.tensor_specs.CompositeSpec"><span class="pre">CompositeSpec</span></a></em><a class="headerlink" href="#torchrl.envs.PendulumEnv.full_done_spec" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">full_done_spec</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="torchrl.data.Composite.html#torchrl.data.Composite" title="torchrl.data.tensor_specs.Composite"><span class="pre">Composite</span></a></em><a class="headerlink" href="#torchrl.envs.PendulumEnv.full_done_spec" title="Permalink to this definition">¶</a></dt>
 <dd><p>The full done spec.</p>
-<p><code class="docutils literal notranslate"><span class="pre">full_done_spec</span></code> is a <code class="xref py py-class docutils literal notranslate"><span class="pre">CompositeSpec`</span></code> instance
+<p><code class="docutils literal notranslate"><span class="pre">full_done_spec</span></code> is a <code class="xref py py-class docutils literal notranslate"><span class="pre">Composite`</span></code> instance
 that contains all the done entries.
 It can be used to generate fake data with a structure that mimics the
 one obtained at runtime.</p>
@@ -1097,14 +1133,14 @@ one obtained at runtime.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.envs</span> <span class="kn">import</span> <span class="n">GymWrapper</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">env</span> <span class="o">=</span> <span class="n">GymWrapper</span><span class="p">(</span><span class="n">gymnasium</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="s2">&quot;Pendulum-v1&quot;</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">env</span><span class="o">.</span><span class="n">full_done_spec</span>
-<span class="go">CompositeSpec(</span>
-<span class="go">    done: DiscreteTensorSpec(</span>
+<span class="go">Composite(</span>
+<span class="go">    done: Categorical(</span>
 <span class="go">        shape=torch.Size([1]),</span>
 <span class="go">        space=DiscreteBox(n=2),</span>
 <span class="go">        device=cpu,</span>
 <span class="go">        dtype=torch.bool,</span>
 <span class="go">        domain=discrete),</span>
-<span class="go">    truncated: DiscreteTensorSpec(</span>
+<span class="go">    truncated: Categorical(</span>
 <span class="go">        shape=torch.Size([1]),</span>
 <span class="go">        space=DiscreteBox(n=2),</span>
 <span class="go">        device=cpu,</span>
@@ -1116,9 +1152,9 @@ one obtained at runtime.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="torchrl.envs.PendulumEnv.full_reward_spec">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">full_reward_spec</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="torchrl.data.CompositeSpec.html#torchrl.data.CompositeSpec" title="torchrl.data.tensor_specs.CompositeSpec"><span class="pre">CompositeSpec</span></a></em><a class="headerlink" href="#torchrl.envs.PendulumEnv.full_reward_spec" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">full_reward_spec</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="torchrl.data.Composite.html#torchrl.data.Composite" title="torchrl.data.tensor_specs.Composite"><span class="pre">Composite</span></a></em><a class="headerlink" href="#torchrl.envs.PendulumEnv.full_reward_spec" title="Permalink to this definition">¶</a></dt>
 <dd><p>The full reward spec.</p>
-<p><code class="docutils literal notranslate"><span class="pre">full_reward_spec</span></code> is a <code class="xref py py-class docutils literal notranslate"><span class="pre">CompositeSpec`</span></code> instance
+<p><code class="docutils literal notranslate"><span class="pre">full_reward_spec</span></code> is a <code class="xref py py-class docutils literal notranslate"><span class="pre">Composite`</span></code> instance
 that contains all the reward entries.</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">gymnasium</span>
@@ -1126,9 +1162,9 @@ that contains all the reward entries.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">base_env</span> <span class="o">=</span> <span class="n">GymWrapper</span><span class="p">(</span><span class="n">gymnasium</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="s2">&quot;Pendulum-v1&quot;</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">env</span> <span class="o">=</span> <span class="n">TransformedEnv</span><span class="p">(</span><span class="n">base_env</span><span class="p">,</span> <span class="n">RenameTransform</span><span class="p">(</span><span class="s2">&quot;reward&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;nested&quot;</span><span class="p">,</span> <span class="s2">&quot;reward&quot;</span><span class="p">)))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">env</span><span class="o">.</span><span class="n">full_reward_spec</span>
-<span class="go">CompositeSpec(</span>
-<span class="go">    nested: CompositeSpec(</span>
-<span class="go">        reward: UnboundedContinuousTensorSpec(</span>
+<span class="go">Composite(</span>
+<span class="go">    nested: Composite(</span>
+<span class="go">        reward: UnboundedContinuous(</span>
 <span class="go">            shape=torch.Size([1]),</span>
 <span class="go">            space=ContinuousBox(</span>
 <span class="go">                low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True),</span>
@@ -1142,9 +1178,9 @@ that contains all the reward entries.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="torchrl.envs.PendulumEnv.full_state_spec">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">full_state_spec</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="torchrl.data.CompositeSpec.html#torchrl.data.CompositeSpec" title="torchrl.data.tensor_specs.CompositeSpec"><span class="pre">CompositeSpec</span></a></em><a class="headerlink" href="#torchrl.envs.PendulumEnv.full_state_spec" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">full_state_spec</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="torchrl.data.Composite.html#torchrl.data.Composite" title="torchrl.data.tensor_specs.Composite"><span class="pre">Composite</span></a></em><a class="headerlink" href="#torchrl.envs.PendulumEnv.full_state_spec" title="Permalink to this definition">¶</a></dt>
 <dd><p>The full state spec.</p>
-<p><code class="docutils literal notranslate"><span class="pre">full_state_spec</span></code> is a <code class="xref py py-class docutils literal notranslate"><span class="pre">CompositeSpec`</span></code> instance
+<p><code class="docutils literal notranslate"><span class="pre">full_state_spec</span></code> is a <code class="xref py py-class docutils literal notranslate"><span class="pre">Composite`</span></code> instance
 that contains all the state entries (ie, the input data that is not action).</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.envs</span> <span class="kn">import</span> <span class="n">BraxEnv</span>
@@ -1152,10 +1188,10 @@ that contains all the state entries (ie, the input data that is not action).</p>
 <span class="gp">... </span>    <span class="k">break</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">env</span> <span class="o">=</span> <span class="n">BraxEnv</span><span class="p">(</span><span class="n">envname</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">env</span><span class="o">.</span><span class="n">full_state_spec</span>
-<span class="go">CompositeSpec(</span>
-<span class="go">    state: CompositeSpec(</span>
-<span class="go">        pipeline_state: CompositeSpec(</span>
-<span class="go">            q: UnboundedContinuousTensorSpec(</span>
+<span class="go">Composite(</span>
+<span class="go">    state: Composite(</span>
+<span class="go">        pipeline_state: Composite(</span>
+<span class="go">            q: UnboundedContinuous(</span>
 <span class="go">                shape=torch.Size([15]),</span>
 <span class="go">                space=None,</span>
 <span class="go">                device=cpu,</span>
@@ -1330,10 +1366,10 @@ Instead, to set the specs contained in it, use the respective properties.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.envs.libs.gym</span> <span class="kn">import</span> <span class="n">GymEnv</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">env</span> <span class="o">=</span> <span class="n">GymEnv</span><span class="p">(</span><span class="s2">&quot;Pendulum-v1&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">env</span><span class="o">.</span><span class="n">input_spec</span>
-<span class="go">CompositeSpec(</span>
+<span class="go">Composite(</span>
 <span class="go">    full_state_spec: None,</span>
-<span class="go">    full_action_spec: CompositeSpec(</span>
-<span class="go">        action: BoundedTensorSpec(</span>
+<span class="go">    full_action_spec: Composite(</span>
+<span class="go">        action: BoundedContinuous(</span>
 <span class="go">            shape=torch.Size([1]),</span>
 <span class="go">            space=ContinuousBox(</span>
 <span class="go">                low=Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, contiguous=True),</span>
@@ -1606,9 +1642,9 @@ parameters in the result. Defaults to True.</p></li>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="torchrl.envs.PendulumEnv.observation_spec">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">observation_spec</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="torchrl.data.CompositeSpec.html#torchrl.data.CompositeSpec" title="torchrl.data.tensor_specs.CompositeSpec"><span class="pre">CompositeSpec</span></a></em><a class="headerlink" href="#torchrl.envs.PendulumEnv.observation_spec" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">observation_spec</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="torchrl.data.Composite.html#torchrl.data.Composite" title="torchrl.data.tensor_specs.Composite"><span class="pre">Composite</span></a></em><a class="headerlink" href="#torchrl.envs.PendulumEnv.observation_spec" title="Permalink to this definition">¶</a></dt>
 <dd><p>Observation spec.</p>
-<p>Must be a <a class="reference internal" href="torchrl.data.CompositeSpec.html#torchrl.data.CompositeSpec" title="torchrl.data.CompositeSpec"><code class="xref py py-class docutils literal notranslate"><span class="pre">torchrl.data.CompositeSpec</span></code></a> instance.
+<p>Must be a <a class="reference internal" href="torchrl.data.Composite.html#torchrl.data.Composite" title="torchrl.data.Composite"><code class="xref py py-class docutils literal notranslate"><span class="pre">torchrl.data.Composite</span></code></a> instance.
 The keys listed in the spec are directly accessible after reset and step.</p>
 <p>In TorchRL, even though they are not properly speaking “observations”
 all info, states, results of transforms etc. outputs from the environment are stored in the
@@ -1619,8 +1655,8 @@ a generic data container for environment outputs that are not done or reward dat
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.envs.libs.gym</span> <span class="kn">import</span> <span class="n">GymEnv</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">env</span> <span class="o">=</span> <span class="n">GymEnv</span><span class="p">(</span><span class="s2">&quot;Pendulum-v1&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">env</span><span class="o">.</span><span class="n">observation_spec</span>
-<span class="go">CompositeSpec(</span>
-<span class="go">    observation: BoundedTensorSpec(</span>
+<span class="go">Composite(</span>
+<span class="go">    observation: BoundedContinuous(</span>
 <span class="go">        shape=torch.Size([3]),</span>
 <span class="go">        space=ContinuousBox(</span>
 <span class="go">            low=Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float32, contiguous=True),</span>
@@ -1649,16 +1685,16 @@ Instead, to set the specs contained in it, use the respective properties.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.envs.libs.gym</span> <span class="kn">import</span> <span class="n">GymEnv</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">env</span> <span class="o">=</span> <span class="n">GymEnv</span><span class="p">(</span><span class="s2">&quot;Pendulum-v1&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">env</span><span class="o">.</span><span class="n">output_spec</span>
-<span class="go">CompositeSpec(</span>
-<span class="go">    full_reward_spec: CompositeSpec(</span>
-<span class="go">        reward: UnboundedContinuousTensorSpec(</span>
+<span class="go">Composite(</span>
+<span class="go">    full_reward_spec: Composite(</span>
+<span class="go">        reward: UnboundedContinuous(</span>
 <span class="go">            shape=torch.Size([1]),</span>
 <span class="go">            space=None,</span>
 <span class="go">            device=cpu,</span>
 <span class="go">            dtype=torch.float32,</span>
 <span class="go">            domain=continuous), device=cpu, shape=torch.Size([])),</span>
-<span class="go">    full_observation_spec: CompositeSpec(</span>
-<span class="go">        observation: BoundedTensorSpec(</span>
+<span class="go">    full_observation_spec: Composite(</span>
+<span class="go">        observation: BoundedContinuous(</span>
 <span class="go">            shape=torch.Size([3]),</span>
 <span class="go">            space=ContinuousBox(</span>
 <span class="go">                low=Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float32, contiguous=True),</span>
@@ -1666,8 +1702,8 @@ Instead, to set the specs contained in it, use the respective properties.</p>
 <span class="go">            device=cpu,</span>
 <span class="go">            dtype=torch.float32,</span>
 <span class="go">            domain=continuous), device=cpu, shape=torch.Size([])),</span>
-<span class="go">    full_done_spec: CompositeSpec(</span>
-<span class="go">        done: DiscreteTensorSpec(</span>
+<span class="go">    full_done_spec: Composite(</span>
+<span class="go">        done: Categorical(</span>
 <span class="go">            shape=torch.Size([1]),</span>
 <span class="go">            space=DiscreteBox(n=2),</span>
 <span class="go">            device=cpu,</span>
@@ -2311,9 +2347,9 @@ where a done state can be found.</p>
 <dd><p>The <code class="docutils literal notranslate"><span class="pre">reward</span></code> spec.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">reward_spec</span></code> is always stored as a composite spec.</p>
 <p>If the reward spec is provided as a simple spec, this will be returned.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">env</span><span class="o">.</span><span class="n">reward_spec</span> <span class="o">=</span> <span class="n">UnboundedContinuousTensorSpec</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">env</span><span class="o">.</span><span class="n">reward_spec</span> <span class="o">=</span> <span class="n">Unbounded</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">env</span><span class="o">.</span><span class="n">reward_spec</span>
-<span class="go">UnboundedContinuousTensorSpec(</span>
+<span class="go">UnboundedContinuous(</span>
 <span class="go">    shape=torch.Size([1]),</span>
 <span class="go">    space=ContinuousBox(</span>
 <span class="go">        low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True),</span>
@@ -2325,9 +2361,9 @@ where a done state can be found.</p>
 </div>
 <p>If the reward spec is provided as a composite spec and contains only one leaf,
 this function will return just the leaf.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">env</span><span class="o">.</span><span class="n">reward_spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">({</span><span class="s2">&quot;nested&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;reward&quot;</span><span class="p">:</span> <span class="n">UnboundedContinuousTensorSpec</span><span class="p">(</span><span class="mi">1</span><span class="p">)}})</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">env</span><span class="o">.</span><span class="n">reward_spec</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">({</span><span class="s2">&quot;nested&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;reward&quot;</span><span class="p">:</span> <span class="n">Unbounded</span><span class="p">(</span><span class="mi">1</span><span class="p">)}})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">env</span><span class="o">.</span><span class="n">reward_spec</span>
-<span class="go">UnboundedContinuousTensorSpec(</span>
+<span class="go">UnboundedContinuous(</span>
 <span class="go">    shape=torch.Size([1]),</span>
 <span class="go">    space=ContinuousBox(</span>
 <span class="go">        low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True),</span>
@@ -2339,11 +2375,11 @@ this function will return just the leaf.</p>
 </div>
 <p>If the reward spec is provided as a composite spec and has more than one leaf,
 this function will return the whole spec.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">env</span><span class="o">.</span><span class="n">reward_spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">({</span><span class="s2">&quot;nested&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;reward&quot;</span><span class="p">:</span> <span class="n">UnboundedContinuousTensorSpec</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="s2">&quot;another_reward&quot;</span><span class="p">:</span> <span class="n">DiscreteTensorSpec</span><span class="p">(</span><span class="mi">1</span><span class="p">)}})</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">env</span><span class="o">.</span><span class="n">reward_spec</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">({</span><span class="s2">&quot;nested&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;reward&quot;</span><span class="p">:</span> <span class="n">Unbounded</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="s2">&quot;another_reward&quot;</span><span class="p">:</span> <span class="n">Categorical</span><span class="p">(</span><span class="mi">1</span><span class="p">)}})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">env</span><span class="o">.</span><span class="n">reward_spec</span>
-<span class="go">CompositeSpec(</span>
-<span class="go">    nested: CompositeSpec(</span>
-<span class="go">        reward: UnboundedContinuousTensorSpec(</span>
+<span class="go">Composite(</span>
+<span class="go">    nested: Composite(</span>
+<span class="go">        reward: UnboundedContinuous(</span>
 <span class="go">            shape=torch.Size([1]),</span>
 <span class="go">            space=ContinuousBox(</span>
 <span class="go">                low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True),</span>
@@ -2351,7 +2387,7 @@ this function will return the whole spec.</p>
 <span class="go">            device=cpu,</span>
 <span class="go">            dtype=torch.float32,</span>
 <span class="go">            domain=continuous),</span>
-<span class="go">        another_reward: DiscreteTensorSpec(</span>
+<span class="go">        another_reward: Categorical(</span>
 <span class="go">            shape=torch.Size([]),</span>
 <span class="go">            space=DiscreteBox(n=1),</span>
 <span class="go">            device=cpu,</span>
@@ -2368,7 +2404,7 @@ this function will return the whole spec.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.envs.libs.gym</span> <span class="kn">import</span> <span class="n">GymEnv</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">env</span> <span class="o">=</span> <span class="n">GymEnv</span><span class="p">(</span><span class="s2">&quot;Pendulum-v1&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">env</span><span class="o">.</span><span class="n">reward_spec</span>
-<span class="go">UnboundedContinuousTensorSpec(</span>
+<span class="go">UnboundedContinuous(</span>
 <span class="go">    shape=torch.Size([1]),</span>
 <span class="go">    space=None,</span>
 <span class="go">    device=cpu,</span>
@@ -2700,7 +2736,7 @@ fully-qualified string.)</p></li>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="torchrl.envs.PendulumEnv.specs">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">specs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="torchrl.data.CompositeSpec.html#torchrl.data.CompositeSpec" title="torchrl.data.tensor_specs.CompositeSpec"><span class="pre">CompositeSpec</span></a></em><a class="headerlink" href="#torchrl.envs.PendulumEnv.specs" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">specs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="torchrl.data.Composite.html#torchrl.data.Composite" title="torchrl.data.tensor_specs.Composite"><span class="pre">Composite</span></a></em><a class="headerlink" href="#torchrl.envs.PendulumEnv.specs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a Composite container where all the environment are present.</p>
 <p>This feature allows one to create an environment, retrieve all of the specs in a single data container and then
 erase the environment from the workspace.</p>
@@ -2770,9 +2806,9 @@ Default: <code class="docutils literal notranslate"><span class="pre">False</spa
 
 <dl class="py property">
 <dt class="sig sig-object py" id="torchrl.envs.PendulumEnv.state_spec">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">state_spec</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="torchrl.data.CompositeSpec.html#torchrl.data.CompositeSpec" title="torchrl.data.tensor_specs.CompositeSpec"><span class="pre">CompositeSpec</span></a></em><a class="headerlink" href="#torchrl.envs.PendulumEnv.state_spec" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">state_spec</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="torchrl.data.Composite.html#torchrl.data.Composite" title="torchrl.data.tensor_specs.Composite"><span class="pre">Composite</span></a></em><a class="headerlink" href="#torchrl.envs.PendulumEnv.state_spec" title="Permalink to this definition">¶</a></dt>
 <dd><p>State spec.</p>
-<p>Must be a <a class="reference internal" href="torchrl.data.CompositeSpec.html#torchrl.data.CompositeSpec" title="torchrl.data.CompositeSpec"><code class="xref py py-class docutils literal notranslate"><span class="pre">torchrl.data.CompositeSpec</span></code></a> instance.
+<p>Must be a <a class="reference internal" href="torchrl.data.Composite.html#torchrl.data.Composite" title="torchrl.data.Composite"><code class="xref py py-class docutils literal notranslate"><span class="pre">torchrl.data.Composite</span></code></a> instance.
 The keys listed here should be provided as input alongside actions to the environment.</p>
 <p>In TorchRL, even though they are not properly speaking “state”
 all inputs to the environment that are not actions are stored in the
@@ -2785,10 +2821,10 @@ a generic data container for environment inputs that are not action data.</p>
 <span class="gp">... </span>    <span class="k">break</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">env</span> <span class="o">=</span> <span class="n">BraxEnv</span><span class="p">(</span><span class="n">envname</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">env</span><span class="o">.</span><span class="n">state_spec</span>
-<span class="go">CompositeSpec(</span>
-<span class="go">    state: CompositeSpec(</span>
-<span class="go">        pipeline_state: CompositeSpec(</span>
-<span class="go">            q: UnboundedContinuousTensorSpec(</span>
+<span class="go">Composite(</span>
+<span class="go">    state: Composite(</span>
+<span class="go">        pipeline_state: Composite(</span>
+<span class="go">            q: UnboundedContinuous(</span>
 <span class="go">                shape=torch.Size([15]),</span>
 <span class="go">                space=None,</span>
 <span class="go">                device=cpu,</span>

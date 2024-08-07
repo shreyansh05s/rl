@@ -449,10 +449,10 @@
 <span class="kn">from</span> <span class="nn">torchrl._utils</span> <span class="kn">import</span> <span class="n">_replace_last</span><span class="p">,</span> <span class="n">_rng_decorator</span><span class="p">,</span> <span class="n">logger</span> <span class="k">as</span> <span class="n">torchrl_logger</span>
 
 <span class="kn">from</span> <span class="nn">torchrl.data.tensor_specs</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">CompositeSpec</span><span class="p">,</span>
+    <span class="n">Composite</span><span class="p">,</span>
     <span class="n">NO_DEFAULT_RL</span> <span class="k">as</span> <span class="n">NO_DEFAULT</span><span class="p">,</span>
     <span class="n">TensorSpec</span><span class="p">,</span>
-    <span class="n">UnboundedContinuousTensorSpec</span><span class="p">,</span>
+    <span class="n">Unbounded</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">torchrl.data.utils</span> <span class="kn">import</span> <span class="n">check_no_exclusive_keys</span>
 
@@ -1225,7 +1225,7 @@
                 <span class="s2">&quot;you will need to first pass your stack through `torchrl.data.consolidate_spec`.&quot;</span>
             <span class="p">)</span>
         <span class="k">if</span> <span class="n">spec</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="n">env</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">env</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+            <span class="n">spec</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="n">env</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">env</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
         <span class="n">td</span> <span class="o">=</span> <span class="n">last_td</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="o">*</span><span class="n">spec</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">spec</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">td</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span>
@@ -1237,7 +1237,7 @@
         <span class="p">(</span><span class="s2">&quot;obs&quot;</span><span class="p">,</span> <span class="n">full_observation_spec</span><span class="p">),</span>
     <span class="p">):</span>
         <span class="k">if</span> <span class="n">spec</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="n">env</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">env</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+            <span class="n">spec</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="n">env</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">env</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
         <span class="n">td</span> <span class="o">=</span> <span class="n">last_td</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;next&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="o">*</span><span class="n">spec</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">spec</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">td</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span>
@@ -1272,10 +1272,10 @@
 
 
 <div class="viewcode-block" id="make_composite_from_td"><a class="viewcode-back" href="../../../reference/generated/torchrl.envs.utils.make_composite_from_td.html#torchrl.envs.make_composite_from_td">[docs]</a><span class="k">def</span> <span class="nf">make_composite_from_td</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">unsqueeze_null_shapes</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates a CompositeSpec instance from a tensordict, assuming all values are unbounded.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates a Composite instance from a tensordict, assuming all values are unbounded.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        data (tensordict.TensorDict): a tensordict to be mapped onto a CompositeSpec.</span>
+<span class="sd">        data (tensordict.TensorDict): a tensordict to be mapped onto a Composite.</span>
 <span class="sd">        unsqueeze_null_shapes (bool, optional): if ``True``, every empty shape will be</span>
 <span class="sd">            unsqueezed to (1,). Defaults to ``True``.</span>
 
@@ -1288,25 +1288,25 @@
 <span class="sd">        ... }, [])</span>
 <span class="sd">        &gt;&gt;&gt; spec = make_composite_from_td(data)</span>
 <span class="sd">        &gt;&gt;&gt; print(spec)</span>
-<span class="sd">        CompositeSpec(</span>
-<span class="sd">            obs: UnboundedContinuousTensorSpec(</span>
+<span class="sd">        Composite(</span>
+<span class="sd">            obs: UnboundedContinuous(</span>
 <span class="sd">                 shape=torch.Size([3]), space=None, device=cpu, dtype=torch.float32, domain=continuous),</span>
-<span class="sd">            action: UnboundedContinuousTensorSpec(</span>
+<span class="sd">            action: UnboundedContinuous(</span>
 <span class="sd">                 shape=torch.Size([2]), space=None, device=cpu, dtype=torch.int32, domain=continuous),</span>
-<span class="sd">            next: CompositeSpec(</span>
-<span class="sd">                obs: UnboundedContinuousTensorSpec(</span>
+<span class="sd">            next: Composite(</span>
+<span class="sd">                obs: UnboundedContinuous(</span>
 <span class="sd">                     shape=torch.Size([3]), space=None, device=cpu, dtype=torch.float32, domain=continuous),</span>
-<span class="sd">                reward: UnboundedContinuousTensorSpec(</span>
+<span class="sd">                reward: UnboundedContinuous(</span>
 <span class="sd">                     shape=torch.Size([1]), space=ContinuousBox(low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True), high=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True)), device=cpu, dtype=torch.float32, domain=continuous), device=cpu, shape=torch.Size([])), device=cpu, shape=torch.Size([]))</span>
 <span class="sd">        &gt;&gt;&gt; assert (spec.zero() == data.zero_()).all()</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># custom funtion to convert a tensordict in a similar spec structure</span>
     <span class="c1"># of unbounded values.</span>
-    <span class="n">composite</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">(</span>
+    <span class="n">composite</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">(</span>
         <span class="p">{</span>
             <span class="n">key</span><span class="p">:</span> <span class="n">make_composite_from_td</span><span class="p">(</span><span class="n">tensor</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tensor</span><span class="p">,</span> <span class="n">TensorDictBase</span><span class="p">)</span>
-            <span class="k">else</span> <span class="n">UnboundedContinuousTensorSpec</span><span class="p">(</span>
+            <span class="k">else</span> <span class="n">Unbounded</span><span class="p">(</span>
                 <span class="n">dtype</span><span class="o">=</span><span class="n">tensor</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
                 <span class="n">device</span><span class="o">=</span><span class="n">tensor</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
                 <span class="n">shape</span><span class="o">=</span><span class="n">tensor</span><span class="o">.</span><span class="n">shape</span>
@@ -1496,14 +1496,14 @@
 <span class="sd">        contained a ``True``.</span>
 
 <span class="sd">    Examples:</span>
-<span class="sd">        &gt;&gt;&gt; from torchrl.data.tensor_specs import DiscreteTensorSpec</span>
+<span class="sd">        &gt;&gt;&gt; from torchrl.data.tensor_specs import Categorical</span>
 <span class="sd">        &gt;&gt;&gt; from tensordict import TensorDict</span>
-<span class="sd">        &gt;&gt;&gt; spec = CompositeSpec(</span>
-<span class="sd">        ...     done=DiscreteTensorSpec(2, dtype=torch.bool),</span>
-<span class="sd">        ...     truncated=DiscreteTensorSpec(2, dtype=torch.bool),</span>
-<span class="sd">        ...     nested=CompositeSpec(</span>
-<span class="sd">        ...         done=DiscreteTensorSpec(2, dtype=torch.bool),</span>
-<span class="sd">        ...         truncated=DiscreteTensorSpec(2, dtype=torch.bool),</span>
+<span class="sd">        &gt;&gt;&gt; spec = Composite(</span>
+<span class="sd">        ...     done=Categorical(2, dtype=torch.bool),</span>
+<span class="sd">        ...     truncated=Categorical(2, dtype=torch.bool),</span>
+<span class="sd">        ...     nested=Composite(</span>
+<span class="sd">        ...         done=Categorical(2, dtype=torch.bool),</span>
+<span class="sd">        ...         truncated=Categorical(2, dtype=torch.bool),</span>
 <span class="sd">        ...     )</span>
 <span class="sd">        ... )</span>
 <span class="sd">        &gt;&gt;&gt; data = TensorDict({</span>
@@ -1549,7 +1549,7 @@
             <span class="n">composite_spec</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="n">found_leaf</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="k">for</span> <span class="n">eot_key</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">full_done_spec</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">Composite</span><span class="p">):</span>
                     <span class="n">composite_spec</span><span class="p">[</span><span class="n">eot_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">item</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">found_leaf</span> <span class="o">+=</span> <span class="mi">1</span>
@@ -1621,14 +1621,14 @@
 <span class="sd">        contained a ``True``.</span>
 
 <span class="sd">    Examples:</span>
-<span class="sd">        &gt;&gt;&gt; from torchrl.data.tensor_specs import DiscreteTensorSpec</span>
+<span class="sd">        &gt;&gt;&gt; from torchrl.data.tensor_specs import Categorical</span>
 <span class="sd">        &gt;&gt;&gt; from tensordict import TensorDict</span>
-<span class="sd">        &gt;&gt;&gt; spec = CompositeSpec(</span>
-<span class="sd">        ...     done=DiscreteTensorSpec(2, dtype=torch.bool),</span>
-<span class="sd">        ...     truncated=DiscreteTensorSpec(2, dtype=torch.bool),</span>
-<span class="sd">        ...     nested=CompositeSpec(</span>
-<span class="sd">        ...         done=DiscreteTensorSpec(2, dtype=torch.bool),</span>
-<span class="sd">        ...         truncated=DiscreteTensorSpec(2, dtype=torch.bool),</span>
+<span class="sd">        &gt;&gt;&gt; spec = Composite(</span>
+<span class="sd">        ...     done=Categorical(2, dtype=torch.bool),</span>
+<span class="sd">        ...     truncated=Categorical(2, dtype=torch.bool),</span>
+<span class="sd">        ...     nested=Composite(</span>
+<span class="sd">        ...         done=Categorical(2, dtype=torch.bool),</span>
+<span class="sd">        ...         truncated=Categorical(2, dtype=torch.bool),</span>
 <span class="sd">        ...     )</span>
 <span class="sd">        ... )</span>
 <span class="sd">        &gt;&gt;&gt; data = TensorDict({</span>
@@ -1676,7 +1676,7 @@
                     <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">eot_key</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">full_done_spec</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">Composite</span><span class="p">):</span>
                     <span class="n">any_eot</span> <span class="o">=</span> <span class="n">any_eot</span> <span class="o">|</span> <span class="n">inner_terminated_or_truncated</span><span class="p">(</span>
                         <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">eot_key</span><span class="p">),</span>
                         <span class="n">full_done_spec</span><span class="o">=</span><span class="n">item</span><span class="p">,</span>
@@ -1964,8 +1964,8 @@
 
 <span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; from tensordict import TensorDict</span>
-<span class="sd">        &gt;&gt;&gt; from torchrl.data.tensor_specs import BoundedTensorSpec</span>
-<span class="sd">        &gt;&gt;&gt; action_spec = BoundedTensorSpec(-torch.ones(3), torch.ones(3))</span>
+<span class="sd">        &gt;&gt;&gt; from torchrl.data.tensor_specs import Bounded</span>
+<span class="sd">        &gt;&gt;&gt; action_spec = Bounded(-torch.ones(3), torch.ones(3))</span>
 <span class="sd">        &gt;&gt;&gt; actor = RandomPolicy(action_spec=action_spec)</span>
 <span class="sd">        &gt;&gt;&gt; td = actor(TensorDict({}, batch_size=[])) # selects a random action in the cube [-1; 1]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -1976,7 +1976,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">action_key</span> <span class="o">=</span> <span class="n">action_key</span>
 
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">td</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">action_spec</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">action_spec</span><span class="p">,</span> <span class="n">Composite</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">td</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">action_spec</span><span class="o">.</span><span class="n">rand</span><span class="p">())</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">td</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">action_key</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">action_spec</span><span class="o">.</span><span class="n">rand</span><span class="p">())</span></div>

@@ -425,16 +425,15 @@
 <span class="kn">from</span> <span class="nn">torchrl._utils</span> <span class="kn">import</span> <span class="n">implement_for</span>
 <span class="kn">from</span> <span class="nn">torchrl.data.tensor_specs</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">_minmax_dtype</span><span class="p">,</span>
-    <span class="n">BinaryDiscreteTensorSpec</span><span class="p">,</span>
-    <span class="n">BoundedTensorSpec</span><span class="p">,</span>
-    <span class="n">CompositeSpec</span><span class="p">,</span>
-    <span class="n">DiscreteTensorSpec</span><span class="p">,</span>
-    <span class="n">MultiDiscreteTensorSpec</span><span class="p">,</span>
-    <span class="n">MultiOneHotDiscreteTensorSpec</span><span class="p">,</span>
-    <span class="n">OneHotDiscreteTensorSpec</span><span class="p">,</span>
+    <span class="n">Binary</span><span class="p">,</span>
+    <span class="n">Bounded</span><span class="p">,</span>
+    <span class="n">Categorical</span><span class="p">,</span>
+    <span class="n">Composite</span><span class="p">,</span>
+    <span class="n">MultiCategorical</span><span class="p">,</span>
+    <span class="n">MultiOneHot</span><span class="p">,</span>
+    <span class="n">OneHot</span><span class="p">,</span>
     <span class="n">TensorSpec</span><span class="p">,</span>
-    <span class="n">UnboundedContinuousTensorSpec</span><span class="p">,</span>
-    <span class="n">UnboundedDiscreteTensorSpec</span><span class="p">,</span>
+    <span class="n">Unbounded</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">torchrl.data.utils</span> <span class="kn">import</span> <span class="n">numpy_to_torch_dtype_dict</span><span class="p">,</span> <span class="n">torch_to_numpy_dtype_dict</span>
 <span class="kn">from</span> <span class="nn">torchrl.envs.batched_envs</span> <span class="kn">import</span> <span class="n">CloudpickleWrapper</span>
@@ -661,11 +660,7 @@
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">result</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">gym_spaces</span><span class="o">.</span><span class="n">discrete</span><span class="o">.</span><span class="n">Discrete</span><span class="p">):</span>
-        <span class="n">action_space_cls</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">DiscreteTensorSpec</span>
-            <span class="k">if</span> <span class="n">categorical_action_encoding</span>
-            <span class="k">else</span> <span class="n">OneHotDiscreteTensorSpec</span>
-        <span class="p">)</span>
+        <span class="n">action_space_cls</span> <span class="o">=</span> <span class="n">Categorical</span> <span class="k">if</span> <span class="n">categorical_action_encoding</span> <span class="k">else</span> <span class="n">OneHot</span>
         <span class="n">dtype</span> <span class="o">=</span> <span class="p">(</span>
             <span class="n">numpy_to_torch_dtype_dict</span><span class="p">[</span><span class="n">spec</span><span class="o">.</span><span class="n">dtype</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">categorical_action_encoding</span>
@@ -673,7 +668,7 @@
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">action_space_cls</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">gym_spaces</span><span class="o">.</span><span class="n">multi_binary</span><span class="o">.</span><span class="n">MultiBinary</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">BinaryDiscreteTensorSpec</span><span class="p">(</span>
+        <span class="k">return</span> <span class="n">Binary</span><span class="p">(</span>
             <span class="n">spec</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy_to_torch_dtype_dict</span><span class="p">[</span><span class="n">spec</span><span class="o">.</span><span class="n">dtype</span><span class="p">]</span>
         <span class="p">)</span>
     <span class="c1"># a spec type cannot be a string, so we&#39;re sure that versions of gym that don&#39;t have Sequence will just skip through this</span>
@@ -702,11 +697,9 @@
             <span class="p">)</span>
 
             <span class="k">return</span> <span class="p">(</span>
-                <span class="n">MultiDiscreteTensorSpec</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">nvec</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+                <span class="n">MultiCategorical</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">nvec</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">categorical_action_encoding</span>
-                <span class="k">else</span> <span class="n">MultiOneHotDiscreteTensorSpec</span><span class="p">(</span>
-                    <span class="n">spec</span><span class="o">.</span><span class="n">nvec</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span>
-                <span class="p">)</span>
+                <span class="k">else</span> <span class="n">MultiOneHot</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">nvec</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
             <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span>
@@ -739,9 +732,9 @@
             <span class="ow">and</span> <span class="n">torch</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">high</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">as_tensor</span><span class="p">(</span><span class="n">maxval</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">))</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="p">(</span>
-            <span class="n">UnboundedContinuousTensorSpec</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+            <span class="n">Unbounded</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">is_unbounded</span>
-            <span class="k">else</span> <span class="n">BoundedTensorSpec</span><span class="p">(</span>
+            <span class="k">else</span> <span class="n">Bounded</span><span class="p">(</span>
                 <span class="n">low</span><span class="p">,</span>
                 <span class="n">high</span><span class="p">,</span>
                 <span class="n">shape</span><span class="p">,</span>
@@ -770,7 +763,7 @@
                 <span class="n">remap_state_to_observation</span><span class="o">=</span><span class="n">remap_state_to_observation</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="c1"># the batch-size must be set later</span>
-        <span class="k">return</span> <span class="n">CompositeSpec</span><span class="p">(</span><span class="n">spec_out</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Composite</span><span class="p">(</span><span class="n">spec_out</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">gym_spaces</span><span class="o">.</span><span class="n">dict</span><span class="o">.</span><span class="n">Dict</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">_gym_to_torchrl_spec_transform</span><span class="p">(</span>
             <span class="n">spec</span><span class="o">.</span><span class="n">spaces</span><span class="p">,</span>
@@ -847,19 +840,19 @@
             <span class="k">return</span> <span class="n">gym_spaces</span><span class="o">.</span><span class="n">Tuple</span><span class="p">(</span>
                 <span class="nb">tuple</span><span class="p">(</span><span class="n">_torchrl_to_gym_spec_transform</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span> <span class="k">for</span> <span class="n">spec</span> <span class="ow">in</span> <span class="n">spec</span><span class="o">.</span><span class="n">unbind</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
             <span class="p">)</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">MultiDiscreteTensorSpec</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">MultiCategorical</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">_multidiscrete_convert</span><span class="p">(</span><span class="n">gym_spaces</span><span class="p">,</span> <span class="n">spec</span><span class="p">)</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">MultiOneHotDiscreteTensorSpec</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">MultiOneHot</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">gym_spaces</span><span class="o">.</span><span class="n">multi_discrete</span><span class="o">.</span><span class="n">MultiDiscrete</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">nvec</span><span class="p">)</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">BinaryDiscreteTensorSpec</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">Binary</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">gym_spaces</span><span class="o">.</span><span class="n">multi_binary</span><span class="o">.</span><span class="n">MultiBinary</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">DiscreteTensorSpec</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">Categorical</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">gym_spaces</span><span class="o">.</span><span class="n">discrete</span><span class="o">.</span><span class="n">Discrete</span><span class="p">(</span>
             <span class="n">spec</span><span class="o">.</span><span class="n">n</span>
         <span class="p">)</span>  <span class="c1"># dtype=torch_to_numpy_dtype_dict[spec.dtype])</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">OneHotDiscreteTensorSpec</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">OneHot</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">gym_spaces</span><span class="o">.</span><span class="n">discrete</span><span class="o">.</span><span class="n">Discrete</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">n</span><span class="p">)</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">UnboundedContinuousTensorSpec</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">Unbounded</span><span class="p">):</span>
         <span class="n">minval</span><span class="p">,</span> <span class="n">maxval</span> <span class="o">=</span> <span class="n">_minmax_dtype</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">gym_spaces</span><span class="o">.</span><span class="n">Box</span><span class="p">(</span>
             <span class="n">low</span><span class="o">=</span><span class="n">minval</span><span class="p">,</span>
@@ -867,7 +860,7 @@
             <span class="n">shape</span><span class="o">=</span><span class="n">shape</span><span class="p">,</span>
             <span class="n">dtype</span><span class="o">=</span><span class="n">torch_to_numpy_dtype_dict</span><span class="p">[</span><span class="n">spec</span><span class="o">.</span><span class="n">dtype</span><span class="p">],</span>
         <span class="p">)</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">UnboundedDiscreteTensorSpec</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">Unbounded</span><span class="p">):</span>
         <span class="n">minval</span><span class="p">,</span> <span class="n">maxval</span> <span class="o">=</span> <span class="n">_minmax_dtype</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">gym_spaces</span><span class="o">.</span><span class="n">Box</span><span class="p">(</span>
             <span class="n">low</span><span class="o">=</span><span class="n">minval</span><span class="p">,</span>
@@ -875,9 +868,9 @@
             <span class="n">shape</span><span class="o">=</span><span class="n">shape</span><span class="p">,</span>
             <span class="n">dtype</span><span class="o">=</span><span class="n">torch_to_numpy_dtype_dict</span><span class="p">[</span><span class="n">spec</span><span class="o">.</span><span class="n">dtype</span><span class="p">],</span>
         <span class="p">)</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">BoundedTensorSpec</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">Bounded</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">_box_convert</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">gym_spaces</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">Composite</span><span class="p">):</span>
         <span class="c1"># remove batch size</span>
         <span class="k">while</span> <span class="n">spec</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
             <span class="n">spec</span> <span class="o">=</span> <span class="n">spec</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -1026,8 +1019,8 @@
 <span class="sd">            or :class:`gym.VectorEnv`) are supported and the environment batch-size</span>
 <span class="sd">            will reflect the number of environments executed in parallel.</span>
 <span class="sd">        categorical_action_encoding (bool, optional): if ``True``, categorical</span>
-<span class="sd">            specs will be converted to the TorchRL equivalent (:class:`torchrl.data.DiscreteTensorSpec`),</span>
-<span class="sd">            otherwise a one-hot encoding will be used (:class:`torchrl.data.OneHotTensorSpec`).</span>
+<span class="sd">            specs will be converted to the TorchRL equivalent (:class:`torchrl.data.Categorical`),</span>
+<span class="sd">            otherwise a one-hot encoding will be used (:class:`torchrl.data.OneHot`).</span>
 <span class="sd">            Defaults to ``False``.</span>
 
 <span class="sd">    Keyword Args:</span>
@@ -1267,10 +1260,7 @@
 
     <span class="k">def</span> <span class="nf">read_action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">):</span>
         <span class="n">action</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">read_action</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
-        <span class="k">if</span> <span class="p">(</span>
-            <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">action_spec</span><span class="p">,</span> <span class="p">(</span><span class="n">OneHotDiscreteTensorSpec</span><span class="p">,</span> <span class="n">DiscreteTensorSpec</span><span class="p">))</span>
-            <span class="ow">and</span> <span class="n">action</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">1</span>
-        <span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">action_spec</span><span class="p">,</span> <span class="p">(</span><span class="n">OneHot</span><span class="p">,</span> <span class="n">Categorical</span><span class="p">))</span> <span class="ow">and</span> <span class="n">action</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="c1"># some envs require an integer for indexing</span>
             <span class="n">action</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">action</span>
@@ -1414,13 +1404,13 @@
             <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
             <span class="n">categorical_action_encoding</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_categorical_action_encoding</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">observation_spec</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">observation_spec</span><span class="p">,</span> <span class="n">Composite</span><span class="p">):</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">from_pixels</span><span class="p">:</span>
-                <span class="n">observation_spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">(</span>
+                <span class="n">observation_spec</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">(</span>
                     <span class="n">pixels</span><span class="o">=</span><span class="n">observation_spec</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">cur_batch_size</span>
                 <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">observation_spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">(</span>
+                <span class="n">observation_spec</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">(</span>
                     <span class="n">observation</span><span class="o">=</span><span class="n">observation_spec</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">cur_batch_size</span>
                 <span class="p">)</span>
         <span class="k">elif</span> <span class="n">observation_spec</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span> <span class="nb">len</span><span class="p">(</span><span class="n">cur_batch_size</span><span class="p">)]</span> <span class="o">!=</span> <span class="n">cur_batch_size</span><span class="p">:</span>
@@ -1434,7 +1424,7 @@
                 <span class="n">categorical_action_encoding</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_categorical_action_encoding</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">reward_spec</span> <span class="o">=</span> <span class="n">UnboundedContinuousTensorSpec</span><span class="p">(</span>
+            <span class="n">reward_spec</span> <span class="o">=</span> <span class="n">Unbounded</span><span class="p">(</span>
                 <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
                 <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
             <span class="p">)</span>
@@ -1455,15 +1445,15 @@
 
     <span class="nd">@implement_for</span><span class="p">(</span><span class="s2">&quot;gym&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;0.26&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">_make_done_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># noqa: F811</span>
-        <span class="k">return</span> <span class="n">CompositeSpec</span><span class="p">(</span>
+        <span class="k">return</span> <span class="n">Composite</span><span class="p">(</span>
             <span class="p">{</span>
-                <span class="s2">&quot;done&quot;</span><span class="p">:</span> <span class="n">DiscreteTensorSpec</span><span class="p">(</span>
+                <span class="s2">&quot;done&quot;</span><span class="p">:</span> <span class="n">Categorical</span><span class="p">(</span>
                     <span class="mi">2</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
                 <span class="p">),</span>
-                <span class="s2">&quot;terminated&quot;</span><span class="p">:</span> <span class="n">DiscreteTensorSpec</span><span class="p">(</span>
+                <span class="s2">&quot;terminated&quot;</span><span class="p">:</span> <span class="n">Categorical</span><span class="p">(</span>
                     <span class="mi">2</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
                 <span class="p">),</span>
-                <span class="s2">&quot;truncated&quot;</span><span class="p">:</span> <span class="n">DiscreteTensorSpec</span><span class="p">(</span>
+                <span class="s2">&quot;truncated&quot;</span><span class="p">:</span> <span class="n">Categorical</span><span class="p">(</span>
                     <span class="mi">2</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
                 <span class="p">),</span>
             <span class="p">},</span>
@@ -1472,15 +1462,15 @@
 
     <span class="nd">@implement_for</span><span class="p">(</span><span class="s2">&quot;gym&quot;</span><span class="p">,</span> <span class="s2">&quot;0.26&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">_make_done_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># noqa: F811</span>
-        <span class="k">return</span> <span class="n">CompositeSpec</span><span class="p">(</span>
+        <span class="k">return</span> <span class="n">Composite</span><span class="p">(</span>
             <span class="p">{</span>
-                <span class="s2">&quot;done&quot;</span><span class="p">:</span> <span class="n">DiscreteTensorSpec</span><span class="p">(</span>
+                <span class="s2">&quot;done&quot;</span><span class="p">:</span> <span class="n">Categorical</span><span class="p">(</span>
                     <span class="mi">2</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
                 <span class="p">),</span>
-                <span class="s2">&quot;terminated&quot;</span><span class="p">:</span> <span class="n">DiscreteTensorSpec</span><span class="p">(</span>
+                <span class="s2">&quot;terminated&quot;</span><span class="p">:</span> <span class="n">Categorical</span><span class="p">(</span>
                     <span class="mi">2</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
                 <span class="p">),</span>
-                <span class="s2">&quot;truncated&quot;</span><span class="p">:</span> <span class="n">DiscreteTensorSpec</span><span class="p">(</span>
+                <span class="s2">&quot;truncated&quot;</span><span class="p">:</span> <span class="n">Categorical</span><span class="p">(</span>
                     <span class="mi">2</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
                 <span class="p">),</span>
             <span class="p">},</span>
@@ -1489,15 +1479,15 @@
 
     <span class="nd">@implement_for</span><span class="p">(</span><span class="s2">&quot;gymnasium&quot;</span><span class="p">,</span> <span class="s2">&quot;0.27&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">_make_done_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># noqa: F811</span>
-        <span class="k">return</span> <span class="n">CompositeSpec</span><span class="p">(</span>
+        <span class="k">return</span> <span class="n">Composite</span><span class="p">(</span>
             <span class="p">{</span>
-                <span class="s2">&quot;done&quot;</span><span class="p">:</span> <span class="n">DiscreteTensorSpec</span><span class="p">(</span>
+                <span class="s2">&quot;done&quot;</span><span class="p">:</span> <span class="n">Categorical</span><span class="p">(</span>
                     <span class="mi">2</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
                 <span class="p">),</span>
-                <span class="s2">&quot;terminated&quot;</span><span class="p">:</span> <span class="n">DiscreteTensorSpec</span><span class="p">(</span>
+                <span class="s2">&quot;terminated&quot;</span><span class="p">:</span> <span class="n">Categorical</span><span class="p">(</span>
                     <span class="mi">2</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
                 <span class="p">),</span>
-                <span class="s2">&quot;truncated&quot;</span><span class="p">:</span> <span class="n">DiscreteTensorSpec</span><span class="p">(</span>
+                <span class="s2">&quot;truncated&quot;</span><span class="p">:</span> <span class="n">Categorical</span><span class="p">(</span>
                     <span class="mi">2</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
                 <span class="p">),</span>
             <span class="p">},</span>
@@ -1652,8 +1642,8 @@
 <span class="sd">    Args:</span>
 <span class="sd">        env_name (str): the environment id registered in `gym.registry`.</span>
 <span class="sd">        categorical_action_encoding (bool, optional): if ``True``, categorical</span>
-<span class="sd">            specs will be converted to the TorchRL equivalent (:class:`torchrl.data.DiscreteTensorSpec`),</span>
-<span class="sd">            otherwise a one-hot encoding will be used (:class:`torchrl.data.OneHotTensorSpec`).</span>
+<span class="sd">            specs will be converted to the TorchRL equivalent (:class:`torchrl.data.Categorical`),</span>
+<span class="sd">            otherwise a one-hot encoding will be used (:class:`torchrl.data.OneHot`).</span>
 <span class="sd">            Defaults to ``False``.</span>
 
 <span class="sd">    Keyword Args:</span>
@@ -1969,7 +1959,7 @@
 <span class="sd">    replaced.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        observation_spec (CompositeSpec): The observation spec of the gym env.</span>
+<span class="sd">        observation_spec (Composite): The observation spec of the gym env.</span>
 <span class="sd">        backend (str, optional): the backend of the env. One of `&quot;sb3&quot;` for</span>
 <span class="sd">            stable-baselines3 or `&quot;gym&quot;` for gym/gymnasium.</span>
 
@@ -1987,7 +1977,7 @@
         <span class="s2">&quot;gym&quot;</span><span class="p">:</span> <span class="s2">&quot;final_info&quot;</span><span class="p">,</span>
     <span class="p">}</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observation_spec</span><span class="p">:</span> <span class="n">CompositeSpec</span><span class="p">,</span> <span class="n">backend</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;final&quot;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observation_spec</span><span class="p">:</span> <span class="n">Composite</span><span class="p">,</span> <span class="n">backend</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;final&quot;</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_obs_spec</span> <span class="o">=</span> <span class="n">observation_spec</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>

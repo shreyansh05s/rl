@@ -450,16 +450,16 @@
 <span class="kn">from</span> <span class="nn">torchrl._utils</span> <span class="kn">import</span> <span class="n">_append_last</span><span class="p">,</span> <span class="n">_ends_with</span><span class="p">,</span> <span class="n">_make_ordinal_device</span><span class="p">,</span> <span class="n">_replace_last</span>
 
 <span class="kn">from</span> <span class="nn">torchrl.data.tensor_specs</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">BinaryDiscreteTensorSpec</span><span class="p">,</span>
-    <span class="n">BoundedTensorSpec</span><span class="p">,</span>
-    <span class="n">CompositeSpec</span><span class="p">,</span>
+    <span class="n">Binary</span><span class="p">,</span>
+    <span class="n">Bounded</span><span class="p">,</span>
+    <span class="n">Categorical</span><span class="p">,</span>
+    <span class="n">Composite</span><span class="p">,</span>
     <span class="n">ContinuousBox</span><span class="p">,</span>
-    <span class="n">DiscreteTensorSpec</span><span class="p">,</span>
-    <span class="n">MultiDiscreteTensorSpec</span><span class="p">,</span>
-    <span class="n">MultiOneHotDiscreteTensorSpec</span><span class="p">,</span>
-    <span class="n">OneHotDiscreteTensorSpec</span><span class="p">,</span>
+    <span class="n">MultiCategorical</span><span class="p">,</span>
+    <span class="n">MultiOneHot</span><span class="p">,</span>
+    <span class="n">OneHot</span><span class="p">,</span>
     <span class="n">TensorSpec</span><span class="p">,</span>
-    <span class="n">UnboundedContinuousTensorSpec</span><span class="p">,</span>
+    <span class="n">Unbounded</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">torchrl.envs.common</span> <span class="kn">import</span> <span class="n">_do_nothing</span><span class="p">,</span> <span class="n">_EnvPostInit</span><span class="p">,</span> <span class="n">EnvBase</span><span class="p">,</span> <span class="n">make_tensordict</span>
 <span class="kn">from</span> <span class="nn">torchrl.envs.transforms</span> <span class="kn">import</span> <span class="n">functional</span> <span class="k">as</span> <span class="n">F</span>
@@ -482,14 +482,14 @@
 <span class="k">def</span> <span class="nf">_apply_to_composite</span><span class="p">(</span><span class="n">function</span><span class="p">):</span>
     <span class="nd">@wraps</span><span class="p">(</span><span class="n">function</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">new_fun</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observation_spec</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">observation_spec</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">observation_spec</span><span class="p">,</span> <span class="n">Composite</span><span class="p">):</span>
             <span class="n">_specs</span> <span class="o">=</span> <span class="n">observation_spec</span><span class="o">.</span><span class="n">_specs</span>
             <span class="n">in_keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_keys</span>
             <span class="n">out_keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_keys</span>
             <span class="k">for</span> <span class="n">in_key</span><span class="p">,</span> <span class="n">out_key</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">in_keys</span><span class="p">,</span> <span class="n">out_keys</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">in_key</span> <span class="ow">in</span> <span class="n">observation_spec</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
                     <span class="n">_specs</span><span class="p">[</span><span class="n">out_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observation_spec</span><span class="p">[</span><span class="n">in_key</span><span class="p">]</span><span class="o">.</span><span class="n">clone</span><span class="p">())</span>
-            <span class="k">return</span> <span class="n">CompositeSpec</span><span class="p">(</span>
+            <span class="k">return</span> <span class="n">Composite</span><span class="p">(</span>
                 <span class="n">_specs</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">observation_spec</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">observation_spec</span><span class="o">.</span><span class="n">device</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -511,7 +511,7 @@
         <span class="n">action_spec</span> <span class="o">=</span> <span class="n">input_spec</span><span class="p">[</span><span class="s2">&quot;full_action_spec&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
         <span class="n">state_spec</span> <span class="o">=</span> <span class="n">input_spec</span><span class="p">[</span><span class="s2">&quot;full_state_spec&quot;</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">state_spec</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">state_spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="n">input_spec</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">input_spec</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+            <span class="n">state_spec</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="n">input_spec</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">input_spec</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">state_spec</span> <span class="o">=</span> <span class="n">state_spec</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
         <span class="n">in_keys_inv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_keys_inv</span>
@@ -524,7 +524,7 @@
                 <span class="n">action_spec</span><span class="p">[</span><span class="n">out_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action_spec</span><span class="p">[</span><span class="n">in_key</span><span class="p">]</span><span class="o">.</span><span class="n">clone</span><span class="p">())</span>
             <span class="k">elif</span> <span class="n">in_key</span> <span class="ow">in</span> <span class="n">state_spec</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
                 <span class="n">state_spec</span><span class="p">[</span><span class="n">out_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_spec</span><span class="p">[</span><span class="n">in_key</span><span class="p">]</span><span class="o">.</span><span class="n">clone</span><span class="p">())</span>
-        <span class="k">return</span> <span class="n">CompositeSpec</span><span class="p">(</span>
+        <span class="k">return</span> <span class="n">Composite</span><span class="p">(</span>
             <span class="n">full_state_spec</span><span class="o">=</span><span class="n">state_spec</span><span class="p">,</span>
             <span class="n">full_action_spec</span><span class="o">=</span><span class="n">action_spec</span><span class="p">,</span>
             <span class="n">shape</span><span class="o">=</span><span class="n">input_spec</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
@@ -762,7 +762,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Transforms the batch-size of the parent env.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">batch_size</span></div>
 
-<div class="viewcode-block" id="Transform.transform_output_spec"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.Transform.html#torchrl.envs.transforms.Transform.transform_output_spec">[docs]</a>    <span class="k">def</span> <span class="nf">transform_output_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_spec</span><span class="p">:</span> <span class="n">CompositeSpec</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CompositeSpec</span><span class="p">:</span>
+<div class="viewcode-block" id="Transform.transform_output_spec"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.Transform.html#torchrl.envs.transforms.Transform.transform_output_spec">[docs]</a>    <span class="k">def</span> <span class="nf">transform_output_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_spec</span><span class="p">:</span> <span class="n">Composite</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Composite</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Transforms the output spec such that the resulting spec matches transform mapping.</span>
 
 <span class="sd">        This method should generally be left untouched. Changes should be implemented using</span>
@@ -1233,7 +1233,7 @@
         <span class="k">return</span> <span class="n">tensordict_reset</span>
 
     <span class="k">def</span> <span class="nf">_complete_done</span><span class="p">(</span>
-        <span class="bp">cls</span><span class="p">,</span> <span class="n">done_spec</span><span class="p">:</span> <span class="n">CompositeSpec</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">TensorDictBase</span>
+        <span class="bp">cls</span><span class="p">,</span> <span class="n">done_spec</span><span class="p">:</span> <span class="n">Composite</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">TensorDictBase</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
         <span class="c1"># This step has already been completed. We assume the transform module do their job correctly.</span>
         <span class="k">return</span> <span class="n">data</span>
@@ -1867,7 +1867,7 @@
 
 <div class="viewcode-block" id="ClipTransform.transform_observation_spec"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.ClipTransform.html#torchrl.envs.transforms.ClipTransform.transform_observation_spec">[docs]</a>    <span class="nd">@_apply_to_composite</span>
     <span class="k">def</span> <span class="nf">transform_observation_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observation_spec</span><span class="p">:</span> <span class="n">TensorSpec</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorSpec</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">BoundedTensorSpec</span><span class="p">(</span>
+        <span class="k">return</span> <span class="n">Bounded</span><span class="p">(</span>
             <span class="n">shape</span><span class="o">=</span><span class="n">observation_spec</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
             <span class="n">device</span><span class="o">=</span><span class="n">observation_spec</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
             <span class="n">dtype</span><span class="o">=</span><span class="n">observation_spec</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
@@ -1879,7 +1879,7 @@
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_keys</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">reward_keys</span><span class="p">:</span>
                 <span class="n">spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">output_spec</span><span class="p">[</span><span class="s2">&quot;full_reward_spec&quot;</span><span class="p">][</span><span class="n">key</span><span class="p">]</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">output_spec</span><span class="p">[</span><span class="s2">&quot;full_reward_spec&quot;</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">BoundedTensorSpec</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">output_spec</span><span class="p">[</span><span class="s2">&quot;full_reward_spec&quot;</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">Bounded</span><span class="p">(</span>
                     <span class="n">shape</span><span class="o">=</span><span class="n">spec</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
                     <span class="n">device</span><span class="o">=</span><span class="n">spec</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
                     <span class="n">dtype</span><span class="o">=</span><span class="n">spec</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
@@ -2087,7 +2087,7 @@
                 <span class="n">target</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">full_done_spec</span><span class="p">[</span><span class="n">in_key</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;in_key </span><span class="si">{</span><span class="n">in_key</span><span class="si">}</span><span class="s2"> not found in output_spec.&quot;</span><span class="p">)</span>
-            <span class="n">target_return_spec</span> <span class="o">=</span> <span class="n">UnboundedContinuousTensorSpec</span><span class="p">(</span>
+            <span class="n">target_return_spec</span> <span class="o">=</span> <span class="n">Unbounded</span><span class="p">(</span>
                 <span class="n">shape</span><span class="o">=</span><span class="n">target</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
                 <span class="n">dtype</span><span class="o">=</span><span class="n">target</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
                 <span class="n">device</span><span class="o">=</span><span class="n">target</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
@@ -2146,8 +2146,8 @@
 
 <div class="viewcode-block" id="RewardClipping.transform_reward_spec"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.RewardClipping.html#torchrl.envs.transforms.RewardClipping.transform_reward_spec">[docs]</a>    <span class="nd">@_apply_to_composite</span>
     <span class="k">def</span> <span class="nf">transform_reward_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reward_spec</span><span class="p">:</span> <span class="n">TensorSpec</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorSpec</span><span class="p">:</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">reward_spec</span><span class="p">,</span> <span class="n">UnboundedContinuousTensorSpec</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">BoundedTensorSpec</span><span class="p">(</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">reward_spec</span><span class="p">,</span> <span class="n">Unbounded</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">Bounded</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">clamp_min</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">clamp_max</span><span class="p">,</span>
                 <span class="n">shape</span><span class="o">=</span><span class="n">reward_spec</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
@@ -2200,7 +2200,7 @@
 
 <div class="viewcode-block" id="BinarizeReward.transform_reward_spec"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.BinarizeReward.html#torchrl.envs.transforms.BinarizeReward.transform_reward_spec">[docs]</a>    <span class="nd">@_apply_to_composite</span>
     <span class="k">def</span> <span class="nf">transform_reward_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reward_spec</span><span class="p">:</span> <span class="n">TensorSpec</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorSpec</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">BinaryDiscreteTensorSpec</span><span class="p">(</span>
+        <span class="k">return</span> <span class="n">Binary</span><span class="p">(</span>
             <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
             <span class="n">device</span><span class="o">=</span><span class="n">reward_spec</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
             <span class="n">shape</span><span class="o">=</span><span class="n">reward_spec</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
@@ -3723,7 +3723,7 @@
 
 <div class="viewcode-block" id="RewardScaling.transform_reward_spec"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.RewardScaling.html#torchrl.envs.transforms.RewardScaling.transform_reward_spec">[docs]</a>    <span class="nd">@_apply_to_composite</span>
     <span class="k">def</span> <span class="nf">transform_reward_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reward_spec</span><span class="p">:</span> <span class="n">TensorSpec</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorSpec</span><span class="p">:</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">reward_spec</span><span class="p">,</span> <span class="n">UnboundedContinuousTensorSpec</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">reward_spec</span><span class="p">,</span> <span class="n">Unbounded</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">reward_spec</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
@@ -3826,10 +3826,10 @@
 <span class="sd">        &gt;&gt;&gt; class MyEnv(EnvBase):</span>
 <span class="sd">        ...     def __init__(self):</span>
 <span class="sd">        ...         super().__init__()</span>
-<span class="sd">        ...         self.observation_spec = CompositeSpec(obs=UnboundedContinuousTensorSpec((), dtype=torch.float64))</span>
-<span class="sd">        ...         self.action_spec = UnboundedContinuousTensorSpec((), dtype=torch.float64)</span>
-<span class="sd">        ...         self.reward_spec = UnboundedContinuousTensorSpec((1,), dtype=torch.float64)</span>
-<span class="sd">        ...         self.done_spec = UnboundedContinuousTensorSpec((1,), dtype=torch.bool)</span>
+<span class="sd">        ...         self.observation_spec = Composite(obs=Unbounded((), dtype=torch.float64))</span>
+<span class="sd">        ...         self.action_spec = Unbounded((), dtype=torch.float64)</span>
+<span class="sd">        ...         self.reward_spec = Unbounded((1,), dtype=torch.float64)</span>
+<span class="sd">        ...         self.done_spec = Unbounded((1,), dtype=torch.bool)</span>
 <span class="sd">        ...     def _reset(self, data=None):</span>
 <span class="sd">        ...         return TensorDict({&quot;done&quot;: torch.zeros((1,), dtype=torch.bool), **self.observation_spec.rand()}, [])</span>
 <span class="sd">        ...     def _step(self, data):</span>
@@ -4042,7 +4042,7 @@
         <span class="k">return</span> <span class="n">state</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype_in</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_transform_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spec</span><span class="p">:</span> <span class="n">TensorSpec</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">Composite</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">spec</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_transform_spec</span><span class="p">(</span><span class="n">spec</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
@@ -4087,7 +4087,7 @@
                 <span class="k">raise</span> <span class="ne">RuntimeError</span>
         <span class="k">return</span> <span class="n">input_spec</span></div>
 
-<div class="viewcode-block" id="DTypeCastTransform.transform_output_spec"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.DTypeCastTransform.html#torchrl.envs.transforms.DTypeCastTransform.transform_output_spec">[docs]</a>    <span class="k">def</span> <span class="nf">transform_output_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_spec</span><span class="p">:</span> <span class="n">CompositeSpec</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CompositeSpec</span><span class="p">:</span>
+<div class="viewcode-block" id="DTypeCastTransform.transform_output_spec"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.DTypeCastTransform.html#torchrl.envs.transforms.DTypeCastTransform.transform_output_spec">[docs]</a>    <span class="k">def</span> <span class="nf">transform_output_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_spec</span><span class="p">:</span> <span class="n">Composite</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Composite</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_keys</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;Calling transform_reward_spec without a parent environment isn&#39;t supported yet for </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span>
@@ -4196,10 +4196,10 @@
 <span class="sd">        &gt;&gt;&gt; class MyEnv(EnvBase):</span>
 <span class="sd">        ...     def __init__(self):</span>
 <span class="sd">        ...         super().__init__()</span>
-<span class="sd">        ...         self.observation_spec = CompositeSpec(obs=UnboundedContinuousTensorSpec((), dtype=torch.float64))</span>
-<span class="sd">        ...         self.action_spec = UnboundedContinuousTensorSpec((), dtype=torch.float64)</span>
-<span class="sd">        ...         self.reward_spec = UnboundedContinuousTensorSpec((1,), dtype=torch.float64)</span>
-<span class="sd">        ...         self.done_spec = UnboundedContinuousTensorSpec((1,), dtype=torch.bool)</span>
+<span class="sd">        ...         self.observation_spec = Composite(obs=Unbounded((), dtype=torch.float64))</span>
+<span class="sd">        ...         self.action_spec = Unbounded((), dtype=torch.float64)</span>
+<span class="sd">        ...         self.reward_spec = Unbounded((1,), dtype=torch.float64)</span>
+<span class="sd">        ...         self.done_spec = Unbounded((1,), dtype=torch.bool)</span>
 <span class="sd">        ...     def _reset(self, data=None):</span>
 <span class="sd">        ...         return TensorDict({&quot;done&quot;: torch.zeros((1,), dtype=torch.bool), **self.observation_spec.rand()}, [])</span>
 <span class="sd">        ...     def _step(self, data):</span>
@@ -4412,13 +4412,13 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sync_orig_device</span>
         <span class="k">return</span> <span class="n">sync_func</span>
 
-<div class="viewcode-block" id="DeviceCastTransform.transform_input_spec"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.DeviceCastTransform.html#torchrl.envs.transforms.DeviceCastTransform.transform_input_spec">[docs]</a>    <span class="k">def</span> <span class="nf">transform_input_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_spec</span><span class="p">:</span> <span class="n">CompositeSpec</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CompositeSpec</span><span class="p">:</span>
+<div class="viewcode-block" id="DeviceCastTransform.transform_input_spec"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.DeviceCastTransform.html#torchrl.envs.transforms.DeviceCastTransform.transform_input_spec">[docs]</a>    <span class="k">def</span> <span class="nf">transform_input_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_spec</span><span class="p">:</span> <span class="n">Composite</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Composite</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_map_env_device</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">input_spec</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">transform_input_spec</span><span class="p">(</span><span class="n">input_spec</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">transform_action_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">full_action_spec</span><span class="p">:</span> <span class="n">CompositeSpec</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CompositeSpec</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">transform_action_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">full_action_spec</span><span class="p">:</span> <span class="n">Composite</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Composite</span><span class="p">:</span>
         <span class="n">full_action_spec</span> <span class="o">=</span> <span class="n">full_action_spec</span><span class="o">.</span><span class="n">clear_device_</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">in_key</span><span class="p">,</span> <span class="n">out_key</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">in_keys_inv</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_keys_inv</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">in_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">full_action_spec</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
@@ -4426,7 +4426,7 @@
             <span class="n">full_action_spec</span><span class="p">[</span><span class="n">out_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">full_action_spec</span><span class="p">[</span><span class="n">in_key</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">full_action_spec</span>
 
-    <span class="k">def</span> <span class="nf">transform_state_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">full_state_spec</span><span class="p">:</span> <span class="n">CompositeSpec</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CompositeSpec</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">transform_state_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">full_state_spec</span><span class="p">:</span> <span class="n">Composite</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Composite</span><span class="p">:</span>
         <span class="n">full_state_spec</span> <span class="o">=</span> <span class="n">full_state_spec</span><span class="o">.</span><span class="n">clear_device_</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">in_key</span><span class="p">,</span> <span class="n">out_key</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">in_keys_inv</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_keys_inv</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">in_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">full_state_spec</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
@@ -4434,15 +4434,13 @@
             <span class="n">full_state_spec</span><span class="p">[</span><span class="n">out_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">full_state_spec</span><span class="p">[</span><span class="n">in_key</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">full_state_spec</span>
 
-<div class="viewcode-block" id="DeviceCastTransform.transform_output_spec"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.DeviceCastTransform.html#torchrl.envs.transforms.DeviceCastTransform.transform_output_spec">[docs]</a>    <span class="k">def</span> <span class="nf">transform_output_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_spec</span><span class="p">:</span> <span class="n">CompositeSpec</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CompositeSpec</span><span class="p">:</span>
+<div class="viewcode-block" id="DeviceCastTransform.transform_output_spec"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.DeviceCastTransform.html#torchrl.envs.transforms.DeviceCastTransform.transform_output_spec">[docs]</a>    <span class="k">def</span> <span class="nf">transform_output_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_spec</span><span class="p">:</span> <span class="n">Composite</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Composite</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_map_env_device</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">output_spec</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">transform_output_spec</span><span class="p">(</span><span class="n">output_spec</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="DeviceCastTransform.transform_observation_spec"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.DeviceCastTransform.html#torchrl.envs.transforms.DeviceCastTransform.transform_observation_spec">[docs]</a>    <span class="k">def</span> <span class="nf">transform_observation_spec</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">observation_spec</span><span class="p">:</span> <span class="n">CompositeSpec</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CompositeSpec</span><span class="p">:</span>
+<div class="viewcode-block" id="DeviceCastTransform.transform_observation_spec"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.DeviceCastTransform.html#torchrl.envs.transforms.DeviceCastTransform.transform_observation_spec">[docs]</a>    <span class="k">def</span> <span class="nf">transform_observation_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observation_spec</span><span class="p">:</span> <span class="n">Composite</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Composite</span><span class="p">:</span>
         <span class="n">observation_spec</span> <span class="o">=</span> <span class="n">observation_spec</span><span class="o">.</span><span class="n">clear_device_</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">in_key</span><span class="p">,</span> <span class="n">out_key</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">in_keys</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_keys</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">in_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">observation_spec</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
@@ -4450,7 +4448,7 @@
             <span class="n">observation_spec</span><span class="p">[</span><span class="n">out_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">observation_spec</span><span class="p">[</span><span class="n">in_key</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">observation_spec</span></div>
 
-<div class="viewcode-block" id="DeviceCastTransform.transform_done_spec"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.DeviceCastTransform.html#torchrl.envs.transforms.DeviceCastTransform.transform_done_spec">[docs]</a>    <span class="k">def</span> <span class="nf">transform_done_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">full_done_spec</span><span class="p">:</span> <span class="n">CompositeSpec</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CompositeSpec</span><span class="p">:</span>
+<div class="viewcode-block" id="DeviceCastTransform.transform_done_spec"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.DeviceCastTransform.html#torchrl.envs.transforms.DeviceCastTransform.transform_done_spec">[docs]</a>    <span class="k">def</span> <span class="nf">transform_done_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">full_done_spec</span><span class="p">:</span> <span class="n">Composite</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Composite</span><span class="p">:</span>
         <span class="n">full_done_spec</span> <span class="o">=</span> <span class="n">full_done_spec</span><span class="o">.</span><span class="n">clear_device_</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">in_key</span><span class="p">,</span> <span class="n">out_key</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">in_keys</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_keys</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">in_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">full_done_spec</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
@@ -4458,7 +4456,7 @@
             <span class="n">full_done_spec</span><span class="p">[</span><span class="n">out_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">full_done_spec</span><span class="p">[</span><span class="n">in_key</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">full_done_spec</span></div>
 
-<div class="viewcode-block" id="DeviceCastTransform.transform_reward_spec"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.DeviceCastTransform.html#torchrl.envs.transforms.DeviceCastTransform.transform_reward_spec">[docs]</a>    <span class="k">def</span> <span class="nf">transform_reward_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">full_reward_spec</span><span class="p">:</span> <span class="n">CompositeSpec</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CompositeSpec</span><span class="p">:</span>
+<div class="viewcode-block" id="DeviceCastTransform.transform_reward_spec"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.DeviceCastTransform.html#torchrl.envs.transforms.DeviceCastTransform.transform_reward_spec">[docs]</a>    <span class="k">def</span> <span class="nf">transform_reward_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">full_reward_spec</span><span class="p">:</span> <span class="n">Composite</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Composite</span><span class="p">:</span>
         <span class="n">full_reward_spec</span> <span class="o">=</span> <span class="n">full_reward_spec</span><span class="o">.</span><span class="n">clear_device_</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">in_key</span><span class="p">,</span> <span class="n">out_key</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">in_keys</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_keys</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">in_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">full_reward_spec</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
@@ -4617,13 +4615,13 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_initialized</span> <span class="o">=</span> <span class="kc">True</span>
 
         <span class="c1"># check that all keys are in observation_spec</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">in_keys</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">observation_spec</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">in_keys</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">observation_spec</span><span class="p">,</span> <span class="n">Composite</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="s2">&quot;CatTensor cannot infer the output observation spec as there are multiple input keys but &quot;</span>
                 <span class="s2">&quot;only one observation_spec.&quot;</span>
             <span class="p">)</span>
 
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">observation_spec</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">observation_spec</span><span class="p">,</span> <span class="n">Composite</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span>
             <span class="p">[</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_keys</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">observation_spec</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="kc">True</span><span class="p">)]</span>
         <span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
@@ -4631,7 +4629,7 @@
                 <span class="s2">&quot;Make sure the environment has an observation_spec attribute that includes all the specs needed for CatTensor.&quot;</span>
             <span class="p">)</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">observation_spec</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">observation_spec</span><span class="p">,</span> <span class="n">Composite</span><span class="p">):</span>
             <span class="c1"># by def, there must be only one key</span>
             <span class="k">return</span> <span class="n">observation_spec</span>
 
@@ -4651,7 +4649,7 @@
         <span class="n">device</span> <span class="o">=</span> <span class="n">spec0</span><span class="o">.</span><span class="n">device</span>
         <span class="n">shape</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">]</span> <span class="o">=</span> <span class="n">sum_shape</span>
         <span class="n">shape</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
-        <span class="n">observation_spec</span><span class="p">[</span><span class="n">out_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">UnboundedContinuousTensorSpec</span><span class="p">(</span>
+        <span class="n">observation_spec</span><span class="p">[</span><span class="n">out_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">Unbounded</span><span class="p">(</span>
             <span class="n">shape</span><span class="o">=</span><span class="n">shape</span><span class="p">,</span>
             <span class="n">dtype</span><span class="o">=</span><span class="n">spec0</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
             <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
@@ -4759,14 +4757,14 @@
         <span class="n">action</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">one_hot</span><span class="p">(</span><span class="n">action</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_actions_effective</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">action</span>
 
-<div class="viewcode-block" id="DiscreteActionProjection.transform_input_spec"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.DiscreteActionProjection.html#torchrl.envs.transforms.DiscreteActionProjection.transform_input_spec">[docs]</a>    <span class="k">def</span> <span class="nf">transform_input_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_spec</span><span class="p">:</span> <span class="n">CompositeSpec</span><span class="p">):</span>
+<div class="viewcode-block" id="DiscreteActionProjection.transform_input_spec"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.DiscreteActionProjection.html#torchrl.envs.transforms.DiscreteActionProjection.transform_input_spec">[docs]</a>    <span class="k">def</span> <span class="nf">transform_input_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_spec</span><span class="p">:</span> <span class="n">Composite</span><span class="p">):</span>
         <span class="n">input_spec</span> <span class="o">=</span> <span class="n">input_spec</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">input_spec</span><span class="p">[</span><span class="s2">&quot;full_action_spec&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
             <span class="n">key</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;full_action_spec&quot;</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
             <span class="k">break</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;key not found in action_spec.&quot;</span><span class="p">)</span>
-        <span class="n">input_spec</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">OneHotDiscreteTensorSpec</span><span class="p">(</span>
+        <span class="n">input_spec</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">OneHot</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">max_actions</span><span class="p">,</span>
             <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="o">*</span><span class="n">input_spec</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_actions</span><span class="p">),</span>
             <span class="n">device</span><span class="o">=</span><span class="n">input_spec</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
@@ -4928,9 +4926,9 @@
 <span class="sd">    tensordict with the desired features.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        primers (dict or CompositeSpec, optional): a dictionary containing</span>
+<span class="sd">        primers (dict or Composite, optional): a dictionary containing</span>
 <span class="sd">            key-spec pairs which will be used to populate the input tensordict.</span>
-<span class="sd">            :class:`~torchrl.data.CompositeSpec` instances are supported too.</span>
+<span class="sd">            :class:`~torchrl.data.Composite` instances are supported too.</span>
 <span class="sd">        random (bool, optional): if ``True``, the values will be drawn randomly from</span>
 <span class="sd">            the TensorSpec domain (or a unit Gaussian if unbounded). Otherwise a fixed value will be assumed.</span>
 <span class="sd">            Defaults to `False`.</span>
@@ -4959,7 +4957,7 @@
 <span class="sd">        &gt;&gt;&gt; base_env = SerialEnv(2, lambda: GymEnv(&quot;Pendulum-v1&quot;))</span>
 <span class="sd">        &gt;&gt;&gt; env = TransformedEnv(base_env)</span>
 <span class="sd">        &gt;&gt;&gt; # the env is batch-locked, so the leading dims of the spec must match those of the env</span>
-<span class="sd">        &gt;&gt;&gt; env.append_transform(TensorDictPrimer(mykey=UnboundedContinuousTensorSpec([2, 3])))</span>
+<span class="sd">        &gt;&gt;&gt; env.append_transform(TensorDictPrimer(mykey=Unbounded([2, 3])))</span>
 <span class="sd">        &gt;&gt;&gt; td = env.reset()</span>
 <span class="sd">        &gt;&gt;&gt; print(td)</span>
 <span class="sd">        TensorDict(</span>
@@ -5000,7 +4998,7 @@
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">primers</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="n">CompositeSpec</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">primers</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="n">Composite</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">random</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">default_value</span><span class="p">:</span> <span class="nb">float</span>
         <span class="o">|</span> <span class="n">Callable</span>
@@ -5017,8 +5015,8 @@
                     <span class="s2">&quot;as kwargs.&quot;</span>
                 <span class="p">)</span>
             <span class="n">kwargs</span> <span class="o">=</span> <span class="n">primers</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">):</span>
-            <span class="n">kwargs</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">Composite</span><span class="p">):</span>
+            <span class="n">kwargs</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">primers</span> <span class="o">=</span> <span class="n">kwargs</span>
         <span class="k">if</span> <span class="n">random</span> <span class="ow">and</span> <span class="n">default_value</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
@@ -5100,12 +5098,10 @@
     <span class="k">def</span> <span class="nf">_expand_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spec</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">spec</span><span class="o">.</span><span class="n">expand</span><span class="p">((</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="o">*</span><span class="n">spec</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
 
-<div class="viewcode-block" id="TensorDictPrimer.transform_observation_spec"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.TensorDictPrimer.html#torchrl.envs.transforms.TensorDictPrimer.transform_observation_spec">[docs]</a>    <span class="k">def</span> <span class="nf">transform_observation_spec</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">observation_spec</span><span class="p">:</span> <span class="n">CompositeSpec</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CompositeSpec</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">observation_spec</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">):</span>
+<div class="viewcode-block" id="TensorDictPrimer.transform_observation_spec"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.TensorDictPrimer.html#torchrl.envs.transforms.TensorDictPrimer.transform_observation_spec">[docs]</a>    <span class="k">def</span> <span class="nf">transform_observation_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observation_spec</span><span class="p">:</span> <span class="n">Composite</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Composite</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">observation_spec</span><span class="p">,</span> <span class="n">Composite</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;observation_spec was expected to be of type CompositeSpec. Got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">observation_spec</span><span class="p">)</span><span class="si">}</span><span class="s2"> instead.&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;observation_spec was expected to be of type Composite. Got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">observation_spec</span><span class="p">)</span><span class="si">}</span><span class="s2"> instead.&quot;</span>
             <span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">primers</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">observation_spec</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
@@ -5268,7 +5264,7 @@
         <span class="p">)</span>
         <span class="n">random</span> <span class="o">=</span> <span class="n">state_dim</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">action_dim</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
         <span class="n">shape</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span> <span class="o">+</span> <span class="n">tail_dim</span>
-        <span class="n">primers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;_eps_gSDE&quot;</span><span class="p">:</span> <span class="n">UnboundedContinuousTensorSpec</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="n">shape</span><span class="p">)}</span>
+        <span class="n">primers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;_eps_gSDE&quot;</span><span class="p">:</span> <span class="n">Unbounded</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="n">shape</span><span class="p">)}</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">primers</span><span class="o">=</span><span class="n">primers</span><span class="p">,</span> <span class="n">random</span><span class="o">=</span><span class="n">random</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
@@ -5727,8 +5723,8 @@
 
 <div class="viewcode-block" id="VecNorm.transform_observation_spec"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.VecNorm.html#torchrl.envs.transforms.VecNorm.transform_observation_spec">[docs]</a>    <span class="nd">@_apply_to_composite</span>
     <span class="k">def</span> <span class="nf">transform_observation_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observation_spec</span><span class="p">:</span> <span class="n">TensorSpec</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorSpec</span><span class="p">:</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">observation_spec</span><span class="p">,</span> <span class="n">BoundedTensorSpec</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">UnboundedContinuousTensorSpec</span><span class="p">(</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">observation_spec</span><span class="p">,</span> <span class="n">Bounded</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">Unbounded</span><span class="p">(</span>
                 <span class="n">shape</span><span class="o">=</span><span class="n">observation_spec</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
                 <span class="n">dtype</span><span class="o">=</span><span class="n">observation_spec</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
                 <span class="n">device</span><span class="o">=</span><span class="n">observation_spec</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
@@ -5942,13 +5938,13 @@
 <div class="viewcode-block" id="RewardSum.transform_input_spec"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.RewardSum.html#torchrl.envs.transforms.RewardSum.transform_input_spec">[docs]</a>    <span class="k">def</span> <span class="nf">transform_input_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_spec</span><span class="p">:</span> <span class="n">TensorSpec</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorSpec</span><span class="p">:</span>
         <span class="n">state_spec</span> <span class="o">=</span> <span class="n">input_spec</span><span class="p">[</span><span class="s2">&quot;full_state_spec&quot;</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">state_spec</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">state_spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="n">input_spec</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">input_spec</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+            <span class="n">state_spec</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="n">input_spec</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">input_spec</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
         <span class="n">state_spec</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_generate_episode_reward_spec</span><span class="p">())</span>
         <span class="n">input_spec</span><span class="p">[</span><span class="s2">&quot;full_state_spec&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">state_spec</span>
         <span class="k">return</span> <span class="n">input_spec</span></div>
 
-    <span class="k">def</span> <span class="nf">_generate_episode_reward_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CompositeSpec</span><span class="p">:</span>
-        <span class="n">episode_reward_spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">_generate_episode_reward_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Composite</span><span class="p">:</span>
+        <span class="n">episode_reward_spec</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">()</span>
         <span class="n">reward_spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">full_reward_spec</span>
         <span class="n">reward_spec_keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">reward_keys</span>
         <span class="c1"># Define episode specs for all out_keys</span>
@@ -5961,7 +5957,7 @@
                 <span class="n">temp_rew_spec</span> <span class="o">=</span> <span class="n">reward_spec</span>
                 <span class="k">for</span> <span class="n">sub_key</span> <span class="ow">in</span> <span class="n">out_key</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
                     <span class="k">if</span> <span class="p">(</span>
-                        <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">temp_rew_spec</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">)</span>
+                        <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">temp_rew_spec</span><span class="p">,</span> <span class="n">Composite</span><span class="p">)</span>
                         <span class="ow">or</span> <span class="n">sub_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">temp_rew_spec</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
                     <span class="p">):</span>
                         <span class="k">break</span>
@@ -5982,8 +5978,8 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Transforms the observation spec, adding the new keys generated by RewardSum.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">reward_spec</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">observation_spec</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">observation_spec</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">):</span>
-            <span class="n">observation_spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">(</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">observation_spec</span><span class="p">,</span> <span class="n">Composite</span><span class="p">):</span>
+            <span class="n">observation_spec</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">(</span>
                 <span class="n">observation</span><span class="o">=</span><span class="n">observation_spec</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">batch_size</span>
             <span class="p">)</span>
         <span class="n">observation_spec</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_generate_episode_reward_spec</span><span class="p">())</span>
@@ -6246,12 +6242,10 @@
                 <span class="n">next_tensordict</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">truncated_key</span><span class="p">,</span> <span class="n">truncated</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">next_tensordict</span>
 
-<div class="viewcode-block" id="StepCounter.transform_observation_spec"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.StepCounter.html#torchrl.envs.transforms.StepCounter.transform_observation_spec">[docs]</a>    <span class="k">def</span> <span class="nf">transform_observation_spec</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">observation_spec</span><span class="p">:</span> <span class="n">CompositeSpec</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CompositeSpec</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">observation_spec</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">):</span>
+<div class="viewcode-block" id="StepCounter.transform_observation_spec"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.StepCounter.html#torchrl.envs.transforms.StepCounter.transform_observation_spec">[docs]</a>    <span class="k">def</span> <span class="nf">transform_observation_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observation_spec</span><span class="p">:</span> <span class="n">Composite</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Composite</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">observation_spec</span><span class="p">,</span> <span class="n">Composite</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;observation_spec was expected to be of type CompositeSpec. Got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">observation_spec</span><span class="p">)</span><span class="si">}</span><span class="s2"> instead.&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;observation_spec was expected to be of type Composite. Got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">observation_spec</span><span class="p">)</span><span class="si">}</span><span class="s2"> instead.&quot;</span>
             <span class="p">)</span>
         <span class="n">full_done_spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">output_spec</span><span class="p">[</span><span class="s2">&quot;full_done_spec&quot;</span><span class="p">]</span>
         <span class="k">for</span> <span class="n">step_count_key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_count_keys</span><span class="p">:</span>
@@ -6273,7 +6267,7 @@
                 <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;Could not find root of step_count_key </span><span class="si">{</span><span class="n">step_count_key</span><span class="si">}</span><span class="s2"> in done keys </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">done_keys</span><span class="si">}</span><span class="s2">.&quot;</span>
                 <span class="p">)</span>
-            <span class="n">observation_spec</span><span class="p">[</span><span class="n">step_count_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">BoundedTensorSpec</span><span class="p">(</span>
+            <span class="n">observation_spec</span><span class="p">[</span><span class="n">step_count_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">Bounded</span><span class="p">(</span>
                 <span class="n">shape</span><span class="o">=</span><span class="n">shape</span><span class="p">,</span>
                 <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">int64</span><span class="p">,</span>
                 <span class="n">device</span><span class="o">=</span><span class="n">observation_spec</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
@@ -6282,7 +6276,7 @@
             <span class="p">)</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">transform_observation_spec</span><span class="p">(</span><span class="n">observation_spec</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="StepCounter.transform_output_spec"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.StepCounter.html#torchrl.envs.transforms.StepCounter.transform_output_spec">[docs]</a>    <span class="k">def</span> <span class="nf">transform_output_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_spec</span><span class="p">:</span> <span class="n">CompositeSpec</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CompositeSpec</span><span class="p">:</span>
+<div class="viewcode-block" id="StepCounter.transform_output_spec"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.StepCounter.html#torchrl.envs.transforms.StepCounter.transform_output_spec">[docs]</a>    <span class="k">def</span> <span class="nf">transform_output_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_spec</span><span class="p">:</span> <span class="n">Composite</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Composite</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_steps</span><span class="p">:</span>
             <span class="n">full_done_spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">output_spec</span><span class="p">[</span><span class="s2">&quot;full_done_spec&quot;</span><span class="p">]</span>
             <span class="k">for</span> <span class="n">truncated_key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">truncated_keys</span><span class="p">:</span>
@@ -6304,7 +6298,7 @@
                     <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
                         <span class="sa">f</span><span class="s2">&quot;Could not find root of truncated_key </span><span class="si">{</span><span class="n">truncated_key</span><span class="si">}</span><span class="s2"> in done keys </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">done_keys</span><span class="si">}</span><span class="s2">.&quot;</span>
                     <span class="p">)</span>
-                <span class="n">full_done_spec</span><span class="p">[</span><span class="n">truncated_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">DiscreteTensorSpec</span><span class="p">(</span>
+                <span class="n">full_done_spec</span><span class="p">[</span><span class="n">truncated_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">Categorical</span><span class="p">(</span>
                     <span class="mi">2</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">output_spec</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">shape</span>
                 <span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_done</span><span class="p">:</span>
@@ -6327,19 +6321,19 @@
                         <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
                             <span class="sa">f</span><span class="s2">&quot;Could not find root of stop_key </span><span class="si">{</span><span class="n">done_key</span><span class="si">}</span><span class="s2"> in done keys </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">done_keys</span><span class="si">}</span><span class="s2">.&quot;</span>
                         <span class="p">)</span>
-                    <span class="n">full_done_spec</span><span class="p">[</span><span class="n">done_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">DiscreteTensorSpec</span><span class="p">(</span>
+                    <span class="n">full_done_spec</span><span class="p">[</span><span class="n">done_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">Categorical</span><span class="p">(</span>
                         <span class="mi">2</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">output_spec</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">shape</span>
                     <span class="p">)</span>
             <span class="n">output_spec</span><span class="p">[</span><span class="s2">&quot;full_done_spec&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">full_done_spec</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">transform_output_spec</span><span class="p">(</span><span class="n">output_spec</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="StepCounter.transform_input_spec"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.StepCounter.html#torchrl.envs.transforms.StepCounter.transform_input_spec">[docs]</a>    <span class="k">def</span> <span class="nf">transform_input_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_spec</span><span class="p">:</span> <span class="n">CompositeSpec</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CompositeSpec</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">input_spec</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">):</span>
+<div class="viewcode-block" id="StepCounter.transform_input_spec"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.StepCounter.html#torchrl.envs.transforms.StepCounter.transform_input_spec">[docs]</a>    <span class="k">def</span> <span class="nf">transform_input_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_spec</span><span class="p">:</span> <span class="n">Composite</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Composite</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">input_spec</span><span class="p">,</span> <span class="n">Composite</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;input_spec was expected to be of type CompositeSpec. Got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">input_spec</span><span class="p">)</span><span class="si">}</span><span class="s2"> instead.&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;input_spec was expected to be of type Composite. Got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">input_spec</span><span class="p">)</span><span class="si">}</span><span class="s2"> instead.&quot;</span>
             <span class="p">)</span>
         <span class="k">if</span> <span class="n">input_spec</span><span class="p">[</span><span class="s2">&quot;full_state_spec&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">input_spec</span><span class="p">[</span><span class="s2">&quot;full_state_spec&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">(</span>
+            <span class="n">input_spec</span><span class="p">[</span><span class="s2">&quot;full_state_spec&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">(</span>
                 <span class="n">shape</span><span class="o">=</span><span class="n">input_spec</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">input_spec</span><span class="o">.</span><span class="n">device</span>
             <span class="p">)</span>
 
@@ -6364,9 +6358,7 @@
                     <span class="sa">f</span><span class="s2">&quot;Could not find root of step_count_key </span><span class="si">{</span><span class="n">step_count_key</span><span class="si">}</span><span class="s2"> in done keys </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">done_keys</span><span class="si">}</span><span class="s2">.&quot;</span>
                 <span class="p">)</span>
 
-            <span class="n">input_spec</span><span class="p">[</span>
-                <span class="n">unravel_key</span><span class="p">((</span><span class="s2">&quot;full_state_spec&quot;</span><span class="p">,</span> <span class="n">step_count_key</span><span class="p">))</span>
-            <span class="p">]</span> <span class="o">=</span> <span class="n">BoundedTensorSpec</span><span class="p">(</span>
+            <span class="n">input_spec</span><span class="p">[</span><span class="n">unravel_key</span><span class="p">((</span><span class="s2">&quot;full_state_spec&quot;</span><span class="p">,</span> <span class="n">step_count_key</span><span class="p">))]</span> <span class="o">=</span> <span class="n">Bounded</span><span class="p">(</span>
                 <span class="n">shape</span><span class="o">=</span><span class="n">shape</span><span class="p">,</span>
                 <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">int64</span><span class="p">,</span>
                 <span class="n">device</span><span class="o">=</span><span class="n">input_spec</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
@@ -6453,7 +6445,7 @@
             <span class="k">return</span> <span class="n">tensordict_reset</span><span class="o">.</span><span class="n">exclude</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">excluded_keys</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">tensordict</span>
 
-<div class="viewcode-block" id="ExcludeTransform.transform_output_spec"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.ExcludeTransform.html#torchrl.envs.transforms.ExcludeTransform.transform_output_spec">[docs]</a>    <span class="k">def</span> <span class="nf">transform_output_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_spec</span><span class="p">:</span> <span class="n">CompositeSpec</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CompositeSpec</span><span class="p">:</span>
+<div class="viewcode-block" id="ExcludeTransform.transform_output_spec"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.ExcludeTransform.html#torchrl.envs.transforms.ExcludeTransform.transform_output_spec">[docs]</a>    <span class="k">def</span> <span class="nf">transform_output_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_spec</span><span class="p">:</span> <span class="n">Composite</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Composite</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">inverse</span><span class="p">:</span>
             <span class="n">full_done_spec</span> <span class="o">=</span> <span class="n">output_spec</span><span class="p">[</span><span class="s2">&quot;full_done_spec&quot;</span><span class="p">]</span>
             <span class="n">full_reward_spec</span> <span class="o">=</span> <span class="n">output_spec</span><span class="p">[</span><span class="s2">&quot;full_reward_spec&quot;</span><span class="p">]</span>
@@ -6573,7 +6565,7 @@
             <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">selected_keys</span><span class="p">,</span> <span class="o">*</span><span class="n">reward_keys</span><span class="p">,</span> <span class="o">*</span><span class="n">done_keys</span><span class="p">,</span> <span class="o">*</span><span class="n">input_keys</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">False</span>
         <span class="p">)</span>
 
-<div class="viewcode-block" id="SelectTransform.transform_output_spec"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.SelectTransform.html#torchrl.envs.transforms.SelectTransform.transform_output_spec">[docs]</a>    <span class="k">def</span> <span class="nf">transform_output_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_spec</span><span class="p">:</span> <span class="n">CompositeSpec</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CompositeSpec</span><span class="p">:</span>
+<div class="viewcode-block" id="SelectTransform.transform_output_spec"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.SelectTransform.html#torchrl.envs.transforms.SelectTransform.transform_output_spec">[docs]</a>    <span class="k">def</span> <span class="nf">transform_output_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_spec</span><span class="p">:</span> <span class="n">Composite</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Composite</span><span class="p">:</span>
         <span class="n">full_done_spec</span> <span class="o">=</span> <span class="n">output_spec</span><span class="p">[</span><span class="s2">&quot;full_done_spec&quot;</span><span class="p">]</span>
         <span class="n">full_reward_spec</span> <span class="o">=</span> <span class="n">output_spec</span><span class="p">[</span><span class="s2">&quot;full_reward_spec&quot;</span><span class="p">]</span>
         <span class="n">full_observation_spec</span> <span class="o">=</span> <span class="n">output_spec</span><span class="p">[</span><span class="s2">&quot;full_observation_spec&quot;</span><span class="p">]</span>
@@ -7012,7 +7004,7 @@
                 <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;Could not find root of init_key </span><span class="si">{</span><span class="n">init_key</span><span class="si">}</span><span class="s2"> within done_keys </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">done_keys</span><span class="si">}</span><span class="s2">.&quot;</span>
                 <span class="p">)</span>
-            <span class="n">observation_spec</span><span class="p">[</span><span class="n">init_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">DiscreteTensorSpec</span><span class="p">(</span>
+            <span class="n">observation_spec</span><span class="p">[</span><span class="n">init_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">Categorical</span><span class="p">(</span>
                 <span class="mi">2</span><span class="p">,</span>
                 <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">,</span>
                 <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
@@ -7151,7 +7143,7 @@
                         <span class="k">raise</span>
         <span class="k">return</span> <span class="n">tensordict</span>
 
-<div class="viewcode-block" id="RenameTransform.transform_output_spec"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.RenameTransform.html#torchrl.envs.transforms.RenameTransform.transform_output_spec">[docs]</a>    <span class="k">def</span> <span class="nf">transform_output_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_spec</span><span class="p">:</span> <span class="n">CompositeSpec</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CompositeSpec</span><span class="p">:</span>
+<div class="viewcode-block" id="RenameTransform.transform_output_spec"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.RenameTransform.html#torchrl.envs.transforms.RenameTransform.transform_output_spec">[docs]</a>    <span class="k">def</span> <span class="nf">transform_output_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_spec</span><span class="p">:</span> <span class="n">Composite</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Composite</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">done_key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">done_keys</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">done_key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_keys</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">out_key</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">out_keys</span><span class="p">):</span>  <span class="c1"># noqa: B007</span>
@@ -7193,7 +7185,7 @@
                     <span class="k">del</span> <span class="n">output_spec</span><span class="p">[</span><span class="s2">&quot;full_observation_spec&quot;</span><span class="p">][</span><span class="n">observation_key</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">output_spec</span></div>
 
-<div class="viewcode-block" id="RenameTransform.transform_input_spec"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.RenameTransform.html#torchrl.envs.transforms.RenameTransform.transform_input_spec">[docs]</a>    <span class="k">def</span> <span class="nf">transform_input_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_spec</span><span class="p">:</span> <span class="n">CompositeSpec</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CompositeSpec</span><span class="p">:</span>
+<div class="viewcode-block" id="RenameTransform.transform_input_spec"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.RenameTransform.html#torchrl.envs.transforms.RenameTransform.transform_input_spec">[docs]</a>    <span class="k">def</span> <span class="nf">transform_input_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_spec</span><span class="p">:</span> <span class="n">Composite</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Composite</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">action_key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">action_keys</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">action_key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_keys</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">out_key</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">out_keys</span><span class="p">):</span>  <span class="c1"># noqa: B007</span>
@@ -7405,16 +7397,16 @@
 
 <span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; import torch</span>
-<span class="sd">        &gt;&gt;&gt; from torchrl.data.tensor_specs import DiscreteTensorSpec, BinaryDiscreteTensorSpec, UnboundedContinuousTensorSpec, CompositeSpec</span>
+<span class="sd">        &gt;&gt;&gt; from torchrl.data.tensor_specs import Categorical, Binary, Unbounded, Composite</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.envs.transforms import ActionMask, TransformedEnv</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.envs.common import EnvBase</span>
 <span class="sd">        &gt;&gt;&gt; class MaskedEnv(EnvBase):</span>
 <span class="sd">        ...     def __init__(self, *args, **kwargs):</span>
 <span class="sd">        ...         super().__init__(*args, **kwargs)</span>
-<span class="sd">        ...         self.action_spec = DiscreteTensorSpec(4)</span>
-<span class="sd">        ...         self.state_spec = CompositeSpec(action_mask=BinaryDiscreteTensorSpec(4, dtype=torch.bool))</span>
-<span class="sd">        ...         self.observation_spec = CompositeSpec(obs=UnboundedContinuousTensorSpec(3))</span>
-<span class="sd">        ...         self.reward_spec = UnboundedContinuousTensorSpec(1)</span>
+<span class="sd">        ...         self.action_spec = Categorical(4)</span>
+<span class="sd">        ...         self.state_spec = Composite(action_mask=Binary(4, dtype=torch.bool))</span>
+<span class="sd">        ...         self.observation_spec = Composite(obs=Unbounded(3))</span>
+<span class="sd">        ...         self.reward_spec = Unbounded(1)</span>
 <span class="sd">        ...</span>
 <span class="sd">        ...     def _reset(self, tensordict=None):</span>
 <span class="sd">        ...         td = self.observation_spec.rand()</span>
@@ -7450,10 +7442,10 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">ACCEPTED_SPECS</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="n">OneHotDiscreteTensorSpec</span><span class="p">,</span>
-        <span class="n">DiscreteTensorSpec</span><span class="p">,</span>
-        <span class="n">MultiOneHotDiscreteTensorSpec</span><span class="p">,</span>
-        <span class="n">MultiDiscreteTensorSpec</span><span class="p">,</span>
+        <span class="n">OneHot</span><span class="p">,</span>
+        <span class="n">Categorical</span><span class="p">,</span>
+        <span class="n">MultiOneHot</span><span class="p">,</span>
+        <span class="n">MultiCategorical</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">SPEC_TYPE_ERROR</span> <span class="o">=</span> <span class="s2">&quot;The action spec must be one of </span><span class="si">{}</span><span class="s2">. Got </span><span class="si">{}</span><span class="s2"> instead.&quot;</span>
 
@@ -7879,7 +7871,7 @@
 
 <div class="viewcode-block" id="SignTransform.transform_observation_spec"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.SignTransform.html#torchrl.envs.transforms.SignTransform.transform_observation_spec">[docs]</a>    <span class="nd">@_apply_to_composite</span>
     <span class="k">def</span> <span class="nf">transform_observation_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observation_spec</span><span class="p">:</span> <span class="n">TensorSpec</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorSpec</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">BoundedTensorSpec</span><span class="p">(</span>
+        <span class="k">return</span> <span class="n">Bounded</span><span class="p">(</span>
             <span class="n">shape</span><span class="o">=</span><span class="n">observation_spec</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
             <span class="n">device</span><span class="o">=</span><span class="n">observation_spec</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
             <span class="n">dtype</span><span class="o">=</span><span class="n">observation_spec</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
@@ -7891,7 +7883,7 @@
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_keys</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">reward_keys</span><span class="p">:</span>
                 <span class="n">spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">output_spec</span><span class="p">[</span><span class="s2">&quot;full_reward_spec&quot;</span><span class="p">][</span><span class="n">key</span><span class="p">]</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">output_spec</span><span class="p">[</span><span class="s2">&quot;full_reward_spec&quot;</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">BoundedTensorSpec</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">output_spec</span><span class="p">[</span><span class="s2">&quot;full_reward_spec&quot;</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">Bounded</span><span class="p">(</span>
                     <span class="n">shape</span><span class="o">=</span><span class="n">spec</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
                     <span class="n">device</span><span class="o">=</span><span class="n">spec</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
                     <span class="n">dtype</span><span class="o">=</span><span class="n">spec</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
@@ -7914,31 +7906,31 @@
 <span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; import torch</span>
 <span class="sd">        &gt;&gt;&gt; from tensordict import TensorDict</span>
-<span class="sd">        &gt;&gt;&gt; from torchrl.data import UnboundedContinuousTensorSpec, CompositeSpec, \</span>
-<span class="sd">        ...     DiscreteTensorSpec</span>
+<span class="sd">        &gt;&gt;&gt; from torchrl.data import Unbounded, Composite, \</span>
+<span class="sd">        ...     Categorical</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.envs import EnvBase, TransformedEnv, RemoveEmptySpecs</span>
 <span class="sd">        &gt;&gt;&gt;</span>
 <span class="sd">        &gt;&gt;&gt;</span>
 <span class="sd">        &gt;&gt;&gt; class DummyEnv(EnvBase):</span>
 <span class="sd">        ...     def __init__(self, *args, **kwargs):</span>
 <span class="sd">        ...         super().__init__(*args, **kwargs)</span>
-<span class="sd">        ...         self.observation_spec = CompositeSpec(</span>
-<span class="sd">        ...             observation=UnboundedContinuousTensorSpec((*self.batch_size, 3)),</span>
-<span class="sd">        ...             other=CompositeSpec(</span>
-<span class="sd">        ...                 another_other=CompositeSpec(shape=self.batch_size),</span>
+<span class="sd">        ...         self.observation_spec = Composite(</span>
+<span class="sd">        ...             observation=UnboundedContinuous((*self.batch_size, 3)),</span>
+<span class="sd">        ...             other=Composite(</span>
+<span class="sd">        ...                 another_other=Composite(shape=self.batch_size),</span>
 <span class="sd">        ...                 shape=self.batch_size,</span>
 <span class="sd">        ...             ),</span>
 <span class="sd">        ...             shape=self.batch_size,</span>
 <span class="sd">        ...         )</span>
-<span class="sd">        ...         self.action_spec = UnboundedContinuousTensorSpec((*self.batch_size, 3))</span>
-<span class="sd">        ...         self.done_spec = DiscreteTensorSpec(</span>
+<span class="sd">        ...         self.action_spec = UnboundedContinuous((*self.batch_size, 3))</span>
+<span class="sd">        ...         self.done_spec = Categorical(</span>
 <span class="sd">        ...             2, (*self.batch_size, 1), dtype=torch.bool</span>
 <span class="sd">        ...         )</span>
 <span class="sd">        ...         self.full_done_spec[&quot;truncated&quot;] = self.full_done_spec[</span>
 <span class="sd">        ...             &quot;terminated&quot;].clone()</span>
-<span class="sd">        ...         self.reward_spec = CompositeSpec(</span>
-<span class="sd">        ...             reward=UnboundedContinuousTensorSpec(*self.batch_size, 1),</span>
-<span class="sd">        ...             other_reward=CompositeSpec(shape=self.batch_size),</span>
+<span class="sd">        ...         self.reward_spec = Composite(</span>
+<span class="sd">        ...             reward=UnboundedContinuous(*self.batch_size, 1),</span>
+<span class="sd">        ...             other_reward=Composite(shape=self.batch_size),</span>
 <span class="sd">        ...             shape=self.batch_size</span>
 <span class="sd">        ...             )</span>
 <span class="sd">        ...</span>
@@ -8031,7 +8023,7 @@
             <span class="k">return</span> <span class="mi">0</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
 
-<div class="viewcode-block" id="RemoveEmptySpecs.transform_output_spec"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.RemoveEmptySpecs.html#torchrl.envs.transforms.RemoveEmptySpecs.transform_output_spec">[docs]</a>    <span class="k">def</span> <span class="nf">transform_output_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_spec</span><span class="p">:</span> <span class="n">CompositeSpec</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CompositeSpec</span><span class="p">:</span>
+<div class="viewcode-block" id="RemoveEmptySpecs.transform_output_spec"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.RemoveEmptySpecs.html#torchrl.envs.transforms.RemoveEmptySpecs.transform_output_spec">[docs]</a>    <span class="k">def</span> <span class="nf">transform_output_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_spec</span><span class="p">:</span> <span class="n">Composite</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Composite</span><span class="p">:</span>
         <span class="n">full_done_spec</span> <span class="o">=</span> <span class="n">output_spec</span><span class="p">[</span><span class="s2">&quot;full_done_spec&quot;</span><span class="p">]</span>
         <span class="n">full_reward_spec</span> <span class="o">=</span> <span class="n">output_spec</span><span class="p">[</span><span class="s2">&quot;full_reward_spec&quot;</span><span class="p">]</span>
         <span class="n">full_observation_spec</span> <span class="o">=</span> <span class="n">output_spec</span><span class="p">[</span><span class="s2">&quot;full_observation_spec&quot;</span><span class="p">]</span>
@@ -8039,19 +8031,19 @@
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">spec</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span>
             <span class="n">full_done_spec</span><span class="o">.</span><span class="n">items</span><span class="p">(</span><span class="kc">True</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_sorter</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span>
         <span class="p">):</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">)</span> <span class="ow">and</span> <span class="n">spec</span><span class="o">.</span><span class="n">is_empty</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">Composite</span><span class="p">)</span> <span class="ow">and</span> <span class="n">spec</span><span class="o">.</span><span class="n">is_empty</span><span class="p">():</span>
                 <span class="k">del</span> <span class="n">full_done_spec</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
 
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">spec</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span>
             <span class="n">full_observation_spec</span><span class="o">.</span><span class="n">items</span><span class="p">(</span><span class="kc">True</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_sorter</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span>
         <span class="p">):</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">)</span> <span class="ow">and</span> <span class="n">spec</span><span class="o">.</span><span class="n">is_empty</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">Composite</span><span class="p">)</span> <span class="ow">and</span> <span class="n">spec</span><span class="o">.</span><span class="n">is_empty</span><span class="p">():</span>
                 <span class="k">del</span> <span class="n">full_observation_spec</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
 
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">spec</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span>
             <span class="n">full_reward_spec</span><span class="o">.</span><span class="n">items</span><span class="p">(</span><span class="kc">True</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_sorter</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span>
         <span class="p">):</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">)</span> <span class="ow">and</span> <span class="n">spec</span><span class="o">.</span><span class="n">is_empty</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">Composite</span><span class="p">)</span> <span class="ow">and</span> <span class="n">spec</span><span class="o">.</span><span class="n">is_empty</span><span class="p">():</span>
                 <span class="k">del</span> <span class="n">full_reward_spec</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">output_spec</span></div>
 
@@ -8064,14 +8056,14 @@
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">spec</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span>
             <span class="n">full_action_spec</span><span class="o">.</span><span class="n">items</span><span class="p">(</span><span class="kc">True</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_sorter</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span>
         <span class="p">):</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">)</span> <span class="ow">and</span> <span class="n">spec</span><span class="o">.</span><span class="n">is_empty</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">Composite</span><span class="p">)</span> <span class="ow">and</span> <span class="n">spec</span><span class="o">.</span><span class="n">is_empty</span><span class="p">():</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_has_empty_input</span> <span class="o">=</span> <span class="kc">True</span>
                 <span class="k">del</span> <span class="n">full_action_spec</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
 
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">spec</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span>
             <span class="n">full_state_spec</span><span class="o">.</span><span class="n">items</span><span class="p">(</span><span class="kc">True</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_sorter</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span>
         <span class="p">):</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">)</span> <span class="ow">and</span> <span class="n">spec</span><span class="o">.</span><span class="n">is_empty</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">Composite</span><span class="p">)</span> <span class="ow">and</span> <span class="n">spec</span><span class="o">.</span><span class="n">is_empty</span><span class="p">():</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_has_empty_input</span> <span class="o">=</span> <span class="kc">True</span>
                 <span class="k">del</span> <span class="n">full_state_spec</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">input_spec</span></div>
@@ -8090,7 +8082,7 @@
                 <span class="n">full_action_spec</span><span class="o">.</span><span class="n">items</span><span class="p">(</span><span class="kc">True</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_sorter</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span>
             <span class="p">):</span>
                 <span class="k">if</span> <span class="p">(</span>
-                    <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">)</span>
+                    <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">Composite</span><span class="p">)</span>
                     <span class="ow">and</span> <span class="n">spec</span><span class="o">.</span><span class="n">is_empty</span><span class="p">()</span>
                     <span class="ow">and</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
                 <span class="p">):</span>
@@ -8100,7 +8092,7 @@
                 <span class="n">full_state_spec</span><span class="o">.</span><span class="n">items</span><span class="p">(</span><span class="kc">True</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_sorter</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span>
             <span class="p">):</span>
                 <span class="k">if</span> <span class="p">(</span>
-                    <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">CompositeSpec</span><span class="p">)</span>
+                    <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">Composite</span><span class="p">)</span>
                     <span class="ow">and</span> <span class="n">spec</span><span class="o">.</span><span class="n">is_empty</span><span class="p">()</span>
                     <span class="ow">and</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
                 <span class="p">):</span>
@@ -8268,9 +8260,9 @@
 <span class="sd">        ...     batch_locked = False</span>
 <span class="sd">        ...     def __init__(self):</span>
 <span class="sd">        ...         super().__init__()</span>
-<span class="sd">        ...         self.observation_spec = CompositeSpec(observation=UnboundedContinuousTensorSpec(3))</span>
-<span class="sd">        ...         self.reward_spec = UnboundedContinuousTensorSpec(1)</span>
-<span class="sd">        ...         self.action_spec = UnboundedContinuousTensorSpec(1)</span>
+<span class="sd">        ...         self.observation_spec = Composite(observation=Unbounded(3))</span>
+<span class="sd">        ...         self.reward_spec = Unbounded(1)</span>
+<span class="sd">        ...         self.action_spec = Unbounded(1)</span>
 <span class="sd">        ...</span>
 <span class="sd">        ...     def _reset(self, tensordict: TensorDictBase, **kwargs) -&gt; TensorDictBase:</span>
 <span class="sd">        ...         tensordict_batch_size = tensordict.batch_size if tensordict is not None else torch.Size([])</span>
@@ -8418,12 +8410,12 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">reshape_fn</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;meta&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">shape</span></div>
 
-<div class="viewcode-block" id="BatchSizeTransform.transform_output_spec"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.BatchSizeTransform.html#torchrl.envs.transforms.BatchSizeTransform.transform_output_spec">[docs]</a>    <span class="k">def</span> <span class="nf">transform_output_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_spec</span><span class="p">:</span> <span class="n">CompositeSpec</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CompositeSpec</span><span class="p">:</span>
+<div class="viewcode-block" id="BatchSizeTransform.transform_output_spec"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.BatchSizeTransform.html#torchrl.envs.transforms.BatchSizeTransform.transform_output_spec">[docs]</a>    <span class="k">def</span> <span class="nf">transform_output_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_spec</span><span class="p">:</span> <span class="n">Composite</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Composite</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">output_spec</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">reshape_fn</span><span class="p">(</span><span class="n">output_spec</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="BatchSizeTransform.transform_input_spec"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.BatchSizeTransform.html#torchrl.envs.transforms.BatchSizeTransform.transform_input_spec">[docs]</a>    <span class="k">def</span> <span class="nf">transform_input_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_spec</span><span class="p">:</span> <span class="n">CompositeSpec</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CompositeSpec</span><span class="p">:</span>
+<div class="viewcode-block" id="BatchSizeTransform.transform_input_spec"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.BatchSizeTransform.html#torchrl.envs.transforms.BatchSizeTransform.transform_input_spec">[docs]</a>    <span class="k">def</span> <span class="nf">transform_input_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_spec</span><span class="p">:</span> <span class="n">Composite</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Composite</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">input_spec</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">reshape_fn</span><span class="p">(</span><span class="n">input_spec</span><span class="p">)</span></div></div>
@@ -8882,7 +8874,7 @@
 <div class="viewcode-block" id="ActionDiscretizer.transform_input_spec"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.ActionDiscretizer.html#torchrl.envs.transforms.ActionDiscretizer.transform_input_spec">[docs]</a>    <span class="k">def</span> <span class="nf">transform_input_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_spec</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">action_spec</span> <span class="o">=</span> <span class="n">input_spec</span><span class="p">[</span><span class="s2">&quot;full_action_spec&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_keys_inv</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">action_spec</span><span class="p">,</span> <span class="n">BoundedTensorSpec</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">action_spec</span><span class="p">,</span> <span class="n">Bounded</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;action spec type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">action_spec</span><span class="p">)</span><span class="si">}</span><span class="s2"> is not supported.&quot;</span>
                 <span class="p">)</span>
@@ -8941,9 +8933,9 @@
                 <span class="p">]</span>
 
             <span class="bp">cls</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">MultiDiscreteTensorSpec</span><span class="p">,</span> <span class="n">remove_singleton</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">MultiCategorical</span><span class="p">,</span> <span class="n">remove_singleton</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">categorical</span>
-                <span class="k">else</span> <span class="n">MultiOneHotDiscreteTensorSpec</span>
+                <span class="k">else</span> <span class="n">MultiOneHot</span>
             <span class="p">)</span>
 
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">num_intervals</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>

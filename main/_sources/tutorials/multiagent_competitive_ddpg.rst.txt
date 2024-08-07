@@ -388,9 +388,9 @@ There are four specs to look at:
 
  .. code-block:: none
 
-    action_spec: CompositeSpec(
-        adversary: CompositeSpec(
-            action: BoundedTensorSpec(
+    action_spec: Composite(
+        adversary: Composite(
+            action: BoundedContinuous(
                 shape=torch.Size([10, 2, 2]),
                 space=ContinuousBox(
                     low=Tensor(shape=torch.Size([10, 2, 2]), device=cpu, dtype=torch.float32, contiguous=True),
@@ -400,8 +400,8 @@ There are four specs to look at:
                 domain=continuous),
             device=cpu,
             shape=torch.Size([10, 2])),
-        agent: CompositeSpec(
-            action: BoundedTensorSpec(
+        agent: Composite(
+            action: BoundedContinuous(
                 shape=torch.Size([10, 1, 2]),
                 space=ContinuousBox(
                     low=Tensor(shape=torch.Size([10, 1, 2]), device=cpu, dtype=torch.float32, contiguous=True),
@@ -413,20 +413,24 @@ There are four specs to look at:
             shape=torch.Size([10, 1])),
         device=cpu,
         shape=torch.Size([10]))
-    reward_spec: CompositeSpec(
-        adversary: CompositeSpec(
-            reward: UnboundedContinuousTensorSpec(
+    reward_spec: Composite(
+        adversary: Composite(
+            reward: UnboundedContinuous(
                 shape=torch.Size([10, 2, 1]),
-                space=None,
+                space=ContinuousBox(
+                    low=Tensor(shape=torch.Size([10, 2, 1]), device=cpu, dtype=torch.float32, contiguous=True),
+                    high=Tensor(shape=torch.Size([10, 2, 1]), device=cpu, dtype=torch.float32, contiguous=True)),
                 device=cpu,
                 dtype=torch.float32,
                 domain=continuous),
             device=cpu,
             shape=torch.Size([10, 2])),
-        agent: CompositeSpec(
-            reward: UnboundedContinuousTensorSpec(
+        agent: Composite(
+            reward: UnboundedContinuous(
                 shape=torch.Size([10, 1, 1]),
-                space=None,
+                space=ContinuousBox(
+                    low=Tensor(shape=torch.Size([10, 1, 1]), device=cpu, dtype=torch.float32, contiguous=True),
+                    high=Tensor(shape=torch.Size([10, 1, 1]), device=cpu, dtype=torch.float32, contiguous=True)),
                 device=cpu,
                 dtype=torch.float32,
                 domain=continuous),
@@ -434,35 +438,39 @@ There are four specs to look at:
             shape=torch.Size([10, 1])),
         device=cpu,
         shape=torch.Size([10]))
-    done_spec: CompositeSpec(
-        done: DiscreteTensorSpec(
+    done_spec: Composite(
+        done: Categorical(
             shape=torch.Size([10, 1]),
-            space=DiscreteBox(n=2),
+            space=CategoricalBox(n=2),
             device=cpu,
             dtype=torch.bool,
             domain=discrete),
-        terminated: DiscreteTensorSpec(
+        terminated: Categorical(
             shape=torch.Size([10, 1]),
-            space=DiscreteBox(n=2),
+            space=CategoricalBox(n=2),
             device=cpu,
             dtype=torch.bool,
             domain=discrete),
         device=cpu,
         shape=torch.Size([10]))
-    observation_spec: CompositeSpec(
-        adversary: CompositeSpec(
-            observation: UnboundedContinuousTensorSpec(
+    observation_spec: Composite(
+        adversary: Composite(
+            observation: UnboundedContinuous(
                 shape=torch.Size([10, 2, 14]),
-                space=None,
+                space=ContinuousBox(
+                    low=Tensor(shape=torch.Size([10, 2, 14]), device=cpu, dtype=torch.float32, contiguous=True),
+                    high=Tensor(shape=torch.Size([10, 2, 14]), device=cpu, dtype=torch.float32, contiguous=True)),
                 device=cpu,
                 dtype=torch.float32,
                 domain=continuous),
             device=cpu,
             shape=torch.Size([10, 2])),
-        agent: CompositeSpec(
-            observation: UnboundedContinuousTensorSpec(
+        agent: Composite(
+            observation: UnboundedContinuous(
                 shape=torch.Size([10, 1, 12]),
-                space=None,
+                space=ContinuousBox(
+                    low=Tensor(shape=torch.Size([10, 1, 12]), device=cpu, dtype=torch.float32, contiguous=True),
+                    high=Tensor(shape=torch.Size([10, 1, 12]), device=cpu, dtype=torch.float32, contiguous=True)),
                 device=cpu,
                 dtype=torch.float32,
                 domain=continuous),
@@ -1322,7 +1330,7 @@ The steps include:
 
  .. code-block:: none
 
-    episode_reward_mean_adversary = 0, episode_reward_mean_agent = 0:   0%|          | 0/10 [00:00<?, ?it/s]    episode_reward_mean_adversary = 1.0, episode_reward_mean_agent = -1.0:  10%|█         | 1/10 [00:02<00:25,  2.78s/it]    episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  20%|██        | 2/10 [00:05<00:22,  2.86s/it]     episode_reward_mean_adversary = 1.0, episode_reward_mean_agent = -1.0:  30%|███       | 3/10 [00:08<00:20,  2.89s/it]    episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  40%|████      | 4/10 [00:11<00:17,  2.90s/it]     episode_reward_mean_adversary = 2.0, episode_reward_mean_agent = -2.0:  50%|█████     | 5/10 [00:14<00:14,  2.90s/it]    episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  60%|██████    | 6/10 [00:17<00:11,  2.89s/it]     episode_reward_mean_adversary = 2.0, episode_reward_mean_agent = -2.0:  70%|███████   | 7/10 [00:19<00:07,  2.64s/it]    episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  80%|████████  | 8/10 [00:21<00:04,  2.48s/it]     episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  90%|█████████ | 9/10 [00:23<00:02,  2.36s/it]    episode_reward_mean_adversary = 1.0, episode_reward_mean_agent = -1.0: 100%|██████████| 10/10 [00:25<00:00,  2.27s/it]
+    episode_reward_mean_adversary = 0, episode_reward_mean_agent = 0:   0%|          | 0/10 [00:00<?, ?it/s]    episode_reward_mean_adversary = 1.0, episode_reward_mean_agent = -1.0:  10%|█         | 1/10 [00:02<00:24,  2.72s/it]    episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  20%|██        | 2/10 [00:05<00:22,  2.80s/it]     episode_reward_mean_adversary = 1.0, episode_reward_mean_agent = -1.0:  30%|███       | 3/10 [00:08<00:19,  2.83s/it]    episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  40%|████      | 4/10 [00:11<00:17,  2.84s/it]     episode_reward_mean_adversary = 2.0, episode_reward_mean_agent = -2.0:  50%|█████     | 5/10 [00:14<00:14,  2.84s/it]    episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  60%|██████    | 6/10 [00:16<00:11,  2.83s/it]     episode_reward_mean_adversary = 2.0, episode_reward_mean_agent = -2.0:  70%|███████   | 7/10 [00:19<00:07,  2.58s/it]    episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  80%|████████  | 8/10 [00:21<00:04,  2.42s/it]     episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  90%|█████████ | 9/10 [00:23<00:02,  2.31s/it]    episode_reward_mean_adversary = 1.0, episode_reward_mean_agent = -1.0: 100%|██████████| 10/10 [00:25<00:00,  2.22s/it]
 
 
 
@@ -1458,7 +1466,7 @@ Here are a few videos of some possible scenarios you can try in VMAS.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (1 minutes 31.585 seconds)
+   **Total running time of the script:** (1 minutes 28.703 seconds)
 
 **Estimated memory usage:**  320 MB
 

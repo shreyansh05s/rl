@@ -411,7 +411,7 @@
 <span class="kn">from</span> <span class="nn">tensordict.nn</span> <span class="kn">import</span> <span class="n">ProbabilisticTensorDictModule</span><span class="p">,</span> <span class="n">TensorDictParams</span>
 <span class="kn">from</span> <span class="nn">tensordict.utils</span> <span class="kn">import</span> <span class="n">is_seq_of_nested_key</span>
 <span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span>
-<span class="kn">from</span> <span class="nn">torchrl.data.tensor_specs</span> <span class="kn">import</span> <span class="n">CompositeSpec</span><span class="p">,</span> <span class="n">UnboundedContinuousTensorSpec</span>
+<span class="kn">from</span> <span class="nn">torchrl.data.tensor_specs</span> <span class="kn">import</span> <span class="n">Composite</span><span class="p">,</span> <span class="n">Unbounded</span>
 <span class="kn">from</span> <span class="nn">torchrl.envs.transforms.transforms</span> <span class="kn">import</span> <span class="n">Transform</span>
 <span class="kn">from</span> <span class="nn">torchrl.envs.transforms.utils</span> <span class="kn">import</span> <span class="n">_set_missing_tolerance</span><span class="p">,</span> <span class="n">_stateless_param</span>
 
@@ -588,7 +588,7 @@
 
     <span class="n">forward</span> <span class="o">=</span> <span class="n">_call</span>
 
-<div class="viewcode-block" id="KLRewardTransform.transform_output_spec"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.KLRewardTransform.html#torchrl.envs.transforms.KLRewardTransform.transform_output_spec">[docs]</a>    <span class="k">def</span> <span class="nf">transform_output_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_spec</span><span class="p">:</span> <span class="n">CompositeSpec</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CompositeSpec</span><span class="p">:</span>
+<div class="viewcode-block" id="KLRewardTransform.transform_output_spec"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.KLRewardTransform.html#torchrl.envs.transforms.KLRewardTransform.transform_output_spec">[docs]</a>    <span class="k">def</span> <span class="nf">transform_output_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_spec</span><span class="p">:</span> <span class="n">Composite</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Composite</span><span class="p">:</span>
         <span class="n">output_spec</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">transform_output_spec</span><span class="p">(</span><span class="n">output_spec</span><span class="p">)</span>
         <span class="c1"># todo: here we&#39;ll need to use the reward_key once it&#39;s implemented</span>
         <span class="c1"># parent = self.parent</span>
@@ -597,17 +597,17 @@
 
         <span class="k">if</span> <span class="n">in_key</span> <span class="o">==</span> <span class="s2">&quot;reward&quot;</span> <span class="ow">and</span> <span class="n">out_key</span> <span class="o">==</span> <span class="s2">&quot;reward&quot;</span><span class="p">:</span>
             <span class="n">parent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span>
-            <span class="n">reward_spec</span> <span class="o">=</span> <span class="n">UnboundedContinuousTensorSpec</span><span class="p">(</span>
+            <span class="n">reward_spec</span> <span class="o">=</span> <span class="n">Unbounded</span><span class="p">(</span>
                 <span class="n">device</span><span class="o">=</span><span class="n">output_spec</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
                 <span class="n">shape</span><span class="o">=</span><span class="n">output_spec</span><span class="p">[</span><span class="s2">&quot;full_reward_spec&quot;</span><span class="p">][</span><span class="n">parent</span><span class="o">.</span><span class="n">reward_key</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
             <span class="p">)</span>
-            <span class="n">output_spec</span><span class="p">[</span><span class="s2">&quot;full_reward_spec&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">(</span>
+            <span class="n">output_spec</span><span class="p">[</span><span class="s2">&quot;full_reward_spec&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">(</span>
                 <span class="p">{</span><span class="n">parent</span><span class="o">.</span><span class="n">reward_key</span><span class="p">:</span> <span class="n">reward_spec</span><span class="p">},</span>
                 <span class="n">shape</span><span class="o">=</span><span class="n">output_spec</span><span class="p">[</span><span class="s2">&quot;full_reward_spec&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="k">elif</span> <span class="n">in_key</span> <span class="o">==</span> <span class="s2">&quot;reward&quot;</span><span class="p">:</span>
             <span class="n">parent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span>
-            <span class="n">reward_spec</span> <span class="o">=</span> <span class="n">UnboundedContinuousTensorSpec</span><span class="p">(</span>
+            <span class="n">reward_spec</span> <span class="o">=</span> <span class="n">Unbounded</span><span class="p">(</span>
                 <span class="n">device</span><span class="o">=</span><span class="n">output_spec</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
                 <span class="n">shape</span><span class="o">=</span><span class="n">output_spec</span><span class="p">[</span><span class="s2">&quot;full_reward_spec&quot;</span><span class="p">][</span><span class="n">parent</span><span class="o">.</span><span class="n">reward_key</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
             <span class="p">)</span>
@@ -616,7 +616,7 @@
             <span class="n">observation_spec</span><span class="p">[</span><span class="n">out_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">reward_spec</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">observation_spec</span> <span class="o">=</span> <span class="n">output_spec</span><span class="p">[</span><span class="s2">&quot;full_observation_spec&quot;</span><span class="p">]</span>
-            <span class="n">reward_spec</span> <span class="o">=</span> <span class="n">UnboundedContinuousTensorSpec</span><span class="p">(</span>
+            <span class="n">reward_spec</span> <span class="o">=</span> <span class="n">Unbounded</span><span class="p">(</span>
                 <span class="n">device</span><span class="o">=</span><span class="n">output_spec</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">observation_spec</span><span class="p">[</span><span class="n">in_key</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span>
             <span class="p">)</span>
             <span class="c1"># then we need to populate the output keys</span>

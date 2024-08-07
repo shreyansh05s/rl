@@ -421,9 +421,9 @@
 <li><p><strong>qvalue_network</strong> (<em>TensorDictModule</em>) – a single Q-value network that will be multiplicated as many times as needed.</p></li>
 <li><p><strong>action_space</strong> (<em>str</em><em> or </em><a class="reference internal" href="torchrl.data.TensorSpec.html#torchrl.data.TensorSpec" title="torchrl.data.TensorSpec"><em>TensorSpec</em></a>) – Action space. Must be one of
 <code class="docutils literal notranslate"><span class="pre">&quot;one-hot&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;mult_one_hot&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;binary&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;categorical&quot;</span></code>,
-or an instance of the corresponding specs (<a class="reference internal" href="torchrl.data.OneHotDiscreteTensorSpec.html#torchrl.data.OneHotDiscreteTensorSpec" title="torchrl.data.OneHotDiscreteTensorSpec"><code class="xref py py-class docutils literal notranslate"><span class="pre">torchrl.data.OneHotDiscreteTensorSpec</span></code></a>,
-<a class="reference internal" href="torchrl.data.MultiOneHotDiscreteTensorSpec.html#torchrl.data.MultiOneHotDiscreteTensorSpec" title="torchrl.data.MultiOneHotDiscreteTensorSpec"><code class="xref py py-class docutils literal notranslate"><span class="pre">torchrl.data.MultiOneHotDiscreteTensorSpec</span></code></a>,
-<a class="reference internal" href="torchrl.data.BinaryDiscreteTensorSpec.html#torchrl.data.BinaryDiscreteTensorSpec" title="torchrl.data.BinaryDiscreteTensorSpec"><code class="xref py py-class docutils literal notranslate"><span class="pre">torchrl.data.BinaryDiscreteTensorSpec</span></code></a> or <a class="reference internal" href="torchrl.data.DiscreteTensorSpec.html#torchrl.data.DiscreteTensorSpec" title="torchrl.data.DiscreteTensorSpec"><code class="xref py py-class docutils literal notranslate"><span class="pre">torchrl.data.DiscreteTensorSpec</span></code></a>).</p></li>
+or an instance of the corresponding specs (<code class="xref py py-class docutils literal notranslate"><span class="pre">torchrl.data.OneHot</span></code>,
+<a class="reference internal" href="torchrl.data.MultiOneHot.html#torchrl.data.MultiOneHot" title="torchrl.data.MultiOneHot"><code class="xref py py-class docutils literal notranslate"><span class="pre">torchrl.data.MultiOneHot</span></code></a>,
+<a class="reference internal" href="torchrl.data.Binary.html#torchrl.data.Binary" title="torchrl.data.Binary"><code class="xref py py-class docutils literal notranslate"><span class="pre">torchrl.data.Binary</span></code></a> or <a class="reference internal" href="torchrl.data.Categorical.html#torchrl.data.Categorical" title="torchrl.data.Categorical"><code class="xref py py-class docutils literal notranslate"><span class="pre">torchrl.data.Categorical</span></code></a>).</p></li>
 <li><p><strong>num_actions</strong> (<em>int</em><em>, </em><em>optional</em>) – number of actions in the action space.
 To be provided if target_entropy is set to “auto”.</p></li>
 <li><p><strong>num_qvalue_nets</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of Q-value networks to be trained. Default is 2.</p></li>
@@ -457,7 +457,7 @@ elements in the output, <code class="docutils literal notranslate"><span class="
 <p>Examples:
 &gt;&gt;&gt; import torch
 &gt;&gt;&gt; from torch import nn
-&gt;&gt;&gt; from torchrl.data.tensor_specs import OneHotDiscreteTensorSpec
+&gt;&gt;&gt; from torchrl.data.tensor_specs import OneHot
 &gt;&gt;&gt; from torchrl.modules.distributions import NormalParamExtractor, OneHotCategorical
 &gt;&gt;&gt; from torchrl.modules.tensordict_module.actors import ProbabilisticActor, ValueOperator
 &gt;&gt;&gt; from torchrl.modules.tensordict_module.common import SafeModule
@@ -465,7 +465,7 @@ elements in the output, <code class="docutils literal notranslate"><span class="
 &gt;&gt;&gt; from tensordict import TensorDict
 &gt;&gt;&gt; from tensordict.nn import TensorDictModule
 &gt;&gt;&gt; n_act, n_obs = 4, 3
-&gt;&gt;&gt; spec = OneHotDiscreteTensorSpec(n_act)
+&gt;&gt;&gt; spec = OneHot(n_act)
 &gt;&gt;&gt; module = TensorDictModule(nn.Linear(n_obs, n_act), in_keys=[“observation”], out_keys=[“logits”])
 &gt;&gt;&gt; actor = ProbabilisticActor(
 …     module=module,
@@ -515,13 +515,13 @@ The return value is a tuple of tensors in the following order:
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">torch</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.data.tensor_specs</span> <span class="kn">import</span> <span class="n">OneHotDiscreteTensorSpec</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.data.tensor_specs</span> <span class="kn">import</span> <span class="n">OneHot</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.modules.distributions</span> <span class="kn">import</span> <span class="n">NormalParamExtractor</span><span class="p">,</span> <span class="n">OneHotCategorical</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.modules.tensordict_module.actors</span> <span class="kn">import</span> <span class="n">ProbabilisticActor</span><span class="p">,</span> <span class="n">ValueOperator</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.modules.tensordict_module.common</span> <span class="kn">import</span> <span class="n">SafeModule</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.objectives.sac</span> <span class="kn">import</span> <span class="n">DiscreteSACLoss</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">n_act</span><span class="p">,</span> <span class="n">n_obs</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">spec</span> <span class="o">=</span> <span class="n">OneHotDiscreteTensorSpec</span><span class="p">(</span><span class="n">n_act</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">spec</span> <span class="o">=</span> <span class="n">OneHot</span><span class="p">(</span><span class="n">n_act</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">net</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">n_obs</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">n_act</span><span class="p">),</span> <span class="n">NormalParamExtractor</span><span class="p">())</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">module</span> <span class="o">=</span> <span class="n">SafeModule</span><span class="p">(</span><span class="n">net</span><span class="p">,</span> <span class="n">in_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;observation&quot;</span><span class="p">],</span> <span class="n">out_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;logits&quot;</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">actor</span> <span class="o">=</span> <span class="n">ProbabilisticActor</span><span class="p">(</span>

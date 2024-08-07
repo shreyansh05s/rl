@@ -411,12 +411,7 @@
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">from</span> <span class="nn">tensordict</span> <span class="kn">import</span> <span class="n">TensorDict</span><span class="p">,</span> <span class="n">TensorDictBase</span>
 
-<span class="kn">from</span> <span class="nn">torchrl.data.tensor_specs</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">CompositeSpec</span><span class="p">,</span>
-    <span class="n">DiscreteTensorSpec</span><span class="p">,</span>
-    <span class="n">UnboundedContinuousTensorSpec</span><span class="p">,</span>
-    <span class="n">UnboundedDiscreteTensorSpec</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">torchrl.data.tensor_specs</span> <span class="kn">import</span> <span class="n">Categorical</span><span class="p">,</span> <span class="n">Composite</span><span class="p">,</span> <span class="n">Unbounded</span>
 <span class="kn">from</span> <span class="nn">torchrl.envs.common</span> <span class="kn">import</span> <span class="n">EnvBase</span>
 
 
@@ -441,28 +436,28 @@
 <span class="sd">    output entry).</span>
 
 <span class="sd">    Specs:</span>
-<span class="sd">        CompositeSpec(</span>
-<span class="sd">            output_spec: CompositeSpec(</span>
-<span class="sd">                full_observation_spec: CompositeSpec(</span>
-<span class="sd">                    board: DiscreteTensorSpec(</span>
+<span class="sd">        Composite(</span>
+<span class="sd">            output_spec: Composite(</span>
+<span class="sd">                full_observation_spec: Composite(</span>
+<span class="sd">                    board: Categorical(</span>
 <span class="sd">                        shape=torch.Size([3, 3]),</span>
 <span class="sd">                        space=DiscreteBox(n=2),</span>
 <span class="sd">                        dtype=torch.int32,</span>
 <span class="sd">                        domain=discrete),</span>
-<span class="sd">                    turn: DiscreteTensorSpec(</span>
+<span class="sd">                    turn: Categorical(</span>
 <span class="sd">                        shape=torch.Size([1]),</span>
 <span class="sd">                        space=DiscreteBox(n=2),</span>
 <span class="sd">                        dtype=torch.int32,</span>
 <span class="sd">                        domain=discrete),</span>
-<span class="sd">                    mask: DiscreteTensorSpec(</span>
+<span class="sd">                    mask: Categorical(</span>
 <span class="sd">                        shape=torch.Size([9]),</span>
 <span class="sd">                        space=DiscreteBox(n=2),</span>
 <span class="sd">                        dtype=torch.bool,</span>
 <span class="sd">                        domain=discrete),</span>
 <span class="sd">                    shape=torch.Size([])),</span>
-<span class="sd">                full_reward_spec: CompositeSpec(</span>
-<span class="sd">                    player0: CompositeSpec(</span>
-<span class="sd">                        reward: UnboundedContinuousTensorSpec(</span>
+<span class="sd">                full_reward_spec: Composite(</span>
+<span class="sd">                    player0: Composite(</span>
+<span class="sd">                        reward: UnboundedContinuous(</span>
 <span class="sd">                            shape=torch.Size([1]),</span>
 <span class="sd">                            space=ContinuousBox(</span>
 <span class="sd">                                low=Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, contiguous=True),</span>
@@ -470,8 +465,8 @@
 <span class="sd">                            dtype=torch.float32,</span>
 <span class="sd">                            domain=continuous),</span>
 <span class="sd">                        shape=torch.Size([])),</span>
-<span class="sd">                    player1: CompositeSpec(</span>
-<span class="sd">                        reward: UnboundedContinuousTensorSpec(</span>
+<span class="sd">                    player1: Composite(</span>
+<span class="sd">                        reward: UnboundedContinuous(</span>
 <span class="sd">                            shape=torch.Size([1]),</span>
 <span class="sd">                            space=ContinuousBox(</span>
 <span class="sd">                                low=Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, contiguous=True),</span>
@@ -480,43 +475,43 @@
 <span class="sd">                            domain=continuous),</span>
 <span class="sd">                        shape=torch.Size([])),</span>
 <span class="sd">                    shape=torch.Size([])),</span>
-<span class="sd">                full_done_spec: CompositeSpec(</span>
-<span class="sd">                    done: DiscreteTensorSpec(</span>
+<span class="sd">                full_done_spec: Composite(</span>
+<span class="sd">                    done: Categorical(</span>
 <span class="sd">                        shape=torch.Size([1]),</span>
 <span class="sd">                        space=DiscreteBox(n=2),</span>
 <span class="sd">                        dtype=torch.bool,</span>
 <span class="sd">                        domain=discrete),</span>
-<span class="sd">                    terminated: DiscreteTensorSpec(</span>
+<span class="sd">                    terminated: Categorical(</span>
 <span class="sd">                        shape=torch.Size([1]),</span>
 <span class="sd">                        space=DiscreteBox(n=2),</span>
 <span class="sd">                        dtype=torch.bool,</span>
 <span class="sd">                        domain=discrete),</span>
-<span class="sd">                    truncated: DiscreteTensorSpec(</span>
+<span class="sd">                    truncated: Categorical(</span>
 <span class="sd">                        shape=torch.Size([1]),</span>
 <span class="sd">                        space=DiscreteBox(n=2),</span>
 <span class="sd">                        dtype=torch.bool,</span>
 <span class="sd">                        domain=discrete),</span>
 <span class="sd">                    shape=torch.Size([])),</span>
 <span class="sd">                shape=torch.Size([])),</span>
-<span class="sd">            input_spec: CompositeSpec(</span>
-<span class="sd">                full_state_spec: CompositeSpec(</span>
-<span class="sd">                    board: DiscreteTensorSpec(</span>
+<span class="sd">            input_spec: Composite(</span>
+<span class="sd">                full_state_spec: Composite(</span>
+<span class="sd">                    board: Categorical(</span>
 <span class="sd">                        shape=torch.Size([3, 3]),</span>
 <span class="sd">                        space=DiscreteBox(n=2),</span>
 <span class="sd">                        dtype=torch.int32,</span>
 <span class="sd">                        domain=discrete),</span>
-<span class="sd">                    turn: DiscreteTensorSpec(</span>
+<span class="sd">                    turn: Categorical(</span>
 <span class="sd">                        shape=torch.Size([1]),</span>
 <span class="sd">                        space=DiscreteBox(n=2),</span>
 <span class="sd">                        dtype=torch.int32,</span>
 <span class="sd">                        domain=discrete),</span>
-<span class="sd">                    mask: DiscreteTensorSpec(</span>
+<span class="sd">                    mask: Categorical(</span>
 <span class="sd">                        shape=torch.Size([9]),</span>
 <span class="sd">                        space=DiscreteBox(n=2),</span>
 <span class="sd">                        dtype=torch.bool,</span>
 <span class="sd">                        domain=discrete), shape=torch.Size([])),</span>
-<span class="sd">                full_action_spec: CompositeSpec(</span>
-<span class="sd">                    action: DiscreteTensorSpec(</span>
+<span class="sd">                full_action_spec: Composite(</span>
+<span class="sd">                    action: Categorical(</span>
 <span class="sd">                        shape=torch.Size([1]),</span>
 <span class="sd">                        space=DiscreteBox(n=9),</span>
 <span class="sd">                        dtype=torch.int64,</span>
@@ -574,23 +569,21 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">single_player</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">single_player</span> <span class="o">=</span> <span class="n">single_player</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">action_spec</span><span class="p">:</span> <span class="n">UnboundedDiscreteTensorSpec</span> <span class="o">=</span> <span class="n">DiscreteTensorSpec</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">action_spec</span><span class="p">:</span> <span class="n">Unbounded</span> <span class="o">=</span> <span class="n">Categorical</span><span class="p">(</span>
             <span class="n">n</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span>
             <span class="n">shape</span><span class="o">=</span><span class="p">(),</span>
             <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
         <span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">full_observation_spec</span><span class="p">:</span> <span class="n">CompositeSpec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">(</span>
-            <span class="n">board</span><span class="o">=</span><span class="n">UnboundedContinuousTensorSpec</span><span class="p">(</span>
-                <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">int</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span>
-            <span class="p">),</span>
-            <span class="n">turn</span><span class="o">=</span><span class="n">DiscreteTensorSpec</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">full_observation_spec</span><span class="p">:</span> <span class="n">Composite</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">(</span>
+            <span class="n">board</span><span class="o">=</span><span class="n">Unbounded</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">int</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">),</span>
+            <span class="n">turn</span><span class="o">=</span><span class="n">Categorical</span><span class="p">(</span>
                 <span class="mi">2</span><span class="p">,</span>
                 <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,),</span>
                 <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">int</span><span class="p">,</span>
                 <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
             <span class="p">),</span>
-            <span class="n">mask</span><span class="o">=</span><span class="n">DiscreteTensorSpec</span><span class="p">(</span>
+            <span class="n">mask</span><span class="o">=</span><span class="n">Categorical</span><span class="p">(</span>
                 <span class="mi">2</span><span class="p">,</span>
                 <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,),</span>
                 <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">,</span>
@@ -598,22 +591,18 @@
             <span class="p">),</span>
             <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">state_spec</span><span class="p">:</span> <span class="n">CompositeSpec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">observation_spec</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state_spec</span><span class="p">:</span> <span class="n">Composite</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">observation_spec</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">reward_spec</span><span class="p">:</span> <span class="n">UnboundedContinuousTensorSpec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reward_spec</span><span class="p">:</span> <span class="n">Unbounded</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">(</span>
             <span class="p">{</span>
-                <span class="p">(</span><span class="s2">&quot;player0&quot;</span><span class="p">,</span> <span class="s2">&quot;reward&quot;</span><span class="p">):</span> <span class="n">UnboundedContinuousTensorSpec</span><span class="p">(</span>
-                    <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,),</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span>
-                <span class="p">),</span>
-                <span class="p">(</span><span class="s2">&quot;player1&quot;</span><span class="p">,</span> <span class="s2">&quot;reward&quot;</span><span class="p">):</span> <span class="n">UnboundedContinuousTensorSpec</span><span class="p">(</span>
-                    <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,),</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span>
-                <span class="p">),</span>
+                <span class="p">(</span><span class="s2">&quot;player0&quot;</span><span class="p">,</span> <span class="s2">&quot;reward&quot;</span><span class="p">):</span> <span class="n">Unbounded</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,),</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">&quot;player1&quot;</span><span class="p">,</span> <span class="s2">&quot;reward&quot;</span><span class="p">):</span> <span class="n">Unbounded</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,),</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">),</span>
             <span class="p">},</span>
             <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
         <span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">full_done_spec</span><span class="p">:</span> <span class="n">DiscreteTensorSpec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">(</span>
-            <span class="n">done</span><span class="o">=</span><span class="n">DiscreteTensorSpec</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">),</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">full_done_spec</span><span class="p">:</span> <span class="n">Categorical</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">(</span>
+            <span class="n">done</span><span class="o">=</span><span class="n">Categorical</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">),</span>
             <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">full_done_spec</span><span class="p">[</span><span class="s2">&quot;terminated&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">full_done_spec</span><span class="p">[</span><span class="s2">&quot;done&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>

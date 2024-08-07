@@ -429,18 +429,18 @@
 <span class="sd">    Example:</span>
 <span class="sd">        &gt;&gt;&gt; import torch</span>
 <span class="sd">        &gt;&gt;&gt; from tensordict import TensorDict</span>
-<span class="sd">        &gt;&gt;&gt; from torchrl.data import CompositeSpec, UnboundedContinuousTensorSpec</span>
+<span class="sd">        &gt;&gt;&gt; from torchrl.data import Composite, Unbounded</span>
 <span class="sd">        &gt;&gt;&gt; class MyMBEnv(ModelBasedEnvBase):</span>
 <span class="sd">        ...     def __init__(self, world_model, device=&quot;cpu&quot;, dtype=None, batch_size=None):</span>
 <span class="sd">        ...         super().__init__(world_model, device=device, dtype=dtype, batch_size=batch_size)</span>
-<span class="sd">        ...         self.observation_spec = CompositeSpec(</span>
-<span class="sd">        ...             hidden_observation=UnboundedContinuousTensorSpec((4,))</span>
+<span class="sd">        ...         self.observation_spec = Composite(</span>
+<span class="sd">        ...             hidden_observation=Unbounded((4,))</span>
 <span class="sd">        ...         )</span>
-<span class="sd">        ...         self.state_spec = CompositeSpec(</span>
-<span class="sd">        ...             hidden_observation=UnboundedContinuousTensorSpec((4,)),</span>
+<span class="sd">        ...         self.state_spec = Composite(</span>
+<span class="sd">        ...             hidden_observation=Unbounded((4,)),</span>
 <span class="sd">        ...         )</span>
-<span class="sd">        ...         self.action_spec = UnboundedContinuousTensorSpec((1,))</span>
-<span class="sd">        ...         self.reward_spec = UnboundedContinuousTensorSpec((1,))</span>
+<span class="sd">        ...         self.action_spec = Unbounded((1,))</span>
+<span class="sd">        ...         self.reward_spec = Unbounded((1,))</span>
 <span class="sd">        ...</span>
 <span class="sd">        ...     def _reset(self, tensordict: TensorDict) -&gt; TensorDict:</span>
 <span class="sd">        ...         tensordict = TensorDict({},</span>
@@ -486,10 +486,10 @@
 
 
 <span class="sd">    Properties:</span>
-<span class="sd">        - observation_spec (CompositeSpec): sampling spec of the observations;</span>
+<span class="sd">        - observation_spec (Composite): sampling spec of the observations;</span>
 <span class="sd">        - action_spec (TensorSpec): sampling spec of the actions;</span>
 <span class="sd">        - reward_spec (TensorSpec): sampling spec of the rewards;</span>
-<span class="sd">        - input_spec (CompositeSpec): sampling spec of the inputs;</span>
+<span class="sd">        - input_spec (Composite): sampling spec of the inputs;</span>
 <span class="sd">        - batch_size (torch.Size): batch_size to be used by the env. If not set, the env accept tensordicts of all batch sizes.</span>
 <span class="sd">        - device (torch.device): device where the env input and output are expected to live</span>
 

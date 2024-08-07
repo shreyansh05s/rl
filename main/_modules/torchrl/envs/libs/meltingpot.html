@@ -414,7 +414,7 @@
 
 <span class="kn">from</span> <span class="nn">tensordict</span> <span class="kn">import</span> <span class="n">TensorDict</span><span class="p">,</span> <span class="n">TensorDictBase</span>
 
-<span class="kn">from</span> <span class="nn">torchrl.data</span> <span class="kn">import</span> <span class="n">CompositeSpec</span><span class="p">,</span> <span class="n">DiscreteTensorSpec</span><span class="p">,</span> <span class="n">TensorSpec</span>
+<span class="kn">from</span> <span class="nn">torchrl.data</span> <span class="kn">import</span> <span class="n">Categorical</span><span class="p">,</span> <span class="n">Composite</span><span class="p">,</span> <span class="n">TensorSpec</span>
 <span class="kn">from</span> <span class="nn">torchrl.envs.common</span> <span class="kn">import</span> <span class="n">_EnvWrapper</span>
 <span class="kn">from</span> <span class="nn">torchrl.envs.libs.dm_control</span> <span class="kn">import</span> <span class="n">_dmcontrol_to_torchrl_spec_transform</span>
 <span class="kn">from</span> <span class="nn">torchrl.envs.utils</span> <span class="kn">import</span> <span class="n">_classproperty</span><span class="p">,</span> <span class="n">check_marl_grouping</span><span class="p">,</span> <span class="n">MarlGroupMapType</span>
@@ -648,9 +648,9 @@
         <span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_make_group_map</span><span class="p">()</span>
 
-        <span class="n">action_spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">()</span>
-        <span class="n">observation_spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">()</span>
-        <span class="n">reward_spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">()</span>
+        <span class="n">action_spec</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">()</span>
+        <span class="n">observation_spec</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">()</span>
+        <span class="n">reward_spec</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">()</span>
 
         <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">group_map</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="p">(</span>
@@ -668,11 +668,9 @@
             <span class="n">reward_spec</span><span class="p">[</span><span class="n">group</span><span class="p">]</span> <span class="o">=</span> <span class="n">group_reward_spec</span>
 
         <span class="n">observation_spec</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">torchrl_state_spec</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">done_spec</span> <span class="o">=</span> <span class="n">CompositeSpec</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">done_spec</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">(</span>
             <span class="p">{</span>
-                <span class="s2">&quot;done&quot;</span><span class="p">:</span> <span class="n">DiscreteTensorSpec</span><span class="p">(</span>
-                    <span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">((</span><span class="mi">1</span><span class="p">,)),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span>
-                <span class="p">),</span>
+                <span class="s2">&quot;done&quot;</span><span class="p">:</span> <span class="n">Categorical</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">((</span><span class="mi">1</span><span class="p">,)),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">),</span>
             <span class="p">},</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">action_spec</span> <span class="o">=</span> <span class="n">action_spec</span>
@@ -694,7 +692,7 @@
         <span class="k">for</span> <span class="n">agent_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">group_map</span><span class="p">[</span><span class="n">group</span><span class="p">]:</span>
             <span class="n">agent_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent_names_to_indices_map</span><span class="p">[</span><span class="n">agent_name</span><span class="p">]</span>
             <span class="n">action_specs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                <span class="n">CompositeSpec</span><span class="p">(</span>
+                <span class="n">Composite</span><span class="p">(</span>
                     <span class="p">{</span>
                         <span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="n">torchrl_agent_act_specs</span><span class="p">[</span>
                             <span class="n">agent_index</span>
@@ -703,7 +701,7 @@
                 <span class="p">)</span>
             <span class="p">)</span>
             <span class="n">observation_specs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                <span class="n">CompositeSpec</span><span class="p">(</span>
+                <span class="n">Composite</span><span class="p">(</span>
                     <span class="p">{</span>
                         <span class="s2">&quot;observation&quot;</span><span class="p">:</span> <span class="n">torchrl_agent_obs_specs</span><span class="p">[</span>
                             <span class="n">agent_index</span>
@@ -712,7 +710,7 @@
                 <span class="p">)</span>
             <span class="p">)</span>
             <span class="n">reward_specs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                <span class="n">CompositeSpec</span><span class="p">({</span><span class="s2">&quot;reward&quot;</span><span class="p">:</span> <span class="n">torchrl_rew_spec</span><span class="p">[</span><span class="n">agent_index</span><span class="p">]})</span>  <span class="c1"># shape = (1,)</span>
+                <span class="n">Composite</span><span class="p">({</span><span class="s2">&quot;reward&quot;</span><span class="p">:</span> <span class="n">torchrl_rew_spec</span><span class="p">[</span><span class="n">agent_index</span><span class="p">]})</span>  <span class="c1"># shape = (1,)</span>
             <span class="p">)</span>
 
         <span class="c1"># Create multi-agent specs</span>
