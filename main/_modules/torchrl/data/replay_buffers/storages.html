@@ -456,6 +456,7 @@
     <span class="n">ndim</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="n">max_size</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">_default_checkpointer</span><span class="p">:</span> <span class="n">StorageCheckpointerBase</span> <span class="o">=</span> <span class="n">StorageCheckpointerBase</span>
+    <span class="n">_rng</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Generator</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">max_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">checkpointer</span><span class="p">:</span> <span class="n">StorageCheckpointerBase</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
@@ -544,7 +545,7 @@
     <span class="k">def</span> <span class="nf">_rand_given_ndim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">):</span>
         <span class="c1"># a method to return random indices given the storage ndim</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="p">(</span><span class="n">batch_size</span><span class="p">,))</span>
+            <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="p">(</span><span class="n">batch_size</span><span class="p">,),</span> <span class="n">generator</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_rng</span><span class="p">)</span>
         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;Random number generation is not implemented for storage of type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s2"> with ndim </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="si">}</span><span class="s2">. &quot;</span>
             <span class="sa">f</span><span class="s2">&quot;Please report this exception as well as the use case (incl. buffer construction) on github.&quot;</span>
@@ -585,7 +586,12 @@
 
 <div class="viewcode-block" id="Storage.load"><a class="viewcode-back" href="../../../../reference/generated/torchrl.data.replay_buffers.Storage.html#torchrl.data.replay_buffers.Storage.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Alias for :meth:`~.loads`.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
+        <span class="n">state</span><span class="p">[</span><span class="s2">&quot;_rng&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">state</span></div>
 
 
 <div class="viewcode-block" id="ListStorage"><a class="viewcode-back" href="../../../../reference/generated/torchrl.data.replay_buffers.ListStorage.html#torchrl.data.replay_buffers.ListStorage">[docs]</a><span class="k">class</span> <span class="nc">ListStorage</span><span class="p">(</span><span class="n">Storage</span><span class="p">):</span>
@@ -701,7 +707,7 @@
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;Cannot share a storage of type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s2"> between processes.&quot;</span>
             <span class="p">)</span>
-        <span class="n">state</span> <span class="o">=</span> <span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__getstate__</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">state</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -899,7 +905,9 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_rand_given_ndim</span><span class="p">(</span><span class="n">batch_size</span><span class="p">)</span>
         <span class="n">shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span>
-        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="n">_dim</span><span class="p">,</span> <span class="p">(</span><span class="n">batch_size</span><span class="p">,))</span> <span class="k">for</span> <span class="n">_dim</span> <span class="ow">in</span> <span class="n">shape</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="n">_dim</span><span class="p">,</span> <span class="p">(</span><span class="n">batch_size</span><span class="p">,),</span> <span class="n">generator</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_rng</span><span class="p">)</span> <span class="k">for</span> <span class="n">_dim</span> <span class="ow">in</span> <span class="n">shape</span>
+        <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">flatten</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -924,7 +932,7 @@
         <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">state</span> <span class="o">=</span> <span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__getstate__</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">get_spawning_popen</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_len</span>
             <span class="k">del</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;_len_value&quot;</span><span class="p">]</span>
@@ -1544,12 +1552,23 @@
         <span class="o">*</span><span class="n">storages</span><span class="p">:</span> <span class="n">Storage</span><span class="p">,</span>
         <span class="n">transforms</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="s2">&quot;Transform&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># noqa: F821</span>
     <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rng_private</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_storages</span> <span class="o">=</span> <span class="n">storages</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_transforms</span> <span class="o">=</span> <span class="n">transforms</span>
         <span class="k">if</span> <span class="n">transforms</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">transforms</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">storages</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
                 <span class="s2">&quot;transforms must have the same length as the storages &quot;</span> <span class="s2">&quot;provided.&quot;</span>
             <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">_rng</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rng_private</span>
+
+    <span class="nd">@_rng</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">_rng</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rng_private</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">for</span> <span class="n">storage</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_storages</span><span class="p">:</span>
+            <span class="n">storage</span><span class="o">.</span><span class="n">_rng</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">_attached_entities</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

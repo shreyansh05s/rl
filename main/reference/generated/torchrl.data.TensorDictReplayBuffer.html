@@ -483,6 +483,16 @@ and <a class="reference internal" href="#torchrl.data.TensorDictReplayBuffer.ext
 </div>
 </div>
 </p></li>
+<li><p><strong>generator</strong> (<a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.Generator.html#torch.Generator" title="(in PyTorch v2.4)"><em>torch.Generator</em></a><em>, </em><em>optional</em>) – <p>a generator to use for sampling.
+Using a dedicated generator for the replay buffer can allow a fine-grained control
+over seeding, for instance keeping the global seed different but the RB seed identical
+for distributed jobs.
+Defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code> (global default generator).</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>As of now, the generator has no effect on the transforms.</p>
+</div>
+</p></li>
 </ul>
 </dd>
 </dl>

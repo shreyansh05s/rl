@@ -448,6 +448,9 @@
     <span class="c1"># need to keep track of the number of remaining batches</span>
     <span class="n">_remaining_batches</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">iinfo</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">)</span>
 
+    <span class="c1"># The RNG is set by the replay buffer</span>
+    <span class="n">_rng</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Generator</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">storage</span><span class="p">:</span> <span class="n">Storage</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]:</span>
         <span class="o">...</span>
@@ -505,7 +508,12 @@
         <span class="o">...</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">()&quot;</span></div>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">()&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
+        <span class="n">state</span><span class="p">[</span><span class="s2">&quot;_rng&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">state</span></div>
 
 
 <div class="viewcode-block" id="RandomSampler"><a class="viewcode-back" href="../../../../reference/generated/torchrl.data.replay_buffers.RandomSampler.html#torchrl.data.replay_buffers.RandomSampler">[docs]</a><span class="k">class</span> <span class="nc">RandomSampler</span><span class="p">(</span><span class="n">Sampler</span><span class="p">):</span>
@@ -594,7 +602,9 @@
             <span class="n">device</span> <span class="o">=</span> <span class="n">storage</span><span class="o">.</span><span class="n">device</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">storage</span><span class="p">,</span> <span class="s2">&quot;device&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">shuffle</span><span class="p">:</span>
-            <span class="n">_sample_list</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randperm</span><span class="p">(</span><span class="n">len_storage</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+            <span class="n">_sample_list</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randperm</span><span class="p">(</span>
+                <span class="n">len_storage</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">generator</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_rng</span>
+            <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">_sample_list</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">len_storage</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_sample_list</span> <span class="o">=</span> <span class="n">_sample_list</span>
@@ -792,8 +802,7 @@
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;Samplers of type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s2"> cannot be shared between processes.&quot;</span>
             <span class="p">)</span>
-        <span class="n">state</span> <span class="o">=</span> <span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">state</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__getstate__</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">in</span> <span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">float</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">FloatType</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">):</span>
@@ -875,7 +884,11 @@
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;non-positive p_min&quot;</span><span class="p">)</span>
         <span class="c1"># For some undefined reason, only np.random works here.</span>
         <span class="c1"># All PT attempts fail, even when subsequently transformed into numpy</span>
-        <span class="n">mass</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">p_sum</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rng</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">mass</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">p_sum</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">mass</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">generator</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_rng</span><span class="p">)</span> <span class="o">*</span> <span class="n">p_sum</span>
+
         <span class="c1"># mass = torch.zeros(batch_size, dtype=torch.double).uniform_(0.0, p_sum)</span>
         <span class="c1"># mass = torch.rand(batch_size).mul_(p_sum)</span>
         <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sum_tree</span><span class="o">.</span><span class="n">scan_lower_bound</span><span class="p">(</span><span class="n">mass</span><span class="p">)</span>
@@ -1331,7 +1344,7 @@
                 <span class="sa">f</span><span class="s2">&quot;one process will NOT erase the cache on another process&#39;s sampler, &quot;</span>
                 <span class="sa">f</span><span class="s2">&quot;which will cause synchronization issues.&quot;</span>
             <span class="p">)</span>
-        <span class="n">state</span> <span class="o">=</span> <span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__getstate__</span><span class="p">()</span>
         <span class="n">state</span><span class="p">[</span><span class="s2">&quot;_cache&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">return</span> <span class="n">state</span>
 
@@ -1589,7 +1602,9 @@
         <span class="c1"># start_idx and stop_idx are 2d tensors organized like a non-zero</span>
 
         <span class="k">def</span> <span class="nf">get_traj_idx</span><span class="p">(</span><span class="n">maxval</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="n">maxval</span><span class="p">,</span> <span class="p">(</span><span class="n">num_slices</span><span class="p">,),</span> <span class="n">device</span><span class="o">=</span><span class="n">lengths</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span>
+                <span class="n">maxval</span><span class="p">,</span> <span class="p">(</span><span class="n">num_slices</span><span class="p">,),</span> <span class="n">device</span><span class="o">=</span><span class="n">lengths</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">generator</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_rng</span>
+            <span class="p">)</span>
 
         <span class="k">if</span> <span class="p">(</span><span class="n">lengths</span> <span class="o">&lt;</span> <span class="n">seq_length</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">strict_length</span><span class="p">:</span>
@@ -1692,7 +1707,8 @@
             <span class="n">start_point</span> <span class="o">=</span> <span class="o">-</span><span class="n">span_right</span>
 
         <span class="n">relative_starts</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">num_slices</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">lengths</span><span class="o">.</span><span class="n">device</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">end_point</span> <span class="o">-</span> <span class="n">start_point</span><span class="p">)</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">num_slices</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">lengths</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">generator</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_rng</span><span class="p">)</span>
+            <span class="o">*</span> <span class="p">(</span><span class="n">end_point</span> <span class="o">-</span> <span class="n">start_point</span><span class="p">)</span>
         <span class="p">)</span><span class="o">.</span><span class="n">floor</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">start_idx</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span> <span class="o">+</span> <span class="n">start_point</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">span</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
@@ -2202,6 +2218,7 @@
     <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">state</span> <span class="o">=</span> <span class="n">SliceSampler</span><span class="o">.</span><span class="n">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="n">state</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">PrioritizedSampler</span><span class="o">.</span><span class="n">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">state</span>
 
     <span class="k">def</span> <span class="nf">mark_update</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span> <span class="o">*</span><span class="p">,</span> <span class="n">storage</span><span class="p">:</span> <span class="n">Storage</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
@@ -2435,6 +2452,7 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">samplers</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sample_from_all</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">num_buffer_sampled</span><span class="o">=</span><span class="kc">None</span>
     <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rng_private</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_samplers</span> <span class="o">=</span> <span class="n">samplers</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sample_from_all</span> <span class="o">=</span> <span class="n">sample_from_all</span>
         <span class="k">if</span> <span class="n">sample_from_all</span> <span class="ow">and</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -2443,6 +2461,16 @@
             <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">p</span> <span class="o">=</span> <span class="n">p</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">num_buffer_sampled</span> <span class="o">=</span> <span class="n">num_buffer_sampled</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">_rng</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rng_private</span>
+
+    <span class="nd">@_rng</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">_rng</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rng_private</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">for</span> <span class="n">sampler</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_samplers</span><span class="p">:</span>
+            <span class="n">sampler</span><span class="o">.</span><span class="n">_rng</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">p</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -2484,7 +2512,9 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">buffer_ids</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span>
-                    <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_samplers</span><span class="p">),</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_buffer_sampled</span><span class="p">,)</span>
+                    <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_samplers</span><span class="p">),</span>
+                    <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_buffer_sampled</span><span class="p">,),</span>
+                    <span class="n">generator</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_rng</span><span class="p">,</span>
                 <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">buffer_ids</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">multinomial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_buffer_sampled</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
