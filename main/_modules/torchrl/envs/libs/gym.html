@@ -1047,6 +1047,11 @@
 <span class="sd">        allow_done_after_reset (bool, optional): if ``True``, it is tolerated</span>
 <span class="sd">            for envs to be ``done`` just after :meth:`~.reset` is called.</span>
 <span class="sd">            Defaults to ``False``.</span>
+<span class="sd">        convert_actions_to_numpy (bool, optional): if ``True``, actions will be</span>
+<span class="sd">            converted from tensors to numpy arrays and moved to CPU before being passed to the</span>
+<span class="sd">            env step function. Set this to ``False`` if the environment is evaluated</span>
+<span class="sd">            on GPU, such as IsaacLab.</span>
+<span class="sd">            Defaults to ``True``.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        available_envs (List[str]): a list of environments to build.</span>
