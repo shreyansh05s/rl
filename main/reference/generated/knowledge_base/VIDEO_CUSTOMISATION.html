@@ -454,11 +454,7 @@ the settings that we must change should be in there.</p>
 as advised by the documentation.</p>
 <p>We can improve the video quality by appending all our desired settings
 (as keyword arguments) to <code class="docutils literal notranslate"><span class="pre">recorder</span></code> like so:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># The arguments&#39; types don&#39;t appear to matter too much, as long as they are</span>
-<span class="c1"># appropriate for Python.</span>
-<span class="c1"># For example, this would work as well:</span>
-<span class="c1"># logger = CSVLogger(exp_name=&quot;my_exp&quot;, crf=17, preset=&quot;slow&quot;)</span>
-<span class="n">logger</span> <span class="o">=</span> <span class="n">CSVLogger</span><span class="p">(</span><span class="n">exp_name</span><span class="o">=</span><span class="s2">&quot;my_exp&quot;</span><span class="p">,</span> <span class="n">crf</span><span class="o">=</span><span class="s2">&quot;17&quot;</span><span class="p">,</span> <span class="n">preset</span><span class="o">=</span><span class="s2">&quot;slow&quot;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">recorder</span> <span class="o">=</span> <span class="n">VideoRecorder</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">tag</span> <span class="o">=</span> <span class="s2">&quot;my_video&quot;</span><span class="p">,</span> <span class="n">options</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;crf&quot;</span><span class="p">:</span> <span class="s2">&quot;17&quot;</span><span class="p">,</span> <span class="s2">&quot;preset&quot;</span><span class="p">:</span> <span class="s2">&quot;slow&quot;</span><span class="p">})</span>
 </pre></div>
 </div>
 </section>
