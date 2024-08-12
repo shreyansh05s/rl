@@ -2719,9 +2719,11 @@
         <span class="n">max_steps</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">policy</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="n">TensorDictBase</span><span class="p">],</span> <span class="n">TensorDictBase</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">callback</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="n">TensorDictBase</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
         <span class="n">auto_reset</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">auto_cast_to_device</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="n">break_when_any_done</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">break_when_any_done</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">break_when_all_done</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">return_contiguous</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">tensordict</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TensorDictBase</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">set_truncated</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -2744,6 +2746,8 @@
 <span class="sd">                TensorDict. Defaults to ``None``. The output of ``callback`` will not be collected, it is the user</span>
 <span class="sd">                responsibility to save any result within the callback call if data needs to be carried over beyond</span>
 <span class="sd">                the call to ``rollout``.</span>
+
+<span class="sd">        Keyword Args:</span>
 <span class="sd">            auto_reset (bool, optional): if ``True``, resets automatically the environment</span>
 <span class="sd">                if it is in a done state when the rollout is initiated.</span>
 <span class="sd">                Default is ``True``.</span>
@@ -2751,6 +2755,7 @@
 <span class="sd">                policy device before the policy is used. Default is ``False``.</span>
 <span class="sd">            break_when_any_done (bool): breaks if any of the done state is True. If False, a reset() is</span>
 <span class="sd">                called on the sub-envs that are done. Default is True.</span>
+<span class="sd">            break_when_all_done (bool): TODO</span>
 <span class="sd">            return_contiguous (bool): if False, a LazyStackedTensorDict will be returned. Default is True.</span>
 <span class="sd">            tensordict (TensorDict, optional): if ``auto_reset`` is False, an initial</span>
 <span class="sd">                tensordict must be provided. Rollout will check if this tensordict has done flags and reset the</span>
@@ -2947,6 +2952,19 @@
 <span class="sd">            ...     )</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">break_when_any_done</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># True by default</span>
+            <span class="k">if</span> <span class="n">break_when_all_done</span><span class="p">:</span>  <span class="c1"># all overrides</span>
+                <span class="n">break_when_any_done</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">break_when_any_done</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="n">break_when_all_done</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># There is no case where break_when_all_done is True by default</span>
+            <span class="n">break_when_all_done</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">break_when_all_done</span> <span class="ow">and</span> <span class="n">break_when_any_done</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;Cannot have both break_when_all_done and break_when_any_done True at the same time.&quot;</span>
+            <span class="p">)</span>
+
         <span class="k">if</span> <span class="n">policy</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">policy</span> <span class="o">=</span> <span class="n">_make_compatible_policy</span><span class="p">(</span>
                 <span class="n">policy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">observation_spec</span><span class="p">,</span> <span class="n">env</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">fast_wrap</span><span class="o">=</span><span class="kc">True</span>
@@ -2980,8 +2998,12 @@
             <span class="s2">&quot;env_device&quot;</span><span class="p">:</span> <span class="n">env_device</span><span class="p">,</span>
             <span class="s2">&quot;callback&quot;</span><span class="p">:</span> <span class="n">callback</span><span class="p">,</span>
         <span class="p">}</span>
-        <span class="k">if</span> <span class="n">break_when_any_done</span><span class="p">:</span>
-            <span class="n">tensordicts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rollout_stop_early</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">break_when_any_done</span> <span class="ow">or</span> <span class="n">break_when_all_done</span><span class="p">:</span>
+            <span class="n">tensordicts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rollout_stop_early</span><span class="p">(</span>
+                <span class="n">break_when_all_done</span><span class="o">=</span><span class="n">break_when_all_done</span><span class="p">,</span>
+                <span class="n">break_when_any_done</span><span class="o">=</span><span class="n">break_when_any_done</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+            <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">tensordicts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rollout_nonstop</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="n">batch_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span> <span class="k">if</span> <span class="n">tensordict</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">batch_size</span>
@@ -3041,6 +3063,8 @@
     <span class="k">def</span> <span class="nf">_rollout_stop_early</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
+        <span class="n">break_when_any_done</span><span class="p">,</span>
+        <span class="n">break_when_all_done</span><span class="p">,</span>
         <span class="n">tensordict</span><span class="p">,</span>
         <span class="n">auto_cast_to_device</span><span class="p">,</span>
         <span class="n">max_steps</span><span class="p">,</span>
@@ -3053,6 +3077,7 @@
         <span class="k">if</span> <span class="n">auto_cast_to_device</span><span class="p">:</span>
             <span class="n">sync_func</span> <span class="o">=</span> <span class="n">_get_sync_func</span><span class="p">(</span><span class="n">policy_device</span><span class="p">,</span> <span class="n">env_device</span><span class="p">)</span>
         <span class="n">tensordicts</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">partial_steps</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_steps</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">auto_cast_to_device</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">policy_device</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -3070,6 +3095,14 @@
                     <span class="n">tensordict</span><span class="o">.</span><span class="n">clear_device_</span><span class="p">()</span>
             <span class="n">tensordict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">tensordict</span><span class="p">)</span>
             <span class="n">td_append</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">break_when_all_done</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">partial_steps</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">True</span><span class="p">:</span>
+                    <span class="c1"># At least one partial step has been done</span>
+                    <span class="k">del</span> <span class="n">td_append</span><span class="p">[</span><span class="s2">&quot;_partial_steps&quot;</span><span class="p">]</span>
+                    <span class="n">td_append</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+                        <span class="n">partial_steps</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">td_append</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span> <span class="n">td_append</span><span class="p">,</span> <span class="n">tensordicts</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="p">)</span>
+
             <span class="n">tensordicts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">td_append</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">max_steps</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
@@ -3077,16 +3110,31 @@
                 <span class="k">break</span>
             <span class="n">tensordict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step_mdp</span><span class="p">(</span><span class="n">tensordict</span><span class="p">)</span>
 
-            <span class="c1"># done and truncated are in done_keys</span>
-            <span class="c1"># We read if any key is done.</span>
-            <span class="n">any_done</span> <span class="o">=</span> <span class="n">_terminated_or_truncated</span><span class="p">(</span>
-                <span class="n">tensordict</span><span class="p">,</span>
-                <span class="n">full_done_spec</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">output_spec</span><span class="p">[</span><span class="s2">&quot;full_done_spec&quot;</span><span class="p">],</span>
-                <span class="n">key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-            <span class="p">)</span>
-
-            <span class="k">if</span> <span class="n">any_done</span><span class="p">:</span>
-                <span class="k">break</span>
+            <span class="k">if</span> <span class="n">break_when_any_done</span><span class="p">:</span>
+                <span class="c1"># done and truncated are in done_keys</span>
+                <span class="c1"># We read if any key is done.</span>
+                <span class="n">any_done</span> <span class="o">=</span> <span class="n">_terminated_or_truncated</span><span class="p">(</span>
+                    <span class="n">tensordict</span><span class="p">,</span>
+                    <span class="n">full_done_spec</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">output_spec</span><span class="p">[</span><span class="s2">&quot;full_done_spec&quot;</span><span class="p">],</span>
+                    <span class="n">key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="k">if</span> <span class="n">any_done</span><span class="p">:</span>
+                    <span class="k">break</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">_terminated_or_truncated</span><span class="p">(</span>
+                    <span class="n">tensordict</span><span class="p">,</span>
+                    <span class="n">full_done_spec</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">output_spec</span><span class="p">[</span><span class="s2">&quot;full_done_spec&quot;</span><span class="p">],</span>
+                    <span class="n">key</span><span class="o">=</span><span class="s2">&quot;_partial_steps&quot;</span><span class="p">,</span>
+                    <span class="n">write_full_false</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="n">partial_step_curr</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_partial_steps&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">partial_step_curr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">partial_step_curr</span> <span class="o">=</span> <span class="o">~</span><span class="n">partial_step_curr</span>
+                    <span class="n">partial_steps</span> <span class="o">=</span> <span class="n">partial_steps</span> <span class="o">&amp;</span> <span class="n">partial_step_curr</span>
+                <span class="k">if</span> <span class="n">partial_steps</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">True</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">partial_steps</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+                        <span class="k">break</span>
+                    <span class="n">tensordict</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;_partial_steps&quot;</span><span class="p">,</span> <span class="n">partial_steps</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">callback</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">)</span>

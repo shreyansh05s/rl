@@ -220,7 +220,7 @@ uniformly distributed) numbers in that space:
  .. code-block:: none
 
     random action: 
-     tensor([-1.5282])
+     tensor([1.0797])
 
 
 
@@ -715,7 +715,7 @@ argument that allows the user to quickly ask for image-based environments:
  .. code-block:: none
 
 
-    <matplotlib.image.AxesImage object at 0x7fa8f32c0fa0>
+    <matplotlib.image.AxesImage object at 0x7fba801c9040>
 
 
 
@@ -809,7 +809,7 @@ Some environments only come in image-based format
         super().__init__(**kwargs)
       File "/pytorch/rl/torchrl/envs/libs/gym.py", line 782, in __init__
         super().__init__(**kwargs)
-      File "/pytorch/rl/torchrl/envs/common.py", line 3043, in __init__
+      File "/pytorch/rl/torchrl/envs/common.py", line 3091, in __init__
         self._env = self._build_env(**kwargs)  # writes the self._env attribute
       File "/pytorch/rl/torchrl/envs/libs/gym.py", line 1418, in _build_env
         env = self.lib.make(env_name, **kwargs)
@@ -1447,9 +1447,9 @@ This small difference will usually be absored throughout training.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (1 minutes 38.064 seconds)
+   **Total running time of the script:** (1 minutes 36.727 seconds)
 
-**Estimated memory usage:**  4633 MB
+**Estimated memory usage:**  4079 MB
 
 
 .. _sphx_glr_download_tutorials_torchrl_envs.py:
