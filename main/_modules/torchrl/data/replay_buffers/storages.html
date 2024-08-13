@@ -949,15 +949,24 @@
             <span class="c1"># check that the content is shared, otherwise tell the user we can&#39;t help</span>
             <span class="n">storage</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_storage</span>
             <span class="n">STORAGE_ERR</span> <span class="o">=</span> <span class="s2">&quot;The storage must be place in shared memory or memmapped before being shared between processes.&quot;</span>
-            <span class="k">if</span> <span class="n">is_tensor_collection</span><span class="p">(</span><span class="n">storage</span><span class="p">):</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">storage</span><span class="o">.</span><span class="n">is_memmap</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">storage</span><span class="o">.</span><span class="n">is_shared</span><span class="p">():</span>
-                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">STORAGE_ERR</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">if</span> <span class="p">(</span>
-                    <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">storage</span><span class="p">,</span> <span class="n">MemoryMappedTensor</span><span class="p">)</span>
-                    <span class="ow">and</span> <span class="ow">not</span> <span class="n">storage</span><span class="o">.</span><span class="n">is_shared</span><span class="p">()</span>
+
+            <span class="c1"># If the content is on cpu, it will be placed in shared memory.</span>
+            <span class="c1"># If it&#39;s on cuda it&#39;s already shared.</span>
+            <span class="c1"># If it&#39;s memmaped no worry in this case either.</span>
+            <span class="c1"># Only if the device is not &quot;cpu&quot; or &quot;cuda&quot; we may have a problem.</span>
+            <span class="k">def</span> <span class="nf">assert_is_sharable</span><span class="p">(</span><span class="n">tensor</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">tensor</span><span class="o">.</span><span class="n">device</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">tensor</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> <span class="p">(</span>
+                    <span class="s2">&quot;cuda&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;cpu&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;meta&quot;</span><span class="p">,</span>
                 <span class="p">):</span>
-                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">STORAGE_ERR</span><span class="p">)</span>
+                    <span class="k">return</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">STORAGE_ERR</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">is_tensor_collection</span><span class="p">(</span><span class="n">storage</span><span class="p">):</span>
+                <span class="n">storage</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">assert_is_sharable</span><span class="p">,</span> <span class="n">filter_empty</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">tree_map</span><span class="p">(</span><span class="n">storage</span><span class="p">,</span> <span class="n">assert_is_sharable</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">state</span>
 

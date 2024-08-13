@@ -637,6 +637,8 @@ Defaults to <code class="docutils literal notranslate"><span class="pre">False</
 <li><p><strong>use_buffers</strong> (<em>bool</em><em>, </em><em>optional</em>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code>, a buffer will be used to stack the data.
 This isn’t compatible with environments with dynamic specs. Defaults to <code class="docutils literal notranslate"><span class="pre">True</span></code>
 for envs without dynamic specs, <code class="docutils literal notranslate"><span class="pre">False</span></code> for others.</p></li>
+<li><p><strong>replay_buffer</strong> (<a class="reference internal" href="torchrl.data.ReplayBuffer.html#torchrl.data.ReplayBuffer" title="torchrl.data.ReplayBuffer"><em>ReplayBuffer</em></a><em>, </em><em>optional</em>) – if provided, the collector will not yield tensordict
+but populate the buffer instead. Defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
 </ul>
 </dd>
 </dl>

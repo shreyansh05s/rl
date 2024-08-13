@@ -565,6 +565,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_cursor</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cursor</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_storage</span><span class="o">.</span><span class="n">_max_size_along_dim0</span><span class="p">(</span>
             <span class="n">single_data</span><span class="o">=</span><span class="n">data</span>
         <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write_count</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="c1"># Replicate index requires the shape of the storage to be known</span>
         <span class="c1"># Other than that, a &quot;flat&quot; (1d) index is ok to write the data</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_storage</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">_cursor</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
@@ -593,6 +594,7 @@
         <span class="p">)</span>
         <span class="c1"># we need to update the cursor first to avoid race conditions between workers</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cursor</span> <span class="o">=</span> <span class="p">(</span><span class="n">batch_size</span> <span class="o">+</span> <span class="n">cur_size</span><span class="p">)</span> <span class="o">%</span> <span class="n">max_size_along0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write_count</span> <span class="o">+=</span> <span class="n">batch_size</span>
         <span class="c1"># Replicate index requires the shape of the storage to be known</span>
         <span class="c1"># Other than that, a &quot;flat&quot; (1d) index is ok to write the data</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_storage</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
@@ -624,6 +626,20 @@
             <span class="n">_cursor_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_value</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Value</span><span class="p">(</span><span class="s2">&quot;i&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="n">_cursor_value</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
 
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">_write_count</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">_write_count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_write_count_value&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">_write_count</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">_write_count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_write_count_value</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Value</span><span class="p">(</span><span class="s2">&quot;i&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_write_count</span><span class="o">.</span><span class="n">value</span>
+
+    <span class="nd">@_write_count</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">_write_count</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="n">_write_count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_write_count_value&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">_write_count</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">_write_count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_write_count_value</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Value</span><span class="p">(</span><span class="s2">&quot;i&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">_write_count</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+
     <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">state</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__getstate__</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">get_spawning_popen</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -651,6 +667,7 @@
         <span class="c1"># we need to update the cursor first to avoid race conditions between workers</span>
         <span class="n">max_size_along_dim0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_storage</span><span class="o">.</span><span class="n">_max_size_along_dim0</span><span class="p">(</span><span class="n">single_data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cursor</span> <span class="o">=</span> <span class="p">(</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">max_size_along_dim0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write_count</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">is_tensorclass</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
             <span class="n">data</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
                 <span class="s2">&quot;index&quot;</span><span class="p">,</span>
@@ -677,6 +694,7 @@
         <span class="p">)</span>
         <span class="c1"># we need to update the cursor first to avoid race conditions between workers</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cursor</span> <span class="o">=</span> <span class="p">(</span><span class="n">batch_size</span> <span class="o">+</span> <span class="n">cur_size</span><span class="p">)</span> <span class="o">%</span> <span class="n">max_size_along_dim0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write_count</span> <span class="o">+=</span> <span class="n">batch_size</span>
         <span class="c1"># storage must convert the data to the appropriate format if needed</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">is_tensorclass</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
             <span class="n">data</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
@@ -862,6 +880,20 @@
 
         <span class="k">return</span> <span class="n">ret</span></div>
 
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">_write_count</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">_write_count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_write_count_value&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">_write_count</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">_write_count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_write_count_value</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Value</span><span class="p">(</span><span class="s2">&quot;i&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_write_count</span><span class="o">.</span><span class="n">value</span>
+
+    <span class="nd">@_write_count</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">_write_count</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="n">_write_count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_write_count_value&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">_write_count</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">_write_count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_write_count_value</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Value</span><span class="p">(</span><span class="s2">&quot;i&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">_write_count</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+
 <div class="viewcode-block" id="TensorDictMaxValueWriter.add"><a class="viewcode-back" href="../../../../reference/generated/torchrl.data.replay_buffers.TensorDictMaxValueWriter.html#torchrl.data.replay_buffers.TensorDictMaxValueWriter.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span> <span class="o">|</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Inserts a single element of data at an appropriate index, and returns that index.</span>
 
@@ -871,6 +903,7 @@
         <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_insert_index</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">data</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_write_count</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="c1"># Replicate index requires the shape of the storage to be known</span>
             <span class="c1"># Other than that, a &quot;flat&quot; (1d) index is ok to write the data</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_storage</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
@@ -890,6 +923,7 @@
         <span class="k">for</span> <span class="n">data_idx</span><span class="p">,</span> <span class="n">sample</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
             <span class="n">storage_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_insert_index</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">storage_idx</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_write_count</span> <span class="o">+=</span> <span class="mi">1</span>
                 <span class="n">data_to_replace</span><span class="p">[</span><span class="n">storage_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_idx</span>
 
         <span class="c1"># -1 will be interpreted as invalid by prioritized buffers</span>
@@ -919,7 +953,8 @@
     <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">get_spawning_popen</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Writers of type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s2"> cannot be shared between processes.&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Writers of type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s2"> cannot be shared between processes. &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Please submit an issue at https://github.com/pytorch/rl if this feature is needed.&quot;</span>
             <span class="p">)</span>
         <span class="n">state</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__getstate__</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">state</span>
