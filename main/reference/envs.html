@@ -720,7 +720,7 @@ an assertion error whenever the preallocated buffer and the collected data misma
 </div>
 <p>We also offer the <a class="reference internal" href="generated/torchrl.envs.SerialEnv.html#torchrl.envs.SerialEnv" title="torchrl.envs.SerialEnv"><code class="xref py py-class docutils literal notranslate"><span class="pre">SerialEnv</span></code></a> class that enjoys the exact same API but is executed
 serially. This is mostly useful for testing purposes, when one wants to assess the
-behaviour of a <a class="reference internal" href="generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv" title="torchrl.envs.ParallelEnv"><code class="xref py py-class docutils literal notranslate"><span class="pre">ParallelEnv</span></code></a> without launching the subprocesses.</p>
+behavior of a <a class="reference internal" href="generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv" title="torchrl.envs.ParallelEnv"><code class="xref py py-class docutils literal notranslate"><span class="pre">ParallelEnv</span></code></a> without launching the subprocesses.</p>
 <p>In addition to <a class="reference internal" href="generated/torchrl.envs.ParallelEnv.html#torchrl.envs.ParallelEnv" title="torchrl.envs.ParallelEnv"><code class="xref py py-class docutils literal notranslate"><span class="pre">ParallelEnv</span></code></a>, which offers process-based parallelism, we also provide a way to create
 multithreaded environments with <a class="reference internal" href="generated/torchrl.envs.MultiThreadedEnv.html#torchrl.envs.MultiThreadedEnv" title="torchrl.envs.MultiThreadedEnv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MultiThreadedEnv</span></code></a>. This class uses <a class="reference external" href="https://github.com/sail-sg/envpool">EnvPool</a>
 library underneath, which allows for higher performance, but at the same time restricts flexibility - one can only
@@ -897,7 +897,7 @@ current episode.</p>
 <p>To handle these cases, torchrl provides a <code class="xref py py-class docutils literal notranslate"><span class="pre">AutoResetTransform</span></code> that will copy the observations
 that result from the call to <cite>step</cite> to the next <cite>reset</cite> and skip the calls to <cite>reset</cite> during rollouts (in both
 <a class="reference internal" href="generated/torchrl.envs.EnvBase.html#id2" title="torchrl.envs.EnvBase.rollout"><code class="xref py py-meth docutils literal notranslate"><span class="pre">rollout()</span></code></a> and <a class="reference internal" href="generated/torchrl.collectors.SyncDataCollector.html#torchrl.collectors.SyncDataCollector" title="torchrl.collectors.SyncDataCollector"><code class="xref py py-class docutils literal notranslate"><span class="pre">SyncDataCollector</span></code></a> iterations).
-This transform class also provides a fine-grained control over the behaviour to be adopted for the invalid observations,
+This transform class also provides a fine-grained control over the behavior to be adopted for the invalid observations,
 which can be masked with <cite>“nan”</cite> or any other values, or not masked at all.</p>
 <p>To tell torchrl that an environment is auto-resetting, it is sufficient to provide an <code class="docutils literal notranslate"><span class="pre">auto_reset</span></code> argument
 during construction. If provided, an <code class="docutils literal notranslate"><span class="pre">auto_reset_replace</span></code> argument can also control whether the values of the last
@@ -1139,10 +1139,10 @@ registered buffers:</p>
 </pre></div>
 </div>
 <p>On a single process or if the buffers are placed in shared memory, this will
-result in all the clone transforms to keep the same behaviour even if the
+result in all the clone transforms to keep the same behavior even if the
 buffers are changed in place (which is what will happen with the <a class="reference internal" href="generated/torchrl.envs.transforms.CatFrames.html#torchrl.envs.transforms.CatFrames" title="torchrl.envs.transforms.CatFrames"><code class="xref py py-class docutils literal notranslate"><span class="pre">CatFrames</span></code></a>
 transform, for instance). In distributed settings, this may not hold and one
-should be careful about the expected behaviour of the cloned transforms in this
+should be careful about the expected behavior of the cloned transforms in this
 context.
 Finally, notice that indexing multiple transforms from a <a class="reference internal" href="generated/torchrl.envs.transforms.Compose.html#torchrl.envs.transforms.Compose" title="torchrl.envs.transforms.Compose"><code class="xref py py-class docutils literal notranslate"><span class="pre">Compose</span></code></a> transform
 may also result in loss of parenthood for these transforms: the reason is that
@@ -1566,7 +1566,7 @@ the current gym backend or any of its modules:</p>
 <p>Another tool that comes in handy with gym and other external dependencies is
 the <a class="reference internal" href="generated/torchrl._utils.implement_for.html#torchrl._utils.implement_for" title="torchrl._utils.implement_for"><code class="xref py py-class docutils literal notranslate"><span class="pre">torchrl._utils.implement_for</span></code></a> class. Decorating a function
 with <code class="docutils literal notranslate"><span class="pre">&#64;implement_for</span></code> will tell torchrl that, depending on the version
-indicated, a specific behaviour is to be expected. This allows us to easily
+indicated, a specific behavior is to be expected. This allows us to easily
 support multiple versions of gym without requiring any effort from the user side.
 For example, considering that our virtual environment has the v0.26.2 installed,
 the following function will return <code class="docutils literal notranslate"><span class="pre">1</span></code> when queried:</p>

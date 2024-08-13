@@ -613,7 +613,7 @@ to the <code class="xref py py-meth docutils literal notranslate"><span class="p
 <p>Storage choice is very influential on replay buffer sampling latency, especially
 in distributed reinforcement learning settings with larger data volumes.
 <a class="reference internal" href="generated/torchrl.data.replay_buffers.LazyMemmapStorage.html#torchrl.data.replay_buffers.LazyMemmapStorage" title="torchrl.data.replay_buffers.storages.LazyMemmapStorage"><code class="xref py py-class docutils literal notranslate"><span class="pre">LazyMemmapStorage</span></code></a> is highly
-advised in distributed settings with shared storage due to the lower serialisation
+advised in distributed settings with shared storage due to the lower serialization
 cost of MemoryMappedTensors as well as the ability to specify file storage locations
 for improved node failure recovery.
 The following mean sampling latency improvements over using <a class="reference internal" href="generated/torchrl.data.replay_buffers.ListStorage.html#torchrl.data.replay_buffers.ListStorage" title="torchrl.data.replay_buffers.ListStorage"><code class="xref py py-class docutils literal notranslate"><span class="pre">ListStorage</span></code></a>

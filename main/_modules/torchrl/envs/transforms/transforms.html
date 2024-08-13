@@ -1001,7 +1001,7 @@
             <span class="n">device</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">device</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">allow_done_after_reset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-        <span class="c1"># Type matching must be exact here, because subtyping could introduce differences in behaviour that must</span>
+        <span class="c1"># Type matching must be exact here, because subtyping could introduce differences in behavior that must</span>
         <span class="c1"># be contained within the subclass.</span>
         <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">env</span><span class="p">)</span> <span class="ow">is</span> <span class="n">TransformedEnv</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="ow">is</span> <span class="n">TransformedEnv</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_set_env</span><span class="p">(</span><span class="n">env</span><span class="o">.</span><span class="n">base_env</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
@@ -1909,7 +1909,7 @@
 
 <span class="sd">    In goal-conditioned RL, the :class:`~.TargetReturn` is defined as the</span>
 <span class="sd">    expected cumulative reward obtained from the current state to the goal state</span>
-<span class="sd">    or the end of the episode. It is used as input for the policy to guide its behaviour.</span>
+<span class="sd">    or the end of the episode. It is used as input for the policy to guide its behavior.</span>
 <span class="sd">    For a trained policy typically the maximum return in the environment is</span>
 <span class="sd">    chosen as the target return.</span>
 <span class="sd">    However, as it is used as input to the policy module, it should be scaled</span>
@@ -2907,7 +2907,7 @@
 <span class="sd">        loc (number or tensor): location of the affine transform</span>
 <span class="sd">        scale (number or tensor): scale of the affine transform</span>
 <span class="sd">        in_keys (sequence of NestedKey, optional): entries to be normalized. Defaults to [&quot;observation&quot;, &quot;pixels&quot;].</span>
-<span class="sd">            All entries will be normalized with the same values: if a different behaviour is desired</span>
+<span class="sd">            All entries will be normalized with the same values: if a different behavior is desired</span>
 <span class="sd">            (e.g. a different normalization for pixels and states) different :obj:`ObservationNorm`</span>
 <span class="sd">            objects should be used.</span>
 <span class="sd">        out_keys (sequence of NestedKey, optional): output entries. Defaults to the value of `in_keys`.</span>
@@ -2971,7 +2971,7 @@
     <span class="p">):</span>
         <span class="k">if</span> <span class="n">in_keys</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                <span class="s2">&quot;Not passing in_keys to ObservationNorm is a deprecated behaviour.&quot;</span>
+                <span class="s2">&quot;Not passing in_keys to ObservationNorm is a deprecated behavior.&quot;</span>
             <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">out_keys</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -3763,7 +3763,7 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Casts one dtype to another for selected keys.</span>
 
 <span class="sd">    Depending on whether the ``in_keys`` or ``in_keys_inv`` are provided</span>
-<span class="sd">    during construction, the class behaviour will change:</span>
+<span class="sd">    during construction, the class behavior will change:</span>
 
 <span class="sd">      * If the keys are provided, those entries and those entries only will be</span>
 <span class="sd">        transformed from ``dtype_in`` to ``dtype_out`` entries;</span>
@@ -3819,7 +3819,7 @@
 <span class="sd">        &gt;&gt;&gt; print(td.get(&quot;not_transformed&quot;).dtype)</span>
 <span class="sd">        torch.float32</span>
 
-<span class="sd">    The same behaviour is the rule when environments are constructedw without</span>
+<span class="sd">    The same behavior is the rule when environments are constructedw without</span>
 <span class="sd">    specifying the transform keys:</span>
 
 <span class="sd">    Examples:</span>
@@ -4135,7 +4135,7 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Casts one dtype to another for selected keys.</span>
 
 <span class="sd">    Depending on whether the ``in_keys`` or ``in_keys_inv`` are provided</span>
-<span class="sd">    during construction, the class behaviour will change:</span>
+<span class="sd">    during construction, the class behavior will change:</span>
 
 <span class="sd">      * If the keys are provided, those entries and those entries only will be</span>
 <span class="sd">        transformed from ``float64`` to ``float32`` entries;</span>
@@ -4189,7 +4189,7 @@
 <span class="sd">        &gt;&gt;&gt; print(td.get(&quot;not_transformed&quot;).dtype)</span>
 <span class="sd">        torch.float32</span>
 
-<span class="sd">    The same behaviour is the rule when environments are constructedw without</span>
+<span class="sd">    The same behavior is the rule when environments are constructedw without</span>
 <span class="sd">    specifying the transform keys:</span>
 
 <span class="sd">    Examples:</span>
@@ -4492,7 +4492,7 @@
 <span class="sd">    Args:</span>
 <span class="sd">        in_keys (sequence of NestedKey): keys to be concatenated. If `None` (or not provided)</span>
 <span class="sd">            the keys will be retrieved from the parent environment the first time</span>
-<span class="sd">            the transform is used. This behaviour will only work if a parent is set.</span>
+<span class="sd">            the transform is used. This behavior will only work if a parent is set.</span>
 <span class="sd">        out_key (NestedKey): key of the resulting tensor.</span>
 <span class="sd">        dim (int, optional): dimension along which the concatenation will occur.</span>
 <span class="sd">            Default is ``-1``.</span>
@@ -4856,7 +4856,7 @@
             <span class="p">)</span>
         <span class="c1"># Merge the two tensordicts</span>
         <span class="n">tensordict</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">_reset_proc_data</span><span class="p">(</span><span class="n">tensordict</span><span class="o">.</span><span class="n">clone</span><span class="p">(</span><span class="kc">False</span><span class="p">),</span> <span class="n">tensordict_reset</span><span class="p">)</span>
-        <span class="c1"># check that there is a single done state -- behaviour is undefined for multiple dones</span>
+        <span class="c1"># check that there is a single done state -- behavior is undefined for multiple dones</span>
         <span class="n">done_keys</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">done_keys</span>
         <span class="n">reward_key</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">reward_key</span>
         <span class="k">if</span> <span class="n">parent</span><span class="o">.</span><span class="n">batch_size</span><span class="o">.</span><span class="n">numel</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
@@ -6775,7 +6775,7 @@
 
 <span class="sd">    This transform is primarily designed to be used with replay buffers and modules.</span>
 <span class="sd">    Currently, it cannot be used as an environment transform.</span>
-<span class="sd">    Do not hesitate to request for this behaviour through an issue if this is</span>
+<span class="sd">    Do not hesitate to request for this behavior through an issue if this is</span>
 <span class="sd">    desired.</span>
 
 <span class="sd">    Args:</span>
@@ -6803,7 +6803,7 @@
         <span class="k">if</span> <span class="n">sample_dim</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
                 <span class="s2">&quot;A positive shape has been passed to the RandomCropTensorDict &quot;</span>
-                <span class="s2">&quot;constructor. This may have unexpected behaviours when the &quot;</span>
+                <span class="s2">&quot;constructor. This may have unexpected behaviors when the &quot;</span>
                 <span class="s2">&quot;passed tensordicts have inconsistent batch dimensions. &quot;</span>
                 <span class="s2">&quot;For context, by convention, TorchRL concatenates time steps &quot;</span>
                 <span class="s2">&quot;along the last dimension of the tensordict.&quot;</span>

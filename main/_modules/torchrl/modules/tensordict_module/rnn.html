@@ -931,7 +931,7 @@
 <span class="sd">        inputs and outputs (recurrent states) during rollout execution. That way, the data can be shared across</span>
 <span class="sd">        processes and dealt with properly.</span>
 
-<span class="sd">        Not including a ``TensorDictPrimer`` in the environment may result in poorly defined behaviours, for instance</span>
+<span class="sd">        Not including a ``TensorDictPrimer`` in the environment may result in poorly defined behaviors, for instance</span>
 <span class="sd">        in parallel settings where a step involves copying the new recurrent state from ``&quot;next&quot;`` to the root</span>
 <span class="sd">        tensordict, which the meth:`~torchrl.EnvBase.step_mdp` method will not be able to do as the recurrent states</span>
 <span class="sd">        are not registered within the environment specs.</span>
@@ -1007,7 +1007,7 @@
 <div class="viewcode-block" id="LSTMModule.set_recurrent_mode"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.LSTMModule.html#torchrl.modules.LSTMModule.set_recurrent_mode">[docs]</a>    <span class="k">def</span> <span class="nf">set_recurrent_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a new copy of the module that shares the same lstm model but with a different ``recurrent_mode`` attribute (if it differs).</span>
 
-<span class="sd">        A copy is created such that the module can be used with divergent behaviour</span>
+<span class="sd">        A copy is created such that the module can be used with divergent behavior</span>
 <span class="sd">        in various parts of the code (inference vs training):</span>
 
 <span class="sd">        Examples:</span>
@@ -1021,7 +1021,7 @@
 <span class="sd">            &gt;&gt;&gt; lstm = nn.LSTM(input_size=env.observation_spec[&quot;observation&quot;].shape[-1], hidden_size=64, batch_first=True)</span>
 <span class="sd">            &gt;&gt;&gt; lstm_module = LSTMModule(lstm=lstm, in_keys=[&quot;observation&quot;, &quot;hidden0&quot;, &quot;hidden1&quot;], out_keys=[&quot;intermediate&quot;, (&quot;next&quot;, &quot;hidden0&quot;), (&quot;next&quot;, &quot;hidden1&quot;)])</span>
 <span class="sd">            &gt;&gt;&gt; mlp = MLP(num_cells=[64], out_features=1)</span>
-<span class="sd">            &gt;&gt;&gt; # building two policies with different behaviours:</span>
+<span class="sd">            &gt;&gt;&gt; # building two policies with different behaviors:</span>
 <span class="sd">            &gt;&gt;&gt; policy_inference = Seq(lstm_module, Mod(mlp, in_keys=[&quot;intermediate&quot;], out_keys=[&quot;action&quot;]))</span>
 <span class="sd">            &gt;&gt;&gt; policy_training = Seq(lstm_module.set_recurrent_mode(True), Mod(mlp, in_keys=[&quot;intermediate&quot;], out_keys=[&quot;action&quot;]))</span>
 <span class="sd">            &gt;&gt;&gt; traj_td = env.rollout(3) # some random temporal data</span>
@@ -1677,7 +1677,7 @@
 <span class="sd">        inputs and outputs (recurrent states) during rollout execution. That way, the data can be shared across</span>
 <span class="sd">        processes and dealt with properly.</span>
 
-<span class="sd">        Not including a ``TensorDictPrimer`` in the environment may result in poorly defined behaviours, for instance</span>
+<span class="sd">        Not including a ``TensorDictPrimer`` in the environment may result in poorly defined behaviors, for instance</span>
 <span class="sd">        in parallel settings where a step involves copying the new recurrent state from ``&quot;next&quot;`` to the root</span>
 <span class="sd">        tensordict, which the meth:`~torchrl.EnvBase.step_mdp` method will not be able to do as the recurrent states</span>
 <span class="sd">        are not registered within the environment specs.</span>
@@ -1750,7 +1750,7 @@
 <div class="viewcode-block" id="GRUModule.set_recurrent_mode"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.GRUModule.html#torchrl.modules.GRUModule.set_recurrent_mode">[docs]</a>    <span class="k">def</span> <span class="nf">set_recurrent_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a new copy of the module that shares the same gru model but with a different ``recurrent_mode`` attribute (if it differs).</span>
 
-<span class="sd">        A copy is created such that the module can be used with divergent behaviour</span>
+<span class="sd">        A copy is created such that the module can be used with divergent behavior</span>
 <span class="sd">        in various parts of the code (inference vs training):</span>
 
 <span class="sd">        Examples:</span>
@@ -1763,7 +1763,7 @@
 <span class="sd">            &gt;&gt;&gt; gru = nn.GRU(input_size=env.observation_spec[&quot;observation&quot;].shape[-1], hidden_size=64, batch_first=True)</span>
 <span class="sd">            &gt;&gt;&gt; gru_module = GRUModule(gru=gru, in_keys=[&quot;observation&quot;, &quot;hidden&quot;], out_keys=[&quot;intermediate&quot;, (&quot;next&quot;, &quot;hidden&quot;)])</span>
 <span class="sd">            &gt;&gt;&gt; mlp = MLP(num_cells=[64], out_features=1)</span>
-<span class="sd">            &gt;&gt;&gt; # building two policies with different behaviours:</span>
+<span class="sd">            &gt;&gt;&gt; # building two policies with different behaviors:</span>
 <span class="sd">            &gt;&gt;&gt; policy_inference = Seq(gru_module, Mod(mlp, in_keys=[&quot;intermediate&quot;], out_keys=[&quot;action&quot;]))</span>
 <span class="sd">            &gt;&gt;&gt; policy_training = Seq(gru_module.set_recurrent_mode(True), Mod(mlp, in_keys=[&quot;intermediate&quot;], out_keys=[&quot;action&quot;]))</span>
 <span class="sd">            &gt;&gt;&gt; traj_td = env.rollout(3) # some random temporal data</span>

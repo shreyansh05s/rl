@@ -447,15 +447,15 @@
 <div class="viewcode-block" id="PPOLoss"><a class="viewcode-back" href="../../../reference/generated/torchrl.objectives.PPOLoss.html#torchrl.objectives.PPOLoss">[docs]</a><span class="k">class</span> <span class="nc">PPOLoss</span><span class="p">(</span><span class="n">LossModule</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A parent PPO loss class.</span>
 
-<span class="sd">    PPO (Proximal Policy Optimisation) is a model-free, online RL algorithm</span>
+<span class="sd">    PPO (Proximal Policy Optimization) is a model-free, online RL algorithm</span>
 <span class="sd">    that makes use of a recorded (batch of)</span>
 <span class="sd">    trajectories to perform several optimization steps, while actively</span>
 <span class="sd">    preventing the updated policy to deviate too</span>
 <span class="sd">    much from its original parameter configuration.</span>
 
-<span class="sd">    PPO loss can be found in different flavours, depending on the way the</span>
-<span class="sd">    constrained optimisation is implemented: ClipPPOLoss and KLPENPPOLoss.</span>
-<span class="sd">    Unlike its subclasses, this class does not implement any regularisation</span>
+<span class="sd">    PPO loss can be found in different flavors, depending on the way the</span>
+<span class="sd">    constrained optimization is implemented: ClipPPOLoss and KLPENPPOLoss.</span>
+<span class="sd">    Unlike its subclasses, this class does not implement any regularization</span>
 <span class="sd">    and should therefore be used cautiously.</span>
 
 <span class="sd">    For more details regarding PPO, refer to: &quot;Proximal Policy Optimization Algorithms&quot;,</span>

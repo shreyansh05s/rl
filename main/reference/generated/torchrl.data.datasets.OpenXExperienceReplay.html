@@ -455,7 +455,7 @@ If <code class="docutils literal notranslate"><span class="pre">False</span></co
 <p>shuffle=False will also impact the sampling. We advice users to
 create a copy of the dataset where the <code class="docutils literal notranslate"><span class="pre">shuffle</span></code> attribute of the
 sampler is set to <code class="docutils literal notranslate"><span class="pre">False</span></code> if they wish to enjoy the two different
-behaviours (shuffled and not) within the same code base.</p>
+behaviors (shuffled and not) within the same code base.</p>
 </div>
 </p></li>
 <li><p><strong>num_slices</strong> (<em>int</em><em>, </em><em>optional</em>) – the number of slices in a batch. This
@@ -515,7 +515,7 @@ and <cite>sampler=None</cite>, transitions will be sampled randomly from
 the dataset. This isn’t possible at a reasonable cost with
 <cite>streaming=True</cite>: in this case, trajectories will be sampled
 one at a time and delivered as such (with cropping to comply with
-the batch-size etc). The behaviour of the two modalities is
+the batch-size etc). The behavior of the two modalities is
 much more similar when <cite>num_slices</cite> and <cite>slice_len</cite> are specified,
 as in these cases, views of sub-episodes will be returned in both
 cases.</p>

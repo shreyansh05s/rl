@@ -517,7 +517,7 @@ parameter-sharing (the practice of sharing the network parameters across the age
 <li><p>Next, we will create a vectorized multi-agent environment, using TorchRL’s
 wrapper for the VMAS simulator.</p></li>
 <li><p>Next, we will design the policy and the critic networks, discussing the impact of the various choices on
-parameter sharing and critic centralisation.</p></li>
+parameter sharing and critic centralization.</p></li>
 <li><p>Next, we will create the sampling collector and the replay buffer.</p></li>
 <li><p>Finally, we will run our training loop and analyse the results.</p></li>
 </ol>
@@ -593,7 +593,7 @@ You can tune some of these values to adjust the computational requirements.</p>
 <section id="environment">
 <h2>Environment<a class="headerlink" href="#environment" title="Permalink to this heading">¶</a></h2>
 <p>Multi-agent environments simulate multiple agents interacting with the world.
-TorchRL API allows integrating various types of multi-agent environment flavours.
+TorchRL API allows integrating various types of multi-agent environment flavors.
 Some examples include environments with shared or individual agent rewards, done flags, and observations.
 For more information on how the multi-agent environments API works in TorchRL, you can check out the dedicated
 <a class="reference internal" href="../reference/envs.html#marl-environment-api"><span class="std std-ref">doc section</span></a>.</p>
@@ -603,7 +603,7 @@ Furthermore, it uses <em>vectorization</em> to perform simulation in a batch.
 This means that all its state and physics
 are PyTorch tensors with a first dimension representing the number of parallel environments in a batch.
 This allows leveraging the Single Instruction Multiple Data (SIMD) paradigm of GPUs and significantly
-speed up parallel computation by leveraging parallelisation in GPU warps. It also means
+speed up parallel computation by leveraging parallelization in GPU warps. It also means
 that, when using it in TorchRL, both simulation and training can be run on-device, without ever passing
 data to the CPU.</p>
 <p>The multi-agent task we will solve today is <em>Navigation</em> (see animated figure above).
@@ -614,7 +614,7 @@ Agents need to use LIDARs (dots around them) to
 avoid colliding into each other.
 Agents act in a 2D continuous world with drag and elastic collisions.
 Their actions are 2D continuous forces which determine their acceleration.
-The reward is composed of three terms: a collision penalisation, a reward based on the distance to the goal, and a
+The reward is composed of three terms: a collision penalization, a reward based on the distance to the goal, and a
 final shared reward given when all agents reach their goal.
 The distance-based term is computed as the difference in the relative distance
 between an agent and its goal over two consecutive timesteps.
@@ -907,7 +907,7 @@ speed, but it is important to always think about this decision in your own probl
 <p>We design the policy in three steps.</p>
 <p><strong>First</strong>: define a neural network <code class="docutils literal notranslate"><span class="pre">n_obs_per_agent</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">2</span> <span class="pre">*</span> <span class="pre">n_actions_per_agents</span></code></p>
 <p>For this we use the <code class="docutils literal notranslate"><span class="pre">MultiAgentMLP</span></code>, a TorchRL module made exactly for
-multiple agents, with much customisation available.</p>
+multiple agents, with much customization available.</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">share_parameters_policy</span> <span class="o">=</span> <span class="kc">True</span>
 
 <a href="https://pytorch.org/docs/stable/generated/torch.nn.Sequential.html#torch.nn.Sequential" title="torch.nn.Sequential" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">policy_net</span></a> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Sequential.html#torch.nn.Sequential" title="torch.nn.Sequential" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span></a><span class="p">(</span>
@@ -1260,16 +1260,16 @@ The steps include:</p>
 </pre></div>
 </div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>episode_reward_mean = 0:   0%|          | 0/10 [00:00&lt;?, ?it/s]
-episode_reward_mean = -0.4579917788505554:  10%|█         | 1/10 [00:06&lt;01:00,  6.71s/it]
-episode_reward_mean = 0.14524875581264496:  20%|██        | 2/10 [00:13&lt;00:53,  6.70s/it]
-episode_reward_mean = 1.168386459350586:  30%|███       | 3/10 [00:20&lt;00:46,  6.71s/it]
-episode_reward_mean = 1.3613134622573853:  40%|████      | 4/10 [00:26&lt;00:40,  6.70s/it]
-episode_reward_mean = 1.921463131904602:  50%|█████     | 5/10 [00:33&lt;00:33,  6.68s/it]
-episode_reward_mean = 2.2106335163116455:  60%|██████    | 6/10 [00:40&lt;00:26,  6.67s/it]
-episode_reward_mean = 2.1925103664398193:  70%|███████   | 7/10 [00:46&lt;00:19,  6.65s/it]
-episode_reward_mean = 2.664064407348633:  80%|████████  | 8/10 [00:53&lt;00:13,  6.68s/it]
-episode_reward_mean = 2.6539173126220703:  90%|█████████ | 9/10 [01:00&lt;00:06,  6.72s/it]
-episode_reward_mean = 2.743558168411255: 100%|██████████| 10/10 [01:07&lt;00:00,  6.77s/it]
+episode_reward_mean = -0.4579917788505554:  10%|█         | 1/10 [00:06&lt;01:00,  6.74s/it]
+episode_reward_mean = 0.14524875581264496:  20%|██        | 2/10 [00:13&lt;00:53,  6.72s/it]
+episode_reward_mean = 1.168386459350586:  30%|███       | 3/10 [00:20&lt;00:47,  6.72s/it]
+episode_reward_mean = 1.3613134622573853:  40%|████      | 4/10 [00:26&lt;00:40,  6.71s/it]
+episode_reward_mean = 1.921463131904602:  50%|█████     | 5/10 [00:33&lt;00:33,  6.71s/it]
+episode_reward_mean = 2.2106335163116455:  60%|██████    | 6/10 [00:40&lt;00:26,  6.71s/it]
+episode_reward_mean = 2.1925103664398193:  70%|███████   | 7/10 [00:46&lt;00:20,  6.70s/it]
+episode_reward_mean = 2.664064407348633:  80%|████████  | 8/10 [00:53&lt;00:13,  6.72s/it]
+episode_reward_mean = 2.6539173126220703:  90%|█████████ | 9/10 [01:00&lt;00:06,  6.76s/it]
+episode_reward_mean = 2.743558168411255: 100%|██████████| 10/10 [01:07&lt;00:00,  6.81s/it]
 </pre></div>
 </div>
 </section>
@@ -1362,8 +1362,8 @@ Here are a few videos of some possible scenarios you can try in VMAS.</p>
 <p><span class="caption-text">Scenarios available in <a class="reference external" href="https://github.com/proroklab/VectorizedMultiAgentSimulator">VMAS</a></span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (2 minutes 5.050 seconds)</p>
-<p><strong>Estimated memory usage:</strong>  321 MB</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (2 minutes 2.172 seconds)</p>
+<p><strong>Estimated memory usage:</strong>  320 MB</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-tutorials-multiagent-ppo-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/a977047786179278d12b52546e1c0da8/multiagent_ppo.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">multiagent_ppo.ipynb</span></code></a></p>

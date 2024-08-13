@@ -117,7 +117,7 @@ This tutorial is structured as follows:
    wrapper for the VMAS simulator.
 
 3. Next, we will design the policy and the critic networks, discussing the impact of the various choices on
-   parameter sharing and critic centralisation.
+   parameter sharing and critic centralization.
 
 4. Next, we will create the sampling collector and the replay buffer.
 
@@ -228,7 +228,7 @@ Environment
 -----------
 
 Multi-agent environments simulate multiple agents interacting with the world.
-TorchRL API allows integrating various types of multi-agent environment flavours.
+TorchRL API allows integrating various types of multi-agent environment flavors.
 Some examples include environments with shared or individual agent rewards, done flags, and observations.
 For more information on how the multi-agent environments API works in TorchRL, you can check out the dedicated
 :ref:`doc section <MARL-environment-API>`.
@@ -239,7 +239,7 @@ Furthermore, it uses *vectorization* to perform simulation in a batch.
 This means that all its state and physics
 are PyTorch tensors with a first dimension representing the number of parallel environments in a batch.
 This allows leveraging the Single Instruction Multiple Data (SIMD) paradigm of GPUs and significantly
-speed up parallel computation by leveraging parallelisation in GPU warps. It also means
+speed up parallel computation by leveraging parallelization in GPU warps. It also means
 that, when using it in TorchRL, both simulation and training can be run on-device, without ever passing
 data to the CPU.
 
@@ -251,7 +251,7 @@ Agents need to use LIDARs (dots around them) to
 avoid colliding into each other.
 Agents act in a 2D continuous world with drag and elastic collisions.
 Their actions are 2D continuous forces which determine their acceleration.
-The reward is composed of three terms: a collision penalisation, a reward based on the distance to the goal, and a
+The reward is composed of three terms: a collision penalization, a reward based on the distance to the goal, and a
 final shared reward given when all agents reach their goal.
 The distance-based term is computed as the difference in the relative distance
 between an agent and its goal over two consecutive timesteps.
@@ -662,7 +662,7 @@ We design the policy in three steps.
 **First**: define a neural network ``n_obs_per_agent`` -> ``2 * n_actions_per_agents``
 
 For this we use the ``MultiAgentMLP``, a TorchRL module made exactly for
-multiple agents, with much customisation available.
+multiple agents, with much customization available.
 
 
 .. GENERATED FROM PYTHON SOURCE LINES 396-416
@@ -1137,7 +1137,7 @@ The steps include:
 
  .. code-block:: none
 
-    episode_reward_mean = 0:   0%|          | 0/10 [00:00<?, ?it/s]    episode_reward_mean = -0.4579917788505554:  10%|█         | 1/10 [00:06<01:00,  6.71s/it]    episode_reward_mean = 0.14524875581264496:  20%|██        | 2/10 [00:13<00:53,  6.70s/it]    episode_reward_mean = 1.168386459350586:  30%|███       | 3/10 [00:20<00:46,  6.71s/it]      episode_reward_mean = 1.3613134622573853:  40%|████      | 4/10 [00:26<00:40,  6.70s/it]    episode_reward_mean = 1.921463131904602:  50%|█████     | 5/10 [00:33<00:33,  6.68s/it]     episode_reward_mean = 2.2106335163116455:  60%|██████    | 6/10 [00:40<00:26,  6.67s/it]    episode_reward_mean = 2.1925103664398193:  70%|███████   | 7/10 [00:46<00:19,  6.65s/it]    episode_reward_mean = 2.664064407348633:  80%|████████  | 8/10 [00:53<00:13,  6.68s/it]     episode_reward_mean = 2.6539173126220703:  90%|█████████ | 9/10 [01:00<00:06,  6.72s/it]    episode_reward_mean = 2.743558168411255: 100%|██████████| 10/10 [01:07<00:00,  6.77s/it]
+    episode_reward_mean = 0:   0%|          | 0/10 [00:00<?, ?it/s]    episode_reward_mean = -0.4579917788505554:  10%|█         | 1/10 [00:06<01:00,  6.74s/it]    episode_reward_mean = 0.14524875581264496:  20%|██        | 2/10 [00:13<00:53,  6.72s/it]    episode_reward_mean = 1.168386459350586:  30%|███       | 3/10 [00:20<00:47,  6.72s/it]      episode_reward_mean = 1.3613134622573853:  40%|████      | 4/10 [00:26<00:40,  6.71s/it]    episode_reward_mean = 1.921463131904602:  50%|█████     | 5/10 [00:33<00:33,  6.71s/it]     episode_reward_mean = 2.2106335163116455:  60%|██████    | 6/10 [00:40<00:26,  6.71s/it]    episode_reward_mean = 2.1925103664398193:  70%|███████   | 7/10 [00:46<00:20,  6.70s/it]    episode_reward_mean = 2.664064407348633:  80%|████████  | 8/10 [00:53<00:13,  6.72s/it]     episode_reward_mean = 2.6539173126220703:  90%|█████████ | 9/10 [01:00<00:06,  6.76s/it]    episode_reward_mean = 2.743558168411255: 100%|██████████| 10/10 [01:07<00:00,  6.81s/it]
 
 
 
@@ -1268,9 +1268,9 @@ Here are a few videos of some possible scenarios you can try in VMAS.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (2 minutes 5.050 seconds)
+   **Total running time of the script:** (2 minutes 2.172 seconds)
 
-**Estimated memory usage:**  321 MB
+**Estimated memory usage:**  320 MB
 
 
 .. _sphx_glr_download_tutorials_multiagent_ppo.py:

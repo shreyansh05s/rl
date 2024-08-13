@@ -407,6 +407,7 @@
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">import</span> <span class="nn">dataclasses</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
 
 <span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
 <span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Number</span>
@@ -581,8 +582,15 @@
         <span class="k">if</span> <span class="n">out_features</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;out_features must be specified for MLP.&quot;</span><span class="p">)</span>
 
-        <span class="n">default_num_cells</span> <span class="o">=</span> <span class="mi">32</span>
         <span class="k">if</span> <span class="n">num_cells</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s2">&quot;The current behavior of MLP when not providing `num_cells` is that the number of cells is &quot;</span>
+                <span class="s2">&quot;set to [default_num_cells] * depth, where `depth=3` by default and `default_num_cells=0`. &quot;</span>
+                <span class="s2">&quot;From v0.7, this behavior will switch and `depth=0` will be used. &quot;</span>
+                <span class="s2">&quot;To silence tis message, indicate what number of cells you desire.&quot;</span><span class="p">,</span>
+                <span class="n">category</span><span class="o">=</span><span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">default_num_cells</span> <span class="o">=</span> <span class="mi">32</span>
             <span class="k">if</span> <span class="n">depth</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">num_cells</span> <span class="o">=</span> <span class="p">[</span><span class="n">default_num_cells</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span>
                 <span class="n">depth</span> <span class="o">=</span> <span class="mi">3</span>

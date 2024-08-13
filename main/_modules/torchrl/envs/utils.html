@@ -762,7 +762,7 @@
 
 <span class="sd">    Given a tensordict retrieved after a step, returns the :obj:`&quot;next&quot;` indexed-tensordict.</span>
 <span class="sd">    The arguments allow for a precise control over what should be kept and what</span>
-<span class="sd">    should be copied from the ``&quot;next&quot;`` entry. The default behaviour is:</span>
+<span class="sd">    should be copied from the ``&quot;next&quot;`` entry. The default behavior is:</span>
 <span class="sd">    move the observation entries, reward and done states to the root, exclude</span>
 <span class="sd">    the current action and keep all extra keys (non-action, non-done, non-reward).</span>
 
@@ -1905,7 +1905,7 @@
 <span class="s2">    If you want TorchRL to automatically wrap your policy with a TensorDictModule</span>
 <span class="s2">    then the arguments to policy.forward must correspond one-to-one with entries</span>
 <span class="s2">    in env.observation_spec.</span>
-<span class="s2">    For more complex behaviour and more control you can consider writing your</span>
+<span class="s2">    For more complex behavior and more control you can consider writing your</span>
 <span class="s2">    own TensorDictModule.</span>
 <span class="s2">    Check the collector documentation to know more about accepted policies.</span>
 <span class="s2">    &quot;&quot;&quot;</span>
@@ -1943,7 +1943,7 @@
 
     <span class="c1"># if in_keys or out_keys were defined but policy is not a TensorDictModule or</span>
     <span class="c1"># accepts multiple arguments then it&#39;s likely the user is trying to do something</span>
-    <span class="c1"># that will have undetermined behaviour, we raise an error</span>
+    <span class="c1"># that will have undetermined behavior, we raise an error</span>
     <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
         <span class="s2">&quot;Received a policy that defines in_keys or out_keys and also expects multiple &quot;</span>
         <span class="s2">&quot;arguments to policy.forward. If the policy is compatible with TensorDict, it &quot;</span>

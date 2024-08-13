@@ -752,7 +752,7 @@
 
     <span class="c1"># if in_keys or out_keys were defined but module is not a TensorDictModule or</span>
     <span class="c1"># accepts multiple arguments then it&#39;s likely the user is trying to do something</span>
-    <span class="c1"># that will have undetermined behaviour, we raise an error</span>
+    <span class="c1"># that will have undetermined behavior, we raise an error</span>
     <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
         <span class="s2">&quot;Received a module that defines in_keys or out_keys and also expects multiple &quot;</span>
         <span class="s2">&quot;arguments to module.forward. If the module is compatible with TensorDict, it &quot;</span>
@@ -805,7 +805,7 @@
             <span class="s2">&quot;env.observation_spec. If you want TorchRL to automatically &quot;</span>
             <span class="s2">&quot;wrap your module with a TensorDictModule then the arguments &quot;</span>
             <span class="s2">&quot;to module must correspond one-to-one with entries in &quot;</span>
-            <span class="s2">&quot;in_keys. For more complex behaviour and more control you can &quot;</span>
+            <span class="s2">&quot;in_keys. For more complex behavior and more control you can &quot;</span>
             <span class="s2">&quot;consider writing your own TensorDictModule.&quot;</span>
         <span class="p">)</span>
 
