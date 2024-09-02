@@ -1149,7 +1149,7 @@ return the policy and value losses.</p>
     <span class="n">sample_log_prob</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;agents&quot;</span><span class="p">,</span> <span class="s2">&quot;sample_log_prob&quot;</span><span class="p">),</span>
     <span class="n">value</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;agents&quot;</span><span class="p">,</span> <span class="s2">&quot;state_value&quot;</span><span class="p">),</span>
     <span class="c1"># These last 2 keys will be expanded to match the reward shape</span>
-    <a href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="torch.Tensor" class="sphx-glr-backref-module-torch sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">done</span></a><span class="o">=</span><span class="p">(</span><span class="s2">&quot;agents&quot;</span><span class="p">,</span> <span class="s2">&quot;done&quot;</span><span class="p">),</span>
+    <span class="n">done</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;agents&quot;</span><span class="p">,</span> <span class="s2">&quot;done&quot;</span><span class="p">),</span>
     <span class="n">terminated</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;agents&quot;</span><span class="p">,</span> <span class="s2">&quot;terminated&quot;</span><span class="p">),</span>
 <span class="p">)</span>
 
@@ -1232,13 +1232,13 @@ The steps include:</p>
             <span class="n">subdata</span> <span class="o">=</span> <span class="n">replay_buffer</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span>
             <span class="n">loss_vals</span> <span class="o">=</span> <span class="n">loss_module</span><span class="p">(</span><span class="n">subdata</span><span class="p">)</span>
 
-            <a href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="torch.Tensor" class="sphx-glr-backref-module-torch sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">loss_value</span></a> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">loss_value</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="n">loss_vals</span><span class="p">[</span><span class="s2">&quot;loss_objective&quot;</span><span class="p">]</span>
                 <span class="o">+</span> <span class="n">loss_vals</span><span class="p">[</span><span class="s2">&quot;loss_critic&quot;</span><span class="p">]</span>
                 <span class="o">+</span> <span class="n">loss_vals</span><span class="p">[</span><span class="s2">&quot;loss_entropy&quot;</span><span class="p">]</span>
             <span class="p">)</span>
 
-            <a href="https://pytorch.org/docs/stable/generated/torch.Tensor.backward.html#torch.Tensor.backward" title="torch.Tensor.backward" class="sphx-glr-backref-module-torch sphx-glr-backref-type-py-method"><span class="n">loss_value</span><span class="o">.</span><span class="n">backward</span></a><span class="p">()</span>
+            <span class="n">loss_value</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
 
             <a href="https://pytorch.org/docs/stable/generated/torch.nn.utils.clip_grad_norm_.html#torch.nn.utils.clip_grad_norm_" title="torch.nn.utils.clip_grad_norm_" class="sphx-glr-backref-module-torch-nn-utils sphx-glr-backref-type-py-function"><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">clip_grad_norm_</span></a><span class="p">(</span>
                 <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module.parameters" title="torch.nn.Module.parameters" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-method"><span class="n">loss_module</span><span class="o">.</span><span class="n">parameters</span></a><span class="p">(),</span> <span class="n">max_grad_norm</span>
@@ -1250,26 +1250,77 @@ The steps include:</p>
     <span class="n">collector</span><span class="o">.</span><span class="n">update_policy_weights_</span><span class="p">()</span>
 
     <span class="c1"># Logging</span>
-    <a href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="torch.Tensor" class="sphx-glr-backref-module-torch sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">done</span></a> <span class="o">=</span> <span class="n">tensordict_data</span><span class="o">.</span><span class="n">get</span><span class="p">((</span><span class="s2">&quot;next&quot;</span><span class="p">,</span> <span class="s2">&quot;agents&quot;</span><span class="p">,</span> <span class="s2">&quot;done&quot;</span><span class="p">))</span>
+    <span class="n">done</span> <span class="o">=</span> <span class="n">tensordict_data</span><span class="o">.</span><span class="n">get</span><span class="p">((</span><span class="s2">&quot;next&quot;</span><span class="p">,</span> <span class="s2">&quot;agents&quot;</span><span class="p">,</span> <span class="s2">&quot;done&quot;</span><span class="p">))</span>
     <span class="n">episode_reward_mean</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="n">tensordict_data</span><span class="o">.</span><span class="n">get</span><span class="p">((</span><span class="s2">&quot;next&quot;</span><span class="p">,</span> <span class="s2">&quot;agents&quot;</span><span class="p">,</span> <span class="s2">&quot;episode_reward&quot;</span><span class="p">))[</span><a href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="torch.Tensor" class="sphx-glr-backref-module-torch sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">done</span></a><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+        <span class="n">tensordict_data</span><span class="o">.</span><span class="n">get</span><span class="p">((</span><span class="s2">&quot;next&quot;</span><span class="p">,</span> <span class="s2">&quot;agents&quot;</span><span class="p">,</span> <span class="s2">&quot;episode_reward&quot;</span><span class="p">))[</span><span class="n">done</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
     <span class="p">)</span>
     <span class="n">episode_reward_mean_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">episode_reward_mean</span><span class="p">)</span>
     <span class="n">pbar</span><span class="o">.</span><span class="n">set_description</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;episode_reward_mean = </span><span class="si">{</span><span class="n">episode_reward_mean</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">refresh</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">pbar</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>episode_reward_mean = 0:   0%|          | 0/10 [00:00&lt;?, ?it/s]
-episode_reward_mean = -0.4579917788505554:  10%|█         | 1/10 [00:06&lt;01:01,  6.80s/it]
-episode_reward_mean = 0.14524875581264496:  20%|██        | 2/10 [00:13&lt;00:54,  6.81s/it]
-episode_reward_mean = 1.168386459350586:  30%|███       | 3/10 [00:20&lt;00:47,  6.80s/it]
-episode_reward_mean = 1.3613134622573853:  40%|████      | 4/10 [00:27&lt;00:40,  6.80s/it]
-episode_reward_mean = 1.921463131904602:  50%|█████     | 5/10 [00:34&lt;00:34,  6.80s/it]
-episode_reward_mean = 2.2106335163116455:  60%|██████    | 6/10 [00:40&lt;00:27,  6.80s/it]
-episode_reward_mean = 2.1925103664398193:  70%|███████   | 7/10 [00:47&lt;00:20,  6.80s/it]
-episode_reward_mean = 2.664064407348633:  80%|████████  | 8/10 [00:54&lt;00:13,  6.82s/it]
-episode_reward_mean = 2.6539173126220703:  90%|█████████ | 9/10 [01:01&lt;00:06,  6.86s/it]
-episode_reward_mean = 2.743558168411255: 100%|██████████| 10/10 [01:08&lt;00:00,  6.91s/it]
+<div class="sphx-glr-script-out highlight-pytb notranslate"><div class="highlight"><pre><span></span><span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;/pytorch/rl/docs/source/reference/generated/tutorials/multiagent_ppo.py&quot;</span>, line <span class="m">658</span>, in <span class="n">&lt;module&gt;</span>
+<span class="w">    </span><span class="n">GAE</span><span class="p">(</span>
+  File <span class="nb">&quot;/pytorch/rl/env/lib/python3.8/site-packages/torch/nn/modules/module.py&quot;</span>, line <span class="m">1735</span>, in <span class="n">_wrapped_call_impl</span>
+<span class="w">    </span><span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_impl</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+  File <span class="nb">&quot;/pytorch/rl/env/lib/python3.8/site-packages/torch/nn/modules/module.py&quot;</span>, line <span class="m">1746</span>, in <span class="n">_call_impl</span>
+<span class="w">    </span><span class="k">return</span> <span class="n">forward_call</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+  File <span class="nb">&quot;/pytorch/rl/torchrl/objectives/value/advantages.py&quot;</span>, line <span class="m">68</span>, in <span class="n">new_func</span>
+<span class="w">    </span><span class="k">return</span> <span class="n">fun</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+  File <span class="nb">&quot;/pytorch/rl/torchrl/objectives/value/advantages.py&quot;</span>, line <span class="m">57</span>, in <span class="n">new_fun</span>
+<span class="w">    </span><span class="k">return</span> <span class="n">fun</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+  File <span class="nb">&quot;/pytorch/rl/env/lib/python3.8/site-packages/tensordict/nn/common.py&quot;</span>, line <span class="m">297</span>, in <span class="n">wrapper</span>
+<span class="w">    </span><span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="n">_self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+  File <span class="nb">&quot;/pytorch/rl/torchrl/objectives/value/advantages.py&quot;</span>, line <span class="m">1339</span>, in <span class="n">forward</span>
+<span class="w">    </span><span class="n">value</span><span class="p">,</span> <span class="n">next_value</span> <span class="o">=</span> <span class="n">_call_value_nets</span><span class="p">(</span>
+  File <span class="nb">&quot;/pytorch/rl/torchrl/objectives/value/advantages.py&quot;</span>, line <span class="m">145</span>, in <span class="n">_call_value_nets</span>
+<span class="w">    </span><span class="n">data_out</span> <span class="o">=</span> <span class="n">_vmap_func</span><span class="p">(</span><span class="n">value_net</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">randomness</span><span class="o">=</span><span class="n">vmap_randomness</span><span class="p">)(</span>
+  File <span class="nb">&quot;/pytorch/rl/env/lib/python3.8/site-packages/torch/_functorch/apis.py&quot;</span>, line <span class="m">202</span>, in <span class="n">wrapped</span>
+<span class="w">    </span><span class="k">return</span> <span class="n">vmap_impl</span><span class="p">(</span>
+  File <span class="nb">&quot;/pytorch/rl/env/lib/python3.8/site-packages/torch/_functorch/vmap.py&quot;</span>, line <span class="m">331</span>, in <span class="n">vmap_impl</span>
+<span class="w">    </span><span class="k">return</span> <span class="n">_flat_vmap</span><span class="p">(</span>
+  File <span class="nb">&quot;/pytorch/rl/env/lib/python3.8/site-packages/torch/_functorch/vmap.py&quot;</span>, line <span class="m">479</span>, in <span class="n">_flat_vmap</span>
+<span class="w">    </span><span class="n">batched_outputs</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">batched_inputs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+  File <span class="nb">&quot;/pytorch/rl/torchrl/objectives/utils.py&quot;</span>, line <span class="m">491</span>, in <span class="n">decorated_module</span>
+<span class="w">    </span><span class="k">return</span> <span class="n">module</span><span class="p">(</span><span class="o">*</span><span class="n">module_args</span><span class="p">)</span>
+  File <span class="nb">&quot;/pytorch/rl/env/lib/python3.8/site-packages/tensordict/base.py&quot;</span>, line <span class="m">8626</span>, in <span class="n">__exit__</span>
+<span class="w">    </span><span class="k">return</span> <span class="n">_inv_caller</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
+  File <span class="nb">&quot;/pytorch/rl/env/lib/python3.8/site-packages/tensordict/_contextlib.py&quot;</span>, line <span class="m">330</span>, in <span class="n">_reverse_to_module</span>
+<span class="w">    </span><span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_module</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">swap_dest</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
+  File <span class="nb">&quot;/pytorch/rl/env/lib/python3.8/site-packages/tensordict/utils.py&quot;</span>, line <span class="m">1231</span>, in <span class="n">new_func</span>
+<span class="w">    </span><span class="n">out</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="n">_self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+  File <span class="nb">&quot;/pytorch/rl/env/lib/python3.8/site-packages/tensordict/base.py&quot;</span>, line <span class="m">1418</span>, in <span class="n">to_module</span>
+<span class="w">    </span><span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_module</span><span class="p">(</span>
+  File <span class="nb">&quot;/pytorch/rl/env/lib/python3.8/site-packages/tensordict/_td.py&quot;</span>, line <span class="m">568</span>, in <span class="n">_to_module</span>
+<span class="w">    </span><span class="n">local_out</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">_to_module</span><span class="p">(</span>
+  File <span class="nb">&quot;/pytorch/rl/env/lib/python3.8/site-packages/tensordict/_td.py&quot;</span>, line <span class="m">568</span>, in <span class="n">_to_module</span>
+<span class="w">    </span><span class="n">local_out</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">_to_module</span><span class="p">(</span>
+  File <span class="nb">&quot;/pytorch/rl/env/lib/python3.8/site-packages/tensordict/nn/params.py&quot;</span>, line <span class="m">189</span>, in <span class="n">new_func</span>
+<span class="w">    </span><span class="n">out</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_param_td</span><span class="p">,</span> <span class="n">name</span><span class="p">)(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+  File <span class="nb">&quot;/pytorch/rl/env/lib/python3.8/site-packages/tensordict/_td.py&quot;</span>, line <span class="m">473</span>, in <span class="n">_to_module</span>
+<span class="w">    </span><span class="n">swap</span> <span class="o">=</span> <span class="n">module</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+  File <span class="nb">&quot;/pytorch/rl/env/lib/python3.8/site-packages/tensordict/base.py&quot;</span>, line <span class="m">8821</span>, in <span class="n">copy</span>
+<span class="w">    </span><span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">clone</span><span class="p">(</span><span class="n">recurse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+  File <span class="nb">&quot;/pytorch/rl/env/lib/python3.8/site-packages/tensordict/base.py&quot;</span>, line <span class="m">8808</span>, in <span class="n">clone</span>
+<span class="w">    </span><span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_clone</span><span class="p">(</span><span class="n">recurse</span><span class="o">=</span><span class="n">recurse</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+  File <span class="nb">&quot;/pytorch/rl/env/lib/python3.8/site-packages/tensordict/nn/params.py&quot;</span>, line <span class="m">606</span>, in <span class="n">_clone</span>
+<span class="w">    </span><span class="k">return</span> <span class="n">TensorDictParams</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_param_td</span><span class="o">.</span><span class="n">_clone</span><span class="p">(</span><span class="kc">False</span><span class="p">),</span> <span class="n">no_convert</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+  File <span class="nb">&quot;/pytorch/rl/env/lib/python3.8/site-packages/tensordict/nn/params.py&quot;</span>, line <span class="m">334</span>, in <span class="n">__init__</span>
+<span class="w">    </span><span class="bp">self</span><span class="o">.</span><span class="n">_param_td</span> <span class="o">=</span> <span class="n">_apply_leaves</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_param_td</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">func</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+  File <span class="nb">&quot;/pytorch/rl/env/lib/python3.8/site-packages/tensordict/nn/params.py&quot;</span>, line <span class="m">66</span>, in <span class="n">_apply_leaves</span>
+<span class="w">    </span><span class="n">_apply_leaves</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">fn</span><span class="p">),</span>
+  File <span class="nb">&quot;/pytorch/rl/env/lib/python3.8/site-packages/tensordict/nn/params.py&quot;</span>, line <span class="m">66</span>, in <span class="n">_apply_leaves</span>
+<span class="w">    </span><span class="n">_apply_leaves</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">fn</span><span class="p">),</span>
+  File <span class="nb">&quot;/pytorch/rl/env/lib/python3.8/site-packages/tensordict/nn/params.py&quot;</span>, line <span class="m">90</span>, in <span class="n">_apply_leaves</span>
+<span class="w">    </span><span class="k">return</span> <span class="n">fn</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+  File <span class="nb">&quot;/pytorch/rl/env/lib/python3.8/site-packages/tensordict/nn/params.py&quot;</span>, line <span class="m">334</span>, in <span class="n">&lt;lambda&gt;</span>
+<span class="w">    </span><span class="bp">self</span><span class="o">.</span><span class="n">_param_td</span> <span class="o">=</span> <span class="n">_apply_leaves</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_param_td</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">func</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+  File <span class="nb">&quot;/pytorch/rl/env/lib/python3.8/site-packages/tensordict/nn/params.py&quot;</span>, line <span class="m">121</span>, in <span class="n">_maybe_make_param_or_buffer</span>
+<span class="w">    </span><span class="n">tensor</span> <span class="o">=</span> <span class="n">Buffer</span><span class="p">(</span><span class="n">tensor</span><span class="p">)</span>
+  File <span class="nb">&quot;/pytorch/rl/env/lib/python3.8/site-packages/tensordict/utils.py&quot;</span>, line <span class="m">1826</span>, in <span class="n">__new__</span>
+<span class="w">    </span><span class="n">t</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">requires_grad_</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">requires_grad</span><span class="p">)</span>
+<span class="gr">RuntimeError</span>: <span class="n">You are attempting to call Tensor.requires_grad_() (or perhaps using torch.autograd.functional.* APIs) inside of a function being transformed by a functorch transform. This is unsupported, please attempt to use the functorch transforms (e.g. grad, vjp, jacrev, jacfwd, hessian) or call requires_grad_() outside of a function being transformed instead.</span>
 </pre></div>
 </div>
 </section>
@@ -1284,7 +1335,7 @@ episode_reward_mean = 2.743558168411255: 100%|██████████| 10
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<img src="../_images/sphx_glr_multiagent_ppo_001.png" srcset="../_images/sphx_glr_multiagent_ppo_001.png" alt="Episode reward mean" class = "sphx-glr-single-img"/></section>
+</section>
 <section id="render">
 <h2>Render<a class="headerlink" href="#render" title="Permalink to this heading">¶</a></h2>
 <p>If you are running this in a machine with GUI, you can render the trained policy by running:</p>
@@ -1362,8 +1413,8 @@ Here are a few videos of some possible scenarios you can try in VMAS.</p>
 <p><span class="caption-text">Scenarios available in <a class="reference external" href="https://github.com/proroklab/VectorizedMultiAgentSimulator">VMAS</a></span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (2 minutes 6.494 seconds)</p>
-<p><strong>Estimated memory usage:</strong>  320 MB</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (1 minutes 7.062 seconds)</p>
+<p><strong>Estimated memory usage:</strong>  4159 MB</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-tutorials-multiagent-ppo-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/a977047786179278d12b52546e1c0da8/multiagent_ppo.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">multiagent_ppo.ipynb</span></code></a></p>

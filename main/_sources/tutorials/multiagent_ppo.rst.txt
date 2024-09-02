@@ -1131,13 +1131,73 @@ The steps include:
 
 
 
-
-
 .. rst-class:: sphx-glr-script-out
 
- .. code-block:: none
+.. code-block:: pytb
 
-    episode_reward_mean = 0:   0%|          | 0/10 [00:00<?, ?it/s]    episode_reward_mean = -0.4579917788505554:  10%|█         | 1/10 [00:06<01:01,  6.80s/it]    episode_reward_mean = 0.14524875581264496:  20%|██        | 2/10 [00:13<00:54,  6.81s/it]    episode_reward_mean = 1.168386459350586:  30%|███       | 3/10 [00:20<00:47,  6.80s/it]      episode_reward_mean = 1.3613134622573853:  40%|████      | 4/10 [00:27<00:40,  6.80s/it]    episode_reward_mean = 1.921463131904602:  50%|█████     | 5/10 [00:34<00:34,  6.80s/it]     episode_reward_mean = 2.2106335163116455:  60%|██████    | 6/10 [00:40<00:27,  6.80s/it]    episode_reward_mean = 2.1925103664398193:  70%|███████   | 7/10 [00:47<00:20,  6.80s/it]    episode_reward_mean = 2.664064407348633:  80%|████████  | 8/10 [00:54<00:13,  6.82s/it]     episode_reward_mean = 2.6539173126220703:  90%|█████████ | 9/10 [01:01<00:06,  6.86s/it]    episode_reward_mean = 2.743558168411255: 100%|██████████| 10/10 [01:08<00:00,  6.91s/it]
+    Traceback (most recent call last):
+      File "/pytorch/rl/docs/source/reference/generated/tutorials/multiagent_ppo.py", line 658, in <module>
+        GAE(
+      File "/pytorch/rl/env/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1735, in _wrapped_call_impl
+        return self._call_impl(*args, **kwargs)
+      File "/pytorch/rl/env/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1746, in _call_impl
+        return forward_call(*args, **kwargs)
+      File "/pytorch/rl/torchrl/objectives/value/advantages.py", line 68, in new_func
+        return fun(self, *args, **kwargs)
+      File "/pytorch/rl/torchrl/objectives/value/advantages.py", line 57, in new_fun
+        return fun(self, *args, **kwargs)
+      File "/pytorch/rl/env/lib/python3.8/site-packages/tensordict/nn/common.py", line 297, in wrapper
+        return func(_self, tensordict, *args, **kwargs)
+      File "/pytorch/rl/torchrl/objectives/value/advantages.py", line 1339, in forward
+        value, next_value = _call_value_nets(
+      File "/pytorch/rl/torchrl/objectives/value/advantages.py", line 145, in _call_value_nets
+        data_out = _vmap_func(value_net, (0, 0), randomness=vmap_randomness)(
+      File "/pytorch/rl/env/lib/python3.8/site-packages/torch/_functorch/apis.py", line 202, in wrapped
+        return vmap_impl(
+      File "/pytorch/rl/env/lib/python3.8/site-packages/torch/_functorch/vmap.py", line 331, in vmap_impl
+        return _flat_vmap(
+      File "/pytorch/rl/env/lib/python3.8/site-packages/torch/_functorch/vmap.py", line 479, in _flat_vmap
+        batched_outputs = func(*batched_inputs, **kwargs)
+      File "/pytorch/rl/torchrl/objectives/utils.py", line 491, in decorated_module
+        return module(*module_args)
+      File "/pytorch/rl/env/lib/python3.8/site-packages/tensordict/base.py", line 8626, in __exit__
+        return _inv_caller(self, args, kwargs, out)
+      File "/pytorch/rl/env/lib/python3.8/site-packages/tensordict/_contextlib.py", line 330, in _reverse_to_module
+        return self.to_module(*args, **kwargs, swap_dest=out)
+      File "/pytorch/rl/env/lib/python3.8/site-packages/tensordict/utils.py", line 1231, in new_func
+        out = func(_self, *args, **kwargs)
+      File "/pytorch/rl/env/lib/python3.8/site-packages/tensordict/base.py", line 1418, in to_module
+        return self._to_module(
+      File "/pytorch/rl/env/lib/python3.8/site-packages/tensordict/_td.py", line 568, in _to_module
+        local_out = value._to_module(
+      File "/pytorch/rl/env/lib/python3.8/site-packages/tensordict/_td.py", line 568, in _to_module
+        local_out = value._to_module(
+      File "/pytorch/rl/env/lib/python3.8/site-packages/tensordict/nn/params.py", line 189, in new_func
+        out = getattr(self._param_td, name)(*args, **kwargs)
+      File "/pytorch/rl/env/lib/python3.8/site-packages/tensordict/_td.py", line 473, in _to_module
+        swap = module.copy()
+      File "/pytorch/rl/env/lib/python3.8/site-packages/tensordict/base.py", line 8821, in copy
+        return self.clone(recurse=False)
+      File "/pytorch/rl/env/lib/python3.8/site-packages/tensordict/base.py", line 8808, in clone
+        result = self._clone(recurse=recurse, **kwargs)
+      File "/pytorch/rl/env/lib/python3.8/site-packages/tensordict/nn/params.py", line 606, in _clone
+        return TensorDictParams(self._param_td._clone(False), no_convert=True)
+      File "/pytorch/rl/env/lib/python3.8/site-packages/tensordict/nn/params.py", line 334, in __init__
+        self._param_td = _apply_leaves(self._param_td, lambda x: func(x))
+      File "/pytorch/rl/env/lib/python3.8/site-packages/tensordict/nn/params.py", line 66, in _apply_leaves
+        _apply_leaves(val, fn),
+      File "/pytorch/rl/env/lib/python3.8/site-packages/tensordict/nn/params.py", line 66, in _apply_leaves
+        _apply_leaves(val, fn),
+      File "/pytorch/rl/env/lib/python3.8/site-packages/tensordict/nn/params.py", line 90, in _apply_leaves
+        return fn(data)
+      File "/pytorch/rl/env/lib/python3.8/site-packages/tensordict/nn/params.py", line 334, in <lambda>
+        self._param_td = _apply_leaves(self._param_td, lambda x: func(x))
+      File "/pytorch/rl/env/lib/python3.8/site-packages/tensordict/nn/params.py", line 121, in _maybe_make_param_or_buffer
+        tensor = Buffer(tensor)
+      File "/pytorch/rl/env/lib/python3.8/site-packages/tensordict/utils.py", line 1826, in __new__
+        t = data.detach().requires_grad_(data.requires_grad)
+    RuntimeError: You are attempting to call Tensor.requires_grad_() (or perhaps using torch.autograd.functional.* APIs) inside of a function being transformed by a functorch transform. This is unsupported, please attempt to use the functorch transforms (e.g. grad, vjp, jacrev, jacfwd, hessian) or call requires_grad_() outside of a function being transformed instead.
+
 
 
 
@@ -1160,17 +1220,6 @@ To make training last longer, increase the ``n_iters`` hyperparameter.
     plt.ylabel("Reward")
     plt.title("Episode reward mean")
     plt.show()
-
-
-
-
-.. image-sg:: /tutorials/images/sphx_glr_multiagent_ppo_001.png
-   :alt: Episode reward mean
-   :srcset: /tutorials/images/sphx_glr_multiagent_ppo_001.png
-   :class: sphx-glr-single-img
-
-
-
 
 
 .. GENERATED FROM PYTHON SOURCE LINES 713-767
@@ -1268,9 +1317,9 @@ Here are a few videos of some possible scenarios you can try in VMAS.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (2 minutes 6.494 seconds)
+   **Total running time of the script:** (1 minutes 7.062 seconds)
 
-**Estimated memory usage:**  320 MB
+**Estimated memory usage:**  4159 MB
 
 
 .. _sphx_glr_download_tutorials_multiagent_ppo.py:

@@ -1052,13 +1052,43 @@ The steps include:
 
 
 
-
-
 .. rst-class:: sphx-glr-script-out
 
- .. code-block:: none
+.. code-block:: pytb
 
-      0%|          | 0/10000 [00:00<?, ?it/s]     10%|█         | 1000/10000 [00:02<00:18, 473.78it/s]    eval cumulative reward:  64.1889 (init:  64.1889), eval step-count: 6, average reward= 9.0931 (init= 9.0931), step count (max): 12, lr policy:  0.0003:  10%|█         | 1000/10000 [00:02<00:18, 473.78it/s]    eval cumulative reward:  64.1889 (init:  64.1889), eval step-count: 6, average reward= 9.0931 (init= 9.0931), step count (max): 12, lr policy:  0.0003:  20%|██        | 2000/10000 [00:04<00:16, 477.87it/s]    eval cumulative reward:  64.1889 (init:  64.1889), eval step-count: 6, average reward= 9.1123 (init= 9.0931), step count (max): 12, lr policy:  0.0003:  20%|██        | 2000/10000 [00:04<00:16, 477.87it/s]    eval cumulative reward:  64.1889 (init:  64.1889), eval step-count: 6, average reward= 9.1123 (init= 9.0931), step count (max): 12, lr policy:  0.0003:  30%|███       | 3000/10000 [00:06<00:14, 482.08it/s]    eval cumulative reward:  64.1889 (init:  64.1889), eval step-count: 6, average reward= 9.1572 (init= 9.0931), step count (max): 16, lr policy:  0.0003:  30%|███       | 3000/10000 [00:06<00:14, 482.08it/s]    eval cumulative reward:  64.1889 (init:  64.1889), eval step-count: 6, average reward= 9.1572 (init= 9.0931), step count (max): 16, lr policy:  0.0003:  40%|████      | 4000/10000 [00:08<00:12, 485.19it/s]    eval cumulative reward:  64.1889 (init:  64.1889), eval step-count: 6, average reward= 9.1911 (init= 9.0931), step count (max): 19, lr policy:  0.0002:  40%|████      | 4000/10000 [00:08<00:12, 485.19it/s]    eval cumulative reward:  64.1889 (init:  64.1889), eval step-count: 6, average reward= 9.1911 (init= 9.0931), step count (max): 19, lr policy:  0.0002:  50%|█████     | 5000/10000 [00:10<00:10, 485.00it/s]    eval cumulative reward:  64.1889 (init:  64.1889), eval step-count: 6, average reward= 9.2138 (init= 9.0931), step count (max): 21, lr policy:  0.0002:  50%|█████     | 5000/10000 [00:10<00:10, 485.00it/s]    eval cumulative reward:  64.1889 (init:  64.1889), eval step-count: 6, average reward= 9.2138 (init= 9.0931), step count (max): 21, lr policy:  0.0002:  60%|██████    | 6000/10000 [00:12<00:08, 487.86it/s]    eval cumulative reward:  64.1889 (init:  64.1889), eval step-count: 6, average reward= 9.2178 (init= 9.0931), step count (max): 27, lr policy:  0.0001:  60%|██████    | 6000/10000 [00:12<00:08, 487.86it/s]    eval cumulative reward:  64.1889 (init:  64.1889), eval step-count: 6, average reward= 9.2178 (init= 9.0931), step count (max): 27, lr policy:  0.0001:  70%|███████   | 7000/10000 [00:14<00:06, 488.64it/s]    eval cumulative reward:  64.1889 (init:  64.1889), eval step-count: 6, average reward= 9.2304 (init= 9.0931), step count (max): 29, lr policy:  0.0001:  70%|███████   | 7000/10000 [00:14<00:06, 488.64it/s]    eval cumulative reward:  64.1889 (init:  64.1889), eval step-count: 6, average reward= 9.2304 (init= 9.0931), step count (max): 29, lr policy:  0.0001:  80%|████████  | 8000/10000 [00:16<00:04, 490.08it/s]    eval cumulative reward:  64.1889 (init:  64.1889), eval step-count: 6, average reward= 9.2340 (init= 9.0931), step count (max): 35, lr policy:  0.0001:  80%|████████  | 8000/10000 [00:16<00:04, 490.08it/s]    eval cumulative reward:  64.1889 (init:  64.1889), eval step-count: 6, average reward= 9.2340 (init= 9.0931), step count (max): 35, lr policy:  0.0001:  90%|█████████ | 9000/10000 [00:18<00:02, 477.02it/s]    eval cumulative reward:  64.1889 (init:  64.1889), eval step-count: 6, average reward= 9.2328 (init= 9.0931), step count (max): 30, lr policy:  0.0000:  90%|█████████ | 9000/10000 [00:18<00:02, 477.02it/s]    eval cumulative reward:  64.1889 (init:  64.1889), eval step-count: 6, average reward= 9.2328 (init= 9.0931), step count (max): 30, lr policy:  0.0000: 100%|██████████| 10000/10000 [00:20<00:00, 482.78it/s]    eval cumulative reward:  64.1889 (init:  64.1889), eval step-count: 6, average reward= 9.2469 (init= 9.0931), step count (max): 37, lr policy:  0.0000: 100%|██████████| 10000/10000 [00:20<00:00, 482.78it/s]
+    Traceback (most recent call last):
+      File "/pytorch/rl/docs/source/reference/generated/tutorials/coding_ppo.py", line 656, in <module>
+        eval_rollout = env.rollout(1000, policy_module)
+      File "/pytorch/rl/torchrl/envs/common.py", line 2600, in rollout
+        tensordicts = self._rollout_stop_early(
+      File "/pytorch/rl/torchrl/envs/common.py", line 2687, in _rollout_stop_early
+        tensordict = policy(tensordict)
+      File "/pytorch/rl/env/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1735, in _wrapped_call_impl
+        return self._call_impl(*args, **kwargs)
+      File "/pytorch/rl/env/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1746, in _call_impl
+        return forward_call(*args, **kwargs)
+      File "/pytorch/rl/env/lib/python3.8/site-packages/tensordict/nn/common.py", line 297, in wrapper
+        return func(_self, tensordict, *args, **kwargs)
+      File "/pytorch/rl/env/lib/python3.8/site-packages/tensordict/nn/utils.py", line 356, in wrapper
+        result = func(_self, tensordict, *args, **kwargs)
+      File "/pytorch/rl/env/lib/python3.8/site-packages/tensordict/nn/probabilistic.py", line 660, in forward
+        return self.module[-1](tensordict_out, _requires_sample=self._requires_sample)
+      File "/pytorch/rl/env/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1735, in _wrapped_call_impl
+        return self._call_impl(*args, **kwargs)
+      File "/pytorch/rl/env/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1746, in _call_impl
+        return forward_call(*args, **kwargs)
+      File "/pytorch/rl/env/lib/python3.8/site-packages/tensordict/nn/common.py", line 297, in wrapper
+        return func(_self, tensordict, *args, **kwargs)
+      File "/pytorch/rl/env/lib/python3.8/site-packages/tensordict/nn/utils.py", line 356, in wrapper
+        result = func(_self, tensordict, *args, **kwargs)
+      File "/pytorch/rl/env/lib/python3.8/site-packages/tensordict/nn/probabilistic.py", line 438, in forward
+        out_tensors = self._dist_sample(dist, interaction_type=interaction_type())
+      File "/pytorch/rl/env/lib/python3.8/site-packages/tensordict/nn/probabilistic.py", line 526, in _dist_sample
+        if hasattr(dist, "mean"):
+      File "/pytorch/rl/torchrl/modules/distributions/continuous.py", line 528, in mean
+        raise NotImplementedError(
+    NotImplementedError: TanhNormal does not have a closed form formula for the average. Am estimate of this value can be computed using dist.sample((N,)).mean(dim=0), where N is a large number of samples.
+
 
 
 
@@ -1092,17 +1122,6 @@ trajectory is truncated.
     plt.show()
 
 
-
-
-.. image-sg:: /tutorials/images/sphx_glr_coding_ppo_001.png
-   :alt: training rewards (average), Max step count (training), Return (test), Max step count (test)
-   :srcset: /tutorials/images/sphx_glr_coding_ppo_001.png
-   :class: sphx-glr-single-img
-
-
-
-
-
 .. GENERATED FROM PYTHON SOURCE LINES 698-718
 
 Conclusion and next steps
@@ -1129,9 +1148,9 @@ If you want to experiment with this tutorial a bit more, you can apply the follo
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (1 minutes 26.995 seconds)
+   **Total running time of the script:** (1 minutes 16.978 seconds)
 
-**Estimated memory usage:**  318 MB
+**Estimated memory usage:**  4165 MB
 
 
 .. _sphx_glr_download_tutorials_coding_ppo.py:
