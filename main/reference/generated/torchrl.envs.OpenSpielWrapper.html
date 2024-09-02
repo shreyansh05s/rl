@@ -10,7 +10,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>OpenMLEnv &mdash; torchrl main documentation</title>
+  <title>OpenSpielWrapper &mdash; torchrl main documentation</title>
   
 
   
@@ -39,8 +39,8 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="OpenSpielWrapper" href="torchrl.envs.OpenSpielWrapper.html" />
-    <link rel="prev" title="MultiThreadedEnvWrapper" href="torchrl.envs.MultiThreadedEnvWrapper.html" />
+    <link rel="next" title="OpenSpielEnv" href="torchrl.envs.OpenSpielEnv.html" />
+    <link rel="prev" title="OpenMLEnv" href="torchrl.envs.OpenMLEnv.html" />
   <!-- Google Tag Manager -->
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -370,13 +370,13 @@
         
           <li><a href="../envs.html">torchrl.envs package</a> &gt;</li>
         
-      <li>OpenMLEnv</li>
+      <li>OpenSpielWrapper</li>
     
     
       <li class="pytorch-breadcrumbs-aside">
         
             
-            <a href="../../_sources/reference/generated/torchrl.envs.OpenMLEnv.rst.txt" rel="nofollow"><img src="../../_static/images/view-page-source-icon.svg"></a>
+            <a href="../../_sources/reference/generated/torchrl.envs.OpenSpielWrapper.rst.txt" rel="nofollow"><img src="../../_static/images/view-page-source-icon.svg"></a>
           
         
       </li>
@@ -408,44 +408,107 @@
             <div role="main" class="main-content" itemscope="itemscope" itemtype="http://schema.org/Article">
              <article itemprop="articleBody" id="pytorch-article" class="pytorch-article">
               
-  <section id="openmlenv">
-<h1>OpenMLEnv<a class="headerlink" href="#openmlenv" title="Permalink to this heading">¶</a></h1>
+  <section id="openspielwrapper">
+<h1>OpenSpielWrapper<a class="headerlink" href="#openspielwrapper" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="torchrl.envs.OpenMLEnv">
-<span class="sig-prename descclassname"><span class="pre">torchrl.envs.</span></span><span class="sig-name descname"><span class="pre">OpenMLEnv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/torchrl/envs/libs/openml.html#OpenMLEnv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.envs.OpenMLEnv" title="Permalink to this definition">¶</a></dt>
-<dd><p>An environment interface to OpenML data to be used in bandits contexts.</p>
-<p>Doc: <a class="reference external" href="https://www.openml.org/search?type=data">https://www.openml.org/search?type=data</a></p>
-<p>Scikit-learn interface: <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.datasets.fetch_openml.html">https://scikit-learn.org/stable/modules/generated/sklearn.datasets.fetch_openml.html</a></p>
+<dt class="sig sig-object py" id="torchrl.envs.OpenSpielWrapper">
+<span class="sig-prename descclassname"><span class="pre">torchrl.envs.</span></span><span class="sig-name descname"><span class="pre">OpenSpielWrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/torchrl/envs/libs/openspiel.html#OpenSpielWrapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.envs.OpenSpielWrapper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Google DeepMind OpenSpiel environment wrapper.</p>
+<p>GitHub: <a class="reference external" href="https://github.com/google-deepmind/open_spiel">https://github.com/google-deepmind/open_spiel</a></p>
+<p>Documentation: <a class="reference external" href="https://openspiel.readthedocs.io/en/latest/index.html">https://openspiel.readthedocs.io/en/latest/index.html</a></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>dataset_name</strong> (<em>str</em>) – the following datasets are supported:
-<code class="docutils literal notranslate"><span class="pre">&quot;adult_num&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;adult_onehot&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;mushroom_num&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;mushroom_onehot&quot;</span></code>,
-<code class="docutils literal notranslate"><span class="pre">&quot;covertype&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;shuttle&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">&quot;magic&quot;</span></code>.</p></li>
-<li><p><strong>device</strong> (<a class="reference external" href="https://pytorch.org/docs/stable/tensor_attributes.html#torch.device" title="(in PyTorch v2.4)"><em>torch.device</em></a><em> or </em><em>compatible</em><em>, </em><em>optional</em>) – the device where the input
-and output data is to be expected. Defaults to <code class="docutils literal notranslate"><span class="pre">&quot;cpu&quot;</span></code>.</p></li>
-<li><p><strong>batch_size</strong> (<a class="reference external" href="https://pytorch.org/docs/stable/size.html#torch.Size" title="(in PyTorch v2.4)"><em>torch.Size</em></a><em> or </em><em>compatible</em><em>, </em><em>optional</em>) – the batch size of the environment,
-ie. the number of elements samples and returned when a <a class="reference internal" href="torchrl.envs.ModelBasedEnvBase.html#torchrl.envs.reset" title="torchrl.envs.reset"><code class="xref py py-meth docutils literal notranslate"><span class="pre">reset()</span></code></a> is
-called. Defaults to an empty batch size, ie. one element is sampled
-at a time.</p></li>
+<dd class="field-odd"><p><strong>env</strong> (<em>pyspiel.State</em>) – the game to wrap.</p>
+</dd>
+<dt class="field-even">Keyword Arguments<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>device</strong> (<a class="reference external" href="https://pytorch.org/docs/stable/tensor_attributes.html#torch.device" title="(in PyTorch v2.4)"><em>torch.device</em></a><em>, </em><em>optional</em>) – if provided, the device on which the data
+is to be cast. Defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>batch_size</strong> (<a class="reference external" href="https://pytorch.org/docs/stable/size.html#torch.Size" title="(in PyTorch v2.4)"><em>torch.Size</em></a><em>, </em><em>optional</em>) – the batch size of the environment.
+Defaults to <code class="docutils literal notranslate"><span class="pre">torch.Size([])</span></code>.</p></li>
+<li><p><strong>allow_done_after_reset</strong> (<em>bool</em><em>, </em><em>optional</em>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code>, it is tolerated
+for envs to be <code class="docutils literal notranslate"><span class="pre">done</span></code> just after <a class="reference internal" href="torchrl.envs.ModelBasedEnvBase.html#torchrl.envs.reset" title="torchrl.envs.reset"><code class="xref py py-meth docutils literal notranslate"><span class="pre">reset()</span></code></a> is called.
+Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>group_map</strong> (<a class="reference internal" href="torchrl.envs.MarlGroupMapType.html#torchrl.envs.MarlGroupMapType" title="torchrl.envs.MarlGroupMapType"><em>MarlGroupMapType</em></a><em> or </em><em>Dict</em><em>[</em><em>str</em><em>, </em><em>List</em><em>[</em><em>str</em><em>]</em><em>]</em><em>]</em><em>, </em><em>optional</em>) – how to
+group agents in tensordicts for input/output. See
+<code class="xref py py-class docutils literal notranslate"><span class="pre">MarlGroupMapType</span></code> for more info.
+Defaults to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">ALL_IN_ONE_GROUP</span></code>.</p></li>
+<li><p><strong>categorical_actions</strong> (<em>bool</em><em>, </em><em>optional</em>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code>, categorical specs
+will be converted to the TorchRL equivalent
+(<a class="reference internal" href="torchrl.data.Categorical.html#torchrl.data.Categorical" title="torchrl.data.Categorical"><code class="xref py py-class docutils literal notranslate"><span class="pre">torchrl.data.Categorical</span></code></a>), otherwise a one-hot encoding
+will be used (<code class="xref py py-class docutils literal notranslate"><span class="pre">torchrl.data.OneHot</span></code>).  Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>return_state</strong> (<em>bool</em><em>, </em><em>optional</em>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code>, “state” is included in the
+output of <a class="reference internal" href="torchrl.envs.ModelBasedEnvBase.html#torchrl.envs.reset" title="torchrl.envs.reset"><code class="xref py py-meth docutils literal notranslate"><span class="pre">reset()</span></code></a> and <a class="reference internal" href="torchrl.envs.ModelBasedEnvBase.html#torchrl.envs.step" title="torchrl.envs.step"><code class="xref py py-meth docutils literal notranslate"><span class="pre">step()</span></code></a>. The state can be given
+to <a class="reference internal" href="torchrl.envs.ModelBasedEnvBase.html#torchrl.envs.reset" title="torchrl.envs.reset"><code class="xref py py-meth docutils literal notranslate"><span class="pre">reset()</span></code></a> to reset to that state, rather than resetting to
+the initial state.
+Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Variables<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>available_envs</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – list of envs to be built by this class.</p>
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>available_envs</strong> – environments available to build</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">env</span> <span class="o">=</span> <span class="n">OpenMLEnv</span><span class="p">(</span><span class="s2">&quot;adult_onehot&quot;</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">())</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pyspiel</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.envs</span> <span class="kn">import</span> <span class="n">OpenSpielWrapper</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">tensordict</span> <span class="kn">import</span> <span class="n">TensorDict</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">base_env</span> <span class="o">=</span> <span class="n">pyspiel</span><span class="o">.</span><span class="n">load_game</span><span class="p">(</span><span class="s1">&#39;chess&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">new_initial_state</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">env</span> <span class="o">=</span> <span class="n">OpenSpielWrapper</span><span class="p">(</span><span class="n">base_env</span><span class="p">,</span> <span class="n">return_state</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">td</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">td</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">env</span><span class="o">.</span><span class="n">full_action_spec</span><span class="o">.</span><span class="n">rand</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">td</span><span class="p">)</span>
 <span class="go">TensorDict(</span>
 <span class="go">    fields={</span>
-<span class="go">        done: Tensor(shape=torch.Size([2, 3, 1]), device=cpu, dtype=torch.bool, is_shared=False),</span>
-<span class="go">        observation: Tensor(shape=torch.Size([2, 3, 106]), device=cpu, dtype=torch.float32, is_shared=False),</span>
-<span class="go">        reward: Tensor(shape=torch.Size([2, 3, 1]), device=cpu, dtype=torch.float32, is_shared=False),</span>
-<span class="go">        y: Tensor(shape=torch.Size([2, 3]), device=cpu, dtype=torch.int64, is_shared=False)},</span>
-<span class="go">    batch_size=torch.Size([2, 3]),</span>
-<span class="go">    device=cpu,</span>
+<span class="go">        agents: TensorDict(</span>
+<span class="go">            fields={</span>
+<span class="go">                action: Tensor(shape=torch.Size([2, 4672]), device=cpu, dtype=torch.int64, is_shared=False)},</span>
+<span class="go">            batch_size=torch.Size([]),</span>
+<span class="go">            device=None,</span>
+<span class="go">            is_shared=False),</span>
+<span class="go">        next: TensorDict(</span>
+<span class="go">            fields={</span>
+<span class="go">                agents: TensorDict(</span>
+<span class="go">                    fields={</span>
+<span class="go">                        observation: Tensor(shape=torch.Size([2, 20, 8, 8]), device=cpu, dtype=torch.float32, is_shared=False),</span>
+<span class="go">                        reward: Tensor(shape=torch.Size([2, 1]), device=cpu, dtype=torch.float32, is_shared=False)},</span>
+<span class="go">                    batch_size=torch.Size([2]),</span>
+<span class="go">                    device=None,</span>
+<span class="go">                    is_shared=False),</span>
+<span class="go">                current_player: Tensor(shape=torch.Size([]), device=cpu, dtype=torch.int32, is_shared=False),</span>
+<span class="go">                done: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),</span>
+<span class="go">                state: NonTensorData(data=FEN: rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1</span>
+<span class="go">                3009</span>
+<span class="go">                , batch_size=torch.Size([]), device=None),</span>
+<span class="go">                terminated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False)},</span>
+<span class="go">            batch_size=torch.Size([]),</span>
+<span class="go">            device=None,</span>
+<span class="go">            is_shared=False)},</span>
+<span class="go">    batch_size=torch.Size([]),</span>
+<span class="go">    device=None,</span>
 <span class="go">    is_shared=False)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">env</span><span class="o">.</span><span class="n">available_envs</span><span class="p">)</span>
+<span class="go">[&#39;2048&#39;, &#39;add_noise&#39;, &#39;amazons&#39;, &#39;backgammon&#39;, ...]</span>
+</pre></div>
+</div>
+<p><a class="reference internal" href="torchrl.envs.ModelBasedEnvBase.html#torchrl.envs.reset" title="torchrl.envs.reset"><code class="xref py py-meth docutils literal notranslate"><span class="pre">reset()</span></code></a> can restore a specific state, rather than the initial
+state, as long as <code class="docutils literal notranslate"><span class="pre">return_state=True</span></code>.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pyspiel</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.envs</span> <span class="kn">import</span> <span class="n">OpenSpielWrapper</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">tensordict</span> <span class="kn">import</span> <span class="n">TensorDict</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">base_env</span> <span class="o">=</span> <span class="n">pyspiel</span><span class="o">.</span><span class="n">load_game</span><span class="p">(</span><span class="s1">&#39;chess&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">new_initial_state</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">env</span> <span class="o">=</span> <span class="n">OpenSpielWrapper</span><span class="p">(</span><span class="n">base_env</span><span class="p">,</span> <span class="n">return_state</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">td</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">td</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">env</span><span class="o">.</span><span class="n">full_action_spec</span><span class="o">.</span><span class="n">rand</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">td_restore</span> <span class="o">=</span> <span class="n">td</span><span class="p">[</span><span class="s2">&quot;next&quot;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">td</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">env</span><span class="o">.</span><span class="n">full_action_spec</span><span class="o">.</span><span class="n">rand</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Current state is not equal `td_restore`</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">td</span><span class="p">[</span><span class="s2">&quot;next&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">td_restore</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+<span class="go">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">td</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">td_restore</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># After resetting, now the current state is equal to `td_restore`</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">td</span> <span class="o">==</span> <span class="n">td_restore</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+<span class="go">True</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -460,10 +523,10 @@ at a time.</p></li>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="torchrl.envs.OpenSpielWrapper.html" class="btn btn-neutral float-right" title="OpenSpielWrapper" accesskey="n" rel="next">Next <img src="../../_static/images/chevron-right-orange.svg" class="next-page"></a>
+        <a href="torchrl.envs.OpenSpielEnv.html" class="btn btn-neutral float-right" title="OpenSpielEnv" accesskey="n" rel="next">Next <img src="../../_static/images/chevron-right-orange.svg" class="next-page"></a>
       
       
-        <a href="torchrl.envs.MultiThreadedEnvWrapper.html" class="btn btn-neutral" title="MultiThreadedEnvWrapper" accesskey="p" rel="prev"><img src="../../_static/images/chevron-right-orange.svg" class="previous-page"> Previous</a>
+        <a href="torchrl.envs.OpenMLEnv.html" class="btn btn-neutral" title="OpenMLEnv" accesskey="p" rel="prev"><img src="../../_static/images/chevron-right-orange.svg" class="previous-page"> Previous</a>
       
     </div>
   
@@ -497,7 +560,7 @@ at a time.</p></li>
           <div class="pytorch-right-menu" id="pytorch-right-menu">
             <div class="pytorch-side-scroll" id="pytorch-side-scroll-right">
               <ul>
-<li><a class="reference internal" href="#">OpenMLEnv</a></li>
+<li><a class="reference internal" href="#">OpenSpielWrapper</a></li>
 </ul>
 
             </div>
