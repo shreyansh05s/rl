@@ -3484,6 +3484,31 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">unfolding</span><span class="p">(</span><span class="n">tensordict</span><span class="p">)</span></div>
 
+    <span class="k">def</span> <span class="nf">_apply_same_padding</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">done_mask</span><span class="p">):</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">ndim</span> <span class="o">+</span> <span class="n">dim</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
+        <span class="n">num_repeats_per_sample</span> <span class="o">=</span> <span class="n">done_mask</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">num_repeats_per_sample</span><span class="o">.</span><span class="n">dim</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">extra_dims</span> <span class="o">=</span> <span class="n">num_repeats_per_sample</span><span class="o">.</span><span class="n">dim</span><span class="p">()</span> <span class="o">-</span> <span class="mi">2</span>
+            <span class="n">num_repeats_per_sample</span> <span class="o">=</span> <span class="n">num_repeats_per_sample</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">extra_dims</span><span class="p">)</span>
+            <span class="n">res_flat_series</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">extra_dims</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">extra_dims</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">res_flat_series</span> <span class="o">=</span> <span class="n">res</span>
+
+        <span class="k">if</span> <span class="n">d</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">&gt;</span> <span class="n">extra_dims</span><span class="p">:</span>
+            <span class="n">res_flat_series_flat_batch</span> <span class="o">=</span> <span class="n">res_flat_series</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">d</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">res_flat_series_flat_batch</span> <span class="o">=</span> <span class="n">res_flat_series</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">sample_idx</span><span class="p">,</span> <span class="n">num_repeats</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">num_repeats_per_sample</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">num_repeats</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">res_slice</span> <span class="o">=</span> <span class="n">res_flat_series_flat_batch</span><span class="p">[</span><span class="n">sample_idx</span><span class="p">]</span>
+                <span class="n">res_slice</span><span class="p">[:,</span> <span class="p">:</span><span class="n">num_repeats</span><span class="p">]</span> <span class="o">=</span> <span class="n">res_slice</span><span class="p">[:,</span> <span class="n">num_repeats</span> <span class="p">:</span> <span class="n">num_repeats</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">res</span>
+
     <span class="nd">@set_lazy_legacy</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">unfolding</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
         <span class="c1"># it is assumed that the last dimension of the tensordict is the time dimension</span>
@@ -3594,24 +3619,7 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">padding</span> <span class="o">!=</span> <span class="s2">&quot;same&quot;</span><span class="p">:</span>
                 <span class="n">data</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">done_mask_expand</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">padding_value</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="c1"># TODO: This is a pretty bad implementation, could be</span>
-                <span class="c1"># made more efficient but it works!</span>
-                <span class="n">reset_any</span> <span class="o">=</span> <span class="n">reset</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-                <span class="n">reset_vals</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">data_orig</span><span class="p">[</span><span class="n">reset_any</span><span class="p">]</span><span class="o">.</span><span class="n">unbind</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
-                <span class="n">j_</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;inf&quot;</span><span class="p">)</span>
-                <span class="n">reps</span> <span class="o">=</span> <span class="p">[]</span>
-                <span class="n">d</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">ndim</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">-</span> <span class="mi">1</span>
-                <span class="n">n_feat</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">ndim</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="p">:]</span><span class="o">.</span><span class="n">numel</span><span class="p">()</span>
-                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">done_mask_expand</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="n">n_feat</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">j</span> <span class="o">&gt;</span> <span class="n">j_</span><span class="p">:</span>
-                        <span class="n">reset_vals</span> <span class="o">=</span> <span class="n">reset_vals</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
-                    <span class="n">reps</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">reset_vals</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">*</span> <span class="nb">int</span><span class="p">(</span><span class="n">j</span><span class="p">))</span>
-                    <span class="n">j_</span> <span class="o">=</span> <span class="n">j</span>
-                <span class="k">if</span> <span class="n">reps</span><span class="p">:</span>
-                    <span class="n">reps</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">reps</span><span class="p">)</span>
-                    <span class="n">data</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">masked_scatter</span><span class="p">(</span>
-                        <span class="n">data</span><span class="p">,</span> <span class="n">done_mask_expand</span><span class="p">,</span> <span class="n">reps</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-                    <span class="p">)</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_same_padding</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">done_mask</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">first_val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="c1"># Aggregate reset along last dim</span>
