@@ -414,7 +414,12 @@
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span>
 
 <span class="kn">import</span> <span class="nn">torch</span>
-<span class="kn">from</span> <span class="nn">tensordict</span> <span class="kn">import</span> <span class="n">TensorDict</span><span class="p">,</span> <span class="n">TensorDictBase</span><span class="p">,</span> <span class="n">TensorDictParams</span>
+<span class="kn">from</span> <span class="nn">tensordict</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">is_tensor_collection</span><span class="p">,</span>
+    <span class="n">TensorDict</span><span class="p">,</span>
+    <span class="n">TensorDictBase</span><span class="p">,</span>
+    <span class="n">TensorDictParams</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">tensordict.nn</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">dispatch</span><span class="p">,</span>
     <span class="n">ProbabilisticTensorDictModule</span><span class="p">,</span>
@@ -640,6 +645,12 @@
 <span class="sd">        ...         next_observation=torch.randn(*batch, n_obs))</span>
 <span class="sd">        &gt;&gt;&gt; loss_objective.backward()</span>
 
+<span class="sd">    .. note::</span>
+<span class="sd">      There is an exception regarding compatibility with non-tensordict-based modules.</span>
+<span class="sd">      If the actor network is probabilistic and uses a :class:`~tensordict.nn.distributions.CompositeDistribution`,</span>
+<span class="sd">      this class must be used with tensordicts and cannot function as a tensordict-independent module.</span>
+<span class="sd">      This is because composite action spaces inherently rely on the structured representation of data provided by</span>
+<span class="sd">      tensordicts to handle their actions.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nd">@dataclass</span>
@@ -851,7 +862,10 @@
             <span class="n">entropy</span> <span class="o">=</span> <span class="n">dist</span><span class="o">.</span><span class="n">entropy</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">NotImplementedError</span><span class="p">:</span>
             <span class="n">x</span> <span class="o">=</span> <span class="n">dist</span><span class="o">.</span><span class="n">rsample</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">samples_mc_entropy</span><span class="p">,))</span>
-            <span class="n">entropy</span> <span class="o">=</span> <span class="o">-</span><span class="n">dist</span><span class="o">.</span><span class="n">log_prob</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">log_prob</span> <span class="o">=</span> <span class="n">dist</span><span class="o">.</span><span class="n">log_prob</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">is_tensor_collection</span><span class="p">(</span><span class="n">log_prob</span><span class="p">):</span>
+                <span class="n">log_prob</span> <span class="o">=</span> <span class="n">log_prob</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tensor_keys</span><span class="o">.</span><span class="n">sample_log_prob</span><span class="p">)</span>
+            <span class="n">entropy</span> <span class="o">=</span> <span class="o">-</span><span class="n">log_prob</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">entropy</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_log_weight</span><span class="p">(</span>
@@ -859,20 +873,27 @@
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">Distribution</span><span class="p">]:</span>
         <span class="c1"># current log_prob of actions</span>
         <span class="n">action</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tensor_keys</span><span class="o">.</span><span class="n">action</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">action</span><span class="o">.</span><span class="n">requires_grad</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;tensordict stored </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">tensor_keys</span><span class="o">.</span><span class="n">action</span><span class="si">}</span><span class="s2"> requires grad.&quot;</span>
-            <span class="p">)</span>
 
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">actor_network_params</span><span class="o">.</span><span class="n">to_module</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">actor_network</span>
         <span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">functional</span> <span class="k">else</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">nullcontext</span><span class="p">():</span>
             <span class="n">dist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">actor_network</span><span class="o">.</span><span class="n">get_dist</span><span class="p">(</span><span class="n">tensordict</span><span class="p">)</span>
-        <span class="n">log_prob</span> <span class="o">=</span> <span class="n">dist</span><span class="o">.</span><span class="n">log_prob</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
 
         <span class="n">prev_log_prob</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tensor_keys</span><span class="o">.</span><span class="n">sample_log_prob</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">prev_log_prob</span><span class="o">.</span><span class="n">requires_grad</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;tensordict prev_log_prob requires grad.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;tensordict stored </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">tensor_keys</span><span class="o">.</span><span class="n">sample_log_prob</span><span class="si">}</span><span class="s2"> requires grad.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">action</span><span class="o">.</span><span class="n">requires_grad</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;tensordict stored </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">tensor_keys</span><span class="o">.</span><span class="n">action</span><span class="si">}</span><span class="s2"> requires grad.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">action</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+            <span class="n">log_prob</span> <span class="o">=</span> <span class="n">dist</span><span class="o">.</span><span class="n">log_prob</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">tensordict</span> <span class="o">=</span> <span class="n">dist</span><span class="o">.</span><span class="n">log_prob</span><span class="p">(</span><span class="n">tensordict</span><span class="p">)</span>
+            <span class="n">log_prob</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tensor_keys</span><span class="o">.</span><span class="n">sample_log_prob</span><span class="p">)</span>
 
         <span class="n">log_weight</span> <span class="o">=</span> <span class="p">(</span><span class="n">log_prob</span> <span class="o">-</span> <span class="n">prev_log_prob</span><span class="p">)</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">kl_approx</span> <span class="o">=</span> <span class="p">(</span><span class="n">prev_log_prob</span> <span class="o">-</span> <span class="n">log_prob</span><span class="p">)</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
@@ -1509,7 +1530,17 @@
             <span class="n">kl</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">distributions</span><span class="o">.</span><span class="n">kl</span><span class="o">.</span><span class="n">kl_divergence</span><span class="p">(</span><span class="n">previous_dist</span><span class="p">,</span> <span class="n">current_dist</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">NotImplementedError</span><span class="p">:</span>
             <span class="n">x</span> <span class="o">=</span> <span class="n">previous_dist</span><span class="o">.</span><span class="n">sample</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">samples_mc_kl</span><span class="p">,))</span>
-            <span class="n">kl</span> <span class="o">=</span> <span class="p">(</span><span class="n">previous_dist</span><span class="o">.</span><span class="n">log_prob</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="n">current_dist</span><span class="o">.</span><span class="n">log_prob</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">previous_log_prob</span> <span class="o">=</span> <span class="n">previous_dist</span><span class="o">.</span><span class="n">log_prob</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">current_log_prob</span> <span class="o">=</span> <span class="n">current_dist</span><span class="o">.</span><span class="n">log_prob</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">is_tensor_collection</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+                <span class="n">previous_log_prob</span> <span class="o">=</span> <span class="n">previous_log_prob</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">tensor_keys</span><span class="o">.</span><span class="n">sample_log_prob</span>
+                <span class="p">)</span>
+                <span class="n">current_log_prob</span> <span class="o">=</span> <span class="n">current_log_prob</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">tensor_keys</span><span class="o">.</span><span class="n">sample_log_prob</span>
+                <span class="p">)</span>
+
+            <span class="n">kl</span> <span class="o">=</span> <span class="p">(</span><span class="n">previous_log_prob</span> <span class="o">-</span> <span class="n">current_log_prob</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
         <span class="n">kl</span> <span class="o">=</span> <span class="n">kl</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">neg_loss</span> <span class="o">=</span> <span class="n">neg_loss</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">beta</span> <span class="o">*</span> <span class="n">kl</span>
         <span class="k">if</span> <span class="n">kl</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtarg</span> <span class="o">*</span> <span class="mf">1.5</span><span class="p">:</span>

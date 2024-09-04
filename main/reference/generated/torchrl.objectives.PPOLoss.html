@@ -614,6 +614,14 @@ The output keys can also be filtered using <code class="xref py py-meth docutils
 <span class="gp">&gt;&gt;&gt; </span><span class="n">loss_objective</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
 </pre></div>
 </div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>There is an exception regarding compatibility with non-tensordict-based modules.
+If the actor network is probabilistic and uses a <code class="xref py py-class docutils literal notranslate"><span class="pre">CompositeDistribution</span></code>,
+this class must be used with tensordicts and cannot function as a tensordict-independent module.
+This is because composite action spaces inherently rely on the structured representation of data provided by
+tensordicts to handle their actions.</p>
+</div>
 <dl class="py method">
 <dt class="sig sig-object py" id="torchrl.objectives.PPOLoss.forward">
 <span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensordict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TensorDictBase</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">TensorDictBase</span></span></span><a class="reference internal" href="../../_modules/torchrl/objectives/ppo.html#PPOLoss.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.objectives.PPOLoss.forward" title="Permalink to this definition">¶</a></dt>
