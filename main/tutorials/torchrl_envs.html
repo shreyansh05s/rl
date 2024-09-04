@@ -533,7 +533,7 @@ projected action:
 </pre></div>
 </div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>random action:
- tensor([1.0505])
+ tensor([-0.0908])
 </pre></div>
 </div>
 <p>Out of these specs, the <code class="docutils literal notranslate"><span class="pre">done_spec</span></code> deserves a special attention. In TorchRL,
@@ -798,7 +798,7 @@ argument that allows the user to quickly ask for image-based environments:</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">tensordict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;pixels&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">numpy</span><span class="p">())</span>
 </pre></div>
 </div>
-<img src="../_images/sphx_glr_torchrl_envs_001.png" srcset="../_images/sphx_glr_torchrl_envs_001.png" alt="torchrl envs" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.image.AxesImage object at 0x7fd0d2c59f40&gt;
+<img src="../_images/sphx_glr_torchrl_envs_001.png" srcset="../_images/sphx_glr_torchrl_envs_001.png" alt="torchrl envs" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.image.AxesImage object at 0x7f01ebf86580&gt;
 </pre></div>
 </div>
 <p>Let’s have a look at what the tensordict contains:</p>
@@ -838,17 +838,17 @@ gym environment step method).</p>
 <div class="sphx-glr-script-out highlight-pytb notranslate"><div class="highlight"><pre><span></span><span class="gt">Traceback (most recent call last):</span>
   File <span class="nb">&quot;/pytorch/rl/docs/source/reference/generated/tutorials/torchrl_envs.py&quot;</span>, line <span class="m">275</span>, in <span class="n">&lt;module&gt;</span>
 <span class="w">    </span><span class="n">env</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">GymEnv</span></a><span class="p">(</span><span class="s2">&quot;ALE/Pong-v5&quot;</span><span class="p">)</span>
-  File <span class="nb">&quot;/pytorch/rl/torchrl/envs/libs/gym.py&quot;</span>, line <span class="m">564</span>, in <span class="n">__call__</span>
+  File <span class="nb">&quot;/pytorch/rl/torchrl/envs/libs/gym.py&quot;</span>, line <span class="m">575</span>, in <span class="n">__call__</span>
 <span class="w">    </span><span class="n">instance</span><span class="p">:</span> <span class="n">GymWrapper</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
   File <span class="nb">&quot;/pytorch/rl/torchrl/envs/common.py&quot;</span>, line <span class="m">171</span>, in <span class="n">__call__</span>
 <span class="w">    </span><span class="n">instance</span><span class="p">:</span> <span class="n">EnvBase</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-  File <span class="nb">&quot;/pytorch/rl/torchrl/envs/libs/gym.py&quot;</span>, line <span class="m">1366</span>, in <span class="n">__init__</span>
+  File <span class="nb">&quot;/pytorch/rl/torchrl/envs/libs/gym.py&quot;</span>, line <span class="m">1383</span>, in <span class="n">__init__</span>
 <span class="w">    </span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-  File <span class="nb">&quot;/pytorch/rl/torchrl/envs/libs/gym.py&quot;</span>, line <span class="m">782</span>, in <span class="n">__init__</span>
+  File <span class="nb">&quot;/pytorch/rl/torchrl/envs/libs/gym.py&quot;</span>, line <span class="m">799</span>, in <span class="n">__init__</span>
 <span class="w">    </span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
   File <span class="nb">&quot;/pytorch/rl/torchrl/envs/common.py&quot;</span>, line <span class="m">3091</span>, in <span class="n">__init__</span>
 <span class="w">    </span><span class="bp">self</span><span class="o">.</span><span class="n">_env</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_env</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>  <span class="c1"># writes the self._env attribute</span>
-  File <span class="nb">&quot;/pytorch/rl/torchrl/envs/libs/gym.py&quot;</span>, line <span class="m">1418</span>, in <span class="n">_build_env</span>
+  File <span class="nb">&quot;/pytorch/rl/torchrl/envs/libs/gym.py&quot;</span>, line <span class="m">1435</span>, in <span class="n">_build_env</span>
 <span class="w">    </span><span class="n">env</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lib</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="n">env_name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
   File <span class="nb">&quot;/pytorch/rl/env/lib/python3.8/site-packages/gym/envs/registration.py&quot;</span>, line <span class="m">569</span>, in <span class="n">make</span>
 <span class="w">    </span><span class="n">_check_version_exists</span><span class="p">(</span><span class="n">ns</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">version</span><span class="p">)</span>
@@ -1282,8 +1282,8 @@ This small difference will usually be absored throughout training.</p>
 <span class="k">del</span> <span class="n">env</span>
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (1 minutes 59.668 seconds)</p>
-<p><strong>Estimated memory usage:</strong>  4082 MB</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (2 minutes 0.118 seconds)</p>
+<p><strong>Estimated memory usage:</strong>  4111 MB</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-tutorials-torchrl-envs-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/3cb02b3346194d0f8cfea19dd5243c89/torchrl_envs.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">torchrl_envs.ipynb</span></code></a></p>
