@@ -432,7 +432,7 @@
 <span class="p">]</span>
 
 
-<div class="viewcode-block" id="EGreedyModule"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.tensordict_module.EGreedyModule.html#torchrl.modules.tensordict_module.EGreedyModule">[docs]</a><span class="k">class</span> <span class="nc">EGreedyModule</span><span class="p">(</span><span class="n">TensorDictModuleBase</span><span class="p">):</span>
+<div class="viewcode-block" id="EGreedyModule"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.EGreedyModule.html#torchrl.modules.EGreedyModule">[docs]</a><span class="k">class</span> <span class="nc">EGreedyModule</span><span class="p">(</span><span class="n">TensorDictModuleBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Epsilon-Greedy exploration module.</span>
 
 <span class="sd">    This module randomly updates the action(s) in a tensordict given an epsilon greedy exploration strategy.</span>
@@ -525,7 +525,7 @@
     <span class="k">def</span> <span class="nf">spec</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spec</span>
 
-<div class="viewcode-block" id="EGreedyModule.step"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.tensordict_module.EGreedyModule.html#torchrl.modules.tensordict_module.EGreedyModule.step">[docs]</a>    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frames</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="EGreedyModule.step"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.EGreedyModule.html#torchrl.modules.EGreedyModule.step">[docs]</a>    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frames</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;A step of epsilon decay.</span>
 
 <span class="sd">        After `self.annealing_num_steps` calls to this method, calls result in no-op.</span>
@@ -542,7 +542,7 @@
                 <span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span>
             <span class="p">)</span></div>
 
-<div class="viewcode-block" id="EGreedyModule.forward"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.tensordict_module.EGreedyModule.html#torchrl.modules.tensordict_module.EGreedyModule.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
+<div class="viewcode-block" id="EGreedyModule.forward"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.EGreedyModule.html#torchrl.modules.EGreedyModule.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">exploration_type</span><span class="p">()</span> <span class="o">==</span> <span class="n">ExplorationType</span><span class="o">.</span><span class="n">RANDOM</span> <span class="ow">or</span> <span class="n">exploration_type</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">action_key</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">action_key</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="n">action_tensordict</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">action_key</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
@@ -585,7 +585,7 @@
         <span class="k">return</span> <span class="n">tensordict</span></div></div>
 
 
-<div class="viewcode-block" id="EGreedyWrapper"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.tensordict_module.EGreedyWrapper.html#torchrl.modules.tensordict_module.EGreedyWrapper">[docs]</a><span class="k">class</span> <span class="nc">EGreedyWrapper</span><span class="p">(</span><span class="n">TensorDictModuleWrapper</span><span class="p">):</span>
+<div class="viewcode-block" id="EGreedyWrapper"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.EGreedyWrapper.html#torchrl.modules.EGreedyWrapper">[docs]</a><span class="k">class</span> <span class="nc">EGreedyWrapper</span><span class="p">(</span><span class="n">TensorDictModuleWrapper</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;[Deprecated] Epsilon-Greedy PO wrapper.</span>
 
 <span class="sd">    Args:</span>
@@ -653,7 +653,7 @@
         <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="AdditiveGaussianWrapper"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.tensordict_module.AdditiveGaussianWrapper.html#torchrl.modules.tensordict_module.AdditiveGaussianWrapper">[docs]</a><span class="k">class</span> <span class="nc">AdditiveGaussianWrapper</span><span class="p">(</span><span class="n">TensorDictModuleWrapper</span><span class="p">):</span>
+<div class="viewcode-block" id="AdditiveGaussianWrapper"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.AdditiveGaussianWrapper.html#torchrl.modules.AdditiveGaussianWrapper">[docs]</a><span class="k">class</span> <span class="nc">AdditiveGaussianWrapper</span><span class="p">(</span><span class="n">TensorDictModuleWrapper</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Additive Gaussian PO wrapper.</span>
 
 <span class="sd">    Args:</span>
@@ -747,7 +747,7 @@
     <span class="k">def</span> <span class="nf">spec</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spec</span>
 
-<div class="viewcode-block" id="AdditiveGaussianWrapper.step"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.tensordict_module.AdditiveGaussianWrapper.html#torchrl.modules.tensordict_module.AdditiveGaussianWrapper.step">[docs]</a>    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frames</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="AdditiveGaussianWrapper.step"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.AdditiveGaussianWrapper.html#torchrl.modules.AdditiveGaussianWrapper.step">[docs]</a>    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frames</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;A step of sigma decay.</span>
 
 <span class="sd">        After self.annealing_num_steps, this function is a no-op.</span>
@@ -783,7 +783,7 @@
             <span class="p">)</span>
         <span class="k">return</span> <span class="n">action</span>
 
-<div class="viewcode-block" id="AdditiveGaussianWrapper.forward"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.tensordict_module.AdditiveGaussianWrapper.html#torchrl.modules.tensordict_module.AdditiveGaussianWrapper.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
+<div class="viewcode-block" id="AdditiveGaussianWrapper.forward"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.AdditiveGaussianWrapper.html#torchrl.modules.AdditiveGaussianWrapper.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
         <span class="n">tensordict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">td_module</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">tensordict</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">exploration_type</span><span class="p">()</span> <span class="ow">is</span> <span class="n">ExplorationType</span><span class="o">.</span><span class="n">RANDOM</span> <span class="ow">or</span> <span class="n">exploration_type</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">out</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">action_key</span><span class="p">)</span>
@@ -792,7 +792,7 @@
         <span class="k">return</span> <span class="n">tensordict</span></div></div>
 
 
-<div class="viewcode-block" id="AdditiveGaussianModule"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.tensordict_module.AdditiveGaussianModule.html#torchrl.modules.tensordict_module.AdditiveGaussianModule">[docs]</a><span class="k">class</span> <span class="nc">AdditiveGaussianModule</span><span class="p">(</span><span class="n">TensorDictModuleBase</span><span class="p">):</span>
+<div class="viewcode-block" id="AdditiveGaussianModule"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.AdditiveGaussianModule.html#torchrl.modules.AdditiveGaussianModule">[docs]</a><span class="k">class</span> <span class="nc">AdditiveGaussianModule</span><span class="p">(</span><span class="n">TensorDictModuleBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Additive Gaussian PO module.</span>
 
 <span class="sd">    Args:</span>
@@ -866,7 +866,7 @@
     <span class="k">def</span> <span class="nf">spec</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spec</span>
 
-<div class="viewcode-block" id="AdditiveGaussianModule.step"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.tensordict_module.AdditiveGaussianModule.html#torchrl.modules.tensordict_module.AdditiveGaussianModule.step">[docs]</a>    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frames</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="AdditiveGaussianModule.step"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.AdditiveGaussianModule.html#torchrl.modules.AdditiveGaussianModule.step">[docs]</a>    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frames</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;A step of sigma decay.</span>
 
 <span class="sd">        After `self.annealing_num_steps` calls to this method, calls result in no-op.</span>
@@ -895,7 +895,7 @@
         <span class="n">action</span> <span class="o">=</span> <span class="n">spec</span><span class="o">.</span><span class="n">project</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">action</span>
 
-<div class="viewcode-block" id="AdditiveGaussianModule.forward"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.tensordict_module.AdditiveGaussianModule.html#torchrl.modules.tensordict_module.AdditiveGaussianModule.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
+<div class="viewcode-block" id="AdditiveGaussianModule.forward"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.AdditiveGaussianModule.html#torchrl.modules.AdditiveGaussianModule.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">exploration_type</span><span class="p">()</span> <span class="ow">is</span> <span class="n">ExplorationType</span><span class="o">.</span><span class="n">RANDOM</span> <span class="ow">or</span> <span class="n">exploration_type</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">out</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">action_key</span><span class="p">)</span>
             <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_noise</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
@@ -903,7 +903,7 @@
         <span class="k">return</span> <span class="n">tensordict</span></div></div>
 
 
-<div class="viewcode-block" id="OrnsteinUhlenbeckProcessWrapper"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.tensordict_module.OrnsteinUhlenbeckProcessWrapper.html#torchrl.modules.tensordict_module.OrnsteinUhlenbeckProcessWrapper">[docs]</a><span class="k">class</span> <span class="nc">OrnsteinUhlenbeckProcessWrapper</span><span class="p">(</span><span class="n">TensorDictModuleWrapper</span><span class="p">):</span>
+<div class="viewcode-block" id="OrnsteinUhlenbeckProcessWrapper"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.OrnsteinUhlenbeckProcessWrapper.html#torchrl.modules.OrnsteinUhlenbeckProcessWrapper">[docs]</a><span class="k">class</span> <span class="nc">OrnsteinUhlenbeckProcessWrapper</span><span class="p">(</span><span class="n">TensorDictModuleWrapper</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Ornstein-Uhlenbeck exploration policy wrapper.</span>
 
 <span class="sd">    Presented in &quot;CONTINUOUS CONTROL WITH DEEP REINFORCEMENT LEARNING&quot;, https://arxiv.org/pdf/1509.02971.pdf.</span>
@@ -1077,7 +1077,7 @@
     <span class="k">def</span> <span class="nf">spec</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spec</span>
 
-<div class="viewcode-block" id="OrnsteinUhlenbeckProcessWrapper.step"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.tensordict_module.OrnsteinUhlenbeckProcessWrapper.html#torchrl.modules.tensordict_module.OrnsteinUhlenbeckProcessWrapper.step">[docs]</a>    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frames</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="OrnsteinUhlenbeckProcessWrapper.step"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.OrnsteinUhlenbeckProcessWrapper.html#torchrl.modules.OrnsteinUhlenbeckProcessWrapper.step">[docs]</a>    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frames</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Updates the eps noise factor.</span>
 
 <span class="sd">        Args:</span>
@@ -1100,7 +1100,7 @@
                     <span class="sa">f</span><span class="s2">&quot;number of frames.&quot;</span>
                 <span class="p">)</span></div>
 
-<div class="viewcode-block" id="OrnsteinUhlenbeckProcessWrapper.forward"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.tensordict_module.OrnsteinUhlenbeckProcessWrapper.html#torchrl.modules.tensordict_module.OrnsteinUhlenbeckProcessWrapper.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
+<div class="viewcode-block" id="OrnsteinUhlenbeckProcessWrapper.forward"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.OrnsteinUhlenbeckProcessWrapper.html#torchrl.modules.OrnsteinUhlenbeckProcessWrapper.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
         <span class="n">tensordict</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">tensordict</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">exploration_type</span><span class="p">()</span> <span class="o">==</span> <span class="n">ExplorationType</span><span class="o">.</span><span class="n">RANDOM</span> <span class="ow">or</span> <span class="n">exploration_type</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">is_init</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">is_init_key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
@@ -1120,7 +1120,7 @@
         <span class="k">return</span> <span class="n">tensordict</span></div></div>
 
 
-<div class="viewcode-block" id="OrnsteinUhlenbeckProcessModule"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.tensordict_module.OrnsteinUhlenbeckProcessModule.html#torchrl.modules.tensordict_module.OrnsteinUhlenbeckProcessModule">[docs]</a><span class="k">class</span> <span class="nc">OrnsteinUhlenbeckProcessModule</span><span class="p">(</span><span class="n">TensorDictModuleBase</span><span class="p">):</span>
+<div class="viewcode-block" id="OrnsteinUhlenbeckProcessModule"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.OrnsteinUhlenbeckProcessModule.html#torchrl.modules.OrnsteinUhlenbeckProcessModule">[docs]</a><span class="k">class</span> <span class="nc">OrnsteinUhlenbeckProcessModule</span><span class="p">(</span><span class="n">TensorDictModuleBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Ornstein-Uhlenbeck exploration policy module.</span>
 
 <span class="sd">    Presented in &quot;CONTINUOUS CONTROL WITH DEEP REINFORCEMENT LEARNING&quot;, https://arxiv.org/pdf/1509.02971.pdf.</span>
@@ -1271,7 +1271,7 @@
     <span class="k">def</span> <span class="nf">spec</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spec</span>
 
-<div class="viewcode-block" id="OrnsteinUhlenbeckProcessModule.step"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.tensordict_module.OrnsteinUhlenbeckProcessModule.html#torchrl.modules.tensordict_module.OrnsteinUhlenbeckProcessModule.step">[docs]</a>    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frames</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="OrnsteinUhlenbeckProcessModule.step"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.OrnsteinUhlenbeckProcessModule.html#torchrl.modules.OrnsteinUhlenbeckProcessModule.step">[docs]</a>    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frames</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Updates the eps noise factor.</span>
 
 <span class="sd">        Args:</span>
@@ -1294,7 +1294,7 @@
                     <span class="sa">f</span><span class="s2">&quot;number of frames.&quot;</span>
                 <span class="p">)</span></div>
 
-<div class="viewcode-block" id="OrnsteinUhlenbeckProcessModule.forward"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.tensordict_module.OrnsteinUhlenbeckProcessModule.html#torchrl.modules.tensordict_module.OrnsteinUhlenbeckProcessModule.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
+<div class="viewcode-block" id="OrnsteinUhlenbeckProcessModule.forward"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.OrnsteinUhlenbeckProcessModule.html#torchrl.modules.OrnsteinUhlenbeckProcessModule.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">exploration_type</span><span class="p">()</span> <span class="o">==</span> <span class="n">ExplorationType</span><span class="o">.</span><span class="n">RANDOM</span> <span class="ow">or</span> <span class="n">exploration_type</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">is_init</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">is_init_key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">is_init</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>

@@ -404,6 +404,8 @@
 <span class="c1">#</span>
 <span class="c1"># This source code is licensed under the MIT license found in the</span>
 <span class="c1"># LICENSE file in the root directory of this source tree.</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
 
 <span class="kn">import</span> <span class="nn">torch</span>
@@ -789,7 +791,7 @@
 <span class="sd">    .. note:: This module relies on specific ``recurrent_state`` keys being present in the input</span>
 <span class="sd">        TensorDicts. To generate a :class:`~torchrl.envs.transforms.TensorDictPrimer` transform that will automatically</span>
 <span class="sd">        add hidden states to the environment TensorDicts, use the method :func:`~torchrl.modules.rnn.LSTMModule.make_tensordict_primer`.</span>
-<span class="sd">        If this class is a submodule in a larger module, the method :func:`~torchrl.models.utils.get_primers_from_module` can be called</span>
+<span class="sd">        If this class is a submodule in a larger module, the method :func:`~torchrl.modules.utils.get_primers_from_module` can be called</span>
 <span class="sd">        on the parent module to automatically generate the primer transforms required for all submodules, including this one.</span>
 
 
@@ -935,6 +937,9 @@
 <span class="sd">        in parallel settings where a step involves copying the new recurrent state from ``&quot;next&quot;`` to the root</span>
 <span class="sd">        tensordict, which the meth:`~torchrl.EnvBase.step_mdp` method will not be able to do as the recurrent states</span>
 <span class="sd">        are not registered within the environment specs.</span>
+
+<span class="sd">        See :func:`torchrl.modules.utils.get_primers_from_module` for a method to generate all primers for a given</span>
+<span class="sd">        module.</span>
 
 <span class="sd">        Examples:</span>
 <span class="sd">            &gt;&gt;&gt; from torchrl.collectors import SyncDataCollector</span>
@@ -1510,7 +1515,7 @@
 <span class="sd">    .. note:: This module relies on specific ``recurrent_state`` keys being present in the input</span>
 <span class="sd">        TensorDicts. To generate a :class:`~torchrl.envs.transforms.TensorDictPrimer` transform that will automatically</span>
 <span class="sd">        add hidden states to the environment TensorDicts, use the method :func:`~torchrl.modules.rnn.GRUModule.make_tensordict_primer`.</span>
-<span class="sd">        If this class is a submodule in a larger module, the method :func:`~torchrl.models.utils.get_primers_from_module` can be called</span>
+<span class="sd">        If this class is a submodule in a larger module, the method :func:`~torchrl.modules.utils.get_primers_from_module` can be called</span>
 <span class="sd">        on the parent module to automatically generate the primer transforms required for all submodules, including this one.</span>
 
 <span class="sd">    Examples:</span>
@@ -1681,6 +1686,9 @@
 <span class="sd">        in parallel settings where a step involves copying the new recurrent state from ``&quot;next&quot;`` to the root</span>
 <span class="sd">        tensordict, which the meth:`~torchrl.EnvBase.step_mdp` method will not be able to do as the recurrent states</span>
 <span class="sd">        are not registered within the environment specs.</span>
+
+<span class="sd">        See :func:`torchrl.modules.utils.get_primers_from_module` for a method to generate all primers for a given</span>
+<span class="sd">        module.</span>
 
 <span class="sd">        Examples:</span>
 <span class="sd">            &gt;&gt;&gt; from torchrl.collectors import SyncDataCollector</span>

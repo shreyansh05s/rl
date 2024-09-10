@@ -40,7 +40,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="ProbabilisticActor" href="torchrl.modules.tensordict_module.ProbabilisticActor.html" />
-    <link rel="prev" title="OrnsteinUhlenbeckProcessModule" href="torchrl.modules.tensordict_module.OrnsteinUhlenbeckProcessModule.html" />
+    <link rel="prev" title="OrnsteinUhlenbeckProcessModule" href="torchrl.modules.OrnsteinUhlenbeckProcessModule.html" />
   <!-- Google Tag Manager -->
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -376,7 +376,7 @@
       <li class="pytorch-breadcrumbs-aside">
         
             
-            <a href="../../_sources/reference/generated/torchrl.modules.tensordict_module.OrnsteinUhlenbeckProcessWrapper.rst.txt" rel="nofollow"><img src="../../_static/images/view-page-source-icon.svg"></a>
+            <a href="../../_sources/reference/generated/torchrl.modules.OrnsteinUhlenbeckProcessWrapper.rst.txt" rel="nofollow"><img src="../../_static/images/view-page-source-icon.svg"></a>
           
         
       </li>
@@ -411,8 +411,8 @@
   <section id="ornsteinuhlenbeckprocesswrapper">
 <h1>OrnsteinUhlenbeckProcessWrapper<a class="headerlink" href="#ornsteinuhlenbeckprocesswrapper" title="Permalink to this heading">¶</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="torchrl.modules.tensordict_module.OrnsteinUhlenbeckProcessWrapper">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">torchrl.modules.tensordict_module.</span></span><span class="sig-name descname"><span class="pre">OrnsteinUhlenbeckProcessWrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/torchrl/modules/tensordict_module/exploration.html#OrnsteinUhlenbeckProcessWrapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.modules.tensordict_module.OrnsteinUhlenbeckProcessWrapper" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="torchrl.modules.OrnsteinUhlenbeckProcessWrapper">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">torchrl.modules.</span></span><span class="sig-name descname"><span class="pre">OrnsteinUhlenbeckProcessWrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/torchrl/modules/tensordict_module/exploration.html#OrnsteinUhlenbeckProcessWrapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.modules.OrnsteinUhlenbeckProcessWrapper" title="Permalink to this definition">¶</a></dt>
 <dd><p>Ornstein-Uhlenbeck exploration policy wrapper.</p>
 <p>Presented in “CONTINUOUS CONTROL WITH DEEP REINFORCEMENT LEARNING”, <a class="reference external" href="https://arxiv.org/pdf/1509.02971.pdf">https://arxiv.org/pdf/1509.02971.pdf</a>.</p>
 <p>The OU exploration is to be used with continuous control policies and introduces a auto-correlated exploration
@@ -430,8 +430,8 @@ trajectories, the step count will keep on increasing across rollouts. Note that 
 zeroing the tensordict at reset time.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Once an environment has been wrapped in <a class="reference internal" href="#torchrl.modules.tensordict_module.OrnsteinUhlenbeckProcessWrapper" title="torchrl.modules.tensordict_module.OrnsteinUhlenbeckProcessWrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">OrnsteinUhlenbeckProcessWrapper</span></code></a>, it is
-crucial to incorporate a call to <a class="reference internal" href="#torchrl.modules.tensordict_module.OrnsteinUhlenbeckProcessWrapper.step" title="torchrl.modules.tensordict_module.OrnsteinUhlenbeckProcessWrapper.step"><code class="xref py py-meth docutils literal notranslate"><span class="pre">step()</span></code></a> in the training loop
+<p>Once an environment has been wrapped in <a class="reference internal" href="#torchrl.modules.OrnsteinUhlenbeckProcessWrapper" title="torchrl.modules.OrnsteinUhlenbeckProcessWrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">OrnsteinUhlenbeckProcessWrapper</span></code></a>, it is
+crucial to incorporate a call to <a class="reference internal" href="#torchrl.modules.OrnsteinUhlenbeckProcessWrapper.step" title="torchrl.modules.OrnsteinUhlenbeckProcessWrapper.step"><code class="xref py py-meth docutils literal notranslate"><span class="pre">step()</span></code></a> in the training loop
 to update the exploration factor.
 Since it is not easy to capture this omission no warning or exception
 will be raised if this is ommitted!</p>
@@ -499,8 +499,8 @@ default: True</p></li>
 </pre></div>
 </div>
 <dl class="py method">
-<dt class="sig sig-object py" id="torchrl.modules.tensordict_module.OrnsteinUhlenbeckProcessWrapper.forward">
-<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensordict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TensorDictBase</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">TensorDictBase</span></span></span><a class="reference internal" href="../../_modules/torchrl/modules/tensordict_module/exploration.html#OrnsteinUhlenbeckProcessWrapper.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.modules.tensordict_module.OrnsteinUhlenbeckProcessWrapper.forward" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="torchrl.modules.OrnsteinUhlenbeckProcessWrapper.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensordict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TensorDictBase</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">TensorDictBase</span></span></span><a class="reference internal" href="../../_modules/torchrl/modules/tensordict_module/exploration.html#OrnsteinUhlenbeckProcessWrapper.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.modules.OrnsteinUhlenbeckProcessWrapper.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Define the computation performed at every call.</p>
 <p>Should be overridden by all subclasses.</p>
 <div class="admonition note">
@@ -513,8 +513,8 @@ registered hooks while the latter silently ignores them.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="torchrl.modules.tensordict_module.OrnsteinUhlenbeckProcessWrapper.step">
-<span class="sig-name descname"><span class="pre">step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frames</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/torchrl/modules/tensordict_module/exploration.html#OrnsteinUhlenbeckProcessWrapper.step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.modules.tensordict_module.OrnsteinUhlenbeckProcessWrapper.step" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="torchrl.modules.OrnsteinUhlenbeckProcessWrapper.step">
+<span class="sig-name descname"><span class="pre">step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frames</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/torchrl/modules/tensordict_module/exploration.html#OrnsteinUhlenbeckProcessWrapper.step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.modules.OrnsteinUhlenbeckProcessWrapper.step" title="Permalink to this definition">¶</a></dt>
 <dd><p>Updates the eps noise factor.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -538,7 +538,7 @@ registered hooks while the latter silently ignores them.</p>
         <a href="torchrl.modules.tensordict_module.ProbabilisticActor.html" class="btn btn-neutral float-right" title="ProbabilisticActor" accesskey="n" rel="next">Next <img src="../../_static/images/chevron-right-orange.svg" class="next-page"></a>
       
       
-        <a href="torchrl.modules.tensordict_module.OrnsteinUhlenbeckProcessModule.html" class="btn btn-neutral" title="OrnsteinUhlenbeckProcessModule" accesskey="p" rel="prev"><img src="../../_static/images/chevron-right-orange.svg" class="previous-page"> Previous</a>
+        <a href="torchrl.modules.OrnsteinUhlenbeckProcessModule.html" class="btn btn-neutral" title="OrnsteinUhlenbeckProcessModule" accesskey="p" rel="prev"><img src="../../_static/images/chevron-right-orange.svg" class="previous-page"> Previous</a>
       
     </div>
   

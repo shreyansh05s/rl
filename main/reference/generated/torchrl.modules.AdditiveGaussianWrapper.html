@@ -10,7 +10,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>AdditiveGaussianModule &mdash; torchrl main documentation</title>
+  <title>AdditiveGaussianWrapper &mdash; torchrl main documentation</title>
   
 
   
@@ -39,8 +39,8 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="AdditiveGaussianWrapper" href="torchrl.modules.tensordict_module.AdditiveGaussianWrapper.html" />
-    <link rel="prev" title="TanhModule" href="torchrl.modules.tensordict_module.TanhModule.html" />
+    <link rel="next" title="ConsistentDropoutModule" href="torchrl.modules.ConsistentDropoutModule.html" />
+    <link rel="prev" title="AdditiveGaussianModule" href="torchrl.modules.AdditiveGaussianModule.html" />
   <!-- Google Tag Manager -->
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -370,13 +370,13 @@
         
           <li><a href="../modules.html">torchrl.modules package</a> &gt;</li>
         
-      <li>AdditiveGaussianModule</li>
+      <li>AdditiveGaussianWrapper</li>
     
     
       <li class="pytorch-breadcrumbs-aside">
         
             
-            <a href="../../_sources/reference/generated/torchrl.modules.tensordict_module.AdditiveGaussianModule.rst.txt" rel="nofollow"><img src="../../_static/images/view-page-source-icon.svg"></a>
+            <a href="../../_sources/reference/generated/torchrl.modules.AdditiveGaussianWrapper.rst.txt" rel="nofollow"><img src="../../_static/images/view-page-source-icon.svg"></a>
           
         
       </li>
@@ -408,48 +408,51 @@
             <div role="main" class="main-content" itemscope="itemscope" itemtype="http://schema.org/Article">
              <article itemprop="articleBody" id="pytorch-article" class="pytorch-article">
               
-  <section id="additivegaussianmodule">
-<h1>AdditiveGaussianModule<a class="headerlink" href="#additivegaussianmodule" title="Permalink to this heading">¶</a></h1>
+  <section id="additivegaussianwrapper">
+<h1>AdditiveGaussianWrapper<a class="headerlink" href="#additivegaussianwrapper" title="Permalink to this heading">¶</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="torchrl.modules.tensordict_module.AdditiveGaussianModule">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">torchrl.modules.tensordict_module.</span></span><span class="sig-name descname"><span class="pre">AdditiveGaussianModule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/torchrl/modules/tensordict_module/exploration.html#AdditiveGaussianModule"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.modules.tensordict_module.AdditiveGaussianModule" title="Permalink to this definition">¶</a></dt>
-<dd><p>Additive Gaussian PO module.</p>
+<dt class="sig sig-object py" id="torchrl.modules.AdditiveGaussianWrapper">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">torchrl.modules.</span></span><span class="sig-name descname"><span class="pre">AdditiveGaussianWrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/torchrl/modules/tensordict_module/exploration.html#AdditiveGaussianWrapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.modules.AdditiveGaussianWrapper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Additive Gaussian PO wrapper.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>spec</strong> (<a class="reference internal" href="torchrl.data.TensorSpec.html#torchrl.data.TensorSpec" title="torchrl.data.TensorSpec"><em>TensorSpec</em></a>) – the spec used for sampling actions. The sampled
-action will be projected onto the valid action space once explored.</p></li>
+<dd class="field-odd"><p><strong>policy</strong> (<em>TensorDictModule</em>) – a policy.</p>
+</dd>
+<dt class="field-even">Keyword Arguments<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
 <li><p><strong>sigma_init</strong> (<em>scalar</em><em>, </em><em>optional</em>) – initial epsilon value.
 default: 1.0</p></li>
 <li><p><strong>sigma_end</strong> (<em>scalar</em><em>, </em><em>optional</em>) – final epsilon value.
 default: 0.1</p></li>
 <li><p><strong>annealing_num_steps</strong> (<em>int</em><em>, </em><em>optional</em>) – number of steps it will take for
-sigma to reach the <code class="xref py py-obj docutils literal notranslate"><span class="pre">sigma_end</span></code> value.
-default: 1000</p></li>
-<li><p><strong>mean</strong> (<em>float</em><em>, </em><em>optional</em>) – mean of each output element’s normal distribution.
-default: 0.0</p></li>
-<li><p><strong>std</strong> (<em>float</em><em>, </em><em>optional</em>) – standard deviation of each output element’s normal distribution.
-default: 1.0</p></li>
-</ul>
-</dd>
-<dt class="field-even">Keyword Arguments<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>action_key</strong> (<em>NestedKey</em><em>, </em><em>optional</em>) – if the policy module has more than one output key,
+sigma to reach the <code class="xref py py-obj docutils literal notranslate"><span class="pre">sigma_end</span></code> value.</p></li>
+<li><p><strong>mean</strong> (<a class="reference internal" href="torchrl.data.MultiStep.html#torchrl.data.MultiStep.float" title="torchrl.data.MultiStep.float"><em>float</em></a><em>, </em><em>optional</em>) – mean of each output element’s normal distribution.</p></li>
+<li><p><strong>std</strong> (<a class="reference internal" href="torchrl.data.MultiStep.html#torchrl.data.MultiStep.float" title="torchrl.data.MultiStep.float"><em>float</em></a><em>, </em><em>optional</em>) – standard deviation of each output element’s normal distribution.</p></li>
+<li><p><strong>action_key</strong> (<em>NestedKey</em><em>, </em><em>optional</em>) – if the policy module has more than one output key,
 its output spec will be of type Composite. One needs to know where to
 find the action spec.
-default: “action”</p>
+Default is “action”.</p></li>
+<li><p><strong>spec</strong> (<a class="reference internal" href="torchrl.data.TensorSpec.html#torchrl.data.TensorSpec" title="torchrl.data.TensorSpec"><em>TensorSpec</em></a><em>, </em><em>optional</em>) – if provided, the sampled action will be
+projected onto the valid action space once explored. If not provided,
+the exploration wrapper will attempt to recover it from the policy.</p></li>
+<li><p><strong>safe</strong> (<em>boolean</em><em>, </em><em>optional</em>) – if False, the TensorSpec can be None. If it
+is set to False but the spec is passed, the projection will still
+happen.
+Default is True.</p></li>
+</ul>
 </dd>
 </dl>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>It is
-crucial to incorporate a call to <a class="reference internal" href="#torchrl.modules.tensordict_module.AdditiveGaussianModule.step" title="torchrl.modules.tensordict_module.AdditiveGaussianModule.step"><code class="xref py py-meth docutils literal notranslate"><span class="pre">step()</span></code></a> in the training loop
+<p>Once an environment has been wrapped in <a class="reference internal" href="#torchrl.modules.AdditiveGaussianWrapper" title="torchrl.modules.AdditiveGaussianWrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">AdditiveGaussianWrapper</span></code></a>, it is
+crucial to incorporate a call to <a class="reference internal" href="#torchrl.modules.AdditiveGaussianWrapper.step" title="torchrl.modules.AdditiveGaussianWrapper.step"><code class="xref py py-meth docutils literal notranslate"><span class="pre">step()</span></code></a> in the training loop
 to update the exploration factor.
 Since it is not easy to capture this omission no warning or exception
 will be raised if this is ommitted!</p>
 </div>
 <dl class="py method">
-<dt class="sig sig-object py" id="torchrl.modules.tensordict_module.AdditiveGaussianModule.forward">
-<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensordict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TensorDictBase</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">TensorDictBase</span></span></span><a class="reference internal" href="../../_modules/torchrl/modules/tensordict_module/exploration.html#AdditiveGaussianModule.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.modules.tensordict_module.AdditiveGaussianModule.forward" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="torchrl.modules.AdditiveGaussianWrapper.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensordict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TensorDictBase</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">TensorDictBase</span></span></span><a class="reference internal" href="../../_modules/torchrl/modules/tensordict_module/exploration.html#AdditiveGaussianWrapper.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.modules.AdditiveGaussianWrapper.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Define the computation performed at every call.</p>
 <p>Should be overridden by all subclasses.</p>
 <div class="admonition note">
@@ -462,13 +465,13 @@ registered hooks while the latter silently ignores them.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="torchrl.modules.tensordict_module.AdditiveGaussianModule.step">
-<span class="sig-name descname"><span class="pre">step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frames</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/torchrl/modules/tensordict_module/exploration.html#AdditiveGaussianModule.step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.modules.tensordict_module.AdditiveGaussianModule.step" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="torchrl.modules.AdditiveGaussianWrapper.step">
+<span class="sig-name descname"><span class="pre">step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frames</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/torchrl/modules/tensordict_module/exploration.html#AdditiveGaussianWrapper.step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.modules.AdditiveGaussianWrapper.step" title="Permalink to this definition">¶</a></dt>
 <dd><p>A step of sigma decay.</p>
-<p>After <cite>self.annealing_num_steps</cite> calls to this method, calls result in no-op.</p>
+<p>After self.annealing_num_steps, this function is a no-op.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>frames</strong> (<em>int</em>) – number of frames since last step. Defaults to <code class="docutils literal notranslate"><span class="pre">1</span></code>.</p>
+<dd class="field-odd"><p><strong>frames</strong> (<em>int</em>) – number of frames since last step.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -485,10 +488,10 @@ registered hooks while the latter silently ignores them.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="torchrl.modules.tensordict_module.AdditiveGaussianWrapper.html" class="btn btn-neutral float-right" title="AdditiveGaussianWrapper" accesskey="n" rel="next">Next <img src="../../_static/images/chevron-right-orange.svg" class="next-page"></a>
+        <a href="torchrl.modules.ConsistentDropoutModule.html" class="btn btn-neutral float-right" title="ConsistentDropoutModule" accesskey="n" rel="next">Next <img src="../../_static/images/chevron-right-orange.svg" class="next-page"></a>
       
       
-        <a href="torchrl.modules.tensordict_module.TanhModule.html" class="btn btn-neutral" title="TanhModule" accesskey="p" rel="prev"><img src="../../_static/images/chevron-right-orange.svg" class="previous-page"> Previous</a>
+        <a href="torchrl.modules.AdditiveGaussianModule.html" class="btn btn-neutral" title="AdditiveGaussianModule" accesskey="p" rel="prev"><img src="../../_static/images/chevron-right-orange.svg" class="previous-page"> Previous</a>
       
     </div>
   
@@ -522,7 +525,7 @@ registered hooks while the latter silently ignores them.</p>
           <div class="pytorch-right-menu" id="pytorch-right-menu">
             <div class="pytorch-side-scroll" id="pytorch-side-scroll-right">
               <ul>
-<li><a class="reference internal" href="#">AdditiveGaussianModule</a></li>
+<li><a class="reference internal" href="#">AdditiveGaussianWrapper</a></li>
 </ul>
 
             </div>

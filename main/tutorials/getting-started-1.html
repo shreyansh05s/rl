@@ -670,10 +670,10 @@ the docstrings to know more.</p>
 <p>Stochastic policies like this somewhat naturally trade off exploration and
 exploitation, but deterministic policies won’t. Fortunately, TorchRL can
 also palliate to this with its exploration modules.
-We will take the example of the <code class="xref py py-class docutils literal notranslate"><span class="pre">EGreedyModule</span></code>
+We will take the example of the <a class="reference internal" href="../reference/generated/torchrl.modules.EGreedyModule.html#torchrl.modules.EGreedyModule" title="torchrl.modules.EGreedyModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">EGreedyModule</span></code></a>
 exploration module (check also
-<code class="xref py py-class docutils literal notranslate"><span class="pre">AdditiveGaussianModule</span></code> and
-<code class="xref py py-class docutils literal notranslate"><span class="pre">OrnsteinUhlenbeckProcessModule</span></code>).
+<a class="reference internal" href="../reference/generated/torchrl.modules.AdditiveGaussianModule.html#torchrl.modules.AdditiveGaussianModule" title="torchrl.modules.AdditiveGaussianModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">AdditiveGaussianModule</span></code></a> and
+<a class="reference internal" href="../reference/generated/torchrl.modules.OrnsteinUhlenbeckProcessModule.html#torchrl.modules.OrnsteinUhlenbeckProcessModule" title="torchrl.modules.OrnsteinUhlenbeckProcessModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">OrnsteinUhlenbeckProcessModule</span></code></a>).
 To see this module in action, let’s revert to a deterministic policy:</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tensordict.nn</span> <span class="kn">import</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">TensorDictSequential</span></a>
 <span class="kn">from</span> <span class="nn">torchrl.modules</span> <span class="kn">import</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">EGreedyModule</span></a>
@@ -686,7 +686,7 @@ with a number of annealing frames and an initial value for the
 <span class="math notranslate nohighlight">\(\epsilon\)</span> parameter. A value of <span class="math notranslate nohighlight">\(\epsilon = 1\)</span> means that every
 action taken is random, while <span class="math notranslate nohighlight">\(\epsilon=0\)</span> means that there is no
 exploration at all. To anneal (i.e., decrease) the exploration factor, a call
-to <code class="xref py py-meth docutils literal notranslate"><span class="pre">step()</span></code> is required (see the last
+to <a class="reference internal" href="../reference/generated/torchrl.modules.EGreedyModule.html#torchrl.modules.EGreedyModule.step" title="torchrl.modules.EGreedyModule.step"><code class="xref py py-meth docutils literal notranslate"><span class="pre">step()</span></code></a> is required (see the last
 <a class="reference internal" href="getting-started-5.html#gs-first-training"><span class="std std-ref">tutorial</span></a> for an example).</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">exploration_module</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">EGreedyModule</span></a><span class="p">(</span>
     <span class="n">spec</span><span class="o">=</span><span class="n">env</span><span class="o">.</span><span class="n">action_spec</span><span class="p">,</span> <span class="n">annealing_num_steps</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">eps_init</span><span class="o">=</span><span class="mf">0.5</span>
@@ -708,7 +708,7 @@ to <a class="reference external" href="https://pytorch.org/docs/stable/generated
 </pre></div>
 </div>
 <p>Because it must be able to sample random actions in the action space, the
-<code class="xref py py-class docutils literal notranslate"><span class="pre">EGreedyModule</span></code> must be equipped with the
+<a class="reference internal" href="../reference/generated/torchrl.modules.EGreedyModule.html#torchrl.modules.EGreedyModule" title="torchrl.modules.EGreedyModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">EGreedyModule</span></code></a> must be equipped with the
 <code class="docutils literal notranslate"><span class="pre">action_space</span></code> from the environment to know what strategy to use to
 sample actions randomly.</p>
 </section>
@@ -791,7 +791,7 @@ output. We should find an <code class="docutils literal notranslate"><span class
 </div>
 <p>Because it relies on the <code class="docutils literal notranslate"><span class="pre">argmax</span></code> operator, this policy is deterministic.
 During data collection, we will need to explore the environment. For that,
-we are using the <a class="reference internal" href="../reference/generated/torchrl.modules.tensordict_module.EGreedyModule.html#torchrl.modules.tensordict_module.EGreedyModule" title="torchrl.modules.tensordict_module.EGreedyModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">EGreedyModule</span></code></a>
+we are using the <code class="xref py py-class docutils literal notranslate"><span class="pre">EGreedyModule</span></code>
 once again:</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">policy_explore</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">TensorDictSequential</span></a><span class="p">(</span><span class="n">policy</span><span class="p">,</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">EGreedyModule</span></a><span class="p">(</span><span class="n">env</span><span class="o">.</span><span class="n">action_spec</span><span class="p">))</span>
 
@@ -813,7 +813,7 @@ required by the env);</p></li>
 <li><p>Compare this to the usage of transformers with the Decision Transformers
 examples (see the <code class="docutils literal notranslate"><span class="pre">example</span></code> directory on GitHub).</p></li>
 </ul>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 51.267 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 51.749 seconds)</p>
 <p><strong>Estimated memory usage:</strong>  309 MB</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-tutorials-getting-started-1-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">

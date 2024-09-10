@@ -10,7 +10,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>AdditiveGaussianWrapper &mdash; torchrl main documentation</title>
+  <title>ConsistentDropoutModule &mdash; torchrl main documentation</title>
   
 
   
@@ -39,8 +39,8 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="EGreedyModule" href="torchrl.modules.tensordict_module.EGreedyModule.html" />
-    <link rel="prev" title="AdditiveGaussianModule" href="torchrl.modules.tensordict_module.AdditiveGaussianModule.html" />
+    <link rel="next" title="EGreedyModule" href="torchrl.modules.EGreedyModule.html" />
+    <link rel="prev" title="AdditiveGaussianWrapper" href="torchrl.modules.AdditiveGaussianWrapper.html" />
   <!-- Google Tag Manager -->
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -370,13 +370,13 @@
         
           <li><a href="../modules.html">torchrl.modules package</a> &gt;</li>
         
-      <li>AdditiveGaussianWrapper</li>
+      <li>ConsistentDropoutModule</li>
     
     
       <li class="pytorch-breadcrumbs-aside">
         
             
-            <a href="../../_sources/reference/generated/torchrl.modules.tensordict_module.AdditiveGaussianWrapper.rst.txt" rel="nofollow"><img src="../../_static/images/view-page-source-icon.svg"></a>
+            <a href="../../_sources/reference/generated/torchrl.modules.ConsistentDropoutModule.rst.txt" rel="nofollow"><img src="../../_static/images/view-page-source-icon.svg"></a>
           
         
       </li>
@@ -408,51 +408,54 @@
             <div role="main" class="main-content" itemscope="itemscope" itemtype="http://schema.org/Article">
              <article itemprop="articleBody" id="pytorch-article" class="pytorch-article">
               
-  <section id="additivegaussianwrapper">
-<h1>AdditiveGaussianWrapper<a class="headerlink" href="#additivegaussianwrapper" title="Permalink to this heading">¶</a></h1>
+  <section id="consistentdropoutmodule">
+<h1>ConsistentDropoutModule<a class="headerlink" href="#consistentdropoutmodule" title="Permalink to this heading">¶</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="torchrl.modules.tensordict_module.AdditiveGaussianWrapper">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">torchrl.modules.tensordict_module.</span></span><span class="sig-name descname"><span class="pre">AdditiveGaussianWrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/torchrl/modules/tensordict_module/exploration.html#AdditiveGaussianWrapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.modules.tensordict_module.AdditiveGaussianWrapper" title="Permalink to this definition">¶</a></dt>
-<dd><p>Additive Gaussian PO wrapper.</p>
+<dt class="sig sig-object py" id="torchrl.modules.ConsistentDropoutModule">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">torchrl.modules.</span></span><span class="sig-name descname"><span class="pre">ConsistentDropoutModule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/torchrl/modules/models/exploration.html#ConsistentDropoutModule"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.modules.ConsistentDropoutModule" title="Permalink to this definition">¶</a></dt>
+<dd><p>A TensorDictModule wrapper for <code class="xref py py-class docutils literal notranslate"><span class="pre">ConsistentDropout</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>policy</strong> (<em>TensorDictModule</em>) – a policy.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p</strong> (<em>float</em><em>, </em><em>optional</em>) – Dropout probability. Default: <code class="docutils literal notranslate"><span class="pre">0.5</span></code>.</p></li>
+<li><p><strong>in_keys</strong> (<em>NestedKey</em><em> or </em><em>list of NestedKeys</em>) – keys to be read
+from input tensordict and passed to this module.</p></li>
+<li><p><strong>out_keys</strong> (<em>NestedKey</em><em> or </em><em>iterable of NestedKeys</em>) – keys to be written to the input tensordict.
+Defaults to <code class="docutils literal notranslate"><span class="pre">in_keys</span></code> values.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Keyword Arguments<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>sigma_init</strong> (<em>scalar</em><em>, </em><em>optional</em>) – initial epsilon value.
-default: 1.0</p></li>
-<li><p><strong>sigma_end</strong> (<em>scalar</em><em>, </em><em>optional</em>) – final epsilon value.
-default: 0.1</p></li>
-<li><p><strong>annealing_num_steps</strong> (<em>int</em><em>, </em><em>optional</em>) – number of steps it will take for
-sigma to reach the <code class="xref py py-obj docutils literal notranslate"><span class="pre">sigma_end</span></code> value.</p></li>
-<li><p><strong>mean</strong> (<a class="reference internal" href="torchrl.data.MultiStep.html#torchrl.data.MultiStep.float" title="torchrl.data.MultiStep.float"><em>float</em></a><em>, </em><em>optional</em>) – mean of each output element’s normal distribution.</p></li>
-<li><p><strong>std</strong> (<a class="reference internal" href="torchrl.data.MultiStep.html#torchrl.data.MultiStep.float" title="torchrl.data.MultiStep.float"><em>float</em></a><em>, </em><em>optional</em>) – standard deviation of each output element’s normal distribution.</p></li>
-<li><p><strong>action_key</strong> (<em>NestedKey</em><em>, </em><em>optional</em>) – if the policy module has more than one output key,
-its output spec will be of type Composite. One needs to know where to
-find the action spec.
-Default is “action”.</p></li>
-<li><p><strong>spec</strong> (<a class="reference internal" href="torchrl.data.TensorSpec.html#torchrl.data.TensorSpec" title="torchrl.data.TensorSpec"><em>TensorSpec</em></a><em>, </em><em>optional</em>) – if provided, the sampled action will be
-projected onto the valid action space once explored. If not provided,
-the exploration wrapper will attempt to recover it from the policy.</p></li>
-<li><p><strong>safe</strong> (<em>boolean</em><em>, </em><em>optional</em>) – if False, the TensorSpec can be None. If it
-is set to False but the spec is passed, the projection will still
-happen.
-Default is True.</p></li>
+<li><p><strong>input_shape</strong> (<em>tuple</em><em>, </em><em>optional</em>) – the shape of the input (non-batchted), used to generate the
+tensordict primers with <a class="reference internal" href="#torchrl.modules.ConsistentDropoutModule.make_tensordict_primer" title="torchrl.modules.ConsistentDropoutModule.make_tensordict_primer"><code class="xref py py-meth docutils literal notranslate"><span class="pre">make_tensordict_primer()</span></code></a>.</p></li>
+<li><p><strong>input_dtype</strong> (<a class="reference external" href="https://pytorch.org/docs/stable/tensor_attributes.html#torch.dtype" title="(in PyTorch v2.4)"><em>torch.dtype</em></a><em>, </em><em>optional</em>) – the dtype of the input for the primer. If none is pased,
+<code class="docutils literal notranslate"><span class="pre">torch.get_default_dtype</span></code> is assumed.</p></li>
 </ul>
 </dd>
 </dl>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Once an environment has been wrapped in <a class="reference internal" href="#torchrl.modules.tensordict_module.AdditiveGaussianWrapper" title="torchrl.modules.tensordict_module.AdditiveGaussianWrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">AdditiveGaussianWrapper</span></code></a>, it is
-crucial to incorporate a call to <a class="reference internal" href="#torchrl.modules.tensordict_module.AdditiveGaussianWrapper.step" title="torchrl.modules.tensordict_module.AdditiveGaussianWrapper.step"><code class="xref py py-meth docutils literal notranslate"><span class="pre">step()</span></code></a> in the training loop
-to update the exploration factor.
-Since it is not easy to capture this omission no warning or exception
-will be raised if this is ommitted!</p>
+<p>To use this class within a policy, one needs the mask to be reset at reset time.
+This can be achieved through a <code class="xref py py-class docutils literal notranslate"><span class="pre">TensorDictPrimer</span></code> transform that can be obtained
+with <a class="reference internal" href="#torchrl.modules.ConsistentDropoutModule.make_tensordict_primer" title="torchrl.modules.ConsistentDropoutModule.make_tensordict_primer"><code class="xref py py-meth docutils literal notranslate"><span class="pre">make_tensordict_primer()</span></code></a>. See this method for more information.</p>
+</div>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">tensordict</span> <span class="kn">import</span> <span class="n">TensorDict</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">module</span> <span class="o">=</span> <span class="n">ConsistentDropoutModule</span><span class="p">(</span><span class="n">p</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">td</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="p">({</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)},</span> <span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">module</span><span class="p">(</span><span class="n">td</span><span class="p">)</span>
+<span class="go">TensorDict(</span>
+<span class="go">    fields={</span>
+<span class="go">        mask_6127171760: Tensor(shape=torch.Size([3, 4]), device=cpu, dtype=torch.bool, is_shared=False),</span>
+<span class="go">        x: Tensor(shape=torch.Size([3, 4]), device=cpu, dtype=torch.float32, is_shared=False)},</span>
+<span class="go">    batch_size=torch.Size([3]),</span>
+<span class="go">    device=None,</span>
+<span class="go">    is_shared=False)</span>
+</pre></div>
 </div>
 <dl class="py method">
-<dt class="sig sig-object py" id="torchrl.modules.tensordict_module.AdditiveGaussianWrapper.forward">
-<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensordict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TensorDictBase</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">TensorDictBase</span></span></span><a class="reference internal" href="../../_modules/torchrl/modules/tensordict_module/exploration.html#AdditiveGaussianWrapper.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.modules.tensordict_module.AdditiveGaussianWrapper.forward" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="torchrl.modules.ConsistentDropoutModule.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensordict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/torchrl/modules/models/exploration.html#ConsistentDropoutModule.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.modules.ConsistentDropoutModule.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Define the computation performed at every call.</p>
 <p>Should be overridden by all subclasses.</p>
 <div class="admonition note">
@@ -465,15 +468,37 @@ registered hooks while the latter silently ignores them.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="torchrl.modules.tensordict_module.AdditiveGaussianWrapper.step">
-<span class="sig-name descname"><span class="pre">step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frames</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/torchrl/modules/tensordict_module/exploration.html#AdditiveGaussianWrapper.step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.modules.tensordict_module.AdditiveGaussianWrapper.step" title="Permalink to this definition">¶</a></dt>
-<dd><p>A step of sigma decay.</p>
-<p>After self.annealing_num_steps, this function is a no-op.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>frames</strong> (<em>int</em>) – number of frames since last step.</p>
-</dd>
-</dl>
+<dt class="sig sig-object py" id="torchrl.modules.ConsistentDropoutModule.make_tensordict_primer">
+<span class="sig-name descname"><span class="pre">make_tensordict_primer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/torchrl/modules/models/exploration.html#ConsistentDropoutModule.make_tensordict_primer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.modules.ConsistentDropoutModule.make_tensordict_primer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes a tensordict primer for the environment to generate random masks during reset calls.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="torchrl.modules.utils.get_primers_from_module.html#torchrl.modules.utils.get_primers_from_module" title="torchrl.modules.utils.get_primers_from_module"><code class="xref py py-func docutils literal notranslate"><span class="pre">torchrl.modules.utils.get_primers_from_module()</span></code></a> for a method to generate all primers for a given</p>
+</div>
+<p>module.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">tensordict.nn</span> <span class="kn">import</span> <span class="n">TensorDictSequential</span> <span class="k">as</span> <span class="n">Seq</span><span class="p">,</span> <span class="n">TensorDictModule</span> <span class="k">as</span> <span class="n">Mod</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.envs</span> <span class="kn">import</span> <span class="n">GymEnv</span><span class="p">,</span> <span class="n">StepCounter</span><span class="p">,</span> <span class="n">SerialEnv</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">Seq</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">Mod</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">in_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;observation&quot;</span><span class="p">],</span> <span class="n">out_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;intermediate&quot;</span><span class="p">]),</span>
+<span class="gp">... </span>    <span class="n">ConsistentDropoutModule</span><span class="p">(</span>
+<span class="gp">... </span>        <span class="n">p</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="n">input_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
+<span class="gp">... </span>        <span class="n">in_keys</span><span class="o">=</span><span class="s2">&quot;intermediate&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="p">),</span>
+<span class="gp">... </span>    <span class="n">Mod</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="n">in_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;intermediate&quot;</span><span class="p">],</span> <span class="n">out_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;action&quot;</span><span class="p">]),</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">primer</span> <span class="o">=</span> <span class="n">get_primers_from_module</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">env0</span> <span class="o">=</span> <span class="n">GymEnv</span><span class="p">(</span><span class="s2">&quot;Pendulum-v1&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">append_transform</span><span class="p">(</span><span class="n">StepCounter</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">env1</span> <span class="o">=</span> <span class="n">GymEnv</span><span class="p">(</span><span class="s2">&quot;Pendulum-v1&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">append_transform</span><span class="p">(</span><span class="n">StepCounter</span><span class="p">(</span><span class="mi">6</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">env</span> <span class="o">=</span> <span class="n">SerialEnv</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="p">[</span><span class="k">lambda</span> <span class="n">env</span><span class="o">=</span><span class="n">env0</span><span class="p">:</span> <span class="n">env</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">env</span><span class="o">=</span><span class="n">env1</span><span class="p">:</span> <span class="n">env</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">env</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">append_transform</span><span class="p">(</span><span class="n">primer</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">rollout</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">break_when_any_done</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mask</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;mask&quot;</span><span class="p">)][</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="n">mask</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="p">:</span><span class="mi">5</span><span class="p">]</span> <span class="o">!=</span> <span class="n">r</span><span class="p">[</span><span class="n">mask</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">:</span><span class="mi">6</span><span class="p">])</span><span class="o">.</span><span class="n">any</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="n">mask</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="n">r</span><span class="p">[</span><span class="n">mask</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">:</span><span class="mi">5</span><span class="p">])</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </dd></dl>
@@ -488,10 +513,10 @@ registered hooks while the latter silently ignores them.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="torchrl.modules.tensordict_module.EGreedyModule.html" class="btn btn-neutral float-right" title="EGreedyModule" accesskey="n" rel="next">Next <img src="../../_static/images/chevron-right-orange.svg" class="next-page"></a>
+        <a href="torchrl.modules.EGreedyModule.html" class="btn btn-neutral float-right" title="EGreedyModule" accesskey="n" rel="next">Next <img src="../../_static/images/chevron-right-orange.svg" class="next-page"></a>
       
       
-        <a href="torchrl.modules.tensordict_module.AdditiveGaussianModule.html" class="btn btn-neutral" title="AdditiveGaussianModule" accesskey="p" rel="prev"><img src="../../_static/images/chevron-right-orange.svg" class="previous-page"> Previous</a>
+        <a href="torchrl.modules.AdditiveGaussianWrapper.html" class="btn btn-neutral" title="AdditiveGaussianWrapper" accesskey="p" rel="prev"><img src="../../_static/images/chevron-right-orange.svg" class="previous-page"> Previous</a>
       
     </div>
   
@@ -525,7 +550,7 @@ registered hooks while the latter silently ignores them.</p>
           <div class="pytorch-right-menu" id="pytorch-right-menu">
             <div class="pytorch-side-scroll" id="pytorch-side-scroll-right">
               <ul>
-<li><a class="reference internal" href="#">AdditiveGaussianWrapper</a></li>
+<li><a class="reference internal" href="#">ConsistentDropoutModule</a></li>
 </ul>
 
             </div>

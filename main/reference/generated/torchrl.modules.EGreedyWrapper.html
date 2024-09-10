@@ -39,8 +39,8 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="OrnsteinUhlenbeckProcessModule" href="torchrl.modules.tensordict_module.OrnsteinUhlenbeckProcessModule.html" />
-    <link rel="prev" title="EGreedyModule" href="torchrl.modules.tensordict_module.EGreedyModule.html" />
+    <link rel="next" title="OrnsteinUhlenbeckProcessModule" href="torchrl.modules.OrnsteinUhlenbeckProcessModule.html" />
+    <link rel="prev" title="EGreedyModule" href="torchrl.modules.EGreedyModule.html" />
   <!-- Google Tag Manager -->
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -376,7 +376,7 @@
       <li class="pytorch-breadcrumbs-aside">
         
             
-            <a href="../../_sources/reference/generated/torchrl.modules.tensordict_module.EGreedyWrapper.rst.txt" rel="nofollow"><img src="../../_static/images/view-page-source-icon.svg"></a>
+            <a href="../../_sources/reference/generated/torchrl.modules.EGreedyWrapper.rst.txt" rel="nofollow"><img src="../../_static/images/view-page-source-icon.svg"></a>
           
         
       </li>
@@ -411,8 +411,8 @@
   <section id="egreedywrapper">
 <h1>EGreedyWrapper<a class="headerlink" href="#egreedywrapper" title="Permalink to this heading">¶</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="torchrl.modules.tensordict_module.EGreedyWrapper">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">torchrl.modules.tensordict_module.</span></span><span class="sig-name descname"><span class="pre">EGreedyWrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/torchrl/modules/tensordict_module/exploration.html#EGreedyWrapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.modules.tensordict_module.EGreedyWrapper" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="torchrl.modules.EGreedyWrapper">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">torchrl.modules.</span></span><span class="sig-name descname"><span class="pre">EGreedyWrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/torchrl/modules/tensordict_module/exploration.html#EGreedyWrapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.modules.EGreedyWrapper" title="Permalink to this definition">¶</a></dt>
 <dd><p>[Deprecated] Epsilon-Greedy PO wrapper.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -437,7 +437,7 @@ the exploration wrapper will attempt to recover it from the policy.</p></li>
 </dl>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Once a module has been wrapped in <a class="reference internal" href="#torchrl.modules.tensordict_module.EGreedyWrapper" title="torchrl.modules.tensordict_module.EGreedyWrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">EGreedyWrapper</span></code></a>, it is
+<p>Once a module has been wrapped in <a class="reference internal" href="#torchrl.modules.EGreedyWrapper" title="torchrl.modules.EGreedyWrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">EGreedyWrapper</span></code></a>, it is
 crucial to incorporate a call to <a class="reference internal" href="torchrl.envs.EnvBase.html#id4" title="torchrl.envs.EnvBase.step"><code class="xref py py-meth docutils literal notranslate"><span class="pre">step()</span></code></a> in the training loop
 to update the exploration factor.
 Since it is not easy to capture this omission no warning or exception
@@ -479,10 +479,10 @@ will be raised if this is ommitted!</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="torchrl.modules.tensordict_module.OrnsteinUhlenbeckProcessModule.html" class="btn btn-neutral float-right" title="OrnsteinUhlenbeckProcessModule" accesskey="n" rel="next">Next <img src="../../_static/images/chevron-right-orange.svg" class="next-page"></a>
+        <a href="torchrl.modules.OrnsteinUhlenbeckProcessModule.html" class="btn btn-neutral float-right" title="OrnsteinUhlenbeckProcessModule" accesskey="n" rel="next">Next <img src="../../_static/images/chevron-right-orange.svg" class="next-page"></a>
       
       
-        <a href="torchrl.modules.tensordict_module.EGreedyModule.html" class="btn btn-neutral" title="EGreedyModule" accesskey="p" rel="prev"><img src="../../_static/images/chevron-right-orange.svg" class="previous-page"> Previous</a>
+        <a href="torchrl.modules.EGreedyModule.html" class="btn btn-neutral" title="EGreedyModule" accesskey="p" rel="prev"><img src="../../_static/images/chevron-right-orange.svg" class="previous-page"> Previous</a>
       
     </div>
   

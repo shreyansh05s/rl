@@ -4999,7 +4999,7 @@
 
 <span class="sd">    .. note:: Some TorchRL modules rely on specific keys being present in the environment TensorDicts,</span>
 <span class="sd">        like :class:`~torchrl.modules.models.LSTM` or :class:`~torchrl.modules.models.GRU`.</span>
-<span class="sd">        To facilitate this process, the method :func:`~torchrl.models.utils.get_primers_from_module`</span>
+<span class="sd">        To facilitate this process, the method :func:`~torchrl.modules.utils.get_primers_from_module`</span>
 <span class="sd">        automatically checks for required primer transforms in a module and its submodules and</span>
 <span class="sd">        generates them.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -5066,10 +5066,15 @@
     <span class="k">def</span> <span class="nf">reset_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">reset_key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_reset_key&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">reset_key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                    <span class="s2">&quot;Missing parent, cannot infer reset_key automatically.&quot;</span>
+                <span class="p">)</span>
             <span class="n">reset_keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">reset_keys</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">reset_keys</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Got more than one reset key in env </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="si">}</span><span class="s2">, cannot infer which one to use. Consider providing the reset key in the </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s2"> constructor.&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;Got more than one reset key in env </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="si">}</span><span class="s2">, cannot infer which one to use. &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;Consider providing the reset key in the </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s2"> constructor.&quot;</span>
                 <span class="p">)</span>
             <span class="n">reset_key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reset_key</span> <span class="o">=</span> <span class="n">reset_keys</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">reset_key</span>

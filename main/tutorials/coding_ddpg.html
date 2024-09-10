@@ -1127,7 +1127,7 @@ environment specs.</p>
 </div>
 <section id="exploration">
 <h3>Exploration<a class="headerlink" href="#exploration" title="Permalink to this heading">¶</a></h3>
-<p>The policy is passed into a <code class="xref py py-class docutils literal notranslate"><span class="pre">OrnsteinUhlenbeckProcessModule</span></code>
+<p>The policy is passed into a <a class="reference internal" href="../reference/generated/torchrl.modules.OrnsteinUhlenbeckProcessModule.html#torchrl.modules.OrnsteinUhlenbeckProcessModule" title="torchrl.modules.OrnsteinUhlenbeckProcessModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">OrnsteinUhlenbeckProcessModule</span></code></a>
 exploration module, as suggested in the original paper.
 Let’s define the number of frames before OU noise reaches its minimum value</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">annealing_frames</span> <span class="o">=</span> <span class="mi">1_000_000</span>
@@ -1510,26 +1510,26 @@ modules we need.</p>
 </pre></div>
 </div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>  0%|          | 0/10000 [00:00&lt;?, ?it/s]
-  8%|▊         | 800/10000 [00:00&lt;00:03, 2890.57it/s]
- 16%|█▌        | 1600/10000 [00:01&lt;00:09, 868.84it/s]
- 24%|██▍       | 2400/10000 [00:01&lt;00:06, 1260.58it/s]
- 32%|███▏      | 3200/10000 [00:02&lt;00:04, 1646.21it/s]
- 40%|████      | 4000/10000 [00:02&lt;00:02, 2016.57it/s]
- 48%|████▊     | 4800/10000 [00:02&lt;00:02, 2254.62it/s]
- 56%|█████▌    | 5600/10000 [00:02&lt;00:01, 2443.23it/s]
-reward: -2.88 (r0 = -1.59), reward eval: reward: -0.01, reward normalized=-2.56/6.04, grad norm= 107.67, loss_value= 342.01, loss_actor= 15.33, target value: -16.39:  56%|█████▌    | 5600/10000 [00:04&lt;00:01, 2443.23it/s]
-reward: -2.88 (r0 = -1.59), reward eval: reward: -0.01, reward normalized=-2.56/6.04, grad norm= 107.67, loss_value= 342.01, loss_actor= 15.33, target value: -16.39:  64%|██████▍   | 6400/10000 [00:05&lt;00:04, 898.16it/s]
-reward: -1.61 (r0 = -1.59), reward eval: reward: -0.01, reward normalized=-2.67/5.53, grad norm= 113.81, loss_value= 218.97, loss_actor= 13.16, target value: -17.06:  64%|██████▍   | 6400/10000 [00:06&lt;00:04, 898.16it/s]
-reward: -1.61 (r0 = -1.59), reward eval: reward: -0.01, reward normalized=-2.67/5.53, grad norm= 113.81, loss_value= 218.97, loss_actor= 13.16, target value: -17.06:  72%|███████▏  | 7200/10000 [00:07&lt;00:04, 631.24it/s]
-reward: -5.20 (r0 = -1.59), reward eval: reward: -0.01, reward normalized=-3.11/6.46, grad norm= 261.66, loss_value= 386.71, loss_actor= 17.02, target value: -20.60:  72%|███████▏  | 7200/10000 [00:08&lt;00:04, 631.24it/s]
-reward: -5.20 (r0 = -1.59), reward eval: reward: -0.01, reward normalized=-3.11/6.46, grad norm= 261.66, loss_value= 386.71, loss_actor= 17.02, target value: -20.60:  80%|████████  | 8000/10000 [00:09&lt;00:03, 526.04it/s]
-reward: -4.77 (r0 = -1.59), reward eval: reward: -0.01, reward normalized=-3.68/5.76, grad norm= 227.46, loss_value= 298.24, loss_actor= 21.33, target value: -24.07:  80%|████████  | 8000/10000 [00:10&lt;00:03, 526.04it/s]
-reward: -4.77 (r0 = -1.59), reward eval: reward: -0.01, reward normalized=-3.68/5.76, grad norm= 227.46, loss_value= 298.24, loss_actor= 21.33, target value: -24.07:  88%|████████▊ | 8800/10000 [00:11&lt;00:02, 470.79it/s]
-reward: -4.35 (r0 = -1.59), reward eval: reward: -5.89, reward normalized=-3.02/4.92, grad norm= 59.16, loss_value= 203.97, loss_actor= 20.49, target value: -21.66:  88%|████████▊ | 8800/10000 [00:14&lt;00:02, 470.79it/s]
-reward: -4.35 (r0 = -1.59), reward eval: reward: -5.89, reward normalized=-3.02/4.92, grad norm= 59.16, loss_value= 203.97, loss_actor= 20.49, target value: -21.66:  96%|█████████▌| 9600/10000 [00:14&lt;00:01, 373.03it/s]
-reward: -4.70 (r0 = -1.59), reward eval: reward: -5.89, reward normalized=-3.64/4.63, grad norm= 65.54, loss_value= 196.77, loss_actor= 24.84, target value: -24.79:  96%|█████████▌| 9600/10000 [00:16&lt;00:01, 373.03it/s]
-reward: -4.70 (r0 = -1.59), reward eval: reward: -5.89, reward normalized=-3.64/4.63, grad norm= 65.54, loss_value= 196.77, loss_actor= 24.84, target value: -24.79: : 10400it [00:17, 349.61it/s]
-reward: -4.90 (r0 = -1.59), reward eval: reward: -5.89, reward normalized=-2.94/4.94, grad norm= 72.14, loss_value= 231.28, loss_actor= 22.05, target value: -21.42: : 10400it [00:19, 349.61it/s]
+  8%|▊         | 800/10000 [00:00&lt;00:03, 2851.51it/s]
+ 16%|█▌        | 1600/10000 [00:01&lt;00:10, 825.42it/s]
+ 24%|██▍       | 2400/10000 [00:02&lt;00:06, 1205.86it/s]
+ 32%|███▏      | 3200/10000 [00:02&lt;00:04, 1542.66it/s]
+ 40%|████      | 4000/10000 [00:02&lt;00:03, 1823.57it/s]
+ 48%|████▊     | 4800/10000 [00:02&lt;00:02, 2057.14it/s]
+ 56%|█████▌    | 5600/10000 [00:03&lt;00:01, 2237.72it/s]
+reward: -2.29 (r0 = -1.90), reward eval: reward:  0.00, reward normalized=-1.67/6.43, grad norm= 128.69, loss_value= 449.53, loss_actor= 12.85, target value: -10.68:  56%|█████▌    | 5600/10000 [00:04&lt;00:01, 2237.72it/s]
+reward: -2.29 (r0 = -1.90), reward eval: reward:  0.00, reward normalized=-1.67/6.43, grad norm= 128.69, loss_value= 449.53, loss_actor= 12.85, target value: -10.68:  64%|██████▍   | 6400/10000 [00:05&lt;00:04, 882.26it/s]
+reward: -1.75 (r0 = -1.90), reward eval: reward:  0.00, reward normalized=-2.17/5.85, grad norm= 88.99, loss_value= 255.45, loss_actor= 11.68, target value: -13.78:  64%|██████▍   | 6400/10000 [00:06&lt;00:04, 882.26it/s]
+reward: -1.75 (r0 = -1.90), reward eval: reward:  0.00, reward normalized=-2.17/5.85, grad norm= 88.99, loss_value= 255.45, loss_actor= 11.68, target value: -13.78:  72%|███████▏  | 7200/10000 [00:07&lt;00:04, 624.71it/s]
+reward: -5.28 (r0 = -1.90), reward eval: reward:  0.00, reward normalized=-2.09/6.18, grad norm= 61.81, loss_value= 295.06, loss_actor= 12.50, target value: -13.54:  72%|███████▏  | 7200/10000 [00:09&lt;00:04, 624.71it/s]
+reward: -5.28 (r0 = -1.90), reward eval: reward:  0.00, reward normalized=-2.09/6.18, grad norm= 61.81, loss_value= 295.06, loss_actor= 12.50, target value: -13.54:  80%|████████  | 8000/10000 [00:09&lt;00:03, 523.07it/s]
+reward: -3.76 (r0 = -1.90), reward eval: reward:  0.00, reward normalized=-2.45/5.31, grad norm= 142.85, loss_value= 178.01, loss_actor= 17.47, target value: -16.67:  80%|████████  | 8000/10000 [00:11&lt;00:03, 523.07it/s]
+reward: -3.76 (r0 = -1.90), reward eval: reward:  0.00, reward normalized=-2.45/5.31, grad norm= 142.85, loss_value= 178.01, loss_actor= 17.47, target value: -16.67:  88%|████████▊ | 8800/10000 [00:11&lt;00:02, 470.30it/s]
+reward: -5.32 (r0 = -1.90), reward eval: reward: -5.92, reward normalized=-2.55/5.23, grad norm= 221.26, loss_value= 226.46, loss_actor= 21.27, target value: -17.21:  88%|████████▊ | 8800/10000 [00:14&lt;00:02, 470.30it/s]
+reward: -5.32 (r0 = -1.90), reward eval: reward: -5.92, reward normalized=-2.55/5.23, grad norm= 221.26, loss_value= 226.46, loss_actor= 21.27, target value: -17.21:  96%|█████████▌| 9600/10000 [00:14&lt;00:01, 372.64it/s]
+reward: -4.98 (r0 = -1.90), reward eval: reward: -5.92, reward normalized=-3.14/5.11, grad norm= 93.75, loss_value= 272.59, loss_actor= 22.32, target value: -22.08:  96%|█████████▌| 9600/10000 [00:16&lt;00:01, 372.64it/s]
+reward: -4.98 (r0 = -1.90), reward eval: reward: -5.92, reward normalized=-3.14/5.11, grad norm= 93.75, loss_value= 272.59, loss_actor= 22.32, target value: -22.08: : 10400it [00:17, 349.86it/s]
+reward: -4.57 (r0 = -1.90), reward eval: reward: -5.92, reward normalized=-2.90/4.44, grad norm= 97.71, loss_value= 168.24, loss_actor= 17.92, target value: -21.03: : 10400it [00:19, 349.86it/s]
 </pre></div>
 </div>
 </section>
@@ -1573,8 +1573,8 @@ loss component;</p></li>
 <li><p>Using <cite>&#64;dispatch</cite> (see <a class="reference external" href="https://github.com/pytorch/rl/pull/1230">[Feature] Distpatch IQL loss module</a>.)</p></li>
 <li><p>Allowing flexible TensorDict keys.</p></li>
 </ul>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (2 minutes 5.213 seconds)</p>
-<p><strong>Estimated memory usage:</strong>  318 MB</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (2 minutes 6.165 seconds)</p>
+<p><strong>Estimated memory usage:</strong>  319 MB</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-tutorials-coding-ddpg-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/7ef773e36507adbc389133424f663224/coding_ddpg.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">coding_ddpg.ipynb</span></code></a></p>

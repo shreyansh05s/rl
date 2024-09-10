@@ -10,7 +10,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>BatchRenorm1d &mdash; torchrl main documentation</title>
+  <title>AdditiveGaussianModule &mdash; torchrl main documentation</title>
   
 
   
@@ -39,8 +39,8 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Conv3dNet" href="torchrl.modules.Conv3dNet.html" />
-    <link rel="prev" title="DistributionalQValueHook" href="torchrl.modules.DistributionalQValueHook.html" />
+    <link rel="next" title="AdditiveGaussianWrapper" href="torchrl.modules.AdditiveGaussianWrapper.html" />
+    <link rel="prev" title="TanhModule" href="torchrl.modules.tensordict_module.TanhModule.html" />
   <!-- Google Tag Manager -->
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -370,13 +370,13 @@
         
           <li><a href="../modules.html">torchrl.modules package</a> &gt;</li>
         
-      <li>BatchRenorm1d</li>
+      <li>AdditiveGaussianModule</li>
     
     
       <li class="pytorch-breadcrumbs-aside">
         
             
-            <a href="../../_sources/reference/generated/torchrl.modules.BatchRenorm1d.rst.txt" rel="nofollow"><img src="../../_static/images/view-page-source-icon.svg"></a>
+            <a href="../../_sources/reference/generated/torchrl.modules.AdditiveGaussianModule.rst.txt" rel="nofollow"><img src="../../_static/images/view-page-source-icon.svg"></a>
           
         
       </li>
@@ -408,44 +408,48 @@
             <div role="main" class="main-content" itemscope="itemscope" itemtype="http://schema.org/Article">
              <article itemprop="articleBody" id="pytorch-article" class="pytorch-article">
               
-  <section id="batchrenorm1d">
-<h1>BatchRenorm1d<a class="headerlink" href="#batchrenorm1d" title="Permalink to this heading">¶</a></h1>
+  <section id="additivegaussianmodule">
+<h1>AdditiveGaussianModule<a class="headerlink" href="#additivegaussianmodule" title="Permalink to this heading">¶</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="torchrl.modules.BatchRenorm1d">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">torchrl.modules.</span></span><span class="sig-name descname"><span class="pre">BatchRenorm1d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_features</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">momentum</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1e-05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_r</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_d</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warmup_steps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smooth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/torchrl/modules/models/batchrenorm.html#BatchRenorm1d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.modules.BatchRenorm1d" title="Permalink to this definition">¶</a></dt>
-<dd><p>BatchRenorm Module (<a class="reference external" href="https://arxiv.org/abs/1702.03275">https://arxiv.org/abs/1702.03275</a>).</p>
-<p>The code is adapted from <a class="reference external" href="https://github.com/google-research/corenet">https://github.com/google-research/corenet</a></p>
-<p>BatchRenorm is an enhanced version of the standard BatchNorm. Unlike BatchNorm,
-it utilizes running statistics to normalize batches after an initial warmup phase.
-This approach reduces the impact of “outlier” batches that may occur during
-extended training periods, making BatchRenorm more robust for long training runs.</p>
-<p>During the warmup phase, BatchRenorm functions identically to a BatchNorm layer.</p>
+<dt class="sig sig-object py" id="torchrl.modules.AdditiveGaussianModule">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">torchrl.modules.</span></span><span class="sig-name descname"><span class="pre">AdditiveGaussianModule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/torchrl/modules/tensordict_module/exploration.html#AdditiveGaussianModule"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.modules.AdditiveGaussianModule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Additive Gaussian PO module.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>num_features</strong> (<em>int</em>) – Number of features in the input tensor.</p>
-</dd>
-<dt class="field-even">Keyword Arguments<span class="colon">:</span></dt>
-<dd class="field-even"><ul class="simple">
-<li><p><strong>momentum</strong> (<a class="reference internal" href="torchrl.data.MultiStep.html#torchrl.data.MultiStep.float" title="torchrl.data.MultiStep.float"><em>float</em></a><em>, </em><em>optional</em>) – Momentum factor for computing the running mean and variance.
-Defaults to <code class="docutils literal notranslate"><span class="pre">0.01</span></code>.</p></li>
-<li><p><strong>eps</strong> (<a class="reference internal" href="torchrl.data.MultiStep.html#torchrl.data.MultiStep.float" title="torchrl.data.MultiStep.float"><em>float</em></a><em>, </em><em>optional</em>) – Small value added to the variance to avoid division by zero.
-Defaults to <code class="docutils literal notranslate"><span class="pre">1e-5</span></code>.</p></li>
-<li><p><strong>max_r</strong> (<a class="reference internal" href="torchrl.data.MultiStep.html#torchrl.data.MultiStep.float" title="torchrl.data.MultiStep.float"><em>float</em></a><em>, </em><em>optional</em>) – Maximum value for the scaling factor r.
-Defaults to <code class="docutils literal notranslate"><span class="pre">3.0</span></code>.</p></li>
-<li><p><strong>max_d</strong> (<a class="reference internal" href="torchrl.data.MultiStep.html#torchrl.data.MultiStep.float" title="torchrl.data.MultiStep.float"><em>float</em></a><em>, </em><em>optional</em>) – Maximum value for the bias factor d.
-Defaults to <code class="docutils literal notranslate"><span class="pre">5.0</span></code>.</p></li>
-<li><p><strong>warmup_steps</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of warm-up steps for the running mean and variance.
-Defaults to <code class="docutils literal notranslate"><span class="pre">10000</span></code>.</p></li>
-<li><p><strong>smooth</strong> (<em>bool</em><em>, </em><em>optional</em>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code>, the behavior smoothly transitions from regular
-batch-norm (when <code class="docutils literal notranslate"><span class="pre">iter=0</span></code>) to batch-renorm (when <code class="docutils literal notranslate"><span class="pre">iter=warmup_steps</span></code>).
-Otherwise, the behavior will transition from batch-norm to batch-renorm when
-<code class="docutils literal notranslate"><span class="pre">iter=warmup_steps</span></code>. Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>spec</strong> (<a class="reference internal" href="torchrl.data.TensorSpec.html#torchrl.data.TensorSpec" title="torchrl.data.TensorSpec"><em>TensorSpec</em></a>) – the spec used for sampling actions. The sampled
+action will be projected onto the valid action space once explored.</p></li>
+<li><p><strong>sigma_init</strong> (<em>scalar</em><em>, </em><em>optional</em>) – initial epsilon value.
+default: 1.0</p></li>
+<li><p><strong>sigma_end</strong> (<em>scalar</em><em>, </em><em>optional</em>) – final epsilon value.
+default: 0.1</p></li>
+<li><p><strong>annealing_num_steps</strong> (<em>int</em><em>, </em><em>optional</em>) – number of steps it will take for
+sigma to reach the <code class="xref py py-obj docutils literal notranslate"><span class="pre">sigma_end</span></code> value.
+default: 1000</p></li>
+<li><p><strong>mean</strong> (<em>float</em><em>, </em><em>optional</em>) – mean of each output element’s normal distribution.
+default: 0.0</p></li>
+<li><p><strong>std</strong> (<em>float</em><em>, </em><em>optional</em>) – standard deviation of each output element’s normal distribution.
+default: 1.0</p></li>
 </ul>
 </dd>
+<dt class="field-even">Keyword Arguments<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>action_key</strong> (<em>NestedKey</em><em>, </em><em>optional</em>) – if the policy module has more than one output key,
+its output spec will be of type Composite. One needs to know where to
+find the action spec.
+default: “action”</p>
+</dd>
 </dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>It is
+crucial to incorporate a call to <a class="reference internal" href="#torchrl.modules.AdditiveGaussianModule.step" title="torchrl.modules.AdditiveGaussianModule.step"><code class="xref py py-meth docutils literal notranslate"><span class="pre">step()</span></code></a> in the training loop
+to update the exploration factor.
+Since it is not easy to capture this omission no warning or exception
+will be raised if this is ommitted!</p>
+</div>
 <dl class="py method">
-<dt class="sig sig-object py" id="torchrl.modules.BatchRenorm1d.forward">
-<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.4)"><span class="pre">Tensor</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.4)"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="../../_modules/torchrl/modules/models/batchrenorm.html#BatchRenorm1d.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.modules.BatchRenorm1d.forward" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="torchrl.modules.AdditiveGaussianModule.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensordict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TensorDictBase</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">TensorDictBase</span></span></span><a class="reference internal" href="../../_modules/torchrl/modules/tensordict_module/exploration.html#AdditiveGaussianModule.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.modules.AdditiveGaussianModule.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Define the computation performed at every call.</p>
 <p>Should be overridden by all subclasses.</p>
 <div class="admonition note">
@@ -455,6 +459,18 @@ this function, one should call the <code class="xref py py-class docutils litera
 instead of this since the former takes care of running the
 registered hooks while the latter silently ignores them.</p>
 </div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="torchrl.modules.AdditiveGaussianModule.step">
+<span class="sig-name descname"><span class="pre">step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frames</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/torchrl/modules/tensordict_module/exploration.html#AdditiveGaussianModule.step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.modules.AdditiveGaussianModule.step" title="Permalink to this definition">¶</a></dt>
+<dd><p>A step of sigma decay.</p>
+<p>After <cite>self.annealing_num_steps</cite> calls to this method, calls result in no-op.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>frames</strong> (<em>int</em>) – number of frames since last step. Defaults to <code class="docutils literal notranslate"><span class="pre">1</span></code>.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -469,10 +485,10 @@ registered hooks while the latter silently ignores them.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="torchrl.modules.Conv3dNet.html" class="btn btn-neutral float-right" title="Conv3dNet" accesskey="n" rel="next">Next <img src="../../_static/images/chevron-right-orange.svg" class="next-page"></a>
+        <a href="torchrl.modules.AdditiveGaussianWrapper.html" class="btn btn-neutral float-right" title="AdditiveGaussianWrapper" accesskey="n" rel="next">Next <img src="../../_static/images/chevron-right-orange.svg" class="next-page"></a>
       
       
-        <a href="torchrl.modules.DistributionalQValueHook.html" class="btn btn-neutral" title="DistributionalQValueHook" accesskey="p" rel="prev"><img src="../../_static/images/chevron-right-orange.svg" class="previous-page"> Previous</a>
+        <a href="torchrl.modules.tensordict_module.TanhModule.html" class="btn btn-neutral" title="TanhModule" accesskey="p" rel="prev"><img src="../../_static/images/chevron-right-orange.svg" class="previous-page"> Previous</a>
       
     </div>
   
@@ -506,7 +522,7 @@ registered hooks while the latter silently ignores them.</p>
           <div class="pytorch-right-menu" id="pytorch-right-menu">
             <div class="pytorch-side-scroll" id="pytorch-side-scroll-right">
               <ul>
-<li><a class="reference internal" href="#">BatchRenorm1d</a></li>
+<li><a class="reference internal" href="#">AdditiveGaussianModule</a></li>
 </ul>
 
             </div>
