@@ -138,7 +138,7 @@ and a :ref:`replay buffer <gs_storage_rb>` to store that data for training.
     optim_steps = 10
     collector = SyncDataCollector(
         env,
-        policy,
+        policy_explore,
         frames_per_batch=frames_per_batch,
         total_frames=-1,
         init_random_frames=init_rand_steps,
@@ -303,9 +303,9 @@ Feel free to share feedback about it on GitHub.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 25.425 seconds)
+   **Total running time of the script:** (0 minutes 28.282 seconds)
 
-**Estimated memory usage:**  312 MB
+**Estimated memory usage:**  314 MB
 
 
 .. _sphx_glr_download_tutorials_getting-started-5.py:
