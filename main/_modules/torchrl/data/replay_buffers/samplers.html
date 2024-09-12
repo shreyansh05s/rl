@@ -424,7 +424,7 @@
 
 <span class="kn">from</span> <span class="nn">torchrl._extension</span> <span class="kn">import</span> <span class="n">EXTENSION_WARNING</span>
 
-<span class="kn">from</span> <span class="nn">torchrl._utils</span> <span class="kn">import</span> <span class="n">_replace_last</span><span class="p">,</span> <span class="n">implement_for</span><span class="p">,</span> <span class="n">logger</span>
+<span class="kn">from</span> <span class="nn">torchrl._utils</span> <span class="kn">import</span> <span class="n">_replace_last</span><span class="p">,</span> <span class="n">logger</span>
 <span class="kn">from</span> <span class="nn">torchrl.data.replay_buffers.storages</span> <span class="kn">import</span> <span class="n">Storage</span><span class="p">,</span> <span class="n">StorageEnsemble</span><span class="p">,</span> <span class="n">TensorStorage</span>
 <span class="kn">from</span> <span class="nn">torchrl.data.replay_buffers.utils</span> <span class="kn">import</span> <span class="n">_is_int</span><span class="p">,</span> <span class="n">unravel_index</span>
 
@@ -2244,28 +2244,31 @@
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">PrioritizedSampler</span><span class="o">.</span><span class="n">mark_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">storage</span><span class="o">=</span><span class="n">storage</span><span class="p">)</span>
 
-    <span class="nd">@implement_for</span><span class="p">(</span><span class="s2">&quot;torch&quot;</span><span class="p">,</span> <span class="s2">&quot;2.4&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">_padded_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shapes</span><span class="p">,</span> <span class="n">arange</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
         <span class="c1"># this complex mumbo jumbo creates a left padded tensor with valid indices on the right, e.g.</span>
         <span class="c1"># tensor([[ 0,  1,  2,  3,  4],</span>
         <span class="c1">#         [-1, -1,  5,  6,  7],</span>
         <span class="c1">#         [-1,  8,  9, 10, 11]])</span>
         <span class="c1"># where the -1 items on the left are padded values</span>
-        <span class="n">st</span><span class="p">,</span> <span class="n">off</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">_nested_compute_contiguous_strides_offsets</span><span class="p">(</span><span class="n">shapes</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
-        <span class="n">nt</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">_nested_view_from_buffer</span><span class="p">(</span>
-            <span class="n">arange</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">contiguous</span><span class="p">(),</span> <span class="n">shapes</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">st</span><span class="p">,</span> <span class="n">off</span>
-        <span class="p">)</span>
-        <span class="n">pad</span> <span class="o">=</span> <span class="n">nt</span><span class="o">.</span><span class="n">to_padded_tensor</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">pad</span>
+        <span class="n">num_groups</span> <span class="o">=</span> <span class="n">shapes</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">max_group_len</span> <span class="o">=</span> <span class="n">shapes</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+        <span class="n">pad_lengths</span> <span class="o">=</span> <span class="n">max_group_len</span> <span class="o">-</span> <span class="n">shapes</span>
 
-    <span class="nd">@implement_for</span><span class="p">(</span><span class="s2">&quot;torch&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;2.4&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_padded_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shapes</span><span class="p">,</span> <span class="n">arange</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>  <span class="c1"># noqa: F811</span>
-        <span class="n">arange</span> <span class="o">=</span> <span class="n">arange</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">shapes</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span><span class="o">.</span><span class="n">unbind</span><span class="p">())</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">rnn</span><span class="o">.</span><span class="n">pad_sequence</span><span class="p">(</span><span class="n">arange</span><span class="p">,</span> <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">padding_value</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
-            <span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-            <span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="c1"># Get all the start and end indices within arange for each group</span>
+        <span class="n">group_ends</span> <span class="o">=</span> <span class="n">shapes</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">group_starts</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">group_ends</span><span class="p">)</span>
+        <span class="n">group_starts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">group_starts</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">=</span> <span class="n">group_ends</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">pad</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">num_groups</span><span class="p">,</span> <span class="n">max_group_len</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">arange</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">arange</span><span class="o">.</span><span class="n">device</span>
         <span class="p">)</span>
+        <span class="k">for</span> <span class="n">pad_row</span><span class="p">,</span> <span class="n">group_start</span><span class="p">,</span> <span class="n">group_end</span><span class="p">,</span> <span class="n">pad_len</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+            <span class="n">pad</span><span class="p">,</span> <span class="n">group_starts</span><span class="p">,</span> <span class="n">group_ends</span><span class="p">,</span> <span class="n">pad_lengths</span>
+        <span class="p">):</span>
+            <span class="n">pad_row</span><span class="p">[:</span><span class="n">pad_len</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+            <span class="n">pad_row</span><span class="p">[</span><span class="n">pad_len</span><span class="p">:]</span> <span class="o">=</span> <span class="n">arange</span><span class="p">[</span><span class="n">group_start</span><span class="p">:</span><span class="n">group_end</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">pad</span>
 
     <span class="k">def</span> <span class="nf">_preceding_stop_idx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">storage</span><span class="p">,</span> <span class="n">lengths</span><span class="p">,</span> <span class="n">seq_length</span><span class="p">,</span> <span class="n">start_idx</span><span class="p">):</span>
         <span class="n">preceding_stop_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;preceding_stop_idx&quot;</span><span class="p">)</span>
