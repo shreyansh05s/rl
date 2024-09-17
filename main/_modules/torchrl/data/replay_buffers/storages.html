@@ -1325,6 +1325,8 @@
 <span class="sd">    Args:</span>
 <span class="sd">        max_size (int): size of the storage, i.e. maximum number of elements stored</span>
 <span class="sd">            in the buffer.</span>
+
+<span class="sd">    Keyword Args:</span>
 <span class="sd">        scratch_dir (str or path): directory where memmap-tensors will be written.</span>
 <span class="sd">        device (torch.device, optional): device where the sampled tensors will be</span>
 <span class="sd">            stored and sent. Default is :obj:`torch.device(&quot;cpu&quot;)`.</span>
@@ -1335,6 +1337,9 @@
 <span class="sd">            measuring the storage size. For instance, a storage of shape ``[3, 4]``</span>
 <span class="sd">            has capacity ``3`` if ``ndim=1`` and ``12`` if ``ndim=2``.</span>
 <span class="sd">            Defaults to ``1``.</span>
+<span class="sd">        existsok (bool, optional): whether an error should be raised if any of the</span>
+<span class="sd">            tensors already exists on disk. Defaults to ``True``. If ``False``, the</span>
+<span class="sd">            tensor will be opened as is, not overewritten.</span>
 
 <span class="sd">    .. note:: When checkpointing a ``LazyMemmapStorage``, one can provide a path identical to where the storage is</span>
 <span class="sd">        already stored to avoid executing long copies of data that is already stored on disk.</span>
@@ -1411,10 +1416,12 @@
         <span class="n">scratch_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">device</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="s2">&quot;cpu&quot;</span><span class="p">,</span>
         <span class="n">ndim</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">existsok</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">max_size</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="n">ndim</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">initialized</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">scratch_dir</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">existsok</span> <span class="o">=</span> <span class="n">existsok</span>
         <span class="k">if</span> <span class="n">scratch_dir</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">scratch_dir</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">scratch_dir</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scratch_dir</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;/&quot;</span><span class="p">:</span>
@@ -1510,7 +1517,7 @@
         <span class="k">if</span> <span class="n">is_tensor_collection</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
             <span class="n">out</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
             <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">max_size_along_dim0</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
-            <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">memmap_like</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">scratch_dir</span><span class="p">)</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">memmap_like</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">scratch_dir</span><span class="p">,</span> <span class="n">existsok</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">existsok</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">tensor</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span>
                 <span class="n">out</span><span class="o">.</span><span class="n">items</span><span class="p">(</span><span class="n">include_nested</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">leaves_only</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="nb">str</span>
             <span class="p">):</span>
