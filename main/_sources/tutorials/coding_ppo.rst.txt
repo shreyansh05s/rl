@@ -1067,7 +1067,7 @@ The steps include:
         return self._call_impl(*args, **kwargs)
       File "/pytorch/rl/env/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1746, in _call_impl
         return forward_call(*args, **kwargs)
-      File "/pytorch/rl/env/lib/python3.8/site-packages/tensordict/nn/common.py", line 324, in wrapper
+      File "/pytorch/rl/env/lib/python3.8/site-packages/tensordict/nn/common.py", line 325, in wrapper
         return func(_self, tensordict, *args, **kwargs)
       File "/pytorch/rl/env/lib/python3.8/site-packages/tensordict/nn/utils.py", line 356, in wrapper
         result = func(_self, tensordict, *args, **kwargs)
@@ -1077,7 +1077,7 @@ The steps include:
         return self._call_impl(*args, **kwargs)
       File "/pytorch/rl/env/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1746, in _call_impl
         return forward_call(*args, **kwargs)
-      File "/pytorch/rl/env/lib/python3.8/site-packages/tensordict/nn/common.py", line 324, in wrapper
+      File "/pytorch/rl/env/lib/python3.8/site-packages/tensordict/nn/common.py", line 325, in wrapper
         return func(_self, tensordict, *args, **kwargs)
       File "/pytorch/rl/env/lib/python3.8/site-packages/tensordict/nn/utils.py", line 356, in wrapper
         result = func(_self, tensordict, *args, **kwargs)
@@ -1085,7 +1085,7 @@ The steps include:
         out_tensors = self._dist_sample(dist, interaction_type=interaction_type())
       File "/pytorch/rl/env/lib/python3.8/site-packages/tensordict/nn/probabilistic.py", line 534, in _dist_sample
         if hasattr(dist, "mean"):
-      File "/pytorch/rl/torchrl/modules/distributions/continuous.py", line 528, in mean
+      File "/pytorch/rl/torchrl/modules/distributions/continuous.py", line 583, in mean
         raise NotImplementedError(
     NotImplementedError: TanhNormal does not have a closed form formula for the average. Am estimate of this value can be computed using dist.sample((N,)).mean(dim=0), where N is a large number of samples.
 
@@ -1148,9 +1148,9 @@ If you want to experiment with this tutorial a bit more, you can apply the follo
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (1 minutes 9.547 seconds)
+   **Total running time of the script:** (1 minutes 18.306 seconds)
 
-**Estimated memory usage:**  2829 MB
+**Estimated memory usage:**  4146 MB
 
 
 .. _sphx_glr_download_tutorials_coding_ppo.py:

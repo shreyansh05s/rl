@@ -445,7 +445,8 @@ Defaults to <code class="docutils literal notranslate"><span class="pre">1</span
 <li><p><strong>entropy_coef</strong> (<em>scalar</em><em>, </em><em>optional</em>) – entropy multiplier when computing the total loss.
 Defaults to <code class="docutils literal notranslate"><span class="pre">0.01</span></code>.</p></li>
 <li><p><strong>critic_coef</strong> (<em>scalar</em><em>, </em><em>optional</em>) – critic loss multiplier when computing the total
-loss. Defaults to <code class="docutils literal notranslate"><span class="pre">1.0</span></code>.</p></li>
+loss. Defaults to <code class="docutils literal notranslate"><span class="pre">1.0</span></code>. Set <code class="docutils literal notranslate"><span class="pre">critic_coef</span></code> to <code class="docutils literal notranslate"><span class="pre">None</span></code> to exclude the value
+loss from the forward outputs.</p></li>
 <li><p><strong>loss_critic_type</strong> (<em>str</em><em>, </em><em>optional</em>) – loss function for the value discrepancy.
 Can be one of “l1”, “l2” or “smooth_l1”. Defaults to <code class="docutils literal notranslate"><span class="pre">&quot;smooth_l1&quot;</span></code>.</p></li>
 <li><p><strong>normalize_advantage</strong> (<em>bool</em><em>, </em><em>optional</em>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code>, the advantage will be normalized
@@ -624,7 +625,7 @@ tensordicts to handle their actions.</p>
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="torchrl.objectives.PPOLoss.forward">
-<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensordict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TensorDictBase</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">TensorDictBase</span></span></span><a class="reference internal" href="../../_modules/torchrl/objectives/ppo.html#PPOLoss.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.objectives.PPOLoss.forward" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensordict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TensorDictBase</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">TensorDictBase</span></span></span><a class="reference internal" href="../../_modules/torchrl/objectives/ppo.html#PPOLoss.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.objectives.PPOLoss.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>It is designed to read an input TensorDict and return another tensordict with loss keys named “loss*”.</p>
 <p>Splitting the loss in its component can then be used by the trainer to log the various loss values throughout
 training. Other scalars present in the output tensordict will be logged too.</p>
@@ -645,6 +646,12 @@ backpropagation.</p>
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">functional</span></span><a class="headerlink" href="#torchrl.objectives.PPOLoss.functional" title="Permalink to this definition">¶</a></dt>
 <dd><p>Whether the module is functional.</p>
 <p>Unless it has been specifically designed not to be functional, all losses are functional.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="torchrl.objectives.PPOLoss.loss_critic">
+<span class="sig-name descname"><span class="pre">loss_critic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensordict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TensorDictBase</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.4)"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="../../_modules/torchrl/objectives/ppo.html#PPOLoss.loss_critic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.objectives.PPOLoss.loss_critic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the critic loss multiplied by <code class="docutils literal notranslate"><span class="pre">critic_coef</span></code>, if it is not <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
 </dd></dl>
 
 <dl class="py method">

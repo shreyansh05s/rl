@@ -1147,7 +1147,7 @@ The steps include:</p>
 <span class="w">    </span><span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_impl</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
   File <span class="nb">&quot;/pytorch/rl/env/lib/python3.8/site-packages/torch/nn/modules/module.py&quot;</span>, line <span class="m">1746</span>, in <span class="n">_call_impl</span>
 <span class="w">    </span><span class="k">return</span> <span class="n">forward_call</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-  File <span class="nb">&quot;/pytorch/rl/env/lib/python3.8/site-packages/tensordict/nn/common.py&quot;</span>, line <span class="m">324</span>, in <span class="n">wrapper</span>
+  File <span class="nb">&quot;/pytorch/rl/env/lib/python3.8/site-packages/tensordict/nn/common.py&quot;</span>, line <span class="m">325</span>, in <span class="n">wrapper</span>
 <span class="w">    </span><span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="n">_self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
   File <span class="nb">&quot;/pytorch/rl/env/lib/python3.8/site-packages/tensordict/nn/utils.py&quot;</span>, line <span class="m">356</span>, in <span class="n">wrapper</span>
 <span class="w">    </span><span class="n">result</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="n">_self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -1157,7 +1157,7 @@ The steps include:</p>
 <span class="w">    </span><span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_impl</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
   File <span class="nb">&quot;/pytorch/rl/env/lib/python3.8/site-packages/torch/nn/modules/module.py&quot;</span>, line <span class="m">1746</span>, in <span class="n">_call_impl</span>
 <span class="w">    </span><span class="k">return</span> <span class="n">forward_call</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-  File <span class="nb">&quot;/pytorch/rl/env/lib/python3.8/site-packages/tensordict/nn/common.py&quot;</span>, line <span class="m">324</span>, in <span class="n">wrapper</span>
+  File <span class="nb">&quot;/pytorch/rl/env/lib/python3.8/site-packages/tensordict/nn/common.py&quot;</span>, line <span class="m">325</span>, in <span class="n">wrapper</span>
 <span class="w">    </span><span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="n">_self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
   File <span class="nb">&quot;/pytorch/rl/env/lib/python3.8/site-packages/tensordict/nn/utils.py&quot;</span>, line <span class="m">356</span>, in <span class="n">wrapper</span>
 <span class="w">    </span><span class="n">result</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="n">_self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -1165,7 +1165,7 @@ The steps include:</p>
 <span class="w">    </span><span class="n">out_tensors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dist_sample</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="n">interaction_type</span><span class="o">=</span><span class="n">interaction_type</span><span class="p">())</span>
   File <span class="nb">&quot;/pytorch/rl/env/lib/python3.8/site-packages/tensordict/nn/probabilistic.py&quot;</span>, line <span class="m">534</span>, in <span class="n">_dist_sample</span>
 <span class="w">    </span><span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="s2">&quot;mean&quot;</span><span class="p">):</span>
-  File <span class="nb">&quot;/pytorch/rl/torchrl/modules/distributions/continuous.py&quot;</span>, line <span class="m">528</span>, in <span class="n">mean</span>
+  File <span class="nb">&quot;/pytorch/rl/torchrl/modules/distributions/continuous.py&quot;</span>, line <span class="m">583</span>, in <span class="n">mean</span>
 <span class="w">    </span><span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
 <span class="gr">NotImplementedError</span>: <span class="n">TanhNormal does not have a closed form formula for the average. Am estimate of this value can be computed using dist.sample((N,)).mean(dim=0), where N is a large number of samples.</span>
 </pre></div>
@@ -1211,8 +1211,8 @@ the environment after asking for rendering to get a visual rendering of the
 inverted pendulum in action. Check <code class="xref py py-mod docutils literal notranslate"><span class="pre">torchrl.record</span></code> to
 know more.</p></li>
 </ul>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (1 minutes 9.547 seconds)</p>
-<p><strong>Estimated memory usage:</strong>  2829 MB</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (1 minutes 18.306 seconds)</p>
+<p><strong>Estimated memory usage:</strong>  4146 MB</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-tutorials-coding-ppo-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/e2a5193e019585d9cfa26d3eebfd8be3/coding_ppo.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">coding_ppo.ipynb</span></code></a></p>

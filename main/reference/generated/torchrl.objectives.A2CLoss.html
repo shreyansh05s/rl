@@ -432,8 +432,9 @@ formula for the entropy, a Monte-Carlo estimate will be used.
 <code class="docutils literal notranslate"><span class="pre">samples_mc_entropy</span></code> will control how many
 samples will be used to compute this estimate.
 Defaults to <code class="docutils literal notranslate"><span class="pre">1</span></code>.</p></li>
-<li><p><strong>entropy_coef</strong> (<em>float</em>) – the weight of the entropy loss.</p></li>
-<li><p><strong>critic_coef</strong> (<em>float</em>) – the weight of the critic loss.</p></li>
+<li><p><strong>entropy_coef</strong> (<em>float</em>) – the weight of the entropy loss. Defaults to <cite>0.01`</cite>.</p></li>
+<li><p><strong>critic_coef</strong> (<em>float</em>) – the weight of the critic loss. Defaults to <code class="docutils literal notranslate"><span class="pre">1.0</span></code>. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, the critic
+loss won’t be included and the in-keys will miss the critic inputs.</p></li>
 <li><p><strong>loss_critic_type</strong> (<em>str</em>) – loss function for the value discrepancy.
 Can be one of “l1”, “l2” or “smooth_l1”. Defaults to <code class="docutils literal notranslate"><span class="pre">&quot;smooth_l1&quot;</span></code>.</p></li>
 <li><p><strong>separate_losses</strong> (<em>bool</em><em>, </em><em>optional</em>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code>, shared parameters between
@@ -569,7 +570,7 @@ tensordicts to handle their actions.</p>
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="torchrl.objectives.A2CLoss.forward">
-<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensordict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TensorDictBase</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">TensorDictBase</span></span></span><a class="reference internal" href="../../_modules/torchrl/objectives/a2c.html#A2CLoss.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.objectives.A2CLoss.forward" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensordict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TensorDictBase</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">TensorDictBase</span></span></span><a class="reference internal" href="../../_modules/torchrl/objectives/a2c.html#A2CLoss.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.objectives.A2CLoss.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>It is designed to read an input TensorDict and return another tensordict with loss keys named “loss*”.</p>
 <p>Splitting the loss in its component can then be used by the trainer to log the various loss values throughout
 training. Other scalars present in the output tensordict will be logged too.</p>
@@ -590,6 +591,13 @@ backpropagation.</p>
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">functional</span></span><a class="headerlink" href="#torchrl.objectives.A2CLoss.functional" title="Permalink to this definition">¶</a></dt>
 <dd><p>Whether the module is functional.</p>
 <p>Unless it has been specifically designed not to be functional, all losses are functional.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="torchrl.objectives.A2CLoss.loss_critic">
+<span class="sig-name descname"><span class="pre">loss_critic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensordict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TensorDictBase</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.4)"><span class="pre">Tensor</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/torchrl/objectives/a2c.html#A2CLoss.loss_critic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.objectives.A2CLoss.loss_critic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the loss value of the critic, multiplied by <code class="docutils literal notranslate"><span class="pre">critic_coef</span></code> if it is not <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+<p>Returns the loss and the clip-fraction.</p>
 </dd></dl>
 
 <dl class="py method">

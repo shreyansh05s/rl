@@ -407,13 +407,21 @@
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">weakref</span>
 <span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Number</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">distributions</span> <span class="k">as</span> <span class="n">D</span><span class="p">,</span> <span class="n">nn</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">torch.compiler</span> <span class="kn">import</span> <span class="n">assume_constant_result</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">torch._dynamo</span> <span class="kn">import</span> <span class="n">assume_constant_result</span>
+
 <span class="kn">from</span> <span class="nn">torch.distributions</span> <span class="kn">import</span> <span class="n">constraints</span>
+<span class="kn">from</span> <span class="nn">torch.distributions.transforms</span> <span class="kn">import</span> <span class="n">_InverseTransform</span>
 
 <span class="kn">from</span> <span class="nn">torchrl.modules.distributions.truncated_normal</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">TruncatedNormal</span> <span class="k">as</span> <span class="n">_TruncatedNormal</span><span class="p">,</span>
@@ -422,8 +430,8 @@
 <span class="kn">from</span> <span class="nn">torchrl.modules.distributions.utils</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">_cast_device</span><span class="p">,</span>
     <span class="n">FasterTransformedDistribution</span><span class="p">,</span>
-    <span class="n">safeatanh</span><span class="p">,</span>
-    <span class="n">safetanh</span><span class="p">,</span>
+    <span class="n">safeatanh_noeps</span><span class="p">,</span>
+    <span class="n">safetanh_noeps</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">torchrl.modules.utils</span> <span class="kn">import</span> <span class="n">mappings</span>
 
@@ -494,19 +502,21 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;TanhTransform subclass that ensured that the transformation is numerically invertible.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">_call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">is_floating_point</span><span class="p">:</span>
-            <span class="n">eps</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">resolution</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No tanh transform for </span><span class="si">{</span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span><span class="si">}</span><span class="s2"> inputs.&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">safetanh</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">eps</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">safetanh_noeps</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_inverse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">y</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">is_floating_point</span><span class="p">:</span>
-            <span class="n">eps</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">resolution</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No inverse tanh for </span><span class="si">{</span><span class="n">y</span><span class="o">.</span><span class="n">dtype</span><span class="si">}</span><span class="s2"> inputs.&quot;</span><span class="p">)</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="n">safeatanh</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">eps</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">x</span>
+        <span class="k">return</span> <span class="n">safeatanh_noeps</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">inv</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">inv</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inv</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">inv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inv</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">inv</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">inv</span> <span class="o">=</span> <span class="n">_InverseTransform</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">torch</span><span class="o">.</span><span class="n">compiler</span><span class="o">.</span><span class="n">is_dynamo_compiling</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_inv</span> <span class="o">=</span> <span class="n">weakref</span><span class="o">.</span><span class="n">ref</span><span class="p">(</span><span class="n">inv</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">inv</span>
 
 
 <div class="viewcode-block" id="NormalParamWrapper"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.NormalParamWrapper.html#torchrl.modules.NormalParamWrapper">[docs]</a><span class="k">class</span> <span class="nc">NormalParamWrapper</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
@@ -718,6 +728,33 @@
         <span class="k">return</span> <span class="n">lp</span></div></div>
 
 
+<span class="k">class</span> <span class="nc">_PatchedComposeTransform</span><span class="p">(</span><span class="n">D</span><span class="o">.</span><span class="n">ComposeTransform</span><span class="p">):</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">inv</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">inv</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inv</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">inv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inv</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">inv</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">inv</span> <span class="o">=</span> <span class="n">_PatchedComposeTransform</span><span class="p">([</span><span class="n">p</span><span class="o">.</span><span class="n">inv</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parts</span><span class="p">)])</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">torch</span><span class="o">.</span><span class="n">compiler</span><span class="o">.</span><span class="n">is_dynamo_compiling</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_inv</span> <span class="o">=</span> <span class="n">weakref</span><span class="o">.</span><span class="n">ref</span><span class="p">(</span><span class="n">inv</span><span class="p">)</span>
+                <span class="n">inv</span><span class="o">.</span><span class="n">_inv</span> <span class="o">=</span> <span class="n">weakref</span><span class="o">.</span><span class="n">ref</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">inv</span>
+
+
+<span class="k">class</span> <span class="nc">_PatchedAffineTransform</span><span class="p">(</span><span class="n">D</span><span class="o">.</span><span class="n">AffineTransform</span><span class="p">):</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">inv</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">inv</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inv</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">inv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inv</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">inv</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">inv</span> <span class="o">=</span> <span class="n">_InverseTransform</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">torch</span><span class="o">.</span><span class="n">compiler</span><span class="o">.</span><span class="n">is_dynamo_compiling</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_inv</span> <span class="o">=</span> <span class="n">weakref</span><span class="o">.</span><span class="n">ref</span><span class="p">(</span><span class="n">inv</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">inv</span>
+
+
 <div class="viewcode-block" id="TanhNormal"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.TanhNormal.html#torchrl.modules.TanhNormal">[docs]</a><span class="k">class</span> <span class="nc">TanhNormal</span><span class="p">(</span><span class="n">FasterTransformedDistribution</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Implements a TanhNormal distribution with location scaling.</span>
 
@@ -746,6 +783,8 @@
 <span class="sd">            as the input, ``1`` will reduce (sum over) the last dimension, ``2`` the last two etc.</span>
 <span class="sd">        tanh_loc (bool, optional): if ``True``, the above formula is used for the location scaling, otherwise the raw</span>
 <span class="sd">            value is kept. Default is ``False``;</span>
+<span class="sd">        safe_tanh (bool, optional): if ``True``, the Tanh transform is done &quot;safely&quot;, to avoid numerical overflows.</span>
+<span class="sd">            This will currently break with :func:`torch.compile`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">arg_constraints</span> <span class="o">=</span> <span class="p">{</span>
@@ -771,6 +810,7 @@
         <span class="n">high</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">Number</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
         <span class="n">event_dims</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">tanh_loc</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">safe_tanh</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="k">if</span> <span class="s2">&quot;max&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
@@ -821,13 +861,22 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">low</span> <span class="o">=</span> <span class="n">low</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">high</span> <span class="o">=</span> <span class="n">high</span>
 
-        <span class="n">t</span> <span class="o">=</span> <span class="n">SafeTanhTransform</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">safe_tanh</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">compiler</span><span class="o">.</span><span class="n">is_dynamo_compiling</span><span class="p">():</span>
+                <span class="n">_err_compile_safetanh</span><span class="p">()</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">SafeTanhTransform</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">D</span><span class="o">.</span><span class="n">TanhTransform</span><span class="p">()</span>
         <span class="c1"># t = D.TanhTransform()</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">non_trivial_max</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">non_trivial_min</span><span class="p">:</span>
-            <span class="n">t</span> <span class="o">=</span> <span class="n">D</span><span class="o">.</span><span class="n">ComposeTransform</span><span class="p">(</span>
+        <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">compiler</span><span class="o">.</span><span class="n">is_dynamo_compiling</span><span class="p">()</span> <span class="ow">or</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">non_trivial_max</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">non_trivial_min</span>
+        <span class="p">):</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">_PatchedComposeTransform</span><span class="p">(</span>
                 <span class="p">[</span>
                     <span class="n">t</span><span class="p">,</span>
-                    <span class="n">D</span><span class="o">.</span><span class="n">AffineTransform</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="p">(</span><span class="n">high</span> <span class="o">+</span> <span class="n">low</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="p">(</span><span class="n">high</span> <span class="o">-</span> <span class="n">low</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span>
+                    <span class="n">_PatchedAffineTransform</span><span class="p">(</span>
+                        <span class="n">loc</span><span class="o">=</span><span class="p">(</span><span class="n">high</span> <span class="o">+</span> <span class="n">low</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="p">(</span><span class="n">high</span> <span class="o">-</span> <span class="n">low</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+                    <span class="p">),</span>
                 <span class="p">]</span>
             <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_t</span> <span class="o">=</span> <span class="n">t</span>
@@ -848,7 +897,9 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tanh_loc</span><span class="p">:</span>
             <span class="n">loc</span> <span class="o">=</span> <span class="p">(</span><span class="n">loc</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">upscale</span><span class="p">)</span><span class="o">.</span><span class="n">tanh</span><span class="p">()</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">upscale</span>
             <span class="c1"># loc must be rescaled if tanh_loc</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">non_trivial_max</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">non_trivial_min</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">compiler</span><span class="o">.</span><span class="n">is_dynamo_compiling</span><span class="p">()</span> <span class="ow">or</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">non_trivial_max</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">non_trivial_min</span>
+            <span class="p">):</span>
                 <span class="n">loc</span> <span class="o">=</span> <span class="n">loc</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">high</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">low</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">low</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">loc</span> <span class="o">=</span> <span class="n">loc</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">scale</span> <span class="o">=</span> <span class="n">scale</span>
@@ -867,6 +918,10 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">base</span> <span class="o">=</span> <span class="n">D</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loc</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">)</span>
                 <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_t</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">support</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">D</span><span class="o">.</span><span class="n">constraints</span><span class="o">.</span><span class="n">real</span><span class="p">()</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">root_dist</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1098,10 +1153,10 @@
         <span class="n">loc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">param</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">non_trivial</span><span class="p">:</span>
-            <span class="n">t</span> <span class="o">=</span> <span class="n">D</span><span class="o">.</span><span class="n">ComposeTransform</span><span class="p">(</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">_PatchedComposeTransform</span><span class="p">(</span>
                 <span class="p">[</span>
                     <span class="n">t</span><span class="p">,</span>
-                    <span class="n">D</span><span class="o">.</span><span class="n">AffineTransform</span><span class="p">(</span>
+                    <span class="n">_PatchedAffineTransform</span><span class="p">(</span>
                         <span class="n">loc</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">high</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">low</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">high</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">low</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
                     <span class="p">),</span>
                 <span class="p">]</span>
@@ -1163,6 +1218,19 @@
 
 
 <span class="n">uniform_sample_delta</span> <span class="o">=</span> <span class="n">_uniform_sample_delta</span>
+
+
+<span class="k">def</span> <span class="nf">_err_compile_safetanh</span><span class="p">():</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+        <span class="s2">&quot;safe_tanh=True in TanhNormal is not compatible with torch.compile. To deactivate it, pass&quot;</span>
+        <span class="s2">&quot;safe_tanh=False. &quot;</span>
+        <span class="s2">&quot;If you are using a ProbabilisticTensorDictModule, this can be done via &quot;</span>
+        <span class="s2">&quot;`distribution_kwargs={&#39;safe_tanh&#39;: False}`. &quot;</span>
+        <span class="s2">&quot;See https://github.com/pytorch/pytorch/issues/133529 for more details.&quot;</span>
+    <span class="p">)</span>
+
+
+<span class="n">_warn_compile_safetanh</span> <span class="o">=</span> <span class="n">assume_constant_result</span><span class="p">(</span><span class="n">_err_compile_safetanh</span><span class="p">)</span>
 </pre></div>
 
              </article>
