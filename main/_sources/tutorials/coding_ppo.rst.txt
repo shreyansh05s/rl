@@ -1069,9 +1069,9 @@ The steps include:
         return forward_call(*args, **kwargs)
       File "/pytorch/rl/env/lib/python3.8/site-packages/tensordict/nn/common.py", line 325, in wrapper
         return func(_self, tensordict, *args, **kwargs)
-      File "/pytorch/rl/env/lib/python3.8/site-packages/tensordict/nn/utils.py", line 356, in wrapper
+      File "/pytorch/rl/env/lib/python3.8/site-packages/tensordict/nn/utils.py", line 360, in wrapper
         result = func(_self, tensordict, *args, **kwargs)
-      File "/pytorch/rl/env/lib/python3.8/site-packages/tensordict/nn/probabilistic.py", line 669, in forward
+      File "/pytorch/rl/env/lib/python3.8/site-packages/tensordict/nn/probabilistic.py", line 672, in forward
         return self.module[-1](tensordict_out, _requires_sample=self._requires_sample)
       File "/pytorch/rl/env/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1735, in _wrapped_call_impl
         return self._call_impl(*args, **kwargs)
@@ -1079,11 +1079,11 @@ The steps include:
         return forward_call(*args, **kwargs)
       File "/pytorch/rl/env/lib/python3.8/site-packages/tensordict/nn/common.py", line 325, in wrapper
         return func(_self, tensordict, *args, **kwargs)
-      File "/pytorch/rl/env/lib/python3.8/site-packages/tensordict/nn/utils.py", line 356, in wrapper
+      File "/pytorch/rl/env/lib/python3.8/site-packages/tensordict/nn/utils.py", line 360, in wrapper
         result = func(_self, tensordict, *args, **kwargs)
-      File "/pytorch/rl/env/lib/python3.8/site-packages/tensordict/nn/probabilistic.py", line 438, in forward
+      File "/pytorch/rl/env/lib/python3.8/site-packages/tensordict/nn/probabilistic.py", line 441, in forward
         out_tensors = self._dist_sample(dist, interaction_type=interaction_type())
-      File "/pytorch/rl/env/lib/python3.8/site-packages/tensordict/nn/probabilistic.py", line 535, in _dist_sample
+      File "/pytorch/rl/env/lib/python3.8/site-packages/tensordict/nn/probabilistic.py", line 538, in _dist_sample
         if hasattr(dist, "mean"):
       File "/pytorch/rl/torchrl/modules/distributions/continuous.py", line 583, in mean
         raise NotImplementedError(
@@ -1148,9 +1148,9 @@ If you want to experiment with this tutorial a bit more, you can apply the follo
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (1 minutes 19.784 seconds)
+   **Total running time of the script:** (1 minutes 17.842 seconds)
 
-**Estimated memory usage:**  4609 MB
+**Estimated memory usage:**  4156 MB
 
 
 .. _sphx_glr_download_tutorials_coding_ppo.py:

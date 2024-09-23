@@ -487,17 +487,18 @@
 <span class="sd">        key (str): one of `&quot;softplus&quot;`, `&quot;exp&quot;`, `&quot;relu&quot;`, `&quot;expln&quot;`,</span>
 <span class="sd">            `&quot;biased_softplus&quot;` or `&quot;none&quot;` (no mapping).</span>
 
-<span class="sd">    .. note:: If the key begins with `&quot;biased_softplus&quot;`,</span>
-<span class="sd">      then it needs to take the following form:</span>
-<span class="sd">      ```&quot;biased_softplus_{bias}&quot;``` where ```bias``` can be converted to a floating point number that will be</span>
-<span class="sd">      used to bias the softplus function.</span>
-<span class="sd">      Alternatively, the ```&quot;biased_softplus_{bias}_{min_val}&quot;``` syntax can be used.</span>
-<span class="sd">      In that case, the additional ```min_val``` term is a floating point</span>
-<span class="sd">      number that will be used to encode the minimum value of the softplus transform.</span>
-<span class="sd">      In practice, the equation used is `softplus(x + bias) + min_val`, where bias and min_val are values computed</span>
-<span class="sd">      such that the conditions above are met.</span>
+<span class="sd">    .. note::</span>
+<span class="sd">        If the key begins with `&quot;biased_softplus&quot;`, then it needs to take the following form:</span>
+<span class="sd">        ```&quot;biased_softplus_{bias}&quot;``` where ```bias``` can be converted to a floating point number that will be</span>
+<span class="sd">        used to bias the softplus function.</span>
+<span class="sd">        Alternatively, the ```&quot;biased_softplus_{bias}_{min_val}&quot;``` syntax can be used.</span>
+<span class="sd">        In that case, the additional ```min_val``` term is a floating point</span>
+<span class="sd">        number that will be used to encode the minimum value of the softplus transform.</span>
+<span class="sd">        In practice, the equation used is `softplus(x + bias) + min_val`, where bias and min_val are values computed</span>
+<span class="sd">        such that the conditions above are met.</span>
 
-<span class="sd">    .. note:: Custom mappings can be added through ``tensordict.nn.add_custom_mapping``.</span>
+<span class="sd">    .. note::</span>
+<span class="sd">        Custom mappings can be added through ``tensordict.nn.add_custom_mapping``.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">         a Callable</span>
@@ -578,6 +579,7 @@
 <span class="sd">        calling from outside: False</span>
 
 <span class="sd">    This class can also be used as a decorator:</span>
+
 <span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; from tensordict import TensorDict</span>
 <span class="sd">        &gt;&gt;&gt; from tensordict.nn import set_skip_existing, skip_existing, TensorDictModuleBase</span>
@@ -597,7 +599,7 @@
 <span class="sd">            batch_size=torch.Size([]),</span>
 <span class="sd">            device=None,</span>
 <span class="sd">            is_shared=False)</span>
-<span class="sd">        &gt;&gt;&gt; module(TensorDict({}, []))  # prints hello</span>
+<span class="sd">        &gt;&gt;&gt; module(TensorDict())  # prints hello</span>
 <span class="sd">        hello</span>
 <span class="sd">        TensorDict(</span>
 <span class="sd">            fields={</span>
@@ -608,6 +610,8 @@
 
 <span class="sd">    Decorating a method with the mode set to ``None`` is useful whenever one</span>
 <span class="sd">    wants ot let the context manager take care of skipping things from the outside:</span>
+
+<span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; from tensordict import TensorDict</span>
 <span class="sd">        &gt;&gt;&gt; from tensordict.nn import set_skip_existing, skip_existing, TensorDictModuleBase</span>
 <span class="sd">        &gt;&gt;&gt; class MyModule(TensorDictModuleBase):</span>
