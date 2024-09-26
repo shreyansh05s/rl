@@ -426,6 +426,7 @@
     <span class="n">TensorDict</span><span class="p">,</span>
     <span class="n">TensorDictBase</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="kn">from</span> <span class="nn">tensordict.base</span> <span class="kn">import</span> <span class="n">_NESTED_TENSORS_AS_LISTS</span>
 <span class="kn">from</span> <span class="nn">tensordict.memmap</span> <span class="kn">import</span> <span class="n">MemoryMappedTensor</span>
 <span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">multiprocessing</span> <span class="k">as</span> <span class="n">mp</span>
 <span class="kn">from</span> <span class="nn">torch.utils._pytree</span> <span class="kn">import</span> <span class="n">tree_flatten</span><span class="p">,</span> <span class="n">tree_map</span><span class="p">,</span> <span class="n">tree_unflatten</span>
@@ -1303,9 +1304,7 @@
 
         <span class="k">if</span> <span class="n">is_tensor_collection</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
             <span class="n">out</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
-            <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">max_size_along_dim0</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
-            <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
-            <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">zero_</span><span class="p">()</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">out</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">max_size_along_dim0</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">)))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># if Tensor, we just create a MemoryMappedTensor of the desired shape, device and dtype</span>
             <span class="n">out</span> <span class="o">=</span> <span class="n">tree_map</span><span class="p">(</span>
@@ -1522,7 +1521,12 @@
             <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">memmap_like</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">scratch_dir</span><span class="p">,</span> <span class="n">existsok</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">existsok</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">torchrl_logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
                 <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">tensor</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span>
-                    <span class="n">out</span><span class="o">.</span><span class="n">items</span><span class="p">(</span><span class="n">include_nested</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">leaves_only</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="nb">str</span>
+                    <span class="n">out</span><span class="o">.</span><span class="n">items</span><span class="p">(</span>
+                        <span class="n">include_nested</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                        <span class="n">leaves_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                        <span class="n">is_leaf</span><span class="o">=</span><span class="n">_NESTED_TENSORS_AS_LISTS</span><span class="p">,</span>
+                    <span class="p">),</span>
+                    <span class="n">key</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
                 <span class="p">):</span>
                     <span class="k">try</span><span class="p">:</span>
                         <span class="n">filesize</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">tensor</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span> <span class="o">/</span> <span class="mi">1024</span> <span class="o">/</span> <span class="mi">1024</span>

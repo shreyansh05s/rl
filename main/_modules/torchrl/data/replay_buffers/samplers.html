@@ -1384,22 +1384,20 @@
 
             <span class="c1"># faster</span>
             <span class="n">end</span> <span class="o">=</span> <span class="n">trajectory</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">trajectory</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
-            <span class="n">end</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">end</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span> <span class="o">!=</span> <span class="n">trajectory</span><span class="p">[:</span><span class="mi">1</span><span class="p">]],</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">at_capacity</span><span class="p">:</span>
+                <span class="n">end</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">end</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">end</span><span class="p">[:</span><span class="mi">1</span><span class="p">])],</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">end</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">end</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span> <span class="o">!=</span> <span class="n">trajectory</span><span class="p">[:</span><span class="mi">1</span><span class="p">]],</span> <span class="mi">0</span><span class="p">)</span>
             <span class="n">length</span> <span class="o">=</span> <span class="n">trajectory</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># TODO: check that storage is at capacity here, if not we need to assume that the last element of end is True</span>
-
             <span class="c1"># We presume that not done at the end means that the traj spans across end and beginning of storage</span>
             <span class="n">length</span> <span class="o">=</span> <span class="n">end</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">at_capacity</span><span class="p">:</span>
+                <span class="n">end</span> <span class="o">=</span> <span class="n">end</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
+                <span class="n">end</span><span class="p">[</span><span class="n">length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">ndim</span> <span class="o">=</span> <span class="n">end</span><span class="o">.</span><span class="n">ndim</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">at_capacity</span><span class="p">:</span>
-            <span class="n">end</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">index_fill</span><span class="p">(</span>
-                <span class="n">end</span><span class="p">,</span>
-                <span class="n">index</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">end</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">),</span>
-                <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-                <span class="n">value</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-            <span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">at_capacity</span><span class="p">:</span>
             <span class="c1"># we must have at least one end by traj to individuate trajectories</span>
             <span class="c1"># so if no end can be found we set it manually</span>
             <span class="k">if</span> <span class="n">cursor</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -1421,7 +1419,6 @@
                 <span class="n">mask</span> <span class="o">=</span> <span class="o">~</span><span class="n">end</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
                 <span class="n">mask</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">end</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span> <span class="n">mask</span><span class="p">])</span>
                 <span class="n">end</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">masked_fill</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="n">ndim</span> <span class="o">=</span> <span class="n">end</span><span class="o">.</span><span class="n">ndim</span>
         <span class="k">if</span> <span class="n">ndim</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
                 <span class="s2">&quot;Expected the end-of-trajectory signal to be at least 1-dimensional.&quot;</span>
@@ -1528,7 +1525,7 @@
                             <span class="s2">&quot;Could not get a tensordict out of the storage, which is required for SliceSampler to compute the trajectories.&quot;</span>
                         <span class="p">)</span>
                 <span class="n">vals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_start_stop_traj</span><span class="p">(</span>
-                    <span class="n">trajectory</span><span class="o">=</span><span class="n">trajectory</span><span class="p">,</span>
+                    <span class="n">trajectory</span><span class="o">=</span><span class="n">trajectory</span><span class="o">.</span><span class="n">clone</span><span class="p">(),</span>
                     <span class="n">at_capacity</span><span class="o">=</span><span class="n">storage</span><span class="o">.</span><span class="n">_is_full</span><span class="p">,</span>
                     <span class="n">cursor</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">storage</span><span class="p">,</span> <span class="s2">&quot;_last_cursor&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
                 <span class="p">)</span>
