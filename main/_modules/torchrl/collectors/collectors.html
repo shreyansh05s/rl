@@ -33,7 +33,7 @@
   <link rel="stylesheet" href="../../../_static/sg_gallery-binder.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/sg_gallery-dataframe.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/sg_gallery-rendered-html.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/sphinx-design.5ea377869091fd0449014c60fc090103.min.css" type="text/css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -412,7 +412,6 @@
 <span class="kn">import</span> <span class="nn">contextlib</span>
 
 <span class="kn">import</span> <span class="nn">functools</span>
-
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">queue</span>
 <span class="kn">import</span> <span class="nn">sys</span>
@@ -435,7 +434,8 @@
     <span class="n">TensorDictBase</span><span class="p">,</span>
     <span class="n">TensorDictParams</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">tensordict.nn</span> <span class="kn">import</span> <span class="n">TensorDictModule</span>
+<span class="kn">from</span> <span class="nn">tensordict.base</span> <span class="kn">import</span> <span class="n">NO_DEFAULT</span>
+<span class="kn">from</span> <span class="nn">tensordict.nn</span> <span class="kn">import</span> <span class="n">CudaGraphModule</span><span class="p">,</span> <span class="n">TensorDictModule</span>
 <span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">multiprocessing</span> <span class="k">as</span> <span class="n">mp</span>
 <span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="kn">import</span> <span class="n">IterableDataset</span>
 
@@ -460,14 +460,14 @@
 <span class="kn">from</span> <span class="nn">torchrl.envs.transforms</span> <span class="kn">import</span> <span class="n">StepCounter</span><span class="p">,</span> <span class="n">TransformedEnv</span>
 <span class="kn">from</span> <span class="nn">torchrl.envs.utils</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">_aggregate_end_of_traj</span><span class="p">,</span>
-    <span class="n">_convert_exploration_type</span><span class="p">,</span>
     <span class="n">_make_compatible_policy</span><span class="p">,</span>
-    <span class="n">_NonParametricPolicyWrapper</span><span class="p">,</span>
     <span class="n">ExplorationType</span><span class="p">,</span>
+    <span class="n">RandomPolicy</span><span class="p">,</span>
     <span class="n">set_exploration_type</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="n">_TIMEOUT</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="n">INSTANTIATE_TIMEOUT</span> <span class="o">=</span> <span class="mi">20</span>
 <span class="n">_MIN_TIMEOUT</span> <span class="o">=</span> <span class="mf">1e-3</span>  <span class="c1"># should be several orders of magnitude inferior wrt time spent collecting a trajectory</span>
 <span class="c1"># MAX_IDLE_COUNT is the maximum number of times a Dataloader worker can timeout with his queue.</span>
 <span class="n">_MAX_IDLE_COUNT</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;MAX_IDLE_COUNT&quot;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">))</span>
@@ -535,59 +535,95 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for data collectors.&quot;&quot;&quot;</span>
 
     <span class="n">_iterator</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">total_frames</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">frames_per_batch</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">trust_policy</span><span class="p">:</span> <span class="nb">bool</span>
 
     <span class="k">def</span> <span class="nf">_get_policy_and_device</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">policy</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
-            <span class="n">Union</span><span class="p">[</span>
-                <span class="n">TensorDictModule</span><span class="p">,</span>
-                <span class="n">Callable</span><span class="p">[[</span><span class="n">TensorDictBase</span><span class="p">],</span> <span class="n">TensorDictBase</span><span class="p">],</span>
-            <span class="p">]</span>
-        <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">policy</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">observation_spec</span><span class="p">:</span> <span class="n">TensorSpec</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">policy_device</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="n">NO_DEFAULT</span><span class="p">,</span>
+        <span class="n">env_maker</span><span class="p">:</span> <span class="n">Any</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">env_maker_kwargs</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">TensorDictModule</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="nb">dict</span><span class="p">]]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Util method to get a policy and its device given the collector __init__ inputs.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            create_env_fn (Callable or list of callables): an env creator</span>
-<span class="sd">                function (or a list of creators)</span>
-<span class="sd">            create_env_kwargs (dictionary): kwargs for the env creator</span>
 <span class="sd">            policy (TensorDictModule, optional): a policy to be used</span>
 <span class="sd">            observation_spec (TensorSpec, optional): spec of the observations</span>
+<span class="sd">            policy_device (torch.device, optional): the device where the policy should be placed.</span>
+<span class="sd">                Defaults to self.policy_device</span>
+<span class="sd">            env_maker (a callable or a batched env, optional): the env_maker function for this device/policy pair.</span>
+<span class="sd">            env_maker_kwargs (a dict, optional): the env_maker function kwargs.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">policy</span> <span class="o">=</span> <span class="n">_make_compatible_policy</span><span class="p">(</span>
-            <span class="n">policy</span><span class="p">,</span> <span class="n">observation_spec</span><span class="p">,</span> <span class="n">env</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;env&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="p">)</span>
-        <span class="n">param_and_buf</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="o">.</span><span class="n">from_module</span><span class="p">(</span><span class="n">policy</span><span class="p">,</span> <span class="n">as_module</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">policy_device</span> <span class="ow">is</span> <span class="n">NO_DEFAULT</span><span class="p">:</span>
+            <span class="n">policy_device</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">policy_device</span>
 
-        <span class="k">def</span> <span class="nf">get_weights_fn</span><span class="p">(</span><span class="n">param_and_buf</span><span class="o">=</span><span class="n">param_and_buf</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">param_and_buf</span><span class="o">.</span><span class="n">data</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">trust_policy</span><span class="p">:</span>
+            <span class="n">env</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;env&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">policy</span> <span class="o">=</span> <span class="n">_make_compatible_policy</span><span class="p">(</span>
+                <span class="n">policy</span><span class="p">,</span>
+                <span class="n">observation_spec</span><span class="p">,</span>
+                <span class="n">env</span><span class="o">=</span><span class="n">env</span><span class="p">,</span>
+                <span class="n">env_maker</span><span class="o">=</span><span class="n">env_maker</span><span class="p">,</span>
+                <span class="n">env_maker_kwargs</span><span class="o">=</span><span class="n">env_maker_kwargs</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">policy_device</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">policy</span><span class="p">,</span> <span class="kc">None</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">policy_device</span><span class="p">:</span>
-            <span class="c1"># create a stateless policy and populate it with params</span>
-            <span class="k">def</span> <span class="nf">_map_to_device_params</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">device</span><span class="p">):</span>
-                <span class="n">is_param</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">policy</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+            <span class="n">param_and_buf</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="o">.</span><span class="n">from_module</span><span class="p">(</span><span class="n">policy</span><span class="p">,</span> <span class="n">as_module</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Because we want to reach the warning</span>
+            <span class="n">param_and_buf</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="p">()</span>
 
-                <span class="n">pd</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">,</span> <span class="n">non_blocking</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">param_and_buf</span><span class="o">.</span><span class="n">values</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">device</span> <span class="o">!=</span> <span class="n">policy_device</span><span class="p">:</span>
+                <span class="c1"># Then we need casting</span>
+                <span class="k">break</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">trust_policy</span><span class="p">:</span>
+                <span class="c1"># We trust that the policy policy device is adequate</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="s2">&quot;A policy device was provided but no parameter/buffer could be found in &quot;</span>
+                    <span class="s2">&quot;the policy. Casting to policy_device is therefore impossible. &quot;</span>
+                    <span class="s2">&quot;The collector will trust that the devices match. To suppress this &quot;</span>
+                    <span class="s2">&quot;warning, set `trust_policy=True` when building the collector.&quot;</span>
+                <span class="p">)</span>
+            <span class="k">return</span> <span class="n">policy</span><span class="p">,</span> <span class="kc">None</span>
 
-                <span class="k">if</span> <span class="n">is_param</span><span class="p">:</span>
-                    <span class="n">pd</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">pd</span><span class="p">,</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-                <span class="k">return</span> <span class="n">pd</span>
+        <span class="k">def</span> <span class="nf">map_weight</span><span class="p">(</span>
+            <span class="n">weight</span><span class="p">,</span>
+            <span class="n">policy_device</span><span class="o">=</span><span class="n">policy_device</span><span class="p">,</span>
+        <span class="p">):</span>
 
-            <span class="c1"># Create a stateless policy, then populate this copy with params on device</span>
-            <span class="k">with</span> <span class="n">param_and_buf</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
-                <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">_map_to_device_params</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;meta&quot;</span><span class="p">),</span>
-                <span class="n">filter_empty</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-            <span class="p">)</span><span class="o">.</span><span class="n">to_module</span><span class="p">(</span><span class="n">policy</span><span class="p">):</span>
-                <span class="n">policy</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">policy</span><span class="p">)</span>
+            <span class="n">is_param</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">weight</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">)</span>
+            <span class="n">is_buffer</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">weight</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Buffer</span><span class="p">)</span>
+            <span class="n">weight</span> <span class="o">=</span> <span class="n">weight</span><span class="o">.</span><span class="n">data</span>
+            <span class="k">if</span> <span class="n">weight</span><span class="o">.</span><span class="n">device</span> <span class="o">!=</span> <span class="n">policy_device</span><span class="p">:</span>
+                <span class="n">weight</span> <span class="o">=</span> <span class="n">weight</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">policy_device</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">weight</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">,</span> <span class="s2">&quot;mps&quot;</span><span class="p">):</span>
+                <span class="n">weight</span> <span class="o">=</span> <span class="n">weight</span><span class="o">.</span><span class="n">share_memory_</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">is_param</span><span class="p">:</span>
+                <span class="n">weight</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">weight</span><span class="p">,</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">is_buffer</span><span class="p">:</span>
+                <span class="n">weight</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Buffer</span><span class="p">(</span><span class="n">weight</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">weight</span>
 
-            <span class="n">param_and_buf</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
-                <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">_map_to_device_params</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">policy_device</span><span class="p">),</span>
-                <span class="n">filter_empty</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-            <span class="p">)</span><span class="o">.</span><span class="n">to_module</span><span class="p">(</span><span class="n">policy</span><span class="p">)</span>
+        <span class="c1"># Create a stateless policy, then populate this copy with params on device</span>
+        <span class="n">get_original_weights</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">TensorDict</span><span class="o">.</span><span class="n">from_module</span><span class="p">,</span> <span class="n">policy</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">param_and_buf</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s2">&quot;meta&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">to_module</span><span class="p">(</span><span class="n">policy</span><span class="p">):</span>
+            <span class="n">policy</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">policy</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">policy</span><span class="p">,</span> <span class="n">get_weights_fn</span>
+        <span class="n">param_and_buf</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+            <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">map_weight</span><span class="p">),</span>
+            <span class="n">filter_empty</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">to_module</span><span class="p">(</span><span class="n">policy</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">policy</span><span class="p">,</span> <span class="n">get_original_weights</span>
 
 <div class="viewcode-block" id="DataCollectorBase.update_policy_weights_"><a class="viewcode-back" href="../../../reference/generated/torchrl.collectors.DataCollectorBase.html#torchrl.collectors.DataCollectorBase.update_policy_weights_">[docs]</a>    <span class="k">def</span> <span class="nf">update_policy_weights_</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">policy_weights</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TensorDictBase</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -643,7 +679,12 @@
         <span class="k">return</span> <span class="n">string</span>
 
     <span class="k">def</span> <span class="nf">__class_getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_frames</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="o">-</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">total_frames</span> <span class="o">//</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">frames_per_batch</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Non-terminating collectors do not have a length&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SyncDataCollector"><a class="viewcode-back" href="../../../reference/generated/torchrl.collectors.SyncDataCollector.html#torchrl.collectors.SyncDataCollector">[docs]</a><span class="nd">@accept_remote_rref_udf_invocation</span>
@@ -763,6 +804,9 @@
 <span class="sd">            for envs without dynamic specs, ``False`` for others.</span>
 <span class="sd">        replay_buffer (ReplayBuffer, optional): if provided, the collector will not yield tensordict</span>
 <span class="sd">            but populate the buffer instead. Defaults to ``None``.</span>
+<span class="sd">        trust_policy (bool, optional): if ``True``, a non-TensorDictModule policy will be trusted to be</span>
+<span class="sd">            assumed to be compatible with the collector. This defaults to ``True`` for CudaGraphModules</span>
+<span class="sd">            and ``False`` otherwise.</span>
 
 <span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.envs.libs.gym import GymEnv</span>
@@ -846,21 +890,18 @@
         <span class="n">postproc</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">TensorDictBase</span><span class="p">],</span> <span class="n">TensorDictBase</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">split_trajs</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">exploration_type</span><span class="p">:</span> <span class="n">ExplorationType</span> <span class="o">=</span> <span class="n">DEFAULT_EXPLORATION_TYPE</span><span class="p">,</span>
-        <span class="n">exploration_mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">return_same_td</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">reset_when_done</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">interruptor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">set_truncated</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">use_buffers</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">replay_buffer</span><span class="p">:</span> <span class="n">ReplayBuffer</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">trust_policy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="kn">from</span> <span class="nn">torchrl.envs.batched_envs</span> <span class="kn">import</span> <span class="n">BatchedEnvBase</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">closed</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="n">exploration_type</span> <span class="o">=</span> <span class="n">_convert_exploration_type</span><span class="p">(</span>
-            <span class="n">exploration_mode</span><span class="o">=</span><span class="n">exploration_mode</span><span class="p">,</span> <span class="n">exploration_type</span><span class="o">=</span><span class="n">exploration_type</span>
-        <span class="p">)</span>
         <span class="k">if</span> <span class="n">create_env_kwargs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">create_env_kwargs</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">create_env_fn</span><span class="p">,</span> <span class="n">EnvBase</span><span class="p">):</span>
@@ -876,9 +917,11 @@
                 <span class="n">env</span><span class="o">.</span><span class="n">update_kwargs</span><span class="p">(</span><span class="n">create_env_kwargs</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">policy</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">torchrl.collectors</span> <span class="kn">import</span> <span class="n">RandomPolicy</span>
 
             <span class="n">policy</span> <span class="o">=</span> <span class="n">RandomPolicy</span><span class="p">(</span><span class="n">env</span><span class="o">.</span><span class="n">full_action_spec</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">trust_policy</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">trust_policy</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">policy</span><span class="p">,</span> <span class="p">(</span><span class="n">RandomPolicy</span><span class="p">,</span> <span class="n">CudaGraphModule</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trust_policy</span> <span class="o">=</span> <span class="n">trust_policy</span>
 
         <span class="c1">##########################</span>
         <span class="c1"># Trajectory pool</span>
@@ -981,7 +1024,7 @@
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">policy</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">policy_weights</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="o">.</span><span class="n">from_module</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">policy</span><span class="p">,</span> <span class="n">as_module</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">policy_weights</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="p">({},</span> <span class="p">[])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">policy_weights</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">env_device</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">:</span> <span class="n">EnvBase</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env_device</span><span class="p">)</span>
@@ -1186,11 +1229,13 @@
                 <span class="c1"># changed them here).</span>
                 <span class="c1"># This will cause a failure to update entries when policy and env device mismatch and</span>
                 <span class="c1"># casting is necessary.</span>
-                <span class="k">def</span> <span class="nf">filter_policy</span><span class="p">(</span><span class="n">value_output</span><span class="p">,</span> <span class="n">value_input</span><span class="p">,</span> <span class="n">value_input_clone</span><span class="p">):</span>
-                    <span class="k">if</span> <span class="p">(</span>
-                        <span class="p">(</span><span class="n">value_input</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span>
-                        <span class="ow">or</span> <span class="p">(</span><span class="n">value_output</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">value_input</span><span class="p">)</span>
-                        <span class="ow">or</span> <span class="o">~</span><span class="n">torch</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">value_output</span><span class="p">,</span> <span class="n">value_input_clone</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">()</span>
+                <span class="k">def</span> <span class="nf">filter_policy</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value_output</span><span class="p">,</span> <span class="n">value_input</span><span class="p">,</span> <span class="n">value_input_clone</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">value_input</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
+                        <span class="p">(</span><span class="n">value_output</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">value_input</span><span class="p">)</span>
+                        <span class="ow">and</span> <span class="p">(</span>
+                            <span class="n">value_output</span><span class="o">.</span><span class="n">device</span> <span class="o">!=</span> <span class="n">value_input_clone</span><span class="o">.</span><span class="n">device</span>
+                            <span class="ow">or</span> <span class="o">~</span><span class="n">torch</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">value_output</span><span class="p">,</span> <span class="n">value_input_clone</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">()</span>
+                        <span class="p">)</span>
                     <span class="p">):</span>
                         <span class="k">return</span> <span class="n">value_output</span>
 
@@ -1200,6 +1245,7 @@
                     <span class="n">policy_input_clone</span><span class="p">,</span>
                     <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">filter_empty</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="n">named</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                 <span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_policy_output_keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_policy_output_keys</span><span class="o">.</span><span class="n">union</span><span class="p">(</span>
@@ -1823,7 +1869,7 @@
 <span class="sd">            A ``cat_results`` value of ``-1`` will always concatenate results along the</span>
 <span class="sd">            time dimension. This should be preferred over the default. Intermediate values</span>
 <span class="sd">            are also accepted.</span>
-<span class="sd">            Defaults to ``0``.</span>
+<span class="sd">            Defaults to ``&quot;stack&quot;``.</span>
 
 <span class="sd">            .. note:: From v0.5, this argument will default to ``&quot;stack&quot;`` for a better</span>
 <span class="sd">                interoperability with the rest of the library.</span>
@@ -1838,6 +1884,9 @@
 <span class="sd">            for envs without dynamic specs, ``False`` for others.</span>
 <span class="sd">        replay_buffer (ReplayBuffer, optional): if provided, the collector will not yield tensordict</span>
 <span class="sd">            but populate the buffer instead. Defaults to ``None``.</span>
+<span class="sd">        trust_policy (bool, optional): if ``True``, a non-TensorDictModule policy will be trusted to be</span>
+<span class="sd">            assumed to be compatible with the collector. This defaults to ``True`` for CudaGraphModules</span>
+<span class="sd">            and ``False`` otherwise.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -1864,7 +1913,6 @@
         <span class="n">postproc</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="n">TensorDictBase</span><span class="p">],</span> <span class="n">TensorDictBase</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">split_trajs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">exploration_type</span><span class="p">:</span> <span class="n">ExplorationType</span> <span class="o">=</span> <span class="n">DEFAULT_EXPLORATION_TYPE</span><span class="p">,</span>
-        <span class="n">exploration_mode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">reset_when_done</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">update_at_each_batch</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">preemptive_threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1875,10 +1923,8 @@
         <span class="n">use_buffers</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">replay_buffer</span><span class="p">:</span> <span class="n">ReplayBuffer</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">replay_buffer_chunk</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">trust_policy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
-        <span class="n">exploration_type</span> <span class="o">=</span> <span class="n">_convert_exploration_type</span><span class="p">(</span>
-            <span class="n">exploration_mode</span><span class="o">=</span><span class="n">exploration_mode</span><span class="p">,</span> <span class="n">exploration_type</span><span class="o">=</span><span class="n">exploration_type</span>
-        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">closed</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">create_env_fn</span><span class="p">)</span>
 
@@ -1928,78 +1974,32 @@
         <span class="p">):</span>
             <span class="n">replay_buffer</span><span class="o">.</span><span class="n">share</span><span class="p">()</span>
 
-        <span class="n">_policy_weights_dict</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="n">_get_weights_fn_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_policy_weights_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_get_weights_fn_dict</span> <span class="o">=</span> <span class="p">{}</span>
 
-        <span class="k">if</span> <span class="n">policy</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">policy</span> <span class="o">=</span> <span class="n">_NonParametricPolicyWrapper</span><span class="p">(</span><span class="n">policy</span><span class="p">)</span>
-            <span class="n">policy_weights</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="o">.</span><span class="n">from_module</span><span class="p">(</span><span class="n">policy</span><span class="p">,</span> <span class="n">as_module</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">trust_policy</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">trust_policy</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">policy</span><span class="p">,</span> <span class="n">CudaGraphModule</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trust_policy</span> <span class="o">=</span> <span class="n">trust_policy</span>
 
-            <span class="c1"># store a stateless policy</span>
-            <span class="k">with</span> <span class="n">policy_weights</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">_make_meta_params</span><span class="p">)</span><span class="o">.</span><span class="n">to_module</span><span class="p">(</span><span class="n">policy</span><span class="p">):</span>
-                <span class="c1"># TODO:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">policy</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">policy</span><span class="p">)</span>
-
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">policy_weights</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">policy</span> <span class="o">=</span> <span class="kc">None</span>
-
-        <span class="k">for</span> <span class="n">policy_device</span> <span class="ow">in</span> <span class="n">policy_devices</span><span class="p">:</span>
-            <span class="c1"># if we have already mapped onto that device, get that value</span>
-            <span class="k">if</span> <span class="n">policy_device</span> <span class="ow">in</span> <span class="n">_policy_weights_dict</span><span class="p">:</span>
-                <span class="k">continue</span>
-            <span class="c1"># If policy device is None, the only thing we need to do is</span>
-            <span class="c1"># make sure that the weights are shared.</span>
-            <span class="k">if</span> <span class="n">policy_device</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-
-                <span class="k">def</span> <span class="nf">map_weight</span><span class="p">(</span>
-                    <span class="n">weight</span><span class="p">,</span>
-                <span class="p">):</span>
-                    <span class="n">is_param</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">weight</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">)</span>
-                    <span class="n">weight</span> <span class="o">=</span> <span class="n">weight</span><span class="o">.</span><span class="n">data</span>
-                    <span class="k">if</span> <span class="n">weight</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">,</span> <span class="s2">&quot;mps&quot;</span><span class="p">):</span>
-                        <span class="n">weight</span> <span class="o">=</span> <span class="n">weight</span><span class="o">.</span><span class="n">share_memory_</span><span class="p">()</span>
-                    <span class="k">if</span> <span class="n">is_param</span><span class="p">:</span>
-                        <span class="n">weight</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">weight</span><span class="p">,</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-                    <span class="k">return</span> <span class="n">weight</span>
-
-            <span class="c1"># in other cases, we need to cast the policy if and only if not all the weights</span>
-            <span class="c1"># are on the appropriate device</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="c1"># check the weights devices</span>
-                <span class="n">has_different_device</span> <span class="o">=</span> <span class="p">[</span><span class="kc">False</span><span class="p">]</span>
-
-                <span class="k">def</span> <span class="nf">map_weight</span><span class="p">(</span>
-                    <span class="n">weight</span><span class="p">,</span>
-                    <span class="n">policy_device</span><span class="o">=</span><span class="n">policy_device</span><span class="p">,</span>
-                    <span class="n">has_different_device</span><span class="o">=</span><span class="n">has_different_device</span><span class="p">,</span>
-                <span class="p">):</span>
-                    <span class="n">is_param</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">weight</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">)</span>
-                    <span class="n">weight</span> <span class="o">=</span> <span class="n">weight</span><span class="o">.</span><span class="n">data</span>
-                    <span class="k">if</span> <span class="n">weight</span><span class="o">.</span><span class="n">device</span> <span class="o">!=</span> <span class="n">policy_device</span><span class="p">:</span>
-                        <span class="n">has_different_device</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
-                        <span class="n">weight</span> <span class="o">=</span> <span class="n">weight</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">policy_device</span><span class="p">)</span>
-                    <span class="k">elif</span> <span class="n">weight</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">,</span> <span class="s2">&quot;mps&quot;</span><span class="p">):</span>
-                        <span class="n">weight</span> <span class="o">=</span> <span class="n">weight</span><span class="o">.</span><span class="n">share_memory_</span><span class="p">()</span>
-                    <span class="k">if</span> <span class="n">is_param</span><span class="p">:</span>
-                        <span class="n">weight</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">weight</span><span class="p">,</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-                    <span class="k">return</span> <span class="n">weight</span>
-
-            <span class="n">local_policy_weights</span> <span class="o">=</span> <span class="n">TensorDictParams</span><span class="p">(</span>
-                <span class="n">policy_weights</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">map_weight</span><span class="p">,</span> <span class="n">filter_empty</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">policy_device</span><span class="p">,</span> <span class="n">env_maker</span><span class="p">,</span> <span class="n">env_maker_kwargs</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">policy_device</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_env_fn</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_env_kwargs</span>
+        <span class="p">):</span>
+            <span class="p">(</span><span class="n">policy_copy</span><span class="p">,</span> <span class="n">get_weights_fn</span><span class="p">,)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_policy_and_device</span><span class="p">(</span>
+                <span class="n">policy</span><span class="o">=</span><span class="n">policy</span><span class="p">,</span>
+                <span class="n">policy_device</span><span class="o">=</span><span class="n">policy_device</span><span class="p">,</span>
+                <span class="n">env_maker</span><span class="o">=</span><span class="n">env_maker</span><span class="p">,</span>
+                <span class="n">env_maker_kwargs</span><span class="o">=</span><span class="n">env_maker_kwargs</span><span class="p">,</span>
             <span class="p">)</span>
-
-            <span class="k">def</span> <span class="nf">_get_weight_fn</span><span class="p">(</span><span class="n">weights</span><span class="o">=</span><span class="n">policy_weights</span><span class="p">):</span>
-                <span class="c1"># This function will give the local_policy_weight the original weights.</span>
-                <span class="c1"># see self.update_policy_weights_ to see how this is used</span>
-                <span class="k">return</span> <span class="n">weights</span>
-
-            <span class="c1"># We lock the weights to be able to cache a bunch of ops and to avoid modifying it</span>
-            <span class="n">_policy_weights_dict</span><span class="p">[</span><span class="n">policy_device</span><span class="p">]</span> <span class="o">=</span> <span class="n">local_policy_weights</span><span class="o">.</span><span class="n">lock_</span><span class="p">()</span>
-            <span class="n">_get_weights_fn_dict</span><span class="p">[</span><span class="n">policy_device</span><span class="p">]</span> <span class="o">=</span> <span class="n">_get_weight_fn</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_policy_weights_dict</span> <span class="o">=</span> <span class="n">_policy_weights_dict</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_get_weights_fn_dict</span> <span class="o">=</span> <span class="n">_get_weights_fn_dict</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">policy_copy</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">type</span><span class="p">(</span><span class="n">policy</span><span class="p">):</span>
+                <span class="n">policy</span> <span class="o">=</span> <span class="n">policy_copy</span>
+            <span class="n">weights</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">TensorDict</span><span class="o">.</span><span class="n">from_module</span><span class="p">(</span><span class="n">policy_copy</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">policy_copy</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">)</span>
+                <span class="k">else</span> <span class="n">TensorDict</span><span class="p">()</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_policy_weights_dict</span><span class="p">[</span><span class="n">policy_device</span><span class="p">]</span> <span class="o">=</span> <span class="n">weights</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_get_weights_fn_dict</span><span class="p">[</span><span class="n">policy_device</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_weights_fn</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">policy</span> <span class="o">=</span> <span class="n">policy</span>
 
         <span class="k">if</span> <span class="n">total_frames</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">total_frames</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">total_frames</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;inf&quot;</span><span class="p">)</span>
@@ -2068,19 +2068,24 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">cat_results</span> <span class="o">=</span> <span class="n">cat_results</span>
 
     <span class="k">def</span> <span class="nf">_check_replay_buffer_init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">replay_buffer</span><span class="o">.</span><span class="n">_storage</span><span class="o">.</span><span class="n">initialized</span><span class="p">:</span>
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">create_env_fn</span><span class="p">,</span> <span class="n">EnvCreator</span><span class="p">):</span>
-                    <span class="n">fake_td</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_env_fn</span><span class="o">.</span><span class="n">tensordict</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">fake_td</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_env_fn</span><span class="p">[</span><span class="mi">0</span><span class="p">](</span>
-                        <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">create_env_kwargs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-                    <span class="p">)</span><span class="o">.</span><span class="n">fake_tensordict</span><span class="p">()</span>
-                <span class="n">fake_td</span><span class="p">[</span><span class="s2">&quot;collector&quot;</span><span class="p">,</span> <span class="s2">&quot;traj_ids&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">((),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">replay_buffer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">is_init</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">replay_buffer</span><span class="o">.</span><span class="n">_storage</span><span class="p">,</span> <span class="s2">&quot;initialized&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">is_init</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">create_env_fn</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">EnvCreator</span><span class="p">):</span>
+                <span class="n">fake_td</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_env_fn</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">meta_data</span><span class="o">.</span><span class="n">tensordict</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">create_env_fn</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">EnvBase</span><span class="p">):</span>
+                <span class="n">fake_td</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_env_fn</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">fake_tensordict</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">fake_td</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_env_fn</span><span class="p">[</span><span class="mi">0</span><span class="p">](</span>
+                    <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">create_env_kwargs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">fake_tensordict</span><span class="p">()</span>
+            <span class="n">fake_td</span><span class="p">[</span><span class="s2">&quot;collector&quot;</span><span class="p">,</span> <span class="s2">&quot;traj_ids&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
+                <span class="n">fake_td</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span>
+            <span class="p">)</span>
 
-                <span class="bp">self</span><span class="o">.</span><span class="n">replay_buffer</span><span class="o">.</span><span class="n">_storage</span><span class="o">.</span><span class="n">_init</span><span class="p">(</span><span class="n">fake_td</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-            <span class="k">pass</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">replay_buffer</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">fake_td</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">replay_buffer</span><span class="o">.</span><span class="n">empty</span><span class="p">()</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">_total_workers_from_env</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">env_creators</span><span class="p">):</span>
@@ -2149,10 +2154,10 @@
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
     <span class="k">def</span> <span class="nf">update_policy_weights_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">policy_weights</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">policy_weights</span><span class="p">,</span> <span class="n">TensorDictParams</span><span class="p">):</span>
+            <span class="n">policy_weights</span> <span class="o">=</span> <span class="n">policy_weights</span><span class="o">.</span><span class="n">data</span>
         <span class="k">for</span> <span class="n">_device</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_policy_weights_dict</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">policy_weights</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">policy_weights</span><span class="p">,</span> <span class="n">TensorDictParams</span><span class="p">):</span>
-                    <span class="n">policy_weights</span> <span class="o">=</span> <span class="n">policy_weights</span><span class="o">.</span><span class="n">data</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_policy_weights_dict</span><span class="p">[</span><span class="n">_device</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">update_</span><span class="p">(</span><span class="n">policy_weights</span><span class="p">)</span>
             <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_weights_fn_dict</span><span class="p">[</span><span class="n">_device</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">original_weights</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_weights_fn_dict</span><span class="p">[</span><span class="n">_device</span><span class="p">]()</span>
@@ -2194,9 +2199,12 @@
             <span class="n">storing_device</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">storing_device</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
             <span class="n">env_device</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">env_device</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
             <span class="n">policy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">policy</span>
-            <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_policy_weights_dict</span><span class="p">[</span><span class="n">policy_device</span><span class="p">]</span><span class="o">.</span><span class="n">to_module</span><span class="p">(</span>
-                <span class="n">policy</span>
-            <span class="p">)</span> <span class="k">if</span> <span class="n">policy</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">nullcontext</span><span class="p">():</span>
+            <span class="n">policy_weights</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_policy_weights_dict</span><span class="p">[</span><span class="n">policy_device</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">policy</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">policy_weights</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">cm</span> <span class="o">=</span> <span class="n">policy_weights</span><span class="o">.</span><span class="n">to_module</span><span class="p">(</span><span class="n">policy</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">cm</span> <span class="o">=</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">nullcontext</span><span class="p">()</span>
+            <span class="k">with</span> <span class="n">cm</span><span class="p">:</span>
                 <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span>
                     <span class="s2">&quot;pipe_parent&quot;</span><span class="p">:</span> <span class="n">pipe_parent</span><span class="p">,</span>
                     <span class="s2">&quot;pipe_child&quot;</span><span class="p">:</span> <span class="n">pipe_child</span><span class="p">,</span>
@@ -2219,6 +2227,7 @@
                     <span class="s2">&quot;replay_buffer&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">replay_buffer</span><span class="p">,</span>
                     <span class="s2">&quot;replay_buffer_chunk&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">replay_buffer_chunk</span><span class="p">,</span>
                     <span class="s2">&quot;traj_pool&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_traj_pool</span><span class="p">,</span>
+                    <span class="s2">&quot;trust_policy&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">trust_policy</span><span class="p">,</span>
                 <span class="p">}</span>
                 <span class="n">proc</span> <span class="o">=</span> <span class="n">_ProcessNoWarn</span><span class="p">(</span>
                     <span class="n">target</span><span class="o">=</span><span class="n">_main_async_collector</span><span class="p">,</span>
@@ -2243,6 +2252,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">procs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">proc</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">pipes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pipe_parent</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">pipe_parent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">pipes</span><span class="p">:</span>
+            <span class="n">pipe_parent</span><span class="o">.</span><span class="n">poll</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="n">INSTANTIATE_TIMEOUT</span><span class="p">)</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="n">pipe_parent</span><span class="o">.</span><span class="n">recv</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">msg</span> <span class="o">!=</span> <span class="s2">&quot;instantiated&quot;</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
@@ -2558,19 +2568,6 @@
         <span class="n">cat_results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cat_results</span>
         <span class="k">if</span> <span class="n">cat_results</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">cat_results</span> <span class="o">=</span> <span class="s2">&quot;stack&quot;</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;`cat_results` was not specified in the constructor of </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">. &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;For MultiSyncDataCollector, `cat_results` indicates how the data should &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;be packed: the preferred option and current default is `cat_results=&#39;stack&#39;` &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;which provides the best interoperability across torchrl components. &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;Other accepted values are `cat_results=0` (previous behavior) and &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;`cat_results=-1` (cat along time dimension). Among these two, the latter &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;should be preferred for consistency across environment configurations. &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;Currently, the default value is `&#39;stack&#39;`.&quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;From v0.6 onward, this warning will be removed. &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;To suppress this warning, set `cat_results` to the desired value.&quot;</span><span class="p">,</span>
-                <span class="n">category</span><span class="o">=</span><span class="ne">DeprecationWarning</span><span class="p">,</span>
-            <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">buffers</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">dones</span> <span class="o">=</span> <span class="p">[</span><span class="kc">False</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span><span class="p">)]</span>
@@ -2940,9 +2937,13 @@
 
         <span class="n">workers_frames</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span><span class="p">)]</span>
         <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frames</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_frames</span><span class="p">:</span>
-            <span class="n">_check_for_faulty_process</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">procs</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_iter</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="n">idx</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_from_queue</span><span class="p">()</span>
+            <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">idx</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_from_queue</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mf">10.0</span><span class="p">)</span>
+                    <span class="k">break</span>
+                <span class="k">except</span> <span class="ne">TimeoutError</span><span class="p">:</span>
+                    <span class="n">_check_for_faulty_process</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">procs</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">replay_buffer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">worker_frames</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">numel</span><span class="p">()</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">split_trajs</span><span class="p">:</span>
@@ -3151,7 +3152,6 @@
         <span class="n">postproc</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="n">TensorDictBase</span><span class="p">],</span> <span class="n">TensorDictBase</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">split_trajs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">exploration_type</span><span class="p">:</span> <span class="n">ExplorationType</span> <span class="o">=</span> <span class="n">DEFAULT_EXPLORATION_TYPE</span><span class="p">,</span>
-        <span class="n">exploration_mode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">reset_when_done</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">update_at_each_batch</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">preemptive_threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -3176,7 +3176,6 @@
             <span class="n">env_device</span><span class="o">=</span><span class="n">env_device</span><span class="p">,</span>
             <span class="n">storing_device</span><span class="o">=</span><span class="n">storing_device</span><span class="p">,</span>
             <span class="n">exploration_type</span><span class="o">=</span><span class="n">exploration_type</span><span class="p">,</span>
-            <span class="n">exploration_mode</span><span class="o">=</span><span class="n">exploration_mode</span><span class="p">,</span>
             <span class="n">reset_when_done</span><span class="o">=</span><span class="n">reset_when_done</span><span class="p">,</span>
             <span class="n">update_at_each_batch</span><span class="o">=</span><span class="n">update_at_each_batch</span><span class="p">,</span>
             <span class="n">preemptive_threshold</span><span class="o">=</span><span class="n">preemptive_threshold</span><span class="p">,</span>
@@ -3229,6 +3228,7 @@
     <span class="n">replay_buffer</span><span class="p">:</span> <span class="n">ReplayBuffer</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">replay_buffer_chunk</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">traj_pool</span><span class="p">:</span> <span class="n">_TrajectoryPool</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">trust_policy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="n">pipe_parent</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
     <span class="c1"># init variables that will be cleared when closing</span>
@@ -3255,6 +3255,7 @@
         <span class="n">use_buffers</span><span class="o">=</span><span class="n">use_buffers</span><span class="p">,</span>
         <span class="n">replay_buffer</span><span class="o">=</span><span class="n">replay_buffer</span> <span class="k">if</span> <span class="n">replay_buffer_chunk</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">traj_pool</span><span class="o">=</span><span class="n">traj_pool</span><span class="p">,</span>
+        <span class="n">trust_policy</span><span class="o">=</span><span class="n">trust_policy</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">use_buffers</span> <span class="o">=</span> <span class="n">inner_collector</span><span class="o">.</span><span class="n">_use_buffers</span>
     <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
@@ -3350,10 +3351,16 @@
                     <span class="c1"># if policy is on cuda and env on cuda, we are fine with this</span>
                     <span class="c1"># If policy is on cuda and env on cpu (or opposite) we put tensors that</span>
                     <span class="c1"># are on cpu in shared mem.</span>
+                    <span class="n">MPS_ERROR</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="s2">&quot;tensors on mps device cannot be put in shared memory. Make sure &quot;</span>
+                        <span class="s2">&quot;the shared device (aka storing_device) is set to CPU.&quot;</span>
+                    <span class="p">)</span>
                     <span class="k">if</span> <span class="n">collected_tensordict</span><span class="o">.</span><span class="n">device</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                         <span class="c1"># placehoder in case we need different behaviors</span>
-                        <span class="k">if</span> <span class="n">collected_tensordict</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">,</span> <span class="s2">&quot;mps&quot;</span><span class="p">):</span>
+                        <span class="k">if</span> <span class="n">collected_tensordict</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">,):</span>
                             <span class="n">collected_tensordict</span><span class="o">.</span><span class="n">share_memory_</span><span class="p">()</span>
+                        <span class="k">elif</span> <span class="n">collected_tensordict</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;mps&quot;</span><span class="p">,):</span>
+                            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">MPS_ERROR</span><span class="p">)</span>
                         <span class="k">elif</span> <span class="n">collected_tensordict</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;cuda&quot;</span><span class="p">:</span>
                             <span class="n">collected_tensordict</span><span class="o">.</span><span class="n">share_memory_</span><span class="p">()</span>
                         <span class="k">else</span><span class="p">:</span>
@@ -3362,11 +3369,13 @@
                             <span class="p">)</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="c1"># make sure each cpu tensor is shared - assuming non-cpu devices are shared</span>
-                        <span class="n">collected_tensordict</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
-                            <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">share_memory_</span><span class="p">()</span>
-                            <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">,</span> <span class="s2">&quot;mps&quot;</span><span class="p">)</span>
-                            <span class="k">else</span> <span class="n">x</span>
-                        <span class="p">)</span>
+                        <span class="k">def</span> <span class="nf">cast_tensor</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">MPS_ERROR</span><span class="o">=</span><span class="n">MPS_ERROR</span><span class="p">):</span>
+                            <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">,):</span>
+                                <span class="n">x</span><span class="o">.</span><span class="n">share_memory_</span><span class="p">()</span>
+                            <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;mps&quot;</span><span class="p">,):</span>
+                                <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">MPS_ERROR</span><span class="p">)</span>
+
+                        <span class="n">collected_tensordict</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">cast_tensor</span><span class="p">,</span> <span class="n">filter_empty</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
                 <span class="n">data</span> <span class="o">=</span> <span class="p">(</span><span class="n">collected_tensordict</span><span class="p">,</span> <span class="n">idx</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">next_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">collected_tensordict</span><span class="p">:</span>

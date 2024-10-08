@@ -34,7 +34,7 @@
   <link rel="stylesheet" href="../../_static/sg_gallery-binder.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/sg_gallery-dataframe.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/sg_gallery-rendered-html.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/sphinx-design.5ea377869091fd0449014c60fc090103.min.css" type="text/css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -453,8 +453,8 @@ forwarding any altered tensordict keys to the underlying value_estimator.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>When a policy that is wrapped or augmented with an exploration module is passed
-to the loss, we want to deactivate the exploration through <code class="docutils literal notranslate"><span class="pre">set_exploration_mode(&lt;mode&gt;)</span></code> where
-<code class="docutils literal notranslate"><span class="pre">&lt;mode&gt;</span></code> is either <code class="docutils literal notranslate"><span class="pre">ExplorationType.MEAN</span></code>, <code class="docutils literal notranslate"><span class="pre">ExplorationType.MODE</span></code> or
+to the loss, we want to deactivate the exploration through <code class="docutils literal notranslate"><span class="pre">set_exploration_type(&lt;exploration&gt;)</span></code> where
+<code class="docutils literal notranslate"><span class="pre">&lt;exploration&gt;</span></code> is either <code class="docutils literal notranslate"><span class="pre">ExplorationType.MEAN</span></code>, <code class="docutils literal notranslate"><span class="pre">ExplorationType.MODE</span></code> or
 <code class="docutils literal notranslate"><span class="pre">ExplorationType.DETERMINISTIC</span></code>. The default value is <code class="docutils literal notranslate"><span class="pre">DETERMINISTIC</span></code> and it is set
 through the <code class="docutils literal notranslate"><span class="pre">deterministic_sampling_mode</span></code> loss attribute. If another
 exploration mode is required (or if <code class="docutils literal notranslate"><span class="pre">DETERMINISTIC</span></code> is not available), one can
@@ -552,7 +552,7 @@ gathered.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="torchrl.objectives.LossModule.get_stateful_net">
-<span class="sig-name descname"><span class="pre">get_stateful_net</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">network_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/torchrl/objectives/common.html#LossModule.get_stateful_net"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.objectives.LossModule.get_stateful_net" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_stateful_net</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">network_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/torchrl/objectives/common.html#LossModule.get_stateful_net"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.objectives.LossModule.get_stateful_net" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a stateful version of the network.</p>
 <p>This can be used to initialize parameters.</p>
 <p>Such networks will often not be callable out-of-the-box and will require a <cite>vmap</cite> call

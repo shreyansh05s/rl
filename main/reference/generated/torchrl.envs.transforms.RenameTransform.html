@@ -34,7 +34,7 @@
   <link rel="stylesheet" href="../../_static/sg_gallery-binder.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/sg_gallery-dataframe.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/sg_gallery-rendered-html.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/sphinx-design.5ea377869091fd0449014c60fc090103.min.css" type="text/css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -413,16 +413,16 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="torchrl.envs.transforms.RenameTransform">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">torchrl.envs.transforms.</span></span><span class="sig-name descname"><span class="pre">RenameTransform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_keys</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_keys</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_keys_inv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_keys_inv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">create_copy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/torchrl/envs/transforms/transforms.html#RenameTransform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.envs.transforms.RenameTransform" title="Permalink to this definition">¶</a></dt>
-<dd><p>A transform to rename entries in the output tensordict.</p>
+<dd><p>A transform to rename entries in the output tensordict (or input tensordict via the inverse keys).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>in_keys</strong> (<em>sequence of NestedKey</em>) – the entries to rename</p></li>
+<li><p><strong>in_keys</strong> (<em>sequence of NestedKey</em>) – the entries to rename.</p></li>
 <li><p><strong>out_keys</strong> (<em>sequence of NestedKey</em>) – the name of the entries after renaming.</p></li>
-<li><p><strong>in_keys_inv</strong> (<em>sequence of NestedKey</em><em>, </em><em>optional</em>) – the entries to rename before
-passing the input tensordict to <code class="xref py py-meth docutils literal notranslate"><span class="pre">EnvBase._step()</span></code>.</p></li>
-<li><p><strong>out_keys_inv</strong> (<em>sequence of NestedKey</em><em>, </em><em>optional</em>) – the names of the renamed
-entries passed to <code class="xref py py-meth docutils literal notranslate"><span class="pre">EnvBase._step()</span></code>.</p></li>
+<li><p><strong>in_keys_inv</strong> (<em>sequence of NestedKey</em><em>, </em><em>optional</em>) – the entries to rename
+in the input tensordict, which will be passed to <code class="xref py py-meth docutils literal notranslate"><span class="pre">EnvBase._step()</span></code>.</p></li>
+<li><p><strong>out_keys_inv</strong> (<em>sequence of NestedKey</em><em>, </em><em>optional</em>) – the names of the entries
+in the input tensordict after renaming.</p></li>
 <li><p><strong>create_copy</strong> (<em>bool</em><em>, </em><em>optional</em>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code>, the entries will be copied
 with a different name rather than being renamed. This allows for
 renaming immutable entries such as <code class="docutils literal notranslate"><span class="pre">&quot;reward&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">&quot;done&quot;</span></code>.</p></li>

@@ -34,7 +34,7 @@
   <link rel="stylesheet" href="../_static/sg_gallery-binder.css" type="text/css" />
   <link rel="stylesheet" href="../_static/sg_gallery-dataframe.css" type="text/css" />
   <link rel="stylesheet" href="../_static/sg_gallery-rendered-html.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/sphinx-design.5ea377869091fd0449014c60fc090103.min.css" type="text/css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css" type="text/css" />
   <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
@@ -1107,6 +1107,8 @@ Re-using the example above:</p>
 Since each transform uses a <code class="docutils literal notranslate"><span class="pre">&quot;in_keys&quot;</span></code>/<code class="docutils literal notranslate"><span class="pre">&quot;out_keys&quot;</span></code> set of keyword argument, it is
 also easy to root the transform graph to each component of the observation data (e.g.
 pixels or states etc).</p>
+<section id="forward-and-inverse-transforms">
+<h3>Forward and inverse transforms<a class="headerlink" href="#forward-and-inverse-transforms" title="Permalink to this heading">¶</a></h3>
 <p>Transforms also have an <code class="docutils literal notranslate"><span class="pre">inv</span></code> method that is called before
 the action is applied in reverse order over the composed transform chain:
 this allows to apply transforms to data in the environment before the action is taken
@@ -1118,6 +1120,20 @@ in the environment. The keys to be included in this inverse transform are passed
 </pre></div>
 </div>
 </div>
+<p>The way <code class="docutils literal notranslate"><span class="pre">in_keys</span></code> relates to <code class="docutils literal notranslate"><span class="pre">in_keys_inv</span></code> can be understood by considering the base environment as the “inner” part
+of the transform. In constrast, the user inputs and outputs to and from the transform are to be considered as the
+outside world. The following figure shows what this means in practice for the <code class="xref py py-class docutils literal notranslate"><span class="pre">RenameTransform</span></code>
+class: the input <code class="docutils literal notranslate"><span class="pre">TensorDict</span></code> of the <code class="docutils literal notranslate"><span class="pre">step</span></code> function must have the <code class="docutils literal notranslate"><span class="pre">out_keys_inv</span></code> listed in its entries as they
+are part of the outside world. The transform changes these names to make them match the names of the inner, base
+environment using the <code class="docutils literal notranslate"><span class="pre">in_keys_inv</span></code>. The inverse process is executed with the output tensordict, where the <code class="docutils literal notranslate"><span class="pre">in_keys</span></code>
+are mapped to the corresponding <code class="docutils literal notranslate"><span class="pre">out_keys</span></code>.</p>
+<figure class="align-default" id="id12">
+<img alt="../_images/rename_transform.png" src="../_images/rename_transform.png" />
+<figcaption>
+<p><span class="caption-text">Rename transform logic</span><a class="headerlink" href="#id12" title="Permalink to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
 <section id="cloning-transforms">
 <h3>Cloning transforms<a class="headerlink" href="#cloning-transforms" title="Permalink to this heading">¶</a></h3>
 <p>Because transforms appended to an environment are “registered” to this environment
@@ -1267,7 +1283,7 @@ to be able to create this other composition:</p>
 <td><p>Removes empty specs and content from an environment.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.envs.transforms.RenameTransform.html#torchrl.envs.transforms.RenameTransform" title="torchrl.envs.transforms.RenameTransform"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RenameTransform</span></code></a>(in_keys, out_keys[, ...])</p></td>
-<td><p>A transform to rename entries in the output tensordict.</p></td>
+<td><p>A transform to rename entries in the output tensordict (or input tensordict via the inverse keys).</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.envs.transforms.Resize.html#torchrl.envs.transforms.Resize" title="torchrl.envs.transforms.Resize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Resize</span></code></a>(w[, h, interpolation, in_keys, out_keys])</p></td>
 <td><p>Resizes a pixel observation.</p></td>
@@ -1339,8 +1355,8 @@ to be able to create this other composition:</p>
 In such cases the environments will output an action mask (under the <code class="docutils literal notranslate"><span class="pre">&quot;action_mask&quot;</span></code> key by default).
 This mask needs to be used to filter out unavailable actions for that step.</p>
 <p>If you are using a custom policy you can pass this mask to your probability distribution like so:</p>
-<div class="literal-block-wrapper docutils container" id="id12">
-<div class="code-block-caption"><span class="caption-text">Categorical policy with action mask</span><a class="headerlink" href="#id12" title="Permalink to this code">¶</a></div>
+<div class="literal-block-wrapper docutils container" id="id13">
+<div class="code-block-caption"><span class="caption-text">Categorical policy with action mask</span><a class="headerlink" href="#id13" title="Permalink to this code">¶</a></div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>     <span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">tensordict.nn</span> <span class="kn">import</span> <span class="n">TensorDictModule</span><span class="p">,</span> <span class="n">ProbabilisticTensorDictModule</span><span class="p">,</span> <span class="n">TensorDictSequential</span>
      <span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
      <span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">torchrl.modules</span> <span class="kn">import</span> <span class="n">MaskedCategorical</span>
@@ -1361,8 +1377,8 @@ This mask needs to be used to filter out unavailable actions for that step.</p>
 <p>If you want to use a default policy, you will need to wrap your environment in the <a class="reference internal" href="generated/torchrl.envs.transforms.ActionMask.html#torchrl.envs.transforms.ActionMask" title="torchrl.envs.transforms.ActionMask"><code class="xref py py-class docutils literal notranslate"><span class="pre">ActionMask</span></code></a>
 transform. This transform can take care of updating the action mask in the action spec in order for the default policy
 to always know what the latest available actions are. You can do this like so:</p>
-<div class="literal-block-wrapper docutils container" id="id13">
-<div class="code-block-caption"><span class="caption-text">How to use the action mask transform</span><a class="headerlink" href="#id13" title="Permalink to this code">¶</a></div>
+<div class="literal-block-wrapper docutils container" id="id14">
+<div class="code-block-caption"><span class="caption-text">How to use the action mask transform</span><a class="headerlink" href="#id14" title="Permalink to this code">¶</a></div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>     <span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">tensordict.nn</span> <span class="kn">import</span> <span class="n">TensorDictModule</span><span class="p">,</span> <span class="n">ProbabilisticTensorDictModule</span><span class="p">,</span> <span class="n">TensorDictSequential</span>
      <span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
      <span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">torchrl.envs.transforms</span> <span class="kn">import</span> <span class="n">TransformedEnv</span><span class="p">,</span> <span class="n">ActionMask</span>
@@ -1467,20 +1483,14 @@ This class works over single and batched environments alike:</p>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.envs.utils.check_env_specs.html#torchrl.envs.utils.check_env_specs" title="torchrl.envs.utils.check_env_specs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_env_specs</span></code></a>(env[, return_contiguous, ...])</p></td>
 <td><p>Tests an environment specs against the results of short rollout.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.envs.utils.exploration_mode.html#torchrl.envs.utils.exploration_mode" title="torchrl.envs.utils.exploration_mode"><code class="xref py py-obj docutils literal notranslate"><span class="pre">exploration_mode</span></code></a>()</p></td>
-<td><p><em>Deprecated</em> Returns the current sampling mode.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.envs.utils.exploration_type.html#torchrl.envs.utils.exploration_type" title="torchrl.envs.utils.exploration_type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">exploration_type</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.envs.utils.exploration_type.html#torchrl.envs.utils.exploration_type" title="torchrl.envs.utils.exploration_type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">exploration_type</span></code></a>()</p></td>
 <td><p>Returns the current sampling type.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.envs.utils.get_available_libraries.html#torchrl.envs.utils.get_available_libraries" title="torchrl.envs.utils.get_available_libraries"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_available_libraries</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.envs.utils.get_available_libraries.html#torchrl.envs.utils.get_available_libraries" title="torchrl.envs.utils.get_available_libraries"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_available_libraries</span></code></a>()</p></td>
 <td><p>Returns all the supported libraries.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.envs.utils.make_composite_from_td.html#torchrl.envs.utils.make_composite_from_td" title="torchrl.envs.utils.make_composite_from_td"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_composite_from_td</span></code></a>(data[, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.envs.utils.make_composite_from_td.html#torchrl.envs.utils.make_composite_from_td" title="torchrl.envs.utils.make_composite_from_td"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_composite_from_td</span></code></a>(data[, ...])</p></td>
 <td><p>Creates a Composite instance from a tensordict, assuming all values are unbounded.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.envs.utils.set_exploration_mode.html#torchrl.envs.utils.set_exploration_mode" title="torchrl.envs.utils.set_exploration_mode"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_exploration_mode</span></code></a></p></td>
-<td><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">set_interaction_mode</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.envs.utils.set_exploration_type.html#torchrl.envs.utils.set_exploration_type" title="torchrl.envs.utils.set_exploration_type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_exploration_type</span></code></a></p></td>
 <td><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">set_interaction_type</span></code></p></td>
@@ -1727,6 +1737,7 @@ the following function will return <code class="docutils literal notranslate"><s
 <li><a class="reference internal" href="#auto-resetting-envs">Auto-resetting Envs</a></li>
 <li><a class="reference internal" href="#dynamic-specs">Dynamic Specs</a></li>
 <li><a class="reference internal" href="#transforms">Transforms</a><ul>
+<li><a class="reference internal" href="#forward-and-inverse-transforms">Forward and inverse transforms</a></li>
 <li><a class="reference internal" href="#cloning-transforms">Cloning transforms</a></li>
 </ul>
 </li>

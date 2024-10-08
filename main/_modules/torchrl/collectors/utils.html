@@ -33,7 +33,7 @@
   <link rel="stylesheet" href="../../../_static/sg_gallery-binder.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/sg_gallery-dataframe.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/sg_gallery-rendered-html.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/sphinx-design.5ea377869091fd0449014c60fc090103.min.css" type="text/css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -411,6 +411,12 @@
 <span class="kn">import</span> <span class="nn">torch</span>
 
 <span class="kn">from</span> <span class="nn">tensordict</span> <span class="kn">import</span> <span class="n">NestedKey</span><span class="p">,</span> <span class="n">pad</span><span class="p">,</span> <span class="n">set_lazy_legacy</span><span class="p">,</span> <span class="n">TensorDictBase</span>
+
+
+<span class="n">_NON_NN_POLICY_WEIGHTS</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s2">&quot;The policy is not an nn.Module. TorchRL will assume that the parameter set is empty and &quot;</span>
+    <span class="s2">&quot;update_policy_weights_ will be a no-op.&quot;</span>
+<span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_stack_output</span><span class="p">(</span><span class="n">fun</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>

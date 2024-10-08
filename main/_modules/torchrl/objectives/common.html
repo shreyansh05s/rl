@@ -33,7 +33,7 @@
   <link rel="stylesheet" href="../../../_static/sg_gallery-binder.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/sg_gallery-dataframe.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/sg_gallery-rendered-html.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/sphinx-design.5ea377869091fd0449014c60fc090103.min.css" type="text/css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -499,8 +499,8 @@
 <span class="sd">        &gt;&gt;&gt; loss.set_keys(action=&quot;action2&quot;)</span>
 
 <span class="sd">    .. note:: When a policy that is wrapped or augmented with an exploration module is passed</span>
-<span class="sd">        to the loss, we want to deactivate the exploration through ``set_exploration_mode(&lt;mode&gt;)`` where</span>
-<span class="sd">        ``&lt;mode&gt;`` is either ``ExplorationType.MEAN``, ``ExplorationType.MODE`` or</span>
+<span class="sd">        to the loss, we want to deactivate the exploration through ``set_exploration_type(&lt;exploration&gt;)`` where</span>
+<span class="sd">        ``&lt;exploration&gt;`` is either ``ExplorationType.MEAN``, ``ExplorationType.MODE`` or</span>
 <span class="sd">        ``ExplorationType.DETERMINISTIC``. The default value is ``DETERMINISTIC`` and it is set</span>
 <span class="sd">        through the ``deterministic_sampling_mode`` loss attribute. If another</span>
 <span class="sd">        exploration mode is required (or if ``DETERMINISTIC`` is not available), one can</span>

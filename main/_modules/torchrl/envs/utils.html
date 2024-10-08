@@ -33,7 +33,7 @@
   <link rel="stylesheet" href="../../../_static/sg_gallery-binder.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/sg_gallery-dataframe.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/sg_gallery-rendered-html.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/sphinx-design.5ea377869091fd0449014c60fc090103.min.css" type="text/css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -434,13 +434,8 @@
 <span class="kn">from</span> <span class="nn">tensordict.base</span> <span class="kn">import</span> <span class="n">_is_leaf_nontensor</span>
 <span class="kn">from</span> <span class="nn">tensordict.nn</span> <span class="kn">import</span> <span class="n">TensorDictModule</span><span class="p">,</span> <span class="n">TensorDictModuleBase</span>
 <span class="kn">from</span> <span class="nn">tensordict.nn.probabilistic</span> <span class="kn">import</span> <span class="p">(</span>  <span class="c1"># noqa</span>
-    <span class="c1"># Note: the `set_interaction_mode` and their associated arg `default_interaction_mode` are being deprecated!</span>
-    <span class="c1">#       Please use the `set_/interaction_type` ones above with the InteractionType enum instead.</span>
-    <span class="c1">#       See more details: https://github.com/pytorch/rl/issues/1016</span>
-    <span class="n">interaction_mode</span> <span class="k">as</span> <span class="n">exploration_mode</span><span class="p">,</span>
     <span class="n">interaction_type</span> <span class="k">as</span> <span class="n">exploration_type</span><span class="p">,</span>
     <span class="n">InteractionType</span> <span class="k">as</span> <span class="n">ExplorationType</span><span class="p">,</span>
-    <span class="n">set_interaction_mode</span> <span class="k">as</span> <span class="n">set_exploration_mode</span><span class="p">,</span>
     <span class="n">set_interaction_type</span> <span class="k">as</span> <span class="n">set_exploration_type</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">tensordict.utils</span> <span class="kn">import</span> <span class="n">is_non_tensor</span><span class="p">,</span> <span class="n">NestedKey</span>
@@ -454,12 +449,10 @@
     <span class="n">TensorSpec</span><span class="p">,</span>
     <span class="n">Unbounded</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">torchrl.data.utils</span> <span class="kn">import</span> <span class="n">check_no_exclusive_keys</span>
+<span class="kn">from</span> <span class="nn">torchrl.data.utils</span> <span class="kn">import</span> <span class="n">check_no_exclusive_keys</span><span class="p">,</span> <span class="n">CloudpickleWrapper</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s2">&quot;exploration_mode&quot;</span><span class="p">,</span>
     <span class="s2">&quot;exploration_type&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;set_exploration_mode&quot;</span><span class="p">,</span>
     <span class="s2">&quot;set_exploration_type&quot;</span><span class="p">,</span>
     <span class="s2">&quot;ExplorationType&quot;</span><span class="p">,</span>
     <span class="s2">&quot;check_env_specs&quot;</span><span class="p">,</span>
@@ -471,20 +464,14 @@
 
 
 <span class="n">ACTION_MASK_ERROR</span> <span class="o">=</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-    <span class="s2">&quot;An out-of-bounds actions has been provided to an env with an &#39;action_mask&#39; output.&quot;</span>
-    <span class="s2">&quot; If you are using a custom policy, make sure to take the action mask into account when computing the output.&quot;</span>
-    <span class="s2">&quot; If you are using a default policy, please add the torchrl.envs.transforms.ActionMask transform to your environment.&quot;</span>
+    <span class="s2">&quot;An out-of-bounds actions has been provided to an env with an &#39;action_mask&#39; output. &quot;</span>
+    <span class="s2">&quot;If you are using a custom policy, make sure to take the action mask into account when computing the output. &quot;</span>
+    <span class="s2">&quot;If you are using a default policy, please add the torchrl.envs.transforms.ActionMask transform to your environment. &quot;</span>
     <span class="s2">&quot;If you are using a ParallelEnv or another batched inventor, &quot;</span>
-    <span class="s2">&quot;make sure to add the transform to the ParallelEnv (and not to the sub-environments).&quot;</span>
-    <span class="s2">&quot; For more info on using action masks, see the docs at: &quot;</span>
-    <span class="s2">&quot;https://pytorch.org/rl/reference/envs.html#environments-with-masked-actions&quot;</span>
+    <span class="s2">&quot;make sure to add the transform to the ParallelEnv (and not to the sub-environments). &quot;</span>
+    <span class="s2">&quot;For more info on using action masks, see the docs at: &quot;</span>
+    <span class="s2">&quot;https://pytorch.org/rl/main/reference/envs.html#environments-with-masked-actions&quot;</span>
 <span class="p">)</span>
-
-
-<span class="k">def</span> <span class="nf">_convert_exploration_type</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">exploration_mode</span><span class="p">,</span> <span class="n">exploration_type</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">exploration_mode</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">ExplorationType</span><span class="o">.</span><span class="n">from_str</span><span class="p">(</span><span class="n">exploration_mode</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">exploration_type</span>
 
 
 <span class="k">class</span> <span class="nc">_classproperty</span><span class="p">(</span><span class="nb">property</span><span class="p">):</span>
@@ -1829,16 +1816,63 @@
         <span class="k">return</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
 
 
-<span class="k">def</span> <span class="nf">_make_compatible_policy</span><span class="p">(</span><span class="n">policy</span><span class="p">,</span> <span class="n">observation_spec</span><span class="p">,</span> <span class="n">env</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fast_wrap</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_make_compatible_policy</span><span class="p">(</span>
+    <span class="n">policy</span><span class="p">,</span>
+    <span class="n">observation_spec</span><span class="p">,</span>
+    <span class="n">env</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">fast_wrap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">trust_policy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">env_maker</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">env_maker_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="k">if</span> <span class="n">trust_policy</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">policy</span>
     <span class="k">if</span> <span class="n">policy</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">env</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;env must be provided to _get_policy_and_device if policy is None&quot;</span>
-            <span class="p">)</span>
-        <span class="n">policy</span> <span class="o">=</span> <span class="n">RandomPolicy</span><span class="p">(</span><span class="n">env</span><span class="o">.</span><span class="n">input_spec</span><span class="p">[</span><span class="s2">&quot;full_action_spec&quot;</span><span class="p">])</span>
-    <span class="c1"># make sure policy is an nn.Module</span>
-    <span class="n">policy</span> <span class="o">=</span> <span class="n">_NonParametricPolicyWrapper</span><span class="p">(</span><span class="n">policy</span><span class="p">)</span>
+        <span class="n">input_spec</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">env_maker</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">torchrl.envs</span> <span class="kn">import</span> <span class="n">EnvBase</span><span class="p">,</span> <span class="n">EnvCreator</span>
+
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">env_maker</span><span class="p">,</span> <span class="n">EnvBase</span><span class="p">):</span>
+                <span class="n">env</span> <span class="o">=</span> <span class="n">env_maker</span>
+                <span class="n">input_spec</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">input_spec</span><span class="p">[</span><span class="s2">&quot;full_action_spec&quot;</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">env_maker</span><span class="p">,</span> <span class="n">EnvCreator</span><span class="p">):</span>
+                <span class="n">input_spec</span> <span class="o">=</span> <span class="n">env_maker</span><span class="o">.</span><span class="n">_meta_data</span><span class="o">.</span><span class="n">specs</span><span class="p">[</span>
+                    <span class="s2">&quot;input_spec&quot;</span><span class="p">,</span> <span class="s2">&quot;full_action_spec&quot;</span>
+                <span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">env</span> <span class="o">=</span> <span class="n">env_maker</span><span class="p">(</span><span class="o">**</span><span class="n">env_maker_kwargs</span><span class="p">)</span>
+                <span class="n">input_spec</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">full_action_spec</span>
+        <span class="k">if</span> <span class="n">input_spec</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">env</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">input_spec</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">input_spec</span><span class="p">[</span><span class="s2">&quot;full_action_spec&quot;</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;env must be provided to _get_policy_and_device if policy is None&quot;</span>
+                <span class="p">)</span>
+
+        <span class="n">policy</span> <span class="o">=</span> <span class="n">RandomPolicy</span><span class="p">(</span><span class="n">input_spec</span><span class="p">)</span>
+
+    <span class="c1"># make sure policy is an nn.Module - this will return the same policy if conditions are met</span>
+    <span class="c1"># policy = CloudpickleWrapper(policy)</span>
+
+    <span class="n">caller</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">policy</span><span class="p">,</span> <span class="s2">&quot;forward&quot;</span><span class="p">,</span> <span class="n">policy</span><span class="p">)</span>
+
     <span class="k">if</span> <span class="ow">not</span> <span class="n">_policy_is_tensordict_compatible</span><span class="p">(</span><span class="n">policy</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">observation_spec</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">env</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">observation_spec</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">observation_spec</span>
+            <span class="k">elif</span> <span class="n">env_maker</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="kn">from</span> <span class="nn">torchrl.envs</span> <span class="kn">import</span> <span class="n">EnvBase</span><span class="p">,</span> <span class="n">EnvCreator</span>
+
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">env_maker</span><span class="p">,</span> <span class="n">EnvBase</span><span class="p">):</span>
+                    <span class="n">observation_spec</span> <span class="o">=</span> <span class="n">env_maker</span><span class="o">.</span><span class="n">observation_spec</span>
+                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">env_maker</span><span class="p">,</span> <span class="n">EnvCreator</span><span class="p">):</span>
+                    <span class="n">observation_spec</span> <span class="o">=</span> <span class="n">env_maker</span><span class="o">.</span><span class="n">_meta_data</span><span class="o">.</span><span class="n">specs</span><span class="p">[</span>
+                        <span class="s2">&quot;output_spec&quot;</span><span class="p">,</span> <span class="s2">&quot;full_observation_spec&quot;</span>
+                    <span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">observation_spec</span> <span class="o">=</span> <span class="n">env_maker</span><span class="p">(</span><span class="o">**</span><span class="n">env_maker_kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">observation_spec</span>
+
         <span class="c1"># policy is a nn.Module that doesn&#39;t operate on tensordicts directly</span>
         <span class="c1"># so we attempt to auto-wrap policy with TensorDictModule</span>
         <span class="k">if</span> <span class="n">observation_spec</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -1847,13 +1881,15 @@
                 <span class="s2">&quot;required to check compatibility of the environment and policy &quot;</span>
                 <span class="s2">&quot;since the policy is a nn.Module that operates on tensors &quot;</span>
                 <span class="s2">&quot;rather than a TensorDictModule or a nn.Module that accepts a &quot;</span>
-                <span class="s2">&quot;TensorDict as input and defines in_keys and out_keys.&quot;</span>
+                <span class="s2">&quot;TensorDict as input and defines in_keys and out_keys. &quot;</span>
+                <span class="s2">&quot;If your policy is compatible with the environment, you can solve this warning by setting &quot;</span>
+                <span class="s2">&quot;trust_policy=True in the constructor.&quot;</span>
             <span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">sig</span> <span class="o">=</span> <span class="n">policy</span><span class="o">.</span><span class="n">forward</span><span class="o">.</span><span class="n">__signature__</span>
+            <span class="n">sig</span> <span class="o">=</span> <span class="n">caller</span><span class="o">.</span><span class="n">__signature__</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-            <span class="n">sig</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">policy</span><span class="o">.</span><span class="n">forward</span><span class="p">)</span>
+            <span class="n">sig</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">caller</span><span class="p">)</span>
         <span class="c1"># we check if all the mandatory params are there</span>
         <span class="n">params</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">sig</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
         <span class="k">if</span> <span class="p">(</span>
@@ -1882,7 +1918,7 @@
                 <span class="n">out_keys</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;action&quot;</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">out_keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">env</span><span class="o">.</span><span class="n">action_keys</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">policy</span><span class="o">.</span><span class="n">parameters</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">policy</span><span class="p">,</span> <span class="s2">&quot;parameters&quot;</span><span class="p">,</span> <span class="nb">list</span><span class="p">)():</span>
                 <span class="n">policy_device</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">device</span>
                 <span class="k">break</span>
             <span class="k">else</span><span class="p">:</span>
@@ -1914,15 +1950,20 @@
 
 
 <span class="k">def</span> <span class="nf">_policy_is_tensordict_compatible</span><span class="p">(</span><span class="n">policy</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">policy</span><span class="p">,</span> <span class="n">_NonParametricPolicyWrapper</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span>
-        <span class="n">policy</span><span class="o">.</span><span class="n">policy</span><span class="p">,</span> <span class="n">RandomPolicy</span>
+    <span class="k">def</span> <span class="nf">is_compatible</span><span class="p">(</span><span class="n">policy</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">policy</span><span class="p">,</span> <span class="p">(</span><span class="n">RandomPolicy</span><span class="p">,</span> <span class="n">TensorDictModuleBase</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="p">(</span>
+        <span class="n">is_compatible</span><span class="p">(</span><span class="n">policy</span><span class="p">)</span>
+        <span class="ow">or</span> <span class="p">(</span>
+            <span class="nb">isinstance</span><span class="p">(</span><span class="n">policy</span><span class="p">,</span> <span class="n">_NonParametricPolicyWrapper</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="n">is_compatible</span><span class="p">(</span><span class="n">policy</span><span class="o">.</span><span class="n">policy</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="ow">or</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">policy</span><span class="p">,</span> <span class="n">CloudpickleWrapper</span><span class="p">)</span> <span class="ow">and</span> <span class="n">is_compatible</span><span class="p">(</span><span class="n">policy</span><span class="o">.</span><span class="n">fn</span><span class="p">))</span>
     <span class="p">):</span>
         <span class="k">return</span> <span class="kc">True</span>
 
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">policy</span><span class="p">,</span> <span class="n">TensorDictModuleBase</span><span class="p">):</span>
-        <span class="k">return</span> <span class="kc">True</span>
-
-    <span class="n">sig</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">policy</span><span class="o">.</span><span class="n">forward</span><span class="p">)</span>
+    <span class="n">sig</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">policy</span><span class="p">,</span> <span class="s2">&quot;forward&quot;</span><span class="p">,</span> <span class="n">policy</span><span class="p">))</span>
 
     <span class="k">if</span> <span class="p">(</span>
         <span class="nb">len</span><span class="p">(</span><span class="n">sig</span><span class="o">.</span><span class="n">parameters</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
@@ -1995,19 +2036,10 @@
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">policy</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">policy</span> <span class="o">=</span> <span class="n">policy</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">forward</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_forward&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">forward</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-
-            <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">policy</span><span class="p">)</span>
-            <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="o">*</span><span class="nb">input</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">policy</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="o">*</span><span class="nb">input</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
-            <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s2">&quot;_forward&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">forward</span>
-        <span class="k">return</span> <span class="n">forward</span>
+        <span class="n">functools</span><span class="o">.</span><span class="n">update_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">policy</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">policy</span> <span class="o">=</span> <span class="n">CloudpickleWrapper</span><span class="p">(</span><span class="n">policy</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">policy</span><span class="p">,</span> <span class="s2">&quot;forward&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">forward</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">policy</span><span class="o">.</span><span class="n">forward</span>
 
     <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__dir__</span><span class="p">():</span>

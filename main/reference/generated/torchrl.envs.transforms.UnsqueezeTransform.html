@@ -34,7 +34,7 @@
   <link rel="stylesheet" href="../../_static/sg_gallery-binder.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/sg_gallery-dataframe.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/sg_gallery-rendered-html.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/sphinx-design.5ea377869091fd0449014c60fc090103.min.css" type="text/css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -416,16 +416,24 @@
 <dd><p>Inserts a dimension of size one at the specified position.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>unsqueeze_dim</strong> (<em>int</em>) – dimension to unsqueeze. Must be negative (or allow_positive_dim
-must be turned on).</p></li>
+<dd class="field-odd"><p><strong>dim</strong> (<em>int</em>) – dimension to unsqueeze. Must be negative (or allow_positive_dim
+must be turned on).</p>
+</dd>
+<dt class="field-even">Keyword Arguments<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
 <li><p><strong>allow_positive_dim</strong> (<em>bool</em><em>, </em><em>optional</em>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code>, positive dimensions are accepted.
-<a class="reference internal" href="#torchrl.envs.transforms.UnsqueezeTransform" title="torchrl.envs.transforms.UnsqueezeTransform"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UnsqueezeTransform</span></code></a> will map these to the n^th feature dimension
+<cite>UnsqueezeTransform`</cite> will map these to the n^th feature dimension
 (ie n^th dimension after batch size of parent env) of the input tensor,
-independently from the tensordict batch size (ie positive dims may be
+independently of the tensordict batch size (ie positive dims may be
 dangerous in contexts where tensordict of different batch dimension
 are passed).
 Defaults to False, ie. non-negative dimensions are not permitted.</p></li>
+<li><p><strong>in_keys</strong> (<em>list of NestedKeys</em>) – input entries (read).</p></li>
+<li><p><strong>out_keys</strong> (<em>list of NestedKeys</em>) – input entries (write). Defaults to <code class="docutils literal notranslate"><span class="pre">in_keys</span></code> if
+not provided.</p></li>
+<li><p><strong>in_keys_inv</strong> (<em>list of NestedKeys</em>) – input entries (read) during <code class="xref py py-meth docutils literal notranslate"><span class="pre">inv()</span></code> calls.</p></li>
+<li><p><strong>out_keys_inv</strong> (<em>list of NestedKeys</em>) – input entries (write) during <code class="xref py py-meth docutils literal notranslate"><span class="pre">inv()</span></code> calls.
+Defaults to <code class="docutils literal notranslate"><span class="pre">in_keys_in</span></code> if not provided.</p></li>
 </ul>
 </dd>
 </dl>
