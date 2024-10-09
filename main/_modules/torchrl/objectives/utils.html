@@ -428,6 +428,11 @@
         <span class="k">raise</span> <span class="n">err_ft</span> <span class="kn">from</span> <span class="nn">err</span>
 <span class="kn">from</span> <span class="nn">torchrl.envs.utils</span> <span class="kn">import</span> <span class="n">step_mdp</span>
 
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">torch.compiler</span> <span class="kn">import</span> <span class="n">is_dynamo_compiling</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">torch._dynamo</span> <span class="kn">import</span> <span class="n">is_compiling</span> <span class="k">as</span> <span class="n">is_dynamo_compiling</span>
+
 <span class="n">_GAMMA_LMBDA_DEPREC_ERROR</span> <span class="o">=</span> <span class="p">(</span>
     <span class="s2">&quot;Passing gamma / lambda parameters through the loss constructor &quot;</span>
     <span class="s2">&quot;is a deprecated feature. To customize your value function, &quot;</span>
@@ -862,7 +867,7 @@
 
     <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">new_func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">netname</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">compiler</span><span class="o">.</span><span class="n">is_dynamo_compiling</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">is_dynamo_compiling</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">netname</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">netname</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>

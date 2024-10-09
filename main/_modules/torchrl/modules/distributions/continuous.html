@@ -438,6 +438,11 @@
 <span class="c1"># speeds up distribution construction</span>
 <span class="n">D</span><span class="o">.</span><span class="n">Distribution</span><span class="o">.</span><span class="n">set_default_validate_args</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
 
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">torch.compiler</span> <span class="kn">import</span> <span class="n">is_dynamo_compiling</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">torch._dynamo</span> <span class="kn">import</span> <span class="n">is_compiling</span> <span class="k">as</span> <span class="n">is_dynamo_compiling</span>
+
 
 <div class="viewcode-block" id="IndependentNormal"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.IndependentNormal.html#torchrl.modules.IndependentNormal">[docs]</a><span class="k">class</span> <span class="nc">IndependentNormal</span><span class="p">(</span><span class="n">D</span><span class="o">.</span><span class="n">Independent</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Implements a Normal distribution with location scaling.</span>
@@ -514,7 +519,7 @@
             <span class="n">inv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inv</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">inv</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">inv</span> <span class="o">=</span> <span class="n">_InverseTransform</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">torch</span><span class="o">.</span><span class="n">compiler</span><span class="o">.</span><span class="n">is_dynamo_compiling</span><span class="p">():</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">is_dynamo_compiling</span><span class="p">():</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_inv</span> <span class="o">=</span> <span class="n">weakref</span><span class="o">.</span><span class="n">ref</span><span class="p">(</span><span class="n">inv</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">inv</span>
 
@@ -722,7 +727,7 @@
             <span class="n">inv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inv</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">inv</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">inv</span> <span class="o">=</span> <span class="n">_PatchedComposeTransform</span><span class="p">([</span><span class="n">p</span><span class="o">.</span><span class="n">inv</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parts</span><span class="p">)])</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">torch</span><span class="o">.</span><span class="n">compiler</span><span class="o">.</span><span class="n">is_dynamo_compiling</span><span class="p">():</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">is_dynamo_compiling</span><span class="p">():</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_inv</span> <span class="o">=</span> <span class="n">weakref</span><span class="o">.</span><span class="n">ref</span><span class="p">(</span><span class="n">inv</span><span class="p">)</span>
                 <span class="n">inv</span><span class="o">.</span><span class="n">_inv</span> <span class="o">=</span> <span class="n">weakref</span><span class="o">.</span><span class="n">ref</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">inv</span>
@@ -736,7 +741,7 @@
             <span class="n">inv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inv</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">inv</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">inv</span> <span class="o">=</span> <span class="n">_InverseTransform</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">torch</span><span class="o">.</span><span class="n">compiler</span><span class="o">.</span><span class="n">is_dynamo_compiling</span><span class="p">():</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">is_dynamo_compiling</span><span class="p">():</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_inv</span> <span class="o">=</span> <span class="n">weakref</span><span class="o">.</span><span class="n">ref</span><span class="p">(</span><span class="n">inv</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">inv</span>
 
@@ -834,15 +839,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">high</span> <span class="o">=</span> <span class="n">high</span>
 
         <span class="k">if</span> <span class="n">safe_tanh</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">compiler</span><span class="o">.</span><span class="n">is_dynamo_compiling</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">is_dynamo_compiling</span><span class="p">():</span>
                 <span class="n">_err_compile_safetanh</span><span class="p">()</span>
             <span class="n">t</span> <span class="o">=</span> <span class="n">SafeTanhTransform</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">t</span> <span class="o">=</span> <span class="n">D</span><span class="o">.</span><span class="n">TanhTransform</span><span class="p">()</span>
         <span class="c1"># t = D.TanhTransform()</span>
-        <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">compiler</span><span class="o">.</span><span class="n">is_dynamo_compiling</span><span class="p">()</span> <span class="ow">or</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">non_trivial_max</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">non_trivial_min</span>
-        <span class="p">):</span>
+        <span class="k">if</span> <span class="n">is_dynamo_compiling</span><span class="p">()</span> <span class="ow">or</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">non_trivial_max</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">non_trivial_min</span><span class="p">):</span>
             <span class="n">t</span> <span class="o">=</span> <span class="n">_PatchedComposeTransform</span><span class="p">(</span>
                 <span class="p">[</span>
                     <span class="n">t</span><span class="p">,</span>
@@ -869,9 +872,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tanh_loc</span><span class="p">:</span>
             <span class="n">loc</span> <span class="o">=</span> <span class="p">(</span><span class="n">loc</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">upscale</span><span class="p">)</span><span class="o">.</span><span class="n">tanh</span><span class="p">()</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">upscale</span>
             <span class="c1"># loc must be rescaled if tanh_loc</span>
-            <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">compiler</span><span class="o">.</span><span class="n">is_dynamo_compiling</span><span class="p">()</span> <span class="ow">or</span> <span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">non_trivial_max</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">non_trivial_min</span>
-            <span class="p">):</span>
+            <span class="k">if</span> <span class="n">is_dynamo_compiling</span><span class="p">()</span> <span class="ow">or</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">non_trivial_max</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">non_trivial_min</span><span class="p">):</span>
                 <span class="n">loc</span> <span class="o">=</span> <span class="n">loc</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">high</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">low</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">low</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">loc</span> <span class="o">=</span> <span class="n">loc</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">scale</span> <span class="o">=</span> <span class="n">scale</span>
