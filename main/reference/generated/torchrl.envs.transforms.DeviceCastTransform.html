@@ -423,6 +423,20 @@ a parent environment exists, it it retrieved from it. In all other cases,
 it remains unspecified.</p></li>
 </ul>
 </dd>
+<dt class="field-even">Keyword Arguments<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>in_keys</strong> (<em>list of NestedKey</em>) – the list of entries to map to a different device.
+Defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>out_keys</strong> (<em>list of NestedKey</em>) – the output names of the entries mapped onto a device.
+Defaults to the values of <code class="docutils literal notranslate"><span class="pre">in_keys</span></code>.</p></li>
+<li><p><strong>in_keys_inv</strong> (<em>list of NestedKey</em>) – the list of entries to map to a different device.
+<code class="docutils literal notranslate"><span class="pre">in_keys_inv</span></code> are the names expected by the base environment.
+Defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>out_keys_inv</strong> (<em>list of NestedKey</em>) – the output names of the entries mapped onto a device.
+<code class="docutils literal notranslate"><span class="pre">out_keys_inv</span></code> are the names of the keys as seen from outside the transformed env.
+Defaults to the values of <code class="docutils literal notranslate"><span class="pre">in_keys_inv</span></code>.</p></li>
+</ul>
+</dd>
 </dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">td</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="p">(</span>

@@ -4295,6 +4295,19 @@
 <span class="sd">            a parent environment exists, it it retrieved from it. In all other cases,</span>
 <span class="sd">            it remains unspecified.</span>
 
+<span class="sd">    Keyword Args:</span>
+<span class="sd">        in_keys (list of NestedKey): the list of entries to map to a different device.</span>
+<span class="sd">            Defaults to ``None``.</span>
+<span class="sd">        out_keys (list of NestedKey): the output names of the entries mapped onto a device.</span>
+<span class="sd">            Defaults to the values of ``in_keys``.</span>
+<span class="sd">        in_keys_inv (list of NestedKey): the list of entries to map to a different device.</span>
+<span class="sd">            ``in_keys_inv`` are the names expected by the base environment.</span>
+<span class="sd">            Defaults to ``None``.</span>
+<span class="sd">        out_keys_inv (list of NestedKey): the output names of the entries mapped onto a device.</span>
+<span class="sd">            ``out_keys_inv`` are the names of the keys as seen from outside the transformed env.</span>
+<span class="sd">            Defaults to the values of ``in_keys_inv``.</span>
+
+
 <span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; td = TensorDict(</span>
 <span class="sd">        ...     {&#39;obs&#39;: torch.ones(1, dtype=torch.double),</span>
@@ -4322,6 +4335,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">orig_device</span> <span class="o">=</span> <span class="p">(</span>
             <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="n">orig_device</span><span class="p">)</span> <span class="k">if</span> <span class="n">orig_device</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">orig_device</span>
         <span class="p">)</span>
+        <span class="k">if</span> <span class="n">out_keys</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">out_keys</span> <span class="o">=</span> <span class="n">copy</span><span class="p">(</span><span class="n">in_keys</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">out_keys_inv</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">out_keys_inv</span> <span class="o">=</span> <span class="n">copy</span><span class="p">(</span><span class="n">in_keys_inv</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">in_keys</span><span class="o">=</span><span class="n">in_keys</span><span class="p">,</span>
             <span class="n">out_keys</span><span class="o">=</span><span class="n">out_keys</span><span class="p">,</span>
@@ -4445,52 +4462,54 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_map_env_device</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">input_spec</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
+            <span class="n">input_spec</span><span class="o">.</span><span class="n">clear_device_</span><span class="p">()</span>
             <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">transform_input_spec</span><span class="p">(</span><span class="n">input_spec</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">transform_action_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">full_action_spec</span><span class="p">:</span> <span class="n">Composite</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Composite</span><span class="p">:</span>
         <span class="n">full_action_spec</span> <span class="o">=</span> <span class="n">full_action_spec</span><span class="o">.</span><span class="n">clear_device_</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">in_key</span><span class="p">,</span> <span class="n">out_key</span> <span class="ow">in</span> <span class="n">_zip_strict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">in_keys_inv</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_keys_inv</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">in_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">full_action_spec</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
-                <span class="k">continue</span>
-            <span class="n">full_action_spec</span><span class="p">[</span><span class="n">out_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">full_action_spec</span><span class="p">[</span><span class="n">in_key</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+            <span class="n">local_action_spec</span> <span class="o">=</span> <span class="n">full_action_spec</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">in_key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">local_action_spec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">full_action_spec</span><span class="p">[</span><span class="n">out_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">local_action_spec</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">full_action_spec</span>
 
     <span class="k">def</span> <span class="nf">transform_state_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">full_state_spec</span><span class="p">:</span> <span class="n">Composite</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Composite</span><span class="p">:</span>
         <span class="n">full_state_spec</span> <span class="o">=</span> <span class="n">full_state_spec</span><span class="o">.</span><span class="n">clear_device_</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">in_key</span><span class="p">,</span> <span class="n">out_key</span> <span class="ow">in</span> <span class="n">_zip_strict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">in_keys_inv</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_keys_inv</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">in_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">full_state_spec</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
-                <span class="k">continue</span>
-            <span class="n">full_state_spec</span><span class="p">[</span><span class="n">out_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">full_state_spec</span><span class="p">[</span><span class="n">in_key</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+            <span class="n">local_state_spec</span> <span class="o">=</span> <span class="n">full_state_spec</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">in_key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">local_state_spec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">full_state_spec</span><span class="p">[</span><span class="n">out_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">local_state_spec</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">full_state_spec</span>
 
 <div class="viewcode-block" id="DeviceCastTransform.transform_output_spec"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.DeviceCastTransform.html#torchrl.envs.transforms.DeviceCastTransform.transform_output_spec">[docs]</a>    <span class="k">def</span> <span class="nf">transform_output_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_spec</span><span class="p">:</span> <span class="n">Composite</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Composite</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_map_env_device</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">output_spec</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
+            <span class="n">output_spec</span><span class="o">.</span><span class="n">clear_device_</span><span class="p">()</span>
             <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">transform_output_spec</span><span class="p">(</span><span class="n">output_spec</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="DeviceCastTransform.transform_observation_spec"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.DeviceCastTransform.html#torchrl.envs.transforms.DeviceCastTransform.transform_observation_spec">[docs]</a>    <span class="k">def</span> <span class="nf">transform_observation_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observation_spec</span><span class="p">:</span> <span class="n">Composite</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Composite</span><span class="p">:</span>
         <span class="n">observation_spec</span> <span class="o">=</span> <span class="n">observation_spec</span><span class="o">.</span><span class="n">clear_device_</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">in_key</span><span class="p">,</span> <span class="n">out_key</span> <span class="ow">in</span> <span class="n">_zip_strict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">in_keys</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_keys</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">in_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">observation_spec</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
-                <span class="k">continue</span>
-            <span class="n">observation_spec</span><span class="p">[</span><span class="n">out_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">observation_spec</span><span class="p">[</span><span class="n">in_key</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+            <span class="n">local_obs_spec</span> <span class="o">=</span> <span class="n">observation_spec</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">in_key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">local_obs_spec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">observation_spec</span><span class="p">[</span><span class="n">out_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">local_obs_spec</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">observation_spec</span></div>
 
 <div class="viewcode-block" id="DeviceCastTransform.transform_done_spec"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.DeviceCastTransform.html#torchrl.envs.transforms.DeviceCastTransform.transform_done_spec">[docs]</a>    <span class="k">def</span> <span class="nf">transform_done_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">full_done_spec</span><span class="p">:</span> <span class="n">Composite</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Composite</span><span class="p">:</span>
         <span class="n">full_done_spec</span> <span class="o">=</span> <span class="n">full_done_spec</span><span class="o">.</span><span class="n">clear_device_</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">in_key</span><span class="p">,</span> <span class="n">out_key</span> <span class="ow">in</span> <span class="n">_zip_strict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">in_keys</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_keys</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">in_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">full_done_spec</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
-                <span class="k">continue</span>
-            <span class="n">full_done_spec</span><span class="p">[</span><span class="n">out_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">full_done_spec</span><span class="p">[</span><span class="n">in_key</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+            <span class="n">local_done_spec</span> <span class="o">=</span> <span class="n">full_done_spec</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">in_key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">local_done_spec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">full_done_spec</span><span class="p">[</span><span class="n">out_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">local_done_spec</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">full_done_spec</span></div>
 
 <div class="viewcode-block" id="DeviceCastTransform.transform_reward_spec"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.DeviceCastTransform.html#torchrl.envs.transforms.DeviceCastTransform.transform_reward_spec">[docs]</a>    <span class="k">def</span> <span class="nf">transform_reward_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">full_reward_spec</span><span class="p">:</span> <span class="n">Composite</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Composite</span><span class="p">:</span>
         <span class="n">full_reward_spec</span> <span class="o">=</span> <span class="n">full_reward_spec</span><span class="o">.</span><span class="n">clear_device_</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">in_key</span><span class="p">,</span> <span class="n">out_key</span> <span class="ow">in</span> <span class="n">_zip_strict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">in_keys</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_keys</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">in_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">full_reward_spec</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
-                <span class="k">continue</span>
-            <span class="n">full_reward_spec</span><span class="p">[</span><span class="n">out_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">full_reward_spec</span><span class="p">[</span><span class="n">in_key</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+            <span class="n">local_reward_spec</span> <span class="o">=</span> <span class="n">full_reward_spec</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">in_key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">local_reward_spec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">full_reward_spec</span><span class="p">[</span><span class="n">out_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">local_reward_spec</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">full_reward_spec</span></div>
 
 <div class="viewcode-block" id="DeviceCastTransform.transform_env_device"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.DeviceCastTransform.html#torchrl.envs.transforms.DeviceCastTransform.transform_env_device">[docs]</a>    <span class="k">def</span> <span class="nf">transform_env_device</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device</span><span class="p">):</span>
@@ -5896,6 +5915,8 @@
             <span class="c1"># We take the filtered reset keys, which are the only keys that really</span>
             <span class="c1"># matter when calling reset, and check that they match the in_keys root.</span>
             <span class="n">reset_keys</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">_filtered_reset_keys</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">reset_keys</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">reset_keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">reset_keys</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">in_keys</span><span class="p">)</span>
 
             <span class="k">def</span> <span class="nf">_check_match</span><span class="p">(</span><span class="n">reset_keys</span><span class="p">,</span> <span class="n">in_keys</span><span class="p">):</span>
                 <span class="c1"># if this is called, the length of reset_keys and in_keys must match</span>
