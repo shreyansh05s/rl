@@ -448,6 +448,19 @@
     <span class="k">return</span> <span class="n">new_func</span>
 
 
+<span class="k">def</span> <span class="nf">compute_log_prob</span><span class="p">(</span><span class="n">action_dist</span><span class="p">,</span> <span class="n">action_or_tensordict</span><span class="p">,</span> <span class="n">tensor_key</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute the log probability of an action given a distribution.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">action_or_tensordict</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+        <span class="n">log_p</span> <span class="o">=</span> <span class="n">action_dist</span><span class="o">.</span><span class="n">log_prob</span><span class="p">(</span><span class="n">action_or_tensordict</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">maybe_log_prob</span> <span class="o">=</span> <span class="n">action_dist</span><span class="o">.</span><span class="n">log_prob</span><span class="p">(</span><span class="n">action_or_tensordict</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">maybe_log_prob</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+            <span class="n">log_p</span> <span class="o">=</span> <span class="n">maybe_log_prob</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">tensor_key</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">log_p</span> <span class="o">=</span> <span class="n">maybe_log_prob</span>
+    <span class="k">return</span> <span class="n">log_p</span>
+
+
 <div class="viewcode-block" id="SACLoss"><a class="viewcode-back" href="../../../reference/generated/torchrl.objectives.SACLoss.html#torchrl.objectives.SACLoss">[docs]</a><span class="k">class</span> <span class="nc">SACLoss</span><span class="p">(</span><span class="n">LossModule</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;TorchRL implementation of the SAC loss.</span>
 
@@ -653,7 +666,7 @@
 <span class="sd">            state_action_value (NestedKey): The input tensordict key where the</span>
 <span class="sd">                state action value is expected.  Defaults to ``&quot;state_action_value&quot;``.</span>
 <span class="sd">            log_prob (NestedKey): The input tensordict key where the log probability is expected.</span>
-<span class="sd">                Defaults to ``&quot;_log_prob&quot;``.</span>
+<span class="sd">                Defaults to ``&quot;sample_log_prob&quot;``.</span>
 <span class="sd">            priority (NestedKey): The input tensordict key where the target priority is written to.</span>
 <span class="sd">                Defaults to ``&quot;td_error&quot;``.</span>
 <span class="sd">            reward (NestedKey): The input tensordict key where the reward is expected.</span>
@@ -669,7 +682,7 @@
         <span class="n">action</span><span class="p">:</span> <span class="n">NestedKey</span> <span class="o">=</span> <span class="s2">&quot;action&quot;</span>
         <span class="n">value</span><span class="p">:</span> <span class="n">NestedKey</span> <span class="o">=</span> <span class="s2">&quot;state_value&quot;</span>
         <span class="n">state_action_value</span><span class="p">:</span> <span class="n">NestedKey</span> <span class="o">=</span> <span class="s2">&quot;state_action_value&quot;</span>
-        <span class="n">log_prob</span><span class="p">:</span> <span class="n">NestedKey</span> <span class="o">=</span> <span class="s2">&quot;_log_prob&quot;</span>
+        <span class="n">log_prob</span><span class="p">:</span> <span class="n">NestedKey</span> <span class="o">=</span> <span class="s2">&quot;sample_log_prob&quot;</span>
         <span class="n">priority</span><span class="p">:</span> <span class="n">NestedKey</span> <span class="o">=</span> <span class="s2">&quot;td_error&quot;</span>
         <span class="n">reward</span><span class="p">:</span> <span class="n">NestedKey</span> <span class="o">=</span> <span class="s2">&quot;reward&quot;</span>
         <span class="n">done</span><span class="p">:</span> <span class="n">NestedKey</span> <span class="o">=</span> <span class="s2">&quot;done&quot;</span>
@@ -852,9 +865,7 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">action_container_shape</span> <span class="o">=</span> <span class="n">action_spec</span><span class="o">.</span><span class="n">shape</span>
             <span class="n">target_entropy</span> <span class="o">=</span> <span class="o">-</span><span class="nb">float</span><span class="p">(</span>
-                <span class="n">action_spec</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">tensor_keys</span><span class="o">.</span><span class="n">action</span><span class="p">]</span>
-                <span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">action_container_shape</span><span class="p">)</span> <span class="p">:]</span>
-                <span class="o">.</span><span class="n">numel</span><span class="p">()</span>
+                <span class="n">action_spec</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">action_container_shape</span><span class="p">)</span> <span class="p">:]</span><span class="o">.</span><span class="n">numel</span><span class="p">()</span>
             <span class="p">)</span>
         <span class="nb">delattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_target_entropy&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span>
@@ -1024,7 +1035,7 @@
         <span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">actor_network_params</span><span class="o">.</span><span class="n">to_module</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">actor_network</span><span class="p">):</span>
             <span class="n">dist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">actor_network</span><span class="o">.</span><span class="n">get_dist</span><span class="p">(</span><span class="n">tensordict</span><span class="p">)</span>
             <span class="n">a_reparm</span> <span class="o">=</span> <span class="n">dist</span><span class="o">.</span><span class="n">rsample</span><span class="p">()</span>
-        <span class="n">log_prob</span> <span class="o">=</span> <span class="n">dist</span><span class="o">.</span><span class="n">log_prob</span><span class="p">(</span><span class="n">a_reparm</span><span class="p">)</span>
+        <span class="n">log_prob</span> <span class="o">=</span> <span class="n">compute_log_prob</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="n">a_reparm</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tensor_keys</span><span class="o">.</span><span class="n">log_prob</span><span class="p">)</span>
 
         <span class="n">td_q</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">qvalue_network</span><span class="o">.</span><span class="n">in_keys</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="n">td_q</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tensor_keys</span><span class="o">.</span><span class="n">action</span><span class="p">,</span> <span class="n">a_reparm</span><span class="p">)</span>
@@ -1115,7 +1126,9 @@
                 <span class="n">next_dist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">actor_network</span><span class="o">.</span><span class="n">get_dist</span><span class="p">(</span><span class="n">next_tensordict</span><span class="p">)</span>
                 <span class="n">next_action</span> <span class="o">=</span> <span class="n">next_dist</span><span class="o">.</span><span class="n">rsample</span><span class="p">()</span>
                 <span class="n">next_tensordict</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tensor_keys</span><span class="o">.</span><span class="n">action</span><span class="p">,</span> <span class="n">next_action</span><span class="p">)</span>
-                <span class="n">next_sample_log_prob</span> <span class="o">=</span> <span class="n">next_dist</span><span class="o">.</span><span class="n">log_prob</span><span class="p">(</span><span class="n">next_action</span><span class="p">)</span>
+                <span class="n">next_sample_log_prob</span> <span class="o">=</span> <span class="n">compute_log_prob</span><span class="p">(</span>
+                    <span class="n">next_dist</span><span class="p">,</span> <span class="n">next_action</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tensor_keys</span><span class="o">.</span><span class="n">log_prob</span>
+                <span class="p">)</span>
 
             <span class="c1"># get q-values</span>
             <span class="n">next_tensordict_expand</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vmap_qnetworkN0</span><span class="p">(</span>
@@ -1182,7 +1195,8 @@
             <span class="n">td_copy</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tensor_keys</span><span class="o">.</span><span class="n">state_action_value</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="p">)</span>
 
-        <span class="n">log_p</span> <span class="o">=</span> <span class="n">action_dist</span><span class="o">.</span><span class="n">log_prob</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+        <span class="n">log_p</span> <span class="o">=</span> <span class="n">compute_log_prob</span><span class="p">(</span><span class="n">action_dist</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tensor_keys</span><span class="o">.</span><span class="n">log_prob</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="n">log_p</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">min_qval</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;Losses shape mismatch: </span><span class="si">{</span><span class="n">min_qval</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">log_p</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span>
