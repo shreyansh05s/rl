@@ -416,6 +416,7 @@
 <span class="kn">import</span> <span class="nn">queue</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">typing</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span><span class="p">,</span> <span class="n">OrderedDict</span>
 <span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
@@ -538,6 +539,8 @@
     <span class="n">total_frames</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">frames_per_batch</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">trust_policy</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="n">compiled_policy</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="n">cudagraphed_policy</span><span class="p">:</span> <span class="nb">bool</span>
 
     <span class="k">def</span> <span class="nf">_get_policy_and_device</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -674,6 +677,16 @@
     <span class="k">def</span> <span class="nf">load_state_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_dict</span><span class="p">:</span> <span class="n">OrderedDict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
+    <span class="k">def</span> <span class="nf">_read_compile_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">compile_policy</span><span class="p">,</span> <span class="n">cudagraph_policy</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">compiled_policy</span> <span class="o">=</span> <span class="n">compile_policy</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cudagraphed_policy</span> <span class="o">=</span> <span class="n">cudagraph_policy</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">compiled_policy_kwargs</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="p">{}</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">compile_policy</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Mapping</span><span class="p">)</span> <span class="k">else</span> <span class="n">compile_policy</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cudagraphed_policy_kwargs</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="p">{}</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cudagraph_policy</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Mapping</span><span class="p">)</span> <span class="k">else</span> <span class="n">cudagraph_policy</span>
+        <span class="p">)</span>
+
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="n">string</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">()&quot;</span>
         <span class="k">return</span> <span class="n">string</span>
@@ -807,6 +820,12 @@
 <span class="sd">        trust_policy (bool, optional): if ``True``, a non-TensorDictModule policy will be trusted to be</span>
 <span class="sd">            assumed to be compatible with the collector. This defaults to ``True`` for CudaGraphModules</span>
 <span class="sd">            and ``False`` otherwise.</span>
+<span class="sd">        compile_policy (bool or Dict[str, Any], optional): if ``True``, the policy will be compiled</span>
+<span class="sd">            using :func:`~torch.compile` default behaviour. If a dictionary of kwargs is passed, it</span>
+<span class="sd">            will be used to compile the policy.</span>
+<span class="sd">        cudagraph_policy (bool or Dict[str, Any], optional): if ``True``, the policy will be wrapped</span>
+<span class="sd">            in :class:`~tensordict.nn.CudaGraphModule` with default kwargs.</span>
+<span class="sd">            If a dictionary of kwargs is passed, it will be used to wrap the policy.</span>
 
 <span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.envs.libs.gym import GymEnv</span>
@@ -897,6 +916,8 @@
         <span class="n">use_buffers</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">replay_buffer</span><span class="p">:</span> <span class="n">ReplayBuffer</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">trust_policy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">compile_policy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">cudagraph_policy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="kn">from</span> <span class="nn">torchrl.envs.batched_envs</span> <span class="kn">import</span> <span class="n">BatchedEnvBase</span>
@@ -922,6 +943,7 @@
         <span class="k">if</span> <span class="n">trust_policy</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">trust_policy</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">policy</span><span class="p">,</span> <span class="p">(</span><span class="n">RandomPolicy</span><span class="p">,</span> <span class="n">CudaGraphModule</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">trust_policy</span> <span class="o">=</span> <span class="n">trust_policy</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_read_compile_kwargs</span><span class="p">(</span><span class="n">compile_policy</span><span class="p">,</span> <span class="n">cudagraph_policy</span><span class="p">)</span>
 
         <span class="c1">##########################</span>
         <span class="c1"># Trajectory pool</span>
@@ -1020,11 +1042,15 @@
             <span class="n">policy</span><span class="o">=</span><span class="n">policy</span><span class="p">,</span>
             <span class="n">observation_spec</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">observation_spec</span><span class="p">,</span>
         <span class="p">)</span>
-
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">policy</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">policy_weights</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="o">.</span><span class="n">from_module</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">policy</span><span class="p">,</span> <span class="n">as_module</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">policy_weights</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">compiled_policy</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">policy</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">policy</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">compiled_policy_kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cudagraphed_policy</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">policy</span> <span class="o">=</span> <span class="n">CudaGraphModule</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">policy</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">cudagraphed_policy_kwargs</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">env_device</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">:</span> <span class="n">EnvBase</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env_device</span><span class="p">)</span>
@@ -1887,6 +1913,12 @@
 <span class="sd">        trust_policy (bool, optional): if ``True``, a non-TensorDictModule policy will be trusted to be</span>
 <span class="sd">            assumed to be compatible with the collector. This defaults to ``True`` for CudaGraphModules</span>
 <span class="sd">            and ``False`` otherwise.</span>
+<span class="sd">        compile_policy (bool or Dict[str, Any], optional): if ``True``, the policy will be compiled</span>
+<span class="sd">            using :func:`~torch.compile` default behaviour. If a dictionary of kwargs is passed, it</span>
+<span class="sd">            will be used to compile the policy.</span>
+<span class="sd">        cudagraph_policy (bool or Dict[str, Any], optional): if ``True``, the policy will be wrapped</span>
+<span class="sd">            in :class:`~tensordict.nn.CudaGraphModule` with default kwargs.</span>
+<span class="sd">            If a dictionary of kwargs is passed, it will be used to wrap the policy.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -1924,6 +1956,8 @@
         <span class="n">replay_buffer</span><span class="p">:</span> <span class="n">ReplayBuffer</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">replay_buffer_chunk</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">trust_policy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">compile_policy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">cudagraph_policy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">closed</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">create_env_fn</span><span class="p">)</span>
@@ -1932,6 +1966,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">num_sub_threads</span> <span class="o">=</span> <span class="n">num_sub_threads</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">num_threads</span> <span class="o">=</span> <span class="n">num_threads</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">create_env_fn</span> <span class="o">=</span> <span class="n">create_env_fn</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_read_compile_kwargs</span><span class="p">(</span><span class="n">compile_policy</span><span class="p">,</span> <span class="n">cudagraph_policy</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">create_env_kwargs</span> <span class="o">=</span> <span class="p">(</span>
             <span class="n">create_env_kwargs</span>
             <span class="k">if</span> <span class="n">create_env_kwargs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
@@ -2228,6 +2263,12 @@
                     <span class="s2">&quot;replay_buffer_chunk&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">replay_buffer_chunk</span><span class="p">,</span>
                     <span class="s2">&quot;traj_pool&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_traj_pool</span><span class="p">,</span>
                     <span class="s2">&quot;trust_policy&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">trust_policy</span><span class="p">,</span>
+                    <span class="s2">&quot;compile_policy&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">compiled_policy_kwargs</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">compiled_policy</span>
+                    <span class="k">else</span> <span class="kc">False</span><span class="p">,</span>
+                    <span class="s2">&quot;cudagraph_policy&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">cudagraphed_policy_kwargs</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cudagraphed_policy</span>
+                    <span class="k">else</span> <span class="kc">False</span><span class="p">,</span>
                 <span class="p">}</span>
                 <span class="n">proc</span> <span class="o">=</span> <span class="n">_ProcessNoWarn</span><span class="p">(</span>
                     <span class="n">target</span><span class="o">=</span><span class="n">_main_async_collector</span><span class="p">,</span>
@@ -3229,6 +3270,8 @@
     <span class="n">replay_buffer_chunk</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">traj_pool</span><span class="p">:</span> <span class="n">_TrajectoryPool</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">trust_policy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">compile_policy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">cudagraph_policy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="n">pipe_parent</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
     <span class="c1"># init variables that will be cleared when closing</span>
@@ -3256,6 +3299,8 @@
         <span class="n">replay_buffer</span><span class="o">=</span><span class="n">replay_buffer</span> <span class="k">if</span> <span class="n">replay_buffer_chunk</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">traj_pool</span><span class="o">=</span><span class="n">traj_pool</span><span class="p">,</span>
         <span class="n">trust_policy</span><span class="o">=</span><span class="n">trust_policy</span><span class="p">,</span>
+        <span class="n">compile_policy</span><span class="o">=</span><span class="n">compile_policy</span><span class="p">,</span>
+        <span class="n">cudagraph_policy</span><span class="o">=</span><span class="n">cudagraph_policy</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">use_buffers</span> <span class="o">=</span> <span class="n">inner_collector</span><span class="o">.</span><span class="n">_use_buffers</span>
     <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
