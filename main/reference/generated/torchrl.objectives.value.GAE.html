@@ -456,7 +456,7 @@ parameters are to be used). Defaults to <code class="docutils literal notranslat
 <li><p><strong>device</strong> (<a class="reference external" href="https://pytorch.org/docs/stable/tensor_attributes.html#torch.device" title="(in PyTorch v2.4)"><em>torch.device</em></a><em>, </em><em>optional</em>) – device of the module.</p></li>
 <li><p><strong>time_dim</strong> (<em>int</em><em>, </em><em>optional</em>) – the dimension corresponding to the time
 in the input tensordict. If not provided, defaults to the dimension
-markes with the <code class="docutils literal notranslate"><span class="pre">&quot;time&quot;</span></code> name if any, and to the last dimension
+marked with the <code class="docutils literal notranslate"><span class="pre">&quot;time&quot;</span></code> name if any, and to the last dimension
 otherwise. Can be overridden during a call to
 <a class="reference internal" href="#torchrl.objectives.value.GAE.value_estimate" title="torchrl.objectives.value.GAE.value_estimate"><code class="xref py py-meth docutils literal notranslate"><span class="pre">value_estimate()</span></code></a>.
 Negative dimensions are considered with respect to the input
@@ -464,11 +464,11 @@ tensordict.</p></li>
 </ul>
 </dd>
 </dl>
-<p>GAE will return an <code class="xref py py-obj docutils literal notranslate"><span class="pre">&quot;advantage&quot;</span></code> entry containing the advange value. It will also
+<p>GAE will return an <code class="xref py py-obj docutils literal notranslate"><span class="pre">&quot;advantage&quot;</span></code> entry containing the advantage value. It will also
 return a <code class="xref py py-obj docutils literal notranslate"><span class="pre">&quot;value_target&quot;</span></code> entry with the return value that is to be used
 to train the value network. Finally, if <code class="xref py py-obj docutils literal notranslate"><span class="pre">gradient_mode</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code>,
 an additional and differentiable <code class="xref py py-obj docutils literal notranslate"><span class="pre">&quot;value_error&quot;</span></code> entry will be returned,
-which simple represents the difference between the return and the value network
+which simply represents the difference between the return and the value network
 output (i.e. an additional distance loss should be applied to that signed value).</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -501,7 +501,7 @@ to be passed to the functional value network module.</p></li>
 target params to be passed to the functional value network module.</p></li>
 <li><p><strong>time_dim</strong> (<em>int</em><em>, </em><em>optional</em>) – the dimension corresponding to the time
 in the input tensordict. If not provided, defaults to the dimension
-markes with the <code class="docutils literal notranslate"><span class="pre">&quot;time&quot;</span></code> name if any, and to the last dimension
+marked with the <code class="docutils literal notranslate"><span class="pre">&quot;time&quot;</span></code> name if any, and to the last dimension
 otherwise.
 Negative dimensions are considered with respect to the input
 tensordict.</p></li>

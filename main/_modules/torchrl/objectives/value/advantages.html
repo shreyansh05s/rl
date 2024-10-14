@@ -1579,17 +1579,17 @@
 <span class="sd">        device (torch.device, optional): device of the module.</span>
 <span class="sd">        time_dim (int, optional): the dimension corresponding to the time</span>
 <span class="sd">            in the input tensordict. If not provided, defaults to the dimension</span>
-<span class="sd">            markes with the ``&quot;time&quot;`` name if any, and to the last dimension</span>
+<span class="sd">            marked with the ``&quot;time&quot;`` name if any, and to the last dimension</span>
 <span class="sd">            otherwise. Can be overridden during a call to</span>
 <span class="sd">            :meth:`~.value_estimate`.</span>
 <span class="sd">            Negative dimensions are considered with respect to the input</span>
 <span class="sd">            tensordict.</span>
 
-<span class="sd">    GAE will return an :obj:`&quot;advantage&quot;` entry containing the advange value. It will also</span>
+<span class="sd">    GAE will return an :obj:`&quot;advantage&quot;` entry containing the advantage value. It will also</span>
 <span class="sd">    return a :obj:`&quot;value_target&quot;` entry with the return value that is to be used</span>
 <span class="sd">    to train the value network. Finally, if :obj:`gradient_mode` is ``True``,</span>
 <span class="sd">    an additional and differentiable :obj:`&quot;value_error&quot;` entry will be returned,</span>
-<span class="sd">    which simple represents the difference between the return and the value network</span>
+<span class="sd">    which simply represents the difference between the return and the value network</span>
 <span class="sd">    output (i.e. an additional distance loss should be applied to that signed value).</span>
 
 <span class="sd">    .. note::</span>
@@ -1664,7 +1664,7 @@
 <span class="sd">                target params to be passed to the functional value network module.</span>
 <span class="sd">            time_dim (int, optional): the dimension corresponding to the time</span>
 <span class="sd">                in the input tensordict. If not provided, defaults to the dimension</span>
-<span class="sd">                markes with the ``&quot;time&quot;`` name if any, and to the last dimension</span>
+<span class="sd">                marked with the ``&quot;time&quot;`` name if any, and to the last dimension</span>
 <span class="sd">                otherwise.</span>
 <span class="sd">                Negative dimensions are considered with respect to the input</span>
 <span class="sd">                tensordict.</span>
@@ -1712,7 +1712,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">batch_dims</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                <span class="s2">&quot;Expected input tensordict to have at least one dimensions, got &quot;</span>
+                <span class="s2">&quot;Expected input tensordict to have at least one dimension, got &quot;</span>
                 <span class="sa">f</span><span class="s2">&quot;tensordict.batch_size = </span><span class="si">{</span><span class="n">tensordict</span><span class="o">.</span><span class="n">batch_size</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="p">)</span>
         <span class="n">reward</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">get</span><span class="p">((</span><span class="s2">&quot;next&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tensor_keys</span><span class="o">.</span><span class="n">reward</span><span class="p">))</span>

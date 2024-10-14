@@ -5169,9 +5169,12 @@
         <span class="k">return</span> <span class="n">observation_spec</span></div>
 
 <div class="viewcode-block" id="TensorDictPrimer.transform_input_spec"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.TensorDictPrimer.html#torchrl.envs.transforms.TensorDictPrimer.transform_input_spec">[docs]</a>    <span class="k">def</span> <span class="nf">transform_input_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_spec</span><span class="p">:</span> <span class="n">TensorSpec</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorSpec</span><span class="p">:</span>
-        <span class="n">input_spec</span><span class="p">[</span><span class="s2">&quot;full_state_spec&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform_observation_spec</span><span class="p">(</span>
-            <span class="n">input_spec</span><span class="p">[</span><span class="s2">&quot;full_state_spec&quot;</span><span class="p">]</span>
-        <span class="p">)</span>
+        <span class="n">new_state_spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform_observation_spec</span><span class="p">(</span><span class="n">input_spec</span><span class="p">[</span><span class="s2">&quot;full_state_spec&quot;</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">action_key</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">input_spec</span><span class="p">[</span><span class="s2">&quot;full_action_spec&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">action_key</span> <span class="ow">in</span> <span class="n">new_state_spec</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
+                <span class="n">input_spec</span><span class="p">[</span><span class="s2">&quot;full_action_spec&quot;</span><span class="p">,</span> <span class="n">action_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_state_spec</span><span class="p">[</span><span class="n">action_key</span><span class="p">]</span>
+                <span class="k">del</span> <span class="n">new_state_spec</span><span class="p">[</span><span class="n">action_key</span><span class="p">]</span>
+        <span class="n">input_spec</span><span class="p">[</span><span class="s2">&quot;full_state_spec&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_state_spec</span>
         <span class="k">return</span> <span class="n">input_spec</span></div>
 
     <span class="nd">@property</span>
