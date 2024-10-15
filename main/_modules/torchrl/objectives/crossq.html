@@ -897,23 +897,14 @@
 <span class="sd">        To see what keys are expected in the input tensordict and what keys are expected as output, check the</span>
 <span class="sd">        class&#39;s `&quot;in_keys&quot;` and `&quot;out_keys&quot;` attributes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">shape</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">if</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">ndimension</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">shape</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">shape</span>
-            <span class="n">tensordict_reshape</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">tensordict_reshape</span> <span class="o">=</span> <span class="n">tensordict</span>
-
-        <span class="n">loss_qvalue</span><span class="p">,</span> <span class="n">value_metadata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">qvalue_loss</span><span class="p">(</span><span class="n">tensordict_reshape</span><span class="p">)</span>
-        <span class="n">loss_actor</span><span class="p">,</span> <span class="n">metadata_actor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">actor_loss</span><span class="p">(</span><span class="n">tensordict_reshape</span><span class="p">)</span>
+        <span class="n">loss_qvalue</span><span class="p">,</span> <span class="n">value_metadata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">qvalue_loss</span><span class="p">(</span><span class="n">tensordict</span><span class="p">)</span>
+        <span class="n">loss_actor</span><span class="p">,</span> <span class="n">metadata_actor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">actor_loss</span><span class="p">(</span><span class="n">tensordict</span><span class="p">)</span>
         <span class="n">loss_alpha</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha_loss</span><span class="p">(</span><span class="n">log_prob</span><span class="o">=</span><span class="n">metadata_actor</span><span class="p">[</span><span class="s2">&quot;log_prob&quot;</span><span class="p">])</span>
-        <span class="n">tensordict_reshape</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tensor_keys</span><span class="o">.</span><span class="n">priority</span><span class="p">,</span> <span class="n">value_metadata</span><span class="p">[</span><span class="s2">&quot;td_error&quot;</span><span class="p">])</span>
+        <span class="n">tensordict</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tensor_keys</span><span class="o">.</span><span class="n">priority</span><span class="p">,</span> <span class="n">value_metadata</span><span class="p">[</span><span class="s2">&quot;td_error&quot;</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">loss_actor</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">loss_qvalue</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;Losses shape mismatch: </span><span class="si">{</span><span class="n">loss_actor</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">loss_qvalue</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="p">)</span>
-        <span class="k">if</span> <span class="n">shape</span><span class="p">:</span>
-            <span class="n">tensordict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">tensordict_reshape</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">shape</span><span class="p">))</span>
         <span class="n">entropy</span> <span class="o">=</span> <span class="o">-</span><span class="n">metadata_actor</span><span class="p">[</span><span class="s2">&quot;log_prob&quot;</span><span class="p">]</span>
         <span class="n">out</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;loss_actor&quot;</span><span class="p">:</span> <span class="n">loss_actor</span><span class="p">,</span>

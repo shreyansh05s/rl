@@ -916,32 +916,21 @@
 
 <div class="viewcode-block" id="CQLLoss.forward"><a class="viewcode-back" href="../../../reference/generated/torchrl.objectives.CQLLoss.html#torchrl.objectives.CQLLoss.forward">[docs]</a>    <span class="nd">@dispatch</span>
     <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
-        <span class="n">shape</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">if</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">ndimension</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">shape</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">shape</span>
-            <span class="n">tensordict_reshape</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">tensordict_reshape</span> <span class="o">=</span> <span class="n">tensordict</span>
-
-        <span class="n">q_loss</span><span class="p">,</span> <span class="n">metadata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">q_loss</span><span class="p">(</span><span class="n">tensordict_reshape</span><span class="p">)</span>
-        <span class="n">cql_loss</span><span class="p">,</span> <span class="n">cql_metadata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cql_loss</span><span class="p">(</span><span class="n">tensordict_reshape</span><span class="p">)</span>
+        <span class="n">q_loss</span><span class="p">,</span> <span class="n">metadata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">q_loss</span><span class="p">(</span><span class="n">tensordict</span><span class="p">)</span>
+        <span class="n">cql_loss</span><span class="p">,</span> <span class="n">cql_metadata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cql_loss</span><span class="p">(</span><span class="n">tensordict</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">with_lagrange</span><span class="p">:</span>
-            <span class="n">alpha_prime_loss</span><span class="p">,</span> <span class="n">alpha_prime_metadata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha_prime_loss</span><span class="p">(</span>
-                <span class="n">tensordict_reshape</span>
-            <span class="p">)</span>
+            <span class="n">alpha_prime_loss</span><span class="p">,</span> <span class="n">alpha_prime_metadata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha_prime_loss</span><span class="p">(</span><span class="n">tensordict</span><span class="p">)</span>
             <span class="n">metadata</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">alpha_prime_metadata</span><span class="p">)</span>
-        <span class="n">loss_actor_bc</span><span class="p">,</span> <span class="n">bc_metadata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">actor_bc_loss</span><span class="p">(</span><span class="n">tensordict_reshape</span><span class="p">)</span>
-        <span class="n">loss_actor</span><span class="p">,</span> <span class="n">actor_metadata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">actor_loss</span><span class="p">(</span><span class="n">tensordict_reshape</span><span class="p">)</span>
+        <span class="n">loss_actor_bc</span><span class="p">,</span> <span class="n">bc_metadata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">actor_bc_loss</span><span class="p">(</span><span class="n">tensordict</span><span class="p">)</span>
+        <span class="n">loss_actor</span><span class="p">,</span> <span class="n">actor_metadata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">actor_loss</span><span class="p">(</span><span class="n">tensordict</span><span class="p">)</span>
         <span class="n">loss_alpha</span><span class="p">,</span> <span class="n">alpha_metadata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha_loss</span><span class="p">(</span><span class="n">actor_metadata</span><span class="p">)</span>
         <span class="n">metadata</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">bc_metadata</span><span class="p">)</span>
         <span class="n">metadata</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">cql_metadata</span><span class="p">)</span>
         <span class="n">metadata</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">actor_metadata</span><span class="p">)</span>
         <span class="n">metadata</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">alpha_metadata</span><span class="p">)</span>
-        <span class="n">tensordict_reshape</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
+        <span class="n">tensordict</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tensor_keys</span><span class="o">.</span><span class="n">priority</span><span class="p">,</span> <span class="n">metadata</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;td_error&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">values</span>
         <span class="p">)</span>
-        <span class="k">if</span> <span class="n">shape</span><span class="p">:</span>
-            <span class="n">tensordict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">tensordict_reshape</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">shape</span><span class="p">))</span>
         <span class="n">out</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;loss_actor&quot;</span><span class="p">:</span> <span class="n">loss_actor</span><span class="p">,</span>
             <span class="s2">&quot;loss_actor_bc&quot;</span><span class="p">:</span> <span class="n">loss_actor_bc</span><span class="p">,</span>
@@ -1084,7 +1073,9 @@
                 <span class="p">)</span>
                 <span class="c1"># take max over actions</span>
                 <span class="n">state_action_value</span> <span class="o">=</span> <span class="n">state_action_value</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">num_qvalue_nets</span><span class="p">,</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_random</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span>
+                    <span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">(</span>
+                        <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">num_qvalue_nets</span><span class="p">,</span> <span class="o">*</span><span class="n">tensordict</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_random</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="p">)</span>
                 <span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
                 <span class="c1"># take min over qvalue nets</span>
                 <span class="n">next_state_value</span> <span class="o">=</span> <span class="n">state_action_value</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
@@ -1141,14 +1132,13 @@
                 <span class="s2">&quot;This could be caused by calling cql_loss method before q_loss method.&quot;</span>
             <span class="p">)</span>
 
-        <span class="n">random_actions_tensor</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span><span class="p">(</span>
-                <span class="n">tensordict</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_random</span><span class="p">,</span>
+        <span class="n">random_actions_tensor</span> <span class="o">=</span> <span class="n">pred_q1</span><span class="o">.</span><span class="n">new_empty</span><span class="p">(</span>
+            <span class="p">(</span>
+                <span class="o">*</span><span class="n">tensordict</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+                <span class="n">tensordict</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_random</span><span class="p">,</span>
                 <span class="n">tensordict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">tensor_keys</span><span class="o">.</span><span class="n">action</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
             <span class="p">)</span>
-            <span class="o">.</span><span class="n">uniform_</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-            <span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">tensordict</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
-        <span class="p">)</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">uniform_</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
         <span class="n">curr_actions_td</span><span class="p">,</span> <span class="n">curr_log_pis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_policy_actions</span><span class="p">(</span>
             <span class="n">tensordict</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">actor_network_params</span><span class="p">,</span>
@@ -1235,7 +1225,7 @@
                 <span class="n">q_new</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">new_log_pis</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span>
                 <span class="n">q_curr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">curr_log_pis</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span>
             <span class="p">],</span>
-            <span class="mi">1</span><span class="p">,</span>
+            <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">cat_q2</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span>
             <span class="p">[</span>
@@ -1243,23 +1233,23 @@
                 <span class="n">q_new</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">new_log_pis</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span>
                 <span class="n">q_curr</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">curr_log_pis</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span>
             <span class="p">],</span>
-            <span class="mi">1</span><span class="p">,</span>
+            <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="n">min_qf1_loss</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">torch</span><span class="o">.</span><span class="n">logsumexp</span><span class="p">(</span><span class="n">cat_q1</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">temperature</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">logsumexp</span><span class="p">(</span><span class="n">cat_q1</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">temperature</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
             <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_q_weight</span>
             <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">temperature</span>
         <span class="p">)</span>
         <span class="n">min_qf2_loss</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">torch</span><span class="o">.</span><span class="n">logsumexp</span><span class="p">(</span><span class="n">cat_q2</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">temperature</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">logsumexp</span><span class="p">(</span><span class="n">cat_q2</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">temperature</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
             <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_q_weight</span>
             <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">temperature</span>
         <span class="p">)</span>
 
         <span class="c1"># Subtract the log likelihood of data</span>
-        <span class="n">cql_q1_loss</span> <span class="o">=</span> <span class="n">min_qf1_loss</span> <span class="o">-</span> <span class="n">pred_q1</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_q_weight</span>
-        <span class="n">cql_q2_loss</span> <span class="o">=</span> <span class="n">min_qf2_loss</span> <span class="o">-</span> <span class="n">pred_q2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_q_weight</span>
+        <span class="n">cql_q1_loss</span> <span class="o">=</span> <span class="n">min_qf1_loss</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span> <span class="o">-</span> <span class="n">pred_q1</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_q_weight</span>
+        <span class="n">cql_q2_loss</span> <span class="o">=</span> <span class="n">min_qf2_loss</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span> <span class="o">-</span> <span class="n">pred_q2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_q_weight</span>
 
         <span class="c1"># write cql losses in tensordict for alpha prime loss</span>
         <span class="n">tensordict</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tensor_keys</span><span class="o">.</span><span class="n">cql_q1_loss</span><span class="p">,</span> <span class="n">cql_q1_loss</span><span class="p">)</span>
@@ -1482,9 +1472,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">loss_function</span> <span class="o">=</span> <span class="n">loss_function</span>
         <span class="k">if</span> <span class="n">action_space</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># infer from value net</span>
-            <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">value_network</span><span class="p">,</span> <span class="s2">&quot;action_space&quot;</span><span class="p">):</span>
                 <span class="n">action_space</span> <span class="o">=</span> <span class="n">value_network</span><span class="o">.</span><span class="n">spec</span>
-            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># let&#39;s try with action_space then</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">action_space</span> <span class="o">=</span> <span class="n">value_network</span><span class="o">.</span><span class="n">action_space</span>
@@ -1607,8 +1597,6 @@
         <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
             <span class="n">td_error</span> <span class="o">=</span> <span class="p">(</span><span class="n">pred_val_index</span> <span class="o">-</span> <span class="n">target_value</span><span class="p">)</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
             <span class="n">td_error</span> <span class="o">=</span> <span class="n">td_error</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">device</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">td_error</span> <span class="o">=</span> <span class="n">td_error</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">tensordict</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
 
         <span class="n">tensordict</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tensor_keys</span><span class="o">.</span><span class="n">priority</span><span class="p">,</span>
