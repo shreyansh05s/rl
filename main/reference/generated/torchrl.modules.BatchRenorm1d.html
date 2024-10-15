@@ -426,13 +426,13 @@ extended training periods, making BatchRenorm more robust for long training runs
 </dd>
 <dt class="field-even">Keyword Arguments<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>momentum</strong> (<a class="reference internal" href="torchrl.data.MultiStep.html#torchrl.data.MultiStep.float" title="torchrl.data.MultiStep.float"><em>float</em></a><em>, </em><em>optional</em>) – Momentum factor for computing the running mean and variance.
+<li><p><strong>momentum</strong> (<a class="reference internal" href="torchrl.data.BinaryToDecimal.html#torchrl.data.BinaryToDecimal.float" title="torchrl.data.BinaryToDecimal.float"><em>float</em></a><em>, </em><em>optional</em>) – Momentum factor for computing the running mean and variance.
 Defaults to <code class="docutils literal notranslate"><span class="pre">0.01</span></code>.</p></li>
-<li><p><strong>eps</strong> (<a class="reference internal" href="torchrl.data.MultiStep.html#torchrl.data.MultiStep.float" title="torchrl.data.MultiStep.float"><em>float</em></a><em>, </em><em>optional</em>) – Small value added to the variance to avoid division by zero.
+<li><p><strong>eps</strong> (<a class="reference internal" href="torchrl.data.BinaryToDecimal.html#torchrl.data.BinaryToDecimal.float" title="torchrl.data.BinaryToDecimal.float"><em>float</em></a><em>, </em><em>optional</em>) – Small value added to the variance to avoid division by zero.
 Defaults to <code class="docutils literal notranslate"><span class="pre">1e-5</span></code>.</p></li>
-<li><p><strong>max_r</strong> (<a class="reference internal" href="torchrl.data.MultiStep.html#torchrl.data.MultiStep.float" title="torchrl.data.MultiStep.float"><em>float</em></a><em>, </em><em>optional</em>) – Maximum value for the scaling factor r.
+<li><p><strong>max_r</strong> (<a class="reference internal" href="torchrl.data.BinaryToDecimal.html#torchrl.data.BinaryToDecimal.float" title="torchrl.data.BinaryToDecimal.float"><em>float</em></a><em>, </em><em>optional</em>) – Maximum value for the scaling factor r.
 Defaults to <code class="docutils literal notranslate"><span class="pre">3.0</span></code>.</p></li>
-<li><p><strong>max_d</strong> (<a class="reference internal" href="torchrl.data.MultiStep.html#torchrl.data.MultiStep.float" title="torchrl.data.MultiStep.float"><em>float</em></a><em>, </em><em>optional</em>) – Maximum value for the bias factor d.
+<li><p><strong>max_d</strong> (<a class="reference internal" href="torchrl.data.BinaryToDecimal.html#torchrl.data.BinaryToDecimal.float" title="torchrl.data.BinaryToDecimal.float"><em>float</em></a><em>, </em><em>optional</em>) – Maximum value for the bias factor d.
 Defaults to <code class="docutils literal notranslate"><span class="pre">5.0</span></code>.</p></li>
 <li><p><strong>warmup_steps</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of warm-up steps for the running mean and variance.
 Defaults to <code class="docutils literal notranslate"><span class="pre">10000</span></code>.</p></li>

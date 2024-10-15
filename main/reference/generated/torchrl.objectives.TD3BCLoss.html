@@ -452,11 +452,11 @@ and all the parameters will be considered as untied.</p>
 Exclusive with <code class="docutils literal notranslate"><span class="pre">bounds</span></code>. Either this or <code class="docutils literal notranslate"><span class="pre">bounds</span></code> must be provided.</p></li>
 <li><p><strong>num_qvalue_nets</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of Q-value networks to be
 trained. Default is <code class="docutils literal notranslate"><span class="pre">2</span></code>.</p></li>
-<li><p><strong>policy_noise</strong> (<a class="reference internal" href="torchrl.data.MultiStep.html#torchrl.data.MultiStep.float" title="torchrl.data.MultiStep.float"><em>float</em></a><em>, </em><em>optional</em>) – Standard deviation for the target
+<li><p><strong>policy_noise</strong> (<a class="reference internal" href="torchrl.data.BinaryToDecimal.html#torchrl.data.BinaryToDecimal.float" title="torchrl.data.BinaryToDecimal.float"><em>float</em></a><em>, </em><em>optional</em>) – Standard deviation for the target
 policy action noise. Default is <code class="docutils literal notranslate"><span class="pre">0.2</span></code>.</p></li>
-<li><p><strong>noise_clip</strong> (<a class="reference internal" href="torchrl.data.MultiStep.html#torchrl.data.MultiStep.float" title="torchrl.data.MultiStep.float"><em>float</em></a><em>, </em><em>optional</em>) – Clipping range value for the sampled
+<li><p><strong>noise_clip</strong> (<a class="reference internal" href="torchrl.data.BinaryToDecimal.html#torchrl.data.BinaryToDecimal.float" title="torchrl.data.BinaryToDecimal.float"><em>float</em></a><em>, </em><em>optional</em>) – Clipping range value for the sampled
 target policy action noise. Default is <code class="docutils literal notranslate"><span class="pre">0.5</span></code>.</p></li>
-<li><p><strong>alpha</strong> (<a class="reference internal" href="torchrl.data.MultiStep.html#torchrl.data.MultiStep.float" title="torchrl.data.MultiStep.float"><em>float</em></a><em>, </em><em>optional</em>) – Weight for the behavioral cloning loss.
+<li><p><strong>alpha</strong> (<a class="reference internal" href="torchrl.data.BinaryToDecimal.html#torchrl.data.BinaryToDecimal.float" title="torchrl.data.BinaryToDecimal.float"><em>float</em></a><em>, </em><em>optional</em>) – Weight for the behavioral cloning loss.
 Defaults to <code class="docutils literal notranslate"><span class="pre">2.5</span></code>.</p></li>
 <li><p><strong>priority_key</strong> (<em>str</em><em>, </em><em>optional</em>) – Key where to write the priority value
 for prioritized replay buffers. Default is

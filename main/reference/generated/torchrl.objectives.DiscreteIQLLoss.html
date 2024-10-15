@@ -434,11 +434,11 @@ or an instance of the corresponding specs (<code class="xref py py-class docutil
 Defaults to <code class="docutils literal notranslate"><span class="pre">2</span></code>.</p></li>
 <li><p><strong>loss_function</strong> (<em>str</em><em>, </em><em>optional</em>) – loss function to be used with
 the value function loss. Default is <cite>“smooth_l1”</cite>.</p></li>
-<li><p><strong>temperature</strong> (<a class="reference internal" href="torchrl.data.MultiStep.html#torchrl.data.MultiStep.float" title="torchrl.data.MultiStep.float"><em>float</em></a><em>, </em><em>optional</em>) – Inverse temperature (beta).
+<li><p><strong>temperature</strong> (<a class="reference internal" href="torchrl.data.BinaryToDecimal.html#torchrl.data.BinaryToDecimal.float" title="torchrl.data.BinaryToDecimal.float"><em>float</em></a><em>, </em><em>optional</em>) – Inverse temperature (beta).
 For smaller hyperparameter values, the objective behaves similarly to
 behavioral cloning, while for larger values, it attempts to recover the
 maximum of the Q-function.</p></li>
-<li><p><strong>expectile</strong> (<a class="reference internal" href="torchrl.data.MultiStep.html#torchrl.data.MultiStep.float" title="torchrl.data.MultiStep.float"><em>float</em></a><em>, </em><em>optional</em>) – expectile <span class="math notranslate nohighlight">\(\tau\)</span>. A larger value of <span class="math notranslate nohighlight">\(\tau\)</span> is crucial
+<li><p><strong>expectile</strong> (<a class="reference internal" href="torchrl.data.BinaryToDecimal.html#torchrl.data.BinaryToDecimal.float" title="torchrl.data.BinaryToDecimal.float"><em>float</em></a><em>, </em><em>optional</em>) – expectile <span class="math notranslate nohighlight">\(\tau\)</span>. A larger value of <span class="math notranslate nohighlight">\(\tau\)</span> is crucial
 for antmaze tasks that require dynamical programming (“stichting”).</p></li>
 <li><p><strong>priority_key</strong> (<em>str</em><em>, </em><em>optional</em>) – [Deprecated, use .set_keys(priority_key=priority_key) instead]
 tensordict key where to write the priority (for prioritized replay

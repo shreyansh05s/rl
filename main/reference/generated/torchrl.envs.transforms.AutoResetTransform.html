@@ -438,7 +438,7 @@ and fill the obs with some arbitrary value).</p></li>
 <code class="docutils literal notranslate"><span class="pre">False</span></code> overrides any subsequent filling keyword argument.
 This argumet can also be passed with the constructor method by passing a
 <code class="docutils literal notranslate"><span class="pre">auto_reset_replace</span></code> argument: <code class="docutils literal notranslate"><span class="pre">env</span> <span class="pre">=</span> <span class="pre">FooEnv(...,</span> <span class="pre">auto_reset=True,</span> <span class="pre">auto_reset_replace=False)</span></code>.</p></li>
-<li><p><strong>fill_float</strong> (<a class="reference internal" href="torchrl.data.MultiStep.html#torchrl.data.MultiStep.float" title="torchrl.data.MultiStep.float"><em>float</em></a><em> or </em><em>str</em><em>, </em><em>optional</em>) – The filling value for floating point tensors
+<li><p><strong>fill_float</strong> (<a class="reference internal" href="torchrl.data.BinaryToDecimal.html#torchrl.data.BinaryToDecimal.float" title="torchrl.data.BinaryToDecimal.float"><em>float</em></a><em> or </em><em>str</em><em>, </em><em>optional</em>) – The filling value for floating point tensors
 that terminate an episode. A value of <code class="docutils literal notranslate"><span class="pre">None</span></code> means no replacement (values are just
 placed as they are in the <code class="docutils literal notranslate"><span class="pre">&quot;next&quot;</span></code> entry even if they are not valid).</p></li>
 <li><p><strong>fill_int</strong> (<em>int</em><em>, </em><em>optional</em>) – The filling value for signed integer tensors

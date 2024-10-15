@@ -421,17 +421,17 @@
 </dd>
 <dt class="field-even">Keyword Arguments<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>alpha_init</strong> (<a class="reference internal" href="torchrl.data.MultiStep.html#torchrl.data.MultiStep.float" title="torchrl.data.MultiStep.float"><em>float</em></a><em>, </em><em>optional</em>) – initial entropy multiplier.
+<li><p><strong>alpha_init</strong> (<a class="reference internal" href="torchrl.data.BinaryToDecimal.html#torchrl.data.BinaryToDecimal.float" title="torchrl.data.BinaryToDecimal.float"><em>float</em></a><em>, </em><em>optional</em>) – initial entropy multiplier.
 Default is 1.0.</p></li>
-<li><p><strong>min_alpha</strong> (<a class="reference internal" href="torchrl.data.MultiStep.html#torchrl.data.MultiStep.float" title="torchrl.data.MultiStep.float"><em>float</em></a><em>, </em><em>optional</em>) – min value of alpha.
+<li><p><strong>min_alpha</strong> (<a class="reference internal" href="torchrl.data.BinaryToDecimal.html#torchrl.data.BinaryToDecimal.float" title="torchrl.data.BinaryToDecimal.float"><em>float</em></a><em>, </em><em>optional</em>) – min value of alpha.
 Default is None (no minimum value).</p></li>
-<li><p><strong>max_alpha</strong> (<a class="reference internal" href="torchrl.data.MultiStep.html#torchrl.data.MultiStep.float" title="torchrl.data.MultiStep.float"><em>float</em></a><em>, </em><em>optional</em>) – max value of alpha.
+<li><p><strong>max_alpha</strong> (<a class="reference internal" href="torchrl.data.BinaryToDecimal.html#torchrl.data.BinaryToDecimal.float" title="torchrl.data.BinaryToDecimal.float"><em>float</em></a><em>, </em><em>optional</em>) – max value of alpha.
 Default is None (no maximum value).</p></li>
 <li><p><strong>fixed_alpha</strong> (<em>bool</em><em>, </em><em>optional</em>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code>, alpha will be fixed to its
 initial value. Otherwise, alpha will be optimized to
 match the ‘target_entropy’ value.
 Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
-<li><p><strong>target_entropy</strong> (<a class="reference internal" href="torchrl.data.MultiStep.html#torchrl.data.MultiStep.float" title="torchrl.data.MultiStep.float"><em>float</em></a><em> or </em><em>str</em><em>, </em><em>optional</em>) – Target entropy for the
+<li><p><strong>target_entropy</strong> (<a class="reference internal" href="torchrl.data.BinaryToDecimal.html#torchrl.data.BinaryToDecimal.float" title="torchrl.data.BinaryToDecimal.float"><em>float</em></a><em> or </em><em>str</em><em>, </em><em>optional</em>) – Target entropy for the
 stochastic policy. Default is “auto”, where target entropy is
 computed as <code class="xref py py-obj docutils literal notranslate"><span class="pre">-prod(n_actions)</span></code>.</p></li>
 <li><p><strong>samples_mc_entropy</strong> (<em>int</em>) – number of samples to estimate the entropy</p></li>

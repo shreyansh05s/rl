@@ -437,11 +437,11 @@ and all the parameters will be considered as untied.</p>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>loss_function</strong> (<em>str</em><em>, </em><em>optional</em>) – loss function to be used with
 the value function loss. Default is <cite>“smooth_l1”</cite>.</p></li>
-<li><p><strong>alpha_init</strong> (<a class="reference internal" href="torchrl.data.MultiStep.html#torchrl.data.MultiStep.float" title="torchrl.data.MultiStep.float"><em>float</em></a><em>, </em><em>optional</em>) – initial entropy multiplier.
+<li><p><strong>alpha_init</strong> (<a class="reference internal" href="torchrl.data.BinaryToDecimal.html#torchrl.data.BinaryToDecimal.float" title="torchrl.data.BinaryToDecimal.float"><em>float</em></a><em>, </em><em>optional</em>) – initial entropy multiplier.
 Default is 1.0.</p></li>
-<li><p><strong>min_alpha</strong> (<a class="reference internal" href="torchrl.data.MultiStep.html#torchrl.data.MultiStep.float" title="torchrl.data.MultiStep.float"><em>float</em></a><em>, </em><em>optional</em>) – min value of alpha.
+<li><p><strong>min_alpha</strong> (<a class="reference internal" href="torchrl.data.BinaryToDecimal.html#torchrl.data.BinaryToDecimal.float" title="torchrl.data.BinaryToDecimal.float"><em>float</em></a><em>, </em><em>optional</em>) – min value of alpha.
 Default is None (no minimum value).</p></li>
-<li><p><strong>max_alpha</strong> (<a class="reference internal" href="torchrl.data.MultiStep.html#torchrl.data.MultiStep.float" title="torchrl.data.MultiStep.float"><em>float</em></a><em>, </em><em>optional</em>) – max value of alpha.
+<li><p><strong>max_alpha</strong> (<a class="reference internal" href="torchrl.data.BinaryToDecimal.html#torchrl.data.BinaryToDecimal.float" title="torchrl.data.BinaryToDecimal.float"><em>float</em></a><em>, </em><em>optional</em>) – max value of alpha.
 Default is None (no maximum value).</p></li>
 <li><p><strong>action_spec</strong> (<a class="reference internal" href="torchrl.data.TensorSpec.html#torchrl.data.TensorSpec" title="torchrl.data.TensorSpec"><em>TensorSpec</em></a><em>, </em><em>optional</em>) – the action tensor spec. If not provided
 and the target entropy is <code class="docutils literal notranslate"><span class="pre">&quot;auto&quot;</span></code>, it will be retrieved from
@@ -450,7 +450,7 @@ the actor.</p></li>
 initial value. Otherwise, alpha will be optimized to
 match the ‘target_entropy’ value.
 Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
-<li><p><strong>target_entropy</strong> (<a class="reference internal" href="torchrl.data.MultiStep.html#torchrl.data.MultiStep.float" title="torchrl.data.MultiStep.float"><em>float</em></a><em> or </em><em>str</em><em>, </em><em>optional</em>) – Target entropy for the
+<li><p><strong>target_entropy</strong> (<a class="reference internal" href="torchrl.data.BinaryToDecimal.html#torchrl.data.BinaryToDecimal.float" title="torchrl.data.BinaryToDecimal.float"><em>float</em></a><em> or </em><em>str</em><em>, </em><em>optional</em>) – Target entropy for the
 stochastic policy. Default is “auto”, where target entropy is
 computed as <code class="xref py py-obj docutils literal notranslate"><span class="pre">-prod(n_actions)</span></code>.</p></li>
 <li><p><strong>delay_actor</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to separate the target actor
@@ -459,9 +459,9 @@ Default is <code class="docutils literal notranslate"><span class="pre">False</s
 <li><p><strong>delay_qvalue</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to separate the target Q value
 networks from the Q value networks used for data collection.
 Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
-<li><p><strong>gamma</strong> (<a class="reference internal" href="torchrl.data.MultiStep.html#torchrl.data.MultiStep.float" title="torchrl.data.MultiStep.float"><em>float</em></a><em>, </em><em>optional</em>) – Discount factor. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
-<li><p><strong>temperature</strong> (<a class="reference internal" href="torchrl.data.MultiStep.html#torchrl.data.MultiStep.float" title="torchrl.data.MultiStep.float"><em>float</em></a><em>, </em><em>optional</em>) – CQL temperature. Default is 1.0.</p></li>
-<li><p><strong>min_q_weight</strong> (<a class="reference internal" href="torchrl.data.MultiStep.html#torchrl.data.MultiStep.float" title="torchrl.data.MultiStep.float"><em>float</em></a><em>, </em><em>optional</em>) – Minimum Q weight. Default is 1.0.</p></li>
+<li><p><strong>gamma</strong> (<a class="reference internal" href="torchrl.data.BinaryToDecimal.html#torchrl.data.BinaryToDecimal.float" title="torchrl.data.BinaryToDecimal.float"><em>float</em></a><em>, </em><em>optional</em>) – Discount factor. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>temperature</strong> (<a class="reference internal" href="torchrl.data.BinaryToDecimal.html#torchrl.data.BinaryToDecimal.float" title="torchrl.data.BinaryToDecimal.float"><em>float</em></a><em>, </em><em>optional</em>) – CQL temperature. Default is 1.0.</p></li>
+<li><p><strong>min_q_weight</strong> (<a class="reference internal" href="torchrl.data.BinaryToDecimal.html#torchrl.data.BinaryToDecimal.float" title="torchrl.data.BinaryToDecimal.float"><em>float</em></a><em>, </em><em>optional</em>) – Minimum Q weight. Default is 1.0.</p></li>
 <li><p><strong>max_q_backup</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to use the max-min Q backup.
 Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
 <li><p><strong>deterministic_backup</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to use the deterministic. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
@@ -469,7 +469,7 @@ Default is <code class="docutils literal notranslate"><span class="pre">False</s
 Default is 10.</p></li>
 <li><p><strong>with_lagrange</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to use the Lagrange multiplier.
 Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
-<li><p><strong>lagrange_thresh</strong> (<a class="reference internal" href="torchrl.data.MultiStep.html#torchrl.data.MultiStep.float" title="torchrl.data.MultiStep.float"><em>float</em></a><em>, </em><em>optional</em>) – Lagrange threshold. Default is 0.0.</p></li>
+<li><p><strong>lagrange_thresh</strong> (<a class="reference internal" href="torchrl.data.BinaryToDecimal.html#torchrl.data.BinaryToDecimal.float" title="torchrl.data.BinaryToDecimal.float"><em>float</em></a><em>, </em><em>optional</em>) – Lagrange threshold. Default is 0.0.</p></li>
 <li><p><strong>reduction</strong> (<em>str</em><em>, </em><em>optional</em>) – Specifies the reduction to apply to the output:
 <code class="docutils literal notranslate"><span class="pre">&quot;none&quot;</span></code> | <code class="docutils literal notranslate"><span class="pre">&quot;mean&quot;</span></code> | <code class="docutils literal notranslate"><span class="pre">&quot;sum&quot;</span></code>. <code class="docutils literal notranslate"><span class="pre">&quot;none&quot;</span></code>: no reduction will be applied,
 <code class="docutils literal notranslate"><span class="pre">&quot;mean&quot;</span></code>: the sum of the output will be divided by the number of
