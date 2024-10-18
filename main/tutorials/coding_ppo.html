@@ -1133,30 +1133,30 @@ The steps include:</p>
 
     <span class="c1"># We&#39;re also using a learning rate scheduler. Like the gradient clipping,</span>
     <span class="c1"># this is a nice-to-have but nothing necessary for PPO to work.</span>
-    <a href="https://pytorch.org/docs/stable/generated/torch.optim.lr_scheduler.CosineAnnealingLR.html#torch.optim.lr_scheduler.CosineAnnealingLR" title="torch.optim.lr_scheduler.CosineAnnealingLR" class="sphx-glr-backref-module-torch-optim-lr_scheduler sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">scheduler</span></a><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+    <a href="https://pytorch.org/docs/stable/generated/torch.optim.lr_scheduler.CosineAnnealingLR.html#torch.optim.lr_scheduler.CosineAnnealingLR.step" title="torch.optim.lr_scheduler.CosineAnnealingLR.step" class="sphx-glr-backref-module-torch-optim-lr_scheduler sphx-glr-backref-type-py-method"><span class="n">scheduler</span><span class="o">.</span><span class="n">step</span></a><span class="p">()</span>
 </pre></div>
 </div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>  0%|          | 0/10000 [00:00&lt;?, ?it/s]
- 10%|█         | 1000/10000 [00:02&lt;00:19, 469.31it/s]
-eval cumulative reward:  101.6825 (init:  101.6825), eval step-count: 10, average reward= 9.0927 (init= 9.0927), step count (max): 12, lr policy:  0.0003:  10%|█         | 1000/10000 [00:02&lt;00:19, 469.31it/s]
-eval cumulative reward:  101.6825 (init:  101.6825), eval step-count: 10, average reward= 9.0927 (init= 9.0927), step count (max): 12, lr policy:  0.0003:  20%|██        | 2000/10000 [00:04&lt;00:17, 469.32it/s]
-eval cumulative reward:  101.6825 (init:  101.6825), eval step-count: 10, average reward= 9.1206 (init= 9.0927), step count (max): 14, lr policy:  0.0003:  20%|██        | 2000/10000 [00:04&lt;00:17, 469.32it/s]
-eval cumulative reward:  101.6825 (init:  101.6825), eval step-count: 10, average reward= 9.1206 (init= 9.0927), step count (max): 14, lr policy:  0.0003:  30%|███       | 3000/10000 [00:06&lt;00:14, 472.07it/s]
-eval cumulative reward:  101.6825 (init:  101.6825), eval step-count: 10, average reward= 9.1480 (init= 9.0927), step count (max): 18, lr policy:  0.0003:  30%|███       | 3000/10000 [00:06&lt;00:14, 472.07it/s]
-eval cumulative reward:  101.6825 (init:  101.6825), eval step-count: 10, average reward= 9.1480 (init= 9.0927), step count (max): 18, lr policy:  0.0003:  40%|████      | 4000/10000 [00:08&lt;00:12, 476.07it/s]
-eval cumulative reward:  101.6825 (init:  101.6825), eval step-count: 10, average reward= 9.1837 (init= 9.0927), step count (max): 24, lr policy:  0.0002:  40%|████      | 4000/10000 [00:08&lt;00:12, 476.07it/s]
-eval cumulative reward:  101.6825 (init:  101.6825), eval step-count: 10, average reward= 9.1837 (init= 9.0927), step count (max): 24, lr policy:  0.0002:  50%|█████     | 5000/10000 [00:10&lt;00:10, 479.63it/s]
-eval cumulative reward:  101.6825 (init:  101.6825), eval step-count: 10, average reward= 9.2094 (init= 9.0927), step count (max): 27, lr policy:  0.0002:  50%|█████     | 5000/10000 [00:10&lt;00:10, 479.63it/s]
-eval cumulative reward:  101.6825 (init:  101.6825), eval step-count: 10, average reward= 9.2094 (init= 9.0927), step count (max): 27, lr policy:  0.0002:  60%|██████    | 6000/10000 [00:12&lt;00:08, 480.41it/s]
-eval cumulative reward:  101.6825 (init:  101.6825), eval step-count: 10, average reward= 9.2361 (init= 9.0927), step count (max): 31, lr policy:  0.0001:  60%|██████    | 6000/10000 [00:12&lt;00:08, 480.41it/s]
-eval cumulative reward:  101.6825 (init:  101.6825), eval step-count: 10, average reward= 9.2361 (init= 9.0927), step count (max): 31, lr policy:  0.0001:  70%|███████   | 7000/10000 [00:14&lt;00:06, 483.05it/s]
-eval cumulative reward:  101.6825 (init:  101.6825), eval step-count: 10, average reward= 9.2344 (init= 9.0927), step count (max): 28, lr policy:  0.0001:  70%|███████   | 7000/10000 [00:14&lt;00:06, 483.05it/s]
-eval cumulative reward:  101.6825 (init:  101.6825), eval step-count: 10, average reward= 9.2344 (init= 9.0927), step count (max): 28, lr policy:  0.0001:  80%|████████  | 8000/10000 [00:16&lt;00:04, 472.59it/s]
-eval cumulative reward:  101.6825 (init:  101.6825), eval step-count: 10, average reward= 9.2493 (init= 9.0927), step count (max): 40, lr policy:  0.0001:  80%|████████  | 8000/10000 [00:16&lt;00:04, 472.59it/s]
-eval cumulative reward:  101.6825 (init:  101.6825), eval step-count: 10, average reward= 9.2493 (init= 9.0927), step count (max): 40, lr policy:  0.0001:  90%|█████████ | 9000/10000 [00:18&lt;00:02, 478.42it/s]
-eval cumulative reward:  101.6825 (init:  101.6825), eval step-count: 10, average reward= 9.2498 (init= 9.0927), step count (max): 48, lr policy:  0.0000:  90%|█████████ | 9000/10000 [00:18&lt;00:02, 478.42it/s]
-eval cumulative reward:  101.6825 (init:  101.6825), eval step-count: 10, average reward= 9.2498 (init= 9.0927), step count (max): 48, lr policy:  0.0000: 100%|██████████| 10000/10000 [00:20&lt;00:00, 481.19it/s]
-eval cumulative reward:  101.6825 (init:  101.6825), eval step-count: 10, average reward= 9.2437 (init= 9.0927), step count (max): 39, lr policy:  0.0000: 100%|██████████| 10000/10000 [00:20&lt;00:00, 481.19it/s]
+ 10%|█         | 1000/10000 [00:02&lt;00:19, 466.65it/s]
+eval cumulative reward:  120.6769 (init:  120.6769), eval step-count: 12, average reward= 9.0953 (init= 9.0953), step count (max): 14, lr policy:  0.0003:  10%|█         | 1000/10000 [00:02&lt;00:19, 466.65it/s]
+eval cumulative reward:  120.6769 (init:  120.6769), eval step-count: 12, average reward= 9.0953 (init= 9.0953), step count (max): 14, lr policy:  0.0003:  20%|██        | 2000/10000 [00:04&lt;00:17, 469.29it/s]
+eval cumulative reward:  120.6769 (init:  120.6769), eval step-count: 12, average reward= 9.1225 (init= 9.0953), step count (max): 18, lr policy:  0.0003:  20%|██        | 2000/10000 [00:04&lt;00:17, 469.29it/s]
+eval cumulative reward:  120.6769 (init:  120.6769), eval step-count: 12, average reward= 9.1225 (init= 9.0953), step count (max): 18, lr policy:  0.0003:  30%|███       | 3000/10000 [00:06&lt;00:14, 473.59it/s]
+eval cumulative reward:  120.6769 (init:  120.6769), eval step-count: 12, average reward= 9.1634 (init= 9.0953), step count (max): 15, lr policy:  0.0003:  30%|███       | 3000/10000 [00:06&lt;00:14, 473.59it/s]
+eval cumulative reward:  120.6769 (init:  120.6769), eval step-count: 12, average reward= 9.1634 (init= 9.0953), step count (max): 15, lr policy:  0.0003:  40%|████      | 4000/10000 [00:08&lt;00:12, 476.85it/s]
+eval cumulative reward:  120.6769 (init:  120.6769), eval step-count: 12, average reward= 9.1938 (init= 9.0953), step count (max): 21, lr policy:  0.0002:  40%|████      | 4000/10000 [00:08&lt;00:12, 476.85it/s]
+eval cumulative reward:  120.6769 (init:  120.6769), eval step-count: 12, average reward= 9.1938 (init= 9.0953), step count (max): 21, lr policy:  0.0002:  50%|█████     | 5000/10000 [00:10&lt;00:10, 479.57it/s]
+eval cumulative reward:  120.6769 (init:  120.6769), eval step-count: 12, average reward= 9.2268 (init= 9.0953), step count (max): 47, lr policy:  0.0002:  50%|█████     | 5000/10000 [00:10&lt;00:10, 479.57it/s]
+eval cumulative reward:  120.6769 (init:  120.6769), eval step-count: 12, average reward= 9.2268 (init= 9.0953), step count (max): 47, lr policy:  0.0002:  60%|██████    | 6000/10000 [00:12&lt;00:08, 481.49it/s]
+eval cumulative reward:  120.6769 (init:  120.6769), eval step-count: 12, average reward= 9.2311 (init= 9.0953), step count (max): 33, lr policy:  0.0001:  60%|██████    | 6000/10000 [00:12&lt;00:08, 481.49it/s]
+eval cumulative reward:  120.6769 (init:  120.6769), eval step-count: 12, average reward= 9.2311 (init= 9.0953), step count (max): 33, lr policy:  0.0001:  70%|███████   | 7000/10000 [00:14&lt;00:06, 483.51it/s]
+eval cumulative reward:  120.6769 (init:  120.6769), eval step-count: 12, average reward= 9.2411 (init= 9.0953), step count (max): 30, lr policy:  0.0001:  70%|███████   | 7000/10000 [00:14&lt;00:06, 483.51it/s]
+eval cumulative reward:  120.6769 (init:  120.6769), eval step-count: 12, average reward= 9.2411 (init= 9.0953), step count (max): 30, lr policy:  0.0001:  80%|████████  | 8000/10000 [00:16&lt;00:04, 471.90it/s]
+eval cumulative reward:  120.6769 (init:  120.6769), eval step-count: 12, average reward= 9.2419 (init= 9.0953), step count (max): 38, lr policy:  0.0001:  80%|████████  | 8000/10000 [00:16&lt;00:04, 471.90it/s]
+eval cumulative reward:  120.6769 (init:  120.6769), eval step-count: 12, average reward= 9.2419 (init= 9.0953), step count (max): 38, lr policy:  0.0001:  90%|█████████ | 9000/10000 [00:18&lt;00:02, 477.01it/s]
+eval cumulative reward:  120.6769 (init:  120.6769), eval step-count: 12, average reward= 9.2574 (init= 9.0953), step count (max): 48, lr policy:  0.0000:  90%|█████████ | 9000/10000 [00:18&lt;00:02, 477.01it/s]
+eval cumulative reward:  120.6769 (init:  120.6769), eval step-count: 12, average reward= 9.2574 (init= 9.0953), step count (max): 48, lr policy:  0.0000: 100%|██████████| 10000/10000 [00:20&lt;00:00, 480.77it/s]
+eval cumulative reward:  120.6769 (init:  120.6769), eval step-count: 12, average reward= 9.2605 (init= 9.0953), step count (max): 54, lr policy:  0.0000: 100%|██████████| 10000/10000 [00:20&lt;00:00, 480.77it/s]
 </pre></div>
 </div>
 </section>
@@ -1200,7 +1200,7 @@ the environment after asking for rendering to get a visual rendering of the
 inverted pendulum in action. Check <code class="xref py py-mod docutils literal notranslate"><span class="pre">torchrl.record</span></code> to
 know more.</p></li>
 </ul>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (1 minutes 25.860 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (1 minutes 25.647 seconds)</p>
 <p><strong>Estimated memory usage:</strong>  321 MB</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-tutorials-coding-ppo-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
