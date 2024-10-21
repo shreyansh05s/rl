@@ -584,16 +584,11 @@
         <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
         <span class="n">path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span> <span class="o">/</span> <span class="s2">&quot;sampler_metadata.json&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
-            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">state_dict</span><span class="p">(),</span>
-                <span class="n">file</span><span class="p">,</span>
-            <span class="p">)</span>
+        <span class="n">TensorDict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state_dict</span><span class="p">())</span><span class="o">.</span><span class="n">memmap</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">loads</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span> <span class="o">/</span> <span class="s2">&quot;sampler_metadata.json&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
-            <span class="n">metadata</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span>
+        <span class="n">sd</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="o">.</span><span class="n">load_memmap</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">sd</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_get_sample_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">storage</span><span class="p">:</span> <span class="n">Storage</span><span class="p">,</span> <span class="n">len_storage</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">storage</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
