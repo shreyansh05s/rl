@@ -1769,14 +1769,42 @@
     <span class="k">return</span> <span class="n">out</span>
 
 
+<span class="nd">@implement_for</span><span class="p">(</span><span class="s2">&quot;torch&quot;</span><span class="p">,</span> <span class="s2">&quot;2.4&quot;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">_stack_anything</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">is_tensor_collection</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
         <span class="k">return</span> <span class="n">LazyStackedTensorDict</span><span class="o">.</span><span class="n">maybe_dense_stack</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">_pytree</span><span class="o">.</span><span class="n">tree_map</span><span class="p">(</span>
+    <span class="k">return</span> <span class="n">tree_map</span><span class="p">(</span>
         <span class="k">lambda</span> <span class="o">*</span><span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">x</span><span class="p">),</span>
         <span class="o">*</span><span class="n">data</span><span class="p">,</span>
         <span class="n">is_leaf</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="ow">or</span> <span class="n">is_tensor_collection</span><span class="p">(</span><span class="n">x</span><span class="p">),</span>
     <span class="p">)</span>
+
+
+<span class="nd">@implement_for</span><span class="p">(</span><span class="s2">&quot;torch&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;2.4&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_stack_anything</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>  <span class="c1"># noqa: F811</span>
+    <span class="kn">from</span> <span class="nn">tensordict</span> <span class="kn">import</span> <span class="n">_pytree</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_pytree</span><span class="o">.</span><span class="n">PYTREE_REGISTERED_TDS</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+            <span class="s2">&quot;TensorDict is not registered within PyTree. &quot;</span>
+            <span class="s2">&quot;If you see this error, it means tensordicts instances cannot be natively stacked using tree_map. &quot;</span>
+            <span class="s2">&quot;To solve this issue, (a) upgrade pytorch to a version &gt; 2.4, or (b) make sure TensorDict is registered in PyTree. &quot;</span>
+            <span class="s2">&quot;If this error persists, open an issue on https://github.com/pytorch/rl/issues&quot;</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">is_tensor_collection</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+        <span class="k">return</span> <span class="n">LazyStackedTensorDict</span><span class="o">.</span><span class="n">maybe_dense_stack</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">flat_trees</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">spec</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+        <span class="n">flat_tree</span><span class="p">,</span> <span class="n">spec</span> <span class="o">=</span> <span class="n">tree_flatten</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+        <span class="n">flat_trees</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">flat_tree</span><span class="p">)</span>
+
+    <span class="n">leaves</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">leaf</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">flat_trees</span><span class="p">):</span>
+        <span class="n">leaf</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">leaf</span><span class="p">)</span>
+        <span class="n">leaves</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">leaf</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">tree_unflatten</span><span class="p">(</span><span class="n">leaves</span><span class="p">,</span> <span class="n">spec</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_collate_id</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
