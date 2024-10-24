@@ -546,12 +546,29 @@
     <span class="k">def</span> <span class="nf">_empty</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="o">...</span>
 
+    <span class="c1"># NOTE: This property is used to enable compiled Storages. Calling</span>
+    <span class="c1"># `len(self)` on a TensorStorage should normally cause a graph break since</span>
+    <span class="c1"># it uses a `mp.Value`, and it does cause a break when the `len(self)` call</span>
+    <span class="c1"># happens within a method of TensorStorage itself. However, when the</span>
+    <span class="c1"># `len(self)` call happens in the Storage base class, for an unknown reason</span>
+    <span class="c1"># the compiler doesn&#39;t seem to recognize that there should be a graph break,</span>
+    <span class="c1"># and the lack of a break causes a recompile each time `len(self)` is called</span>
+    <span class="c1"># in this context. Also for an unknown reason, we can force the graph break</span>
+    <span class="c1"># to happen if we wrap the `len(self)` call with a `property`-decorated</span>
+    <span class="c1"># function. For another unknown reason, if we change</span>
+    <span class="c1"># `TensorStorage._len_value` from `mp.Value` to int, it seems like there</span>
+    <span class="c1"># should no longer be any need to recompile, but recompiles happen anyway.</span>
+    <span class="c1"># Ideally, this should all be investigated and understood in the future.</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">len</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">_rand_given_ndim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">):</span>
         <span class="c1"># a method to return random indices given the storage ndim</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span>
                 <span class="mi">0</span><span class="p">,</span>
-                <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">len</span><span class="p">,</span>
                 <span class="p">(</span><span class="n">batch_size</span><span class="p">,),</span>
                 <span class="n">generator</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_rng</span><span class="p">,</span>
                 <span class="n">device</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;device&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
