@@ -485,7 +485,7 @@ Defaults to <code class="docutils literal notranslate"><span class="pre">False</
 
 <dl class="py method">
 <dt class="sig sig-object py" id="torchrl.data.PairwiseDataset.from_tensordict">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_tensordict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensordict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">non_tensordict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#torchrl.data.PairwiseDataset.from_tensordict" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_tensordict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensordict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">non_tensordict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">safe</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#torchrl.data.PairwiseDataset.from_tensordict" title="Permalink to this definition">¶</a></dt>
 <dd><p>Tensor class wrapper to instantiate a new tensor class object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -829,13 +829,22 @@ the value will be simply written at its destination.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="torchrl.data.PairwiseDataset.to_tensordict">
-<span class="sig-name descname"><span class="pre">to_tensordict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">TensorDict</span></span></span><a class="headerlink" href="#torchrl.data.PairwiseDataset.to_tensordict" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">to_tensordict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retain_none</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">TensorDict</span></span></span><a class="headerlink" href="#torchrl.data.PairwiseDataset.to_tensordict" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert the tensorclass into a regular TensorDict.</p>
 <p>Makes a copy of all entries. Memmap and shared memory tensors are converted to
 regular tensors.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>A new TensorDict object containing the same values as the tensorclass.</p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>retain_none</strong> (<em>bool</em>) – <p>if <code class="docutils literal notranslate"><span class="pre">True</span></code>, the <code class="docutils literal notranslate"><span class="pre">None</span></code> values will be written in the
+tensordict. Otherwise they will be discrarded. Default: <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>from v0.8, the default value will be switched to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</div>
+</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A new TensorDict object containing the same values as the tensorclass.</p>
 </dd>
 </dl>
 </dd></dl>
