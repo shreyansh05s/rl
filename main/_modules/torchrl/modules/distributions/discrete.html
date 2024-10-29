@@ -411,11 +411,9 @@
 
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">import</span> <span class="nn">torch.distributions</span> <span class="k">as</span> <span class="nn">D</span>
+<span class="kn">import</span> <span class="nn">torch.nn.functional</span> <span class="k">as</span> <span class="nn">F</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s2">&quot;OneHotCategorical&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;MaskedCategorical&quot;</span><span class="p">,</span>
-<span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;OneHotCategorical&quot;</span><span class="p">,</span> <span class="s2">&quot;MaskedCategorical&quot;</span><span class="p">,</span> <span class="s2">&quot;Ordinal&quot;</span><span class="p">,</span> <span class="s2">&quot;OneHotOrdinal&quot;</span><span class="p">]</span>
 
 
 <span class="k">def</span> <span class="nf">_treat_categorical_params</span><span class="p">(</span>
@@ -458,7 +456,7 @@
 <div class="viewcode-block" id="OneHotCategorical"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.OneHotCategorical.html#torchrl.modules.OneHotCategorical">[docs]</a><span class="k">class</span> <span class="nc">OneHotCategorical</span><span class="p">(</span><span class="n">D</span><span class="o">.</span><span class="n">Categorical</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;One-hot categorical distribution.</span>
 
-<span class="sd">    This class behaves excacly as torch.distributions.Categorical except that it reads and produces one-hot encodings</span>
+<span class="sd">    This class behaves exactly as torch.distributions.Categorical except that it reads and produces one-hot encodings</span>
 <span class="sd">    of the discrete tensors.</span>
 
 <span class="sd">    Args:</span>
@@ -468,7 +466,7 @@
 <span class="sd">            reparameterized samples.</span>
 <span class="sd">            ``ReparamGradientStrategy.PassThrough`` will compute the sample gradients</span>
 <span class="sd">             by using the softmax valued log-probability as a proxy to the</span>
-<span class="sd">             samples gradients.</span>
+<span class="sd">             sample gradients.</span>
 <span class="sd">            ``ReparamGradientStrategy.RelaxedOneHot`` will use</span>
 <span class="sd">            :class:`torch.distributions.RelaxedOneHot` to sample from the distribution.</span>
 
@@ -482,8 +480,6 @@
 <span class="sd">                [1., 0., 0., 0.]])</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">num_params</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -557,7 +553,7 @@
 <span class="sd">    Args:</span>
 <span class="sd">        logits (torch.Tensor): event log probabilities (unnormalized)</span>
 <span class="sd">        probs (torch.Tensor): event probabilities. If provided, the probabilities</span>
-<span class="sd">            corresponding to to masked items will be zeroed and the probability</span>
+<span class="sd">            corresponding to masked items will be zeroed and the probability</span>
 <span class="sd">            re-normalized along its last dimension.</span>
 
 <span class="sd">    Keyword Args:</span>
@@ -708,7 +704,7 @@
 <span class="sd">    Args:</span>
 <span class="sd">        logits (torch.Tensor): event log probabilities (unnormalized)</span>
 <span class="sd">        probs (torch.Tensor): event probabilities. If provided, the probabilities</span>
-<span class="sd">            corresponding to to masked items will be zeroed and the probability</span>
+<span class="sd">            corresponding to masked items will be zeroed and the probability</span>
 <span class="sd">            re-normalized along its last dimension.</span>
 
 <span class="sd">    Keyword Args:</span>
@@ -871,6 +867,85 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;Unknown reparametrization strategy </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">reparam_strategy</span><span class="si">}</span><span class="s2">.&quot;</span>
             <span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="Ordinal"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.Ordinal.html#torchrl.modules.Ordinal">[docs]</a><span class="k">class</span> <span class="nc">Ordinal</span><span class="p">(</span><span class="n">D</span><span class="o">.</span><span class="n">Categorical</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A discrete distribution for learning to sample from finite ordered sets.</span>
+
+<span class="sd">    It is defined in contrast with the `Categorical` distribution, which does</span>
+<span class="sd">    not impose any notion of proximity or ordering over its support&#39;s atoms.</span>
+<span class="sd">    The `Ordinal` distribution explicitly encodes those concepts, which is</span>
+<span class="sd">    useful for learning discrete sampling from continuous sets. See §5 of</span>
+<span class="sd">    `Tang &amp; Agrawal, 2020&lt;https://arxiv.org/pdf/1901.10500.pdf&gt;`_ for details.</span>
+
+<span class="sd">    .. note::</span>
+<span class="sd">        This class is mostly useful when you want to learn a distribution over</span>
+<span class="sd">        a finite set which is obtained by discretising a continuous set.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        scores (torch.Tensor): a tensor of shape [..., N] where N is the size of the set which supports the distributions.</span>
+<span class="sd">            Typically, the output of a neural network parametrising the distribution.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; num_atoms, num_samples = 5, 20</span>
+<span class="sd">        &gt;&gt;&gt; mean = (num_atoms - 1) / 2  # Target mean for samples, centered around the middle atom</span>
+<span class="sd">        &gt;&gt;&gt; torch.manual_seed(42)</span>
+<span class="sd">        &gt;&gt;&gt; logits = torch.ones((num_atoms), requires_grad=True)</span>
+<span class="sd">        &gt;&gt;&gt; optimizer = torch.optim.Adam([logits], lr=0.1)</span>
+<span class="sd">        &gt;&gt;&gt;</span>
+<span class="sd">        &gt;&gt;&gt; # Perform optimisation loop to minimise deviation from `mean`</span>
+<span class="sd">        &gt;&gt;&gt; for _ in range(20):</span>
+<span class="sd">        &gt;&gt;&gt;     sampler = Ordinal(scores=logits)</span>
+<span class="sd">        &gt;&gt;&gt;     samples = sampler.sample((num_samples,))</span>
+<span class="sd">        &gt;&gt;&gt;     # Define loss to encourage samples around the mean by penalising deviation from mean</span>
+<span class="sd">        &gt;&gt;&gt;     loss = torch.mean((samples - mean) ** 2 * sampler.log_prob(samples))</span>
+<span class="sd">        &gt;&gt;&gt;     loss.backward()</span>
+<span class="sd">        &gt;&gt;&gt;     optimizer.step()</span>
+<span class="sd">        &gt;&gt;&gt;     optimizer.zero_grad()</span>
+<span class="sd">        &gt;&gt;&gt;</span>
+<span class="sd">        &gt;&gt;&gt; sampler.probs</span>
+<span class="sd">        tensor([0.0308, 0.1586, 0.4727, 0.2260, 0.1120], ...)</span>
+<span class="sd">        &gt;&gt;&gt; # Print histogram to observe sample distribution frequency across 5 bins (0, 1, 2, 3, and 4)</span>
+<span class="sd">        &gt;&gt;&gt; torch.histogram(sampler.sample((1000,)).reshape(-1).float(), bins=num_atoms)</span>
+<span class="sd">        torch.return_types.histogram(</span>
+<span class="sd">            hist=tensor([ 24., 158., 478., 228., 112.]),</span>
+<span class="sd">            bin_edges=tensor([0.0000, 0.8000, 1.6000, 2.4000, 3.2000, 4.0000]))</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scores</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+        <span class="n">logits</span> <span class="o">=</span> <span class="n">_generate_ordinal_logits</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">logits</span><span class="o">=</span><span class="n">logits</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="OneHotOrdinal"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.OneHotOrdinal.html#torchrl.modules.OneHotOrdinal">[docs]</a><span class="k">class</span> <span class="nc">OneHotOrdinal</span><span class="p">(</span><span class="n">OneHotCategorical</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The one-hot version of the :class:`~tensordict.nn.distributions.Ordinal` distribution.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        scores (torch.Tensor): a tensor of shape [..., N] where N is the size of the set which supports the distributions.</span>
+<span class="sd">            Typically, the output of a neural network parametrising the distribution.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scores</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+        <span class="n">logits</span> <span class="o">=</span> <span class="n">_generate_ordinal_logits</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">logits</span><span class="o">=</span><span class="n">logits</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">_generate_ordinal_logits</span><span class="p">(</span><span class="n">scores</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Implements Eq. 4 of `Tang &amp; Agrawal, 2020&lt;https://arxiv.org/pdf/1901.10500.pdf&gt;`__.&quot;&quot;&quot;</span>
+    <span class="c1"># Assigns Bernoulli-like probabilities for each class in the set</span>
+    <span class="n">log_probs</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">logsigmoid</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span>
+    <span class="n">complementary_log_probs</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">logsigmoid</span><span class="p">(</span><span class="o">-</span><span class="n">scores</span><span class="p">)</span>
+
+    <span class="c1"># Total log-probability for being &quot;larger than k&quot;</span>
+    <span class="n">larger_than_log_probs</span> <span class="o">=</span> <span class="n">log_probs</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># Total log-probability for being &quot;smaller than k&quot;</span>
+    <span class="n">smaller_than_log_probs</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">complementary_log_probs</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="o">-</span> <span class="n">complementary_log_probs</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">larger_than_log_probs</span> <span class="o">+</span> <span class="n">smaller_than_log_probs</span>
 </pre></div>
 
              </article>
