@@ -1211,15 +1211,21 @@ we put them in a sequence. They will not interfere with each other as each group
 <p>Replay buffers are a common building piece of off-policy RL algorithms.
 There are many types of buffers, in this tutorial we use a basic buffer to store and sample tensordict
 data randomly.</p>
+<p>This buffer uses <code class="xref py py-class docutils literal notranslate"><span class="pre">LazyMemmapStorage</span></code>, which stores data on disk.
+This allows to use the disk memory, but can result in slower sampling as it requires data to be cast to the training device.
+To store your buffer on the GPU, you can use <code class="xref py py-class docutils literal notranslate"><span class="pre">LazyTensorStorage</span></code>, passing the desired device.
+This will result in faster sampling but is subject to the memory constraints of the selected device.</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">replay_buffers</span> <span class="o">=</span> <span class="p">{}</span>
 <span class="k">for</span> <span class="n">group</span><span class="p">,</span> <span class="n">_agents</span> <span class="ow">in</span> <span class="n">env</span><span class="o">.</span><span class="n">group_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
     <span class="n">replay_buffer</span> <span class="o">=</span> <span class="n">ReplayBuffer</span><span class="p">(</span>
         <span class="n">storage</span><span class="o">=</span><span class="n">LazyMemmapStorage</span><span class="p">(</span>
-            <span class="n">memory_size</span><span class="p">,</span> <a href="https://pytorch.org/docs/stable/tensor_attributes.html#torch.device" title="torch.device" class="sphx-glr-backref-module-torch sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">device</span></a><span class="o">=</span><a href="https://pytorch.org/docs/stable/tensor_attributes.html#torch.device" title="torch.device" class="sphx-glr-backref-module-torch sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">device</span></a>
+            <span class="n">memory_size</span>
         <span class="p">),</span>  <span class="c1"># We will store up to memory_size multi-agent transitions</span>
         <span class="n">sampler</span><span class="o">=</span><span class="n">RandomSampler</span><span class="p">(),</span>
         <span class="n">batch_size</span><span class="o">=</span><span class="n">train_batch_size</span><span class="p">,</span>  <span class="c1"># We will sample batches of this size</span>
     <span class="p">)</span>
+    <span class="k">if</span> <a href="https://pytorch.org/docs/stable/tensor_attributes.html#torch.device" title="torch.device" class="sphx-glr-backref-module-torch sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">device</span></a><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="s2">&quot;cpu&quot;</span><span class="p">:</span>
+        <span class="n">replay_buffer</span><span class="o">.</span><span class="n">append_transform</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><a href="https://pytorch.org/docs/stable/tensor_attributes.html#torch.device" title="torch.device" class="sphx-glr-backref-module-torch sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">device</span></a><span class="p">))</span>
     <span class="n">replay_buffers</span><span class="p">[</span><span class="n">group</span><span class="p">]</span> <span class="o">=</span> <span class="n">replay_buffer</span>
 </pre></div>
 </div>
@@ -1409,16 +1415,16 @@ The steps include:</p>
 </pre></div>
 </div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>episode_reward_mean_adversary = 0, episode_reward_mean_agent = 0:   0%|          | 0/10 [00:00&lt;?, ?it/s]
-episode_reward_mean_adversary = 1.0, episode_reward_mean_agent = -1.0:  10%|█         | 1/10 [00:02&lt;00:26,  2.91s/it]
-episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  20%|██        | 2/10 [00:06&lt;00:24,  3.03s/it]
-episode_reward_mean_adversary = 1.0, episode_reward_mean_agent = -1.0:  30%|███       | 3/10 [00:09&lt;00:21,  3.04s/it]
-episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  40%|████      | 4/10 [00:12&lt;00:18,  3.05s/it]
-episode_reward_mean_adversary = 2.0, episode_reward_mean_agent = -2.0:  50%|█████     | 5/10 [00:15&lt;00:15,  3.05s/it]
-episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  60%|██████    | 6/10 [00:18&lt;00:12,  3.03s/it]
-episode_reward_mean_adversary = 2.0, episode_reward_mean_agent = -2.0:  70%|███████   | 7/10 [00:20&lt;00:08,  2.77s/it]
-episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  80%|████████  | 8/10 [00:22&lt;00:05,  2.60s/it]
-episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  90%|█████████ | 9/10 [00:24&lt;00:02,  2.49s/it]
-episode_reward_mean_adversary = 1.0, episode_reward_mean_agent = -1.0: 100%|██████████| 10/10 [00:27&lt;00:00,  2.39s/it]
+episode_reward_mean_adversary = 1.0, episode_reward_mean_agent = -1.0:  10%|█         | 1/10 [00:02&lt;00:25,  2.83s/it]
+episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  20%|██        | 2/10 [00:05&lt;00:23,  2.93s/it]
+episode_reward_mean_adversary = 1.0, episode_reward_mean_agent = -1.0:  30%|███       | 3/10 [00:08&lt;00:20,  2.97s/it]
+episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  40%|████      | 4/10 [00:11&lt;00:17,  3.00s/it]
+episode_reward_mean_adversary = 2.0, episode_reward_mean_agent = -2.0:  50%|█████     | 5/10 [00:14&lt;00:15,  3.01s/it]
+episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  60%|██████    | 6/10 [00:17&lt;00:11,  2.99s/it]
+episode_reward_mean_adversary = 2.0, episode_reward_mean_agent = -2.0:  70%|███████   | 7/10 [00:20&lt;00:08,  2.74s/it]
+episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  80%|████████  | 8/10 [00:22&lt;00:05,  2.58s/it]
+episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  90%|█████████ | 9/10 [00:24&lt;00:02,  2.46s/it]
+episode_reward_mean_adversary = 1.0, episode_reward_mean_agent = -1.0: 100%|██████████| 10/10 [00:26&lt;00:00,  2.37s/it]
 </pre></div>
 </div>
 </section>
@@ -1504,8 +1510,8 @@ Here are a few videos of some possible scenarios you can try in VMAS.</p>
 <p><span class="caption-text">Scenarios available in <a class="reference external" href="https://github.com/proroklab/VectorizedMultiAgentSimulator">VMAS</a></span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (1 minutes 31.405 seconds)</p>
-<p><strong>Estimated memory usage:</strong>  326 MB</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (1 minutes 30.435 seconds)</p>
+<p><strong>Estimated memory usage:</strong>  325 MB</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-tutorials-multiagent-competitive-ddpg-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/f3b53654a2b96b82010dd96f73ff5151/multiagent_competitive_ddpg.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">multiagent_competitive_ddpg.ipynb</span></code></a></p>

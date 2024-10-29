@@ -1079,7 +1079,7 @@ we put them in a sequence. They will not interfere with each other as each group
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 651-658
+.. GENERATED FROM PYTHON SOURCE LINES 651-663
 
 Replay buffer
 -------------
@@ -1088,8 +1088,13 @@ Replay buffers are a common building piece of off-policy RL algorithms.
 There are many types of buffers, in this tutorial we use a basic buffer to store and sample tensordict
 data randomly.
 
+This buffer uses :class:`~.data.LazyMemmapStorage`, which stores data on disk.
+This allows to use the disk memory, but can result in slower sampling as it requires data to be cast to the training device.
+To store your buffer on the GPU, you can use :class:`~.data.LazyTensorStorage`, passing the desired device.
+This will result in faster sampling but is subject to the memory constraints of the selected device.
 
-.. GENERATED FROM PYTHON SOURCE LINES 658-670
+
+.. GENERATED FROM PYTHON SOURCE LINES 663-677
 
 .. code-block:: Python
 
@@ -1098,11 +1103,13 @@ data randomly.
     for group, _agents in env.group_map.items():
         replay_buffer = ReplayBuffer(
             storage=LazyMemmapStorage(
-                memory_size, device=device
+                memory_size
             ),  # We will store up to memory_size multi-agent transitions
             sampler=RandomSampler(),
             batch_size=train_batch_size,  # We will sample batches of this size
         )
+        if device.type != "cpu":
+            replay_buffer.append_transform(lambda x: x.to(device))
         replay_buffers[group] = replay_buffer
 
 
@@ -1112,7 +1119,7 @@ data randomly.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 671-681
+.. GENERATED FROM PYTHON SOURCE LINES 678-688
 
 Loss function
 -------------
@@ -1125,7 +1132,7 @@ goes with it.
 It is also possible to have different policies for each group.
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 681-715
+.. GENERATED FROM PYTHON SOURCE LINES 688-722
 
 .. code-block:: Python
 
@@ -1170,7 +1177,7 @@ It is also possible to have different policies for each group.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 716-723
+.. GENERATED FROM PYTHON SOURCE LINES 723-730
 
 Training utils
 --------------
@@ -1180,7 +1187,7 @@ They are very simple and do not contain any important logic.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 723-751
+.. GENERATED FROM PYTHON SOURCE LINES 730-758
 
 .. code-block:: Python
 
@@ -1219,7 +1226,7 @@ They are very simple and do not contain any important logic.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 752-770
+.. GENERATED FROM PYTHON SOURCE LINES 759-777
 
 Training loop
 -------------
@@ -1240,7 +1247,7 @@ The steps include:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 770-848
+.. GENERATED FROM PYTHON SOURCE LINES 777-855
 
 .. code-block:: Python
 
@@ -1330,11 +1337,11 @@ The steps include:
 
  .. code-block:: none
 
-    episode_reward_mean_adversary = 0, episode_reward_mean_agent = 0:   0%|          | 0/10 [00:00<?, ?it/s]    episode_reward_mean_adversary = 1.0, episode_reward_mean_agent = -1.0:  10%|█         | 1/10 [00:02<00:26,  2.91s/it]    episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  20%|██        | 2/10 [00:06<00:24,  3.03s/it]     episode_reward_mean_adversary = 1.0, episode_reward_mean_agent = -1.0:  30%|███       | 3/10 [00:09<00:21,  3.04s/it]    episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  40%|████      | 4/10 [00:12<00:18,  3.05s/it]     episode_reward_mean_adversary = 2.0, episode_reward_mean_agent = -2.0:  50%|█████     | 5/10 [00:15<00:15,  3.05s/it]    episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  60%|██████    | 6/10 [00:18<00:12,  3.03s/it]     episode_reward_mean_adversary = 2.0, episode_reward_mean_agent = -2.0:  70%|███████   | 7/10 [00:20<00:08,  2.77s/it]    episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  80%|████████  | 8/10 [00:22<00:05,  2.60s/it]     episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  90%|█████████ | 9/10 [00:24<00:02,  2.49s/it]    episode_reward_mean_adversary = 1.0, episode_reward_mean_agent = -1.0: 100%|██████████| 10/10 [00:27<00:00,  2.39s/it]
+    episode_reward_mean_adversary = 0, episode_reward_mean_agent = 0:   0%|          | 0/10 [00:00<?, ?it/s]    episode_reward_mean_adversary = 1.0, episode_reward_mean_agent = -1.0:  10%|█         | 1/10 [00:02<00:25,  2.83s/it]    episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  20%|██        | 2/10 [00:05<00:23,  2.93s/it]     episode_reward_mean_adversary = 1.0, episode_reward_mean_agent = -1.0:  30%|███       | 3/10 [00:08<00:20,  2.97s/it]    episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  40%|████      | 4/10 [00:11<00:17,  3.00s/it]     episode_reward_mean_adversary = 2.0, episode_reward_mean_agent = -2.0:  50%|█████     | 5/10 [00:14<00:15,  3.01s/it]    episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  60%|██████    | 6/10 [00:17<00:11,  2.99s/it]     episode_reward_mean_adversary = 2.0, episode_reward_mean_agent = -2.0:  70%|███████   | 7/10 [00:20<00:08,  2.74s/it]    episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  80%|████████  | 8/10 [00:22<00:05,  2.58s/it]     episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  90%|█████████ | 9/10 [00:24<00:02,  2.46s/it]    episode_reward_mean_adversary = 1.0, episode_reward_mean_agent = -1.0: 100%|██████████| 10/10 [00:26<00:00,  2.37s/it]
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 849-859
+.. GENERATED FROM PYTHON SOURCE LINES 856-866
 
 Results
 -------
@@ -1347,7 +1354,7 @@ When running this script locally, you may need to close the opened window to
 proceed with the rest of the screen.
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 859-873
+.. GENERATED FROM PYTHON SOURCE LINES 866-880
 
 .. code-block:: Python
 
@@ -1377,7 +1384,7 @@ proceed with the rest of the screen.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 874-886
+.. GENERATED FROM PYTHON SOURCE LINES 881-893
 
 Render
 ------
@@ -1392,7 +1399,7 @@ wrapped environment and save the stack of frames to a `mp4` file which location 
 logger `video_logger`. Note that this code may require some external dependencies such as torchvision.
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 886-915
+.. GENERATED FROM PYTHON SOURCE LINES 893-922
 
 .. code-block:: Python
 
@@ -1432,7 +1439,7 @@ logger `video_logger`. Note that this code may require some external dependencie
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 916-944
+.. GENERATED FROM PYTHON SOURCE LINES 923-951
 
 Conclusion and next steps
 -------------------------
@@ -1466,9 +1473,9 @@ Here are a few videos of some possible scenarios you can try in VMAS.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (1 minutes 31.405 seconds)
+   **Total running time of the script:** (1 minutes 30.435 seconds)
 
-**Estimated memory usage:**  326 MB
+**Estimated memory usage:**  325 MB
 
 
 .. _sphx_glr_download_tutorials_multiagent_competitive_ddpg.py:

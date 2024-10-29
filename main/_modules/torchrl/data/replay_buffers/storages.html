@@ -1508,7 +1508,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="s2">&quot;cpu&quot;</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="s2">&quot;Memory map device other than CPU isn&#39;t supported. To cast your data to the desired device, &quot;</span>
-                <span class="s2">&quot;use `buffer.append_transform(lambda x: x.to(device)` or a similar transform.&quot;</span>
+                <span class="s2">&quot;use `buffer.append_transform(lambda x: x.to(device))` or a similar transform.&quot;</span>
             <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_len</span> <span class="o">=</span> <span class="mi">0</span>
 
