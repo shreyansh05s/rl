@@ -520,8 +520,12 @@ strategy. There are, however, many exceptions to this rule.</p>
 and outputs the parameters of a distribution, while the distribution constructor
 reads these parameters and gets a random sample from the distribution and/or
 provides a <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.distributions.Distribution</span></code> object.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">tensordict.nn</span> <span class="kn">import</span> <span class="n">NormalParamExtractor</span><span class="p">,</span> <span class="n">TensorDictSequential</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">tensordict.nn</span> <span class="kn">import</span> <span class="n">NormalParamExtractor</span><span class="p">,</span> <span class="n">TensorDictSequential</span><span class="p">,</span> <span class="n">TensorDictModule</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.modules</span> <span class="kn">import</span> <span class="n">SafeProbabilisticModule</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.envs</span> <span class="kn">import</span> <span class="n">GymEnv</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torch.distributions</span> <span class="kn">import</span> <span class="n">Normal</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">env</span> <span class="o">=</span> <span class="n">GymEnv</span><span class="p">(</span><span class="s2">&quot;Pendulum-v1&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">action_spec</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">action_spec</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">LazyLinear</span><span class="p">(</span><span class="n">action_spec</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span><span class="p">),</span> <span class="n">NormalParamExtractor</span><span class="p">())</span>
@@ -542,7 +546,8 @@ provides a <code class="xref py py-class docutils literal notranslate"><span cla
 </div>
 <p>To facilitate the construction of probabilistic policies, we provide a dedicated
 <a class="reference internal" href="generated/torchrl.modules.tensordict_module.ProbabilisticActor.html#torchrl.modules.tensordict_module.ProbabilisticActor" title="torchrl.modules.tensordict_module.ProbabilisticActor"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProbabilisticActor</span></code></a>:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">policy</span> <span class="o">=</span> <span class="n">ProbabilisticActor</span><span class="p">(</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.modules</span> <span class="kn">import</span> <span class="n">ProbabilisticActor</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">policy</span> <span class="o">=</span> <span class="n">ProbabilisticActor</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="n">model</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">in_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;loc&quot;</span><span class="p">,</span> <span class="s2">&quot;scale&quot;</span><span class="p">],</span>
 <span class="gp">... </span>    <span class="n">out_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;action&quot;</span><span class="p">],</span>
@@ -573,28 +578,28 @@ of this action.</p>
 </section>
 <section id="q-value-actors">
 <h3>Q-Value actors<a class="headerlink" href="#q-value-actors" title="Permalink to this heading">¶</a></h3>
-<p>Q-Value actors are a special type of policy that does not directly predict an action
-from an observation, but picks the action that maximised the value (or <em>quality</em>)
-of a (s,a) -&gt; v map. This map can be a table or a function.
-For discrete action spaces with continuous (or near-continuous such as pixels)
-states, it is customary to use a non-linear model such as a neural network for
-the map.
-The semantic of the Q-Value network is hopefully quite simple: we just need to
-feed a tensor-to-tensor map that given a certain state (the input tensor),
-outputs a list of action values to choose from. The wrapper will write the
-resulting action in the input tensordict along with the list of action values.</p>
+<p>Q-Value actors are a type of policy that selects actions based on the maximum value
+(or “quality”) of a state-action pair. This value can be represented as a table or a
+function. For discrete action spaces with continuous states, it’s common to use a non-linear
+model like a neural network to represent this function.</p>
+<section id="qvalueactor">
+<h4>QValueActor<a class="headerlink" href="#qvalueactor" title="Permalink to this heading">¶</a></h4>
+<p>The <code class="xref py py-class docutils literal notranslate"><span class="pre">QValueActor</span></code> class takes in a module and an action
+specification, and outputs the selected action and its corresponding value.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">torch</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">tensordict</span> <span class="kn">import</span> <span class="n">TensorDict</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">tensordict.nn.functional_modules</span> <span class="kn">import</span> <span class="n">make_functional</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.data</span> <span class="kn">import</span> <span class="n">OneHot</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.modules.tensordict_module.actors</span> <span class="kn">import</span> <span class="n">QValueActor</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create a tensor dict with an observation</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">td</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="p">({</span><span class="s1">&#39;observation&#39;</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">)},</span> <span class="p">[</span><span class="mi">5</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># we have 4 actions to choose from</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Define the action space</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">action_spec</span> <span class="o">=</span> <span class="n">OneHot</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># the model reads a state of dimension 3 and outputs 4 values, one for each action available</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create a linear module to output action values</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">module</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create a QValueActor instance</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">qvalue_actor</span> <span class="o">=</span> <span class="n">QValueActor</span><span class="p">(</span><span class="n">module</span><span class="o">=</span><span class="n">module</span><span class="p">,</span> <span class="n">spec</span><span class="o">=</span><span class="n">action_spec</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Run the actor on the tensor dict</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">qvalue_actor</span><span class="p">(</span><span class="n">td</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">td</span><span class="p">)</span>
 <span class="go">TensorDict(</span>
@@ -608,106 +613,33 @@ resulting action in the input tensordict along with the list of action values.</
 <span class="go">    is_shared=False)</span>
 </pre></div>
 </div>
-<p>Distributional Q-learning is slightly different: in this case, the value network
-does not output a scalar value for each state-action value.
-Instead, the value space is divided in a an arbitrary number of “bins”. The
-value network outputs a probability that the state-action value belongs to one bin
-or another.
-Hence, for a state space of dimension M, an action space of dimension N and a number of bins B,
-the value network encodes a
-of a (s,a) -&gt; v map. This map can be a table or a function.
-For discrete action spaces with continuous (or near-continuous such as pixels)
-states, it is customary to use a non-linear model such as a neural network for
-the map.
-The semantic of the Q-Value network is hopefully quite simple: we just need to
-feed a tensor-to-tensor map that given a certain state (the input tensor),
-outputs a list of action values to choose from. The wrapper will write the
-resulting action in the input tensordict along with the list of action values.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">torch</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">tensordict</span> <span class="kn">import</span> <span class="n">TensorDict</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">tensordict.nn.functional_modules</span> <span class="kn">import</span> <span class="n">make_functional</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.data</span> <span class="kn">import</span> <span class="n">OneHot</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.modules.tensordict_module.actors</span> <span class="kn">import</span> <span class="n">QValueActor</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">td</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="p">({</span><span class="s1">&#39;observation&#39;</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">)},</span> <span class="p">[</span><span class="mi">5</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># we have 4 actions to choose from</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">action_spec</span> <span class="o">=</span> <span class="n">OneHot</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># the model reads a state of dimension 3 and outputs 4 values, one for each action available</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">module</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">qvalue_actor</span> <span class="o">=</span> <span class="n">QValueActor</span><span class="p">(</span><span class="n">module</span><span class="o">=</span><span class="n">module</span><span class="p">,</span> <span class="n">spec</span><span class="o">=</span><span class="n">action_spec</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">qvalue_actor</span><span class="p">(</span><span class="n">td</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">td</span><span class="p">)</span>
-<span class="go">TensorDict(</span>
-<span class="go">    fields={</span>
-<span class="go">        action: Tensor(shape=torch.Size([5, 4]), device=cpu, dtype=torch.int64, is_shared=False),</span>
-<span class="go">        action_value: Tensor(shape=torch.Size([5, 4]), device=cpu, dtype=torch.float32, is_shared=False),</span>
-<span class="go">        chosen_action_value: Tensor(shape=torch.Size([5, 1]), device=cpu, dtype=torch.float32, is_shared=False),</span>
-<span class="go">        observation: Tensor(shape=torch.Size([5, 3]), device=cpu, dtype=torch.float32, is_shared=False)},</span>
-<span class="go">    batch_size=torch.Size([5]),</span>
-<span class="go">    device=None,</span>
-<span class="go">    is_shared=False)</span>
-</pre></div>
-</div>
-<p>Distributional Q-learning is slightly different: in this case, the value network
-does not output a scalar value for each state-action value.
-Instead, the value space is divided in a an arbitrary number of “bins”. The
-value network outputs a probability that the state-action value belongs to one bin
-or another.
-Hence, for a state space of dimension M, an action space of dimension N and a number of bins B,
-the value network encodes a
-of a (s,a) -&gt; v map. This map can be a table or a function.
-For discrete action spaces with continuous (or near-continuous such as pixels)
-states, it is customary to use a non-linear model such as a neural network for
-the map.
-The semantic of the Q-Value network is hopefully quite simple: we just need to
-feed a tensor-to-tensor map that given a certain state (the input tensor),
-outputs a list of action values to choose from. The wrapper will write the
-resulting action in the input tensordict along with the list of action values.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">torch</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">tensordict</span> <span class="kn">import</span> <span class="n">TensorDict</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">tensordict.nn.functional_modules</span> <span class="kn">import</span> <span class="n">make_functional</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.data</span> <span class="kn">import</span> <span class="n">OneHot</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.modules.tensordict_module.actors</span> <span class="kn">import</span> <span class="n">QValueActor</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">td</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="p">({</span><span class="s1">&#39;observation&#39;</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">)},</span> <span class="p">[</span><span class="mi">5</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># we have 4 actions to choose from</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">action_spec</span> <span class="o">=</span> <span class="n">OneHot</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># the model reads a state of dimension 3 and outputs 4 values, one for each action available</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">module</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">qvalue_actor</span> <span class="o">=</span> <span class="n">QValueActor</span><span class="p">(</span><span class="n">module</span><span class="o">=</span><span class="n">module</span><span class="p">,</span> <span class="n">spec</span><span class="o">=</span><span class="n">action_spec</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">qvalue_actor</span><span class="p">(</span><span class="n">td</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">td</span><span class="p">)</span>
-<span class="go">TensorDict(</span>
-<span class="go">    fields={</span>
-<span class="go">        action: Tensor(shape=torch.Size([5, 4]), device=cpu, dtype=torch.int64, is_shared=False),</span>
-<span class="go">        action_value: Tensor(shape=torch.Size([5, 4]), device=cpu, dtype=torch.float32, is_shared=False),</span>
-<span class="go">        chosen_action_value: Tensor(shape=torch.Size([5, 1]), device=cpu, dtype=torch.float32, is_shared=False),</span>
-<span class="go">        observation: Tensor(shape=torch.Size([5, 3]), device=cpu, dtype=torch.float32, is_shared=False)},</span>
-<span class="go">    batch_size=torch.Size([5]),</span>
-<span class="go">    device=None,</span>
-<span class="go">    is_shared=False)</span>
-</pre></div>
-</div>
-<p>Distributional Q-learning is slightly different: in this case, the value network
-does not output a scalar value for each state-action value.
-Instead, the value space is divided in a an arbitrary number of “bins”. The
-value network outputs a probability that the state-action value belongs to one bin
-or another.
-Hence, for a state space of dimension M, an action space of dimension N and a number of bins B,
-the value network encodes a <span class="math notranslate nohighlight">\(\mathbb{R}^{M} \rightarrow \mathbb{R}^{N \times B}\)</span>
-map. The following example shows how this works in TorchRL with the <a class="reference internal" href="generated/torchrl.modules.tensordict_module.DistributionalQValueActor.html#torchrl.modules.tensordict_module.DistributionalQValueActor" title="torchrl.modules.tensordict_module.DistributionalQValueActor"><code class="xref py py-class docutils literal notranslate"><span class="pre">DistributionalQValueActor</span></code></a>
-class:</p>
+<p>This will output a tensor dict with the selected action and its corresponding value.</p>
+</section>
+<section id="distributional-q-learning">
+<h4>Distributional Q-Learning<a class="headerlink" href="#distributional-q-learning" title="Permalink to this heading">¶</a></h4>
+<p>Distributional Q-learning is a variant of Q-learning that represents the value function as a
+probability distribution over possible values, rather than a single scalar value.
+This allows the agent to learn about the uncertainty in the environment and make more informed
+decisions.
+In TorchRL, distributional Q-learning is implemented using the <code class="xref py py-class docutils literal notranslate"><span class="pre">DistributionalQValueActor</span></code>
+class. This class takes in a module, an action specification, and a support vector, and outputs the selected
+action and its corresponding value distribution.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">torch</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">tensordict</span> <span class="kn">import</span> <span class="n">TensorDict</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.data</span> <span class="kn">import</span> <span class="n">OneHot</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.modules</span> <span class="kn">import</span> <span class="n">DistributionalQValueActor</span><span class="p">,</span> <span class="n">MLP</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create a tensor dict with an observation</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">td</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="p">({</span><span class="s1">&#39;observation&#39;</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">)},</span> <span class="p">[</span><span class="mi">5</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">nbins</span> <span class="o">=</span> <span class="mi">3</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># our model reads the observation and outputs a stack of 4 logits (one for each action) of size nbins=3</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">module</span> <span class="o">=</span> <span class="n">MLP</span><span class="p">(</span><span class="n">out_features</span><span class="o">=</span><span class="p">(</span><span class="n">nbins</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">depth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Define the action space</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">action_spec</span> <span class="o">=</span> <span class="n">OneHot</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Define the number of bins for the value distribution</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">nbins</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create an MLP module to output logits for the value distribution</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">module</span> <span class="o">=</span> <span class="n">MLP</span><span class="p">(</span><span class="n">out_features</span><span class="o">=</span><span class="p">(</span><span class="n">nbins</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">depth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create a DistributionalQValueActor instance</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">qvalue_actor</span> <span class="o">=</span> <span class="n">DistributionalQValueActor</span><span class="p">(</span><span class="n">module</span><span class="o">=</span><span class="n">module</span><span class="p">,</span> <span class="n">spec</span><span class="o">=</span><span class="n">action_spec</span><span class="p">,</span> <span class="n">support</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">nbins</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Run the actor on the tensor dict</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">td</span> <span class="o">=</span> <span class="n">qvalue_actor</span><span class="p">(</span><span class="n">td</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">td</span><span class="p">)</span>
 <span class="go">TensorDict(</span>
@@ -720,52 +652,7 @@ class:</p>
 <span class="go">    is_shared=False)</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">torch</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">tensordict</span> <span class="kn">import</span> <span class="n">TensorDict</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.data</span> <span class="kn">import</span> <span class="n">OneHot</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.modules</span> <span class="kn">import</span> <span class="n">DistributionalQValueActor</span><span class="p">,</span> <span class="n">MLP</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">td</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="p">({</span><span class="s1">&#39;observation&#39;</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">)},</span> <span class="p">[</span><span class="mi">5</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">nbins</span> <span class="o">=</span> <span class="mi">3</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># our model reads the observation and outputs a stack of 4 logits (one for each action) of size nbins=3</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">module</span> <span class="o">=</span> <span class="n">MLP</span><span class="p">(</span><span class="n">out_features</span><span class="o">=</span><span class="p">(</span><span class="n">nbins</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">depth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">action_spec</span> <span class="o">=</span> <span class="n">OneHot</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">qvalue_actor</span> <span class="o">=</span> <span class="n">DistributionalQValueActor</span><span class="p">(</span><span class="n">module</span><span class="o">=</span><span class="n">module</span><span class="p">,</span> <span class="n">spec</span><span class="o">=</span><span class="n">action_spec</span><span class="p">,</span> <span class="n">support</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">nbins</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">td</span> <span class="o">=</span> <span class="n">qvalue_actor</span><span class="p">(</span><span class="n">td</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">td</span><span class="p">)</span>
-<span class="go">TensorDict(</span>
-<span class="go">    fields={</span>
-<span class="go">        action: Tensor(shape=torch.Size([5, 4]), device=cpu, dtype=torch.int64, is_shared=False),</span>
-<span class="go">        action_value: Tensor(shape=torch.Size([5, 3, 4]), device=cpu, dtype=torch.float32, is_shared=False),</span>
-<span class="go">        observation: Tensor(shape=torch.Size([5, 4]), device=cpu, dtype=torch.float32, is_shared=False)},</span>
-<span class="go">    batch_size=torch.Size([5]),</span>
-<span class="go">    device=None,</span>
-<span class="go">    is_shared=False)</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">torch</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">tensordict</span> <span class="kn">import</span> <span class="n">TensorDict</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.data</span> <span class="kn">import</span> <span class="n">OneHot</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.modules</span> <span class="kn">import</span> <span class="n">DistributionalQValueActor</span><span class="p">,</span> <span class="n">MLP</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">td</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="p">({</span><span class="s1">&#39;observation&#39;</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">)},</span> <span class="p">[</span><span class="mi">5</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">nbins</span> <span class="o">=</span> <span class="mi">3</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># our model reads the observation and outputs a stack of 4 logits (one for each action) of size nbins=3</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">module</span> <span class="o">=</span> <span class="n">MLP</span><span class="p">(</span><span class="n">out_features</span><span class="o">=</span><span class="p">(</span><span class="n">nbins</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">depth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">action_spec</span> <span class="o">=</span> <span class="n">OneHot</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">qvalue_actor</span> <span class="o">=</span> <span class="n">DistributionalQValueActor</span><span class="p">(</span><span class="n">module</span><span class="o">=</span><span class="n">module</span><span class="p">,</span> <span class="n">spec</span><span class="o">=</span><span class="n">action_spec</span><span class="p">,</span> <span class="n">support</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">nbins</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">td</span> <span class="o">=</span> <span class="n">qvalue_actor</span><span class="p">(</span><span class="n">td</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">td</span><span class="p">)</span>
-<span class="go">TensorDict(</span>
-<span class="go">    fields={</span>
-<span class="go">        action: Tensor(shape=torch.Size([5, 4]), device=cpu, dtype=torch.int64, is_shared=False),</span>
-<span class="go">        action_value: Tensor(shape=torch.Size([5, 3, 4]), device=cpu, dtype=torch.float32, is_shared=False),</span>
-<span class="go">        observation: Tensor(shape=torch.Size([5, 4]), device=cpu, dtype=torch.float32, is_shared=False)},</span>
-<span class="go">    batch_size=torch.Size([5]),</span>
-<span class="go">    device=None,</span>
-<span class="go">    is_shared=False)</span>
-</pre></div>
-</div>
+<p>This will output a tensor dict with the selected action and its corresponding value distribution.</p>
 <table class="autosummary longtable docutils # Necessary for the table generated by autosummary to look decent align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.modules.tensordict_module.QValueActor.html#torchrl.modules.tensordict_module.QValueActor" title="torchrl.modules.tensordict_module.QValueActor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">QValueActor</span></code></a>(*args, **kwargs)</p></td>
@@ -782,6 +669,7 @@ class:</p>
 </tr>
 </tbody>
 </table>
+</section>
 </section>
 <section id="value-operators-and-joined-models">
 <h3>Value operators and joined models<a class="headerlink" href="#value-operators-and-joined-models" title="Permalink to this heading">¶</a></h3>
@@ -1070,6 +958,8 @@ configuration.</p>
 </section>
 <section id="utils">
 <h2>Utils<a class="headerlink" href="#utils" title="Permalink to this heading">¶</a></h2>
+<p>The module utils include functionals used to do some custom mappings as well as a tool to
+build <code class="xref py py-class docutils literal notranslate"><span class="pre">TensorDictPrimer</span></code> instances from a given module.</p>
 <table class="autosummary longtable docutils # Necessary for the table generated by autosummary to look decent align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.modules.utils.mappings.html#torchrl.modules.utils.mappings" title="torchrl.modules.utils.mappings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mappings</span></code></a>(key)</p></td>
@@ -1146,7 +1036,11 @@ configuration.</p>
 <li><a class="reference internal" href="#tensordictmodules-and-safemodules">TensorDictModules and SafeModules</a></li>
 <li><a class="reference internal" href="#exploration-wrappers-and-modules">Exploration wrappers and modules</a></li>
 <li><a class="reference internal" href="#probabilistic-actors">Probabilistic actors</a></li>
-<li><a class="reference internal" href="#q-value-actors">Q-Value actors</a></li>
+<li><a class="reference internal" href="#q-value-actors">Q-Value actors</a><ul>
+<li><a class="reference internal" href="#qvalueactor">QValueActor</a></li>
+<li><a class="reference internal" href="#distributional-q-learning">Distributional Q-Learning</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#value-operators-and-joined-models">Value operators and joined models</a></li>
 <li><a class="reference internal" href="#domain-specific-tensordict-modules">Domain-specific TensorDict modules</a></li>
 </ul>
@@ -1187,7 +1081,6 @@ configuration.</p>
          <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
          <script src="../_static/doctools.js"></script>
          <script src="../_static/design-tabs.js"></script>
-         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
      
 
   
