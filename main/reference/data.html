@@ -542,16 +542,16 @@ to the <code class="xref py py-meth docutils literal notranslate"><span class="p
 <tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.data.replay_buffers.H5StorageCheckpointer.html#torchrl.data.replay_buffers.H5StorageCheckpointer" title="torchrl.data.replay_buffers.H5StorageCheckpointer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">H5StorageCheckpointer</span></code></a>(*[, checkpoint_file, ...])</p></td>
 <td><p>Saves the storage in a compact form, saving space on the TED format and using H5 format to save the data.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.data.replay_buffers.ImmutableDatasetWriter.html#torchrl.data.replay_buffers.ImmutableDatasetWriter" title="torchrl.data.replay_buffers.ImmutableDatasetWriter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ImmutableDatasetWriter</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.data.replay_buffers.ImmutableDatasetWriter.html#torchrl.data.replay_buffers.ImmutableDatasetWriter" title="torchrl.data.replay_buffers.ImmutableDatasetWriter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ImmutableDatasetWriter</span></code></a>([compilable])</p></td>
 <td><p>A blocking writer for immutable datasets.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.data.replay_buffers.LazyMemmapStorage.html#torchrl.data.replay_buffers.LazyMemmapStorage" title="torchrl.data.replay_buffers.LazyMemmapStorage"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LazyMemmapStorage</span></code></a>(max_size, *[, ...])</p></td>
 <td><p>A memory-mapped storage for tensors and tensordicts.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.data.replay_buffers.LazyTensorStorage.html#torchrl.data.replay_buffers.LazyTensorStorage" title="torchrl.data.replay_buffers.LazyTensorStorage"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LazyTensorStorage</span></code></a>(max_size, *[, device, ndim])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.data.replay_buffers.LazyTensorStorage.html#torchrl.data.replay_buffers.LazyTensorStorage" title="torchrl.data.replay_buffers.LazyTensorStorage"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LazyTensorStorage</span></code></a>(max_size, *[, device, ...])</p></td>
 <td><p>A pre-allocated tensor storage for tensors and tensordicts.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.data.replay_buffers.ListStorage.html#torchrl.data.replay_buffers.ListStorage" title="torchrl.data.replay_buffers.ListStorage"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ListStorage</span></code></a>([max_size])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.data.replay_buffers.ListStorage.html#torchrl.data.replay_buffers.ListStorage" title="torchrl.data.replay_buffers.ListStorage"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ListStorage</span></code></a>([max_size, compilable])</p></td>
 <td><p>A storage stored in a list.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.data.replay_buffers.ListStorageCheckpointer.html#torchrl.data.replay_buffers.ListStorageCheckpointer" title="torchrl.data.replay_buffers.ListStorageCheckpointer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ListStorageCheckpointer</span></code></a>()</p></td>
@@ -569,7 +569,7 @@ to the <code class="xref py py-meth docutils literal notranslate"><span class="p
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.data.replay_buffers.RandomSampler.html#torchrl.data.replay_buffers.RandomSampler" title="torchrl.data.replay_buffers.RandomSampler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RandomSampler</span></code></a>()</p></td>
 <td><p>A uniformly random sampler for composable replay buffers.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.data.replay_buffers.RoundRobinWriter.html#torchrl.data.replay_buffers.RoundRobinWriter" title="torchrl.data.replay_buffers.RoundRobinWriter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RoundRobinWriter</span></code></a>(**kw)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.data.replay_buffers.RoundRobinWriter.html#torchrl.data.replay_buffers.RoundRobinWriter" title="torchrl.data.replay_buffers.RoundRobinWriter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RoundRobinWriter</span></code></a>([compilable])</p></td>
 <td><p>A RoundRobin Writer class for composable replay buffers.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.data.replay_buffers.Sampler.html#torchrl.data.replay_buffers.Sampler" title="torchrl.data.replay_buffers.Sampler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Sampler</span></code></a>()</p></td>
@@ -584,7 +584,7 @@ to the <code class="xref py py-meth docutils literal notranslate"><span class="p
 <tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.data.replay_buffers.SliceSamplerWithoutReplacement.html#torchrl.data.replay_buffers.SliceSamplerWithoutReplacement" title="torchrl.data.replay_buffers.SliceSamplerWithoutReplacement"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SliceSamplerWithoutReplacement</span></code></a>(*[, ...])</p></td>
 <td><p>Samples slices of data along the first dimension, given start and stop signals, without replacement.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.data.replay_buffers.Storage.html#torchrl.data.replay_buffers.Storage" title="torchrl.data.replay_buffers.Storage"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Storage</span></code></a>(max_size[, checkpointer])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.data.replay_buffers.Storage.html#torchrl.data.replay_buffers.Storage" title="torchrl.data.replay_buffers.Storage"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Storage</span></code></a>(max_size[, checkpointer, compilable])</p></td>
 <td><p>A Storage is the container of a replay buffer.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.data.replay_buffers.StorageCheckpointerBase.html#torchrl.data.replay_buffers.StorageCheckpointerBase" title="torchrl.data.replay_buffers.StorageCheckpointerBase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StorageCheckpointerBase</span></code></a>()</p></td>
@@ -596,16 +596,16 @@ to the <code class="xref py py-meth docutils literal notranslate"><span class="p
 <tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.data.replay_buffers.TensorDictMaxValueWriter.html#torchrl.data.replay_buffers.TensorDictMaxValueWriter" title="torchrl.data.replay_buffers.TensorDictMaxValueWriter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TensorDictMaxValueWriter</span></code></a>([rank_key, reduction])</p></td>
 <td><p>A Writer class for composable replay buffers that keeps the top elements based on some ranking key.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.data.replay_buffers.TensorDictRoundRobinWriter.html#torchrl.data.replay_buffers.TensorDictRoundRobinWriter" title="torchrl.data.replay_buffers.TensorDictRoundRobinWriter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TensorDictRoundRobinWriter</span></code></a>(**kw)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.data.replay_buffers.TensorDictRoundRobinWriter.html#torchrl.data.replay_buffers.TensorDictRoundRobinWriter" title="torchrl.data.replay_buffers.TensorDictRoundRobinWriter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TensorDictRoundRobinWriter</span></code></a>([compilable])</p></td>
 <td><p>A RoundRobin Writer class for composable, tensordict-based replay buffers.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.data.replay_buffers.TensorStorage.html#torchrl.data.replay_buffers.TensorStorage" title="torchrl.data.replay_buffers.TensorStorage"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TensorStorage</span></code></a>(storage[, max_size, device, ndim])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.data.replay_buffers.TensorStorage.html#torchrl.data.replay_buffers.TensorStorage" title="torchrl.data.replay_buffers.TensorStorage"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TensorStorage</span></code></a>(storage[, max_size, device, ...])</p></td>
 <td><p>A storage for tensors and tensordicts.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.data.replay_buffers.TensorStorageCheckpointer.html#torchrl.data.replay_buffers.TensorStorageCheckpointer" title="torchrl.data.replay_buffers.TensorStorageCheckpointer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TensorStorageCheckpointer</span></code></a>()</p></td>
 <td><p>A storage checkpointer for TensorStorages.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.data.replay_buffers.Writer.html#torchrl.data.replay_buffers.Writer" title="torchrl.data.replay_buffers.Writer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Writer</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.data.replay_buffers.Writer.html#torchrl.data.replay_buffers.Writer" title="torchrl.data.replay_buffers.Writer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Writer</span></code></a>([compilable])</p></td>
 <td><p>A ReplayBuffer base Writer class.</p></td>
 </tr>
 </tbody>

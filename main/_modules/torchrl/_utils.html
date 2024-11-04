@@ -654,6 +654,11 @@
 <span class="sd">    Keyword Args:</span>
 <span class="sd">        class_method (bool, optional): if ``True``, the function will be written as a class method.</span>
 <span class="sd">            Defaults to ``False``.</span>
+<span class="sd">        compilable (bool, optional): If ``False``, the module import happens</span>
+<span class="sd">            only on the first call to the wrapped function. If ``True``, the</span>
+<span class="sd">            module import happens when the wrapped function is initialized. This</span>
+<span class="sd">            allows the wrapped function to work well with ``torch.compile``.</span>
+<span class="sd">            Defaults to ``False``.</span>
 
 <span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; @implement_for(&quot;gym&quot;, &quot;0.13&quot;, &quot;0.14&quot;)</span>
@@ -692,11 +697,13 @@
         <span class="n">to_version</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">class_method</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">compilable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">module_name</span> <span class="o">=</span> <span class="n">module_name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">from_version</span> <span class="o">=</span> <span class="n">from_version</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">to_version</span> <span class="o">=</span> <span class="n">to_version</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">class_method</span> <span class="o">=</span> <span class="n">class_method</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_compilable</span> <span class="o">=</span> <span class="n">compilable</span>
         <span class="n">implement_for</span><span class="o">.</span><span class="n">_setters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
@@ -788,18 +795,27 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">fn</span> <span class="o">=</span> <span class="n">fn</span>
         <span class="n">implement_for</span><span class="o">.</span><span class="n">_lazy_impl</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">func_name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_call</span><span class="p">)</span>
 
-        <span class="nd">@wraps</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
-        <span class="k">def</span> <span class="nf">_lazy_call_fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-            <span class="c1"># first time we call the function, we also do the replacement.</span>
-            <span class="c1"># This will cause the imports to occur only during the first call to fn</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compilable</span><span class="p">:</span>
+            <span class="n">_call_fn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_delazify</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">func_name</span><span class="p">)</span>
 
-            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_delazify</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">func_name</span><span class="p">)(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">result</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_method</span><span class="p">:</span>
+                <span class="k">return</span> <span class="nb">classmethod</span><span class="p">(</span><span class="n">_call_fn</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_method</span><span class="p">:</span>
-            <span class="k">return</span> <span class="nb">classmethod</span><span class="p">(</span><span class="n">_lazy_call_fn</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">_call_fn</span>
+        <span class="k">else</span><span class="p">:</span>
 
-        <span class="k">return</span> <span class="n">_lazy_call_fn</span>
+            <span class="nd">@wraps</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
+            <span class="k">def</span> <span class="nf">_lazy_call_fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                <span class="c1"># first time we call the function, we also do the replacement.</span>
+                <span class="c1"># This will cause the imports to occur only during the first call to fn</span>
+
+                <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_delazify</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">func_name</span><span class="p">)(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">result</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_method</span><span class="p">:</span>
+                <span class="k">return</span> <span class="nb">classmethod</span><span class="p">(</span><span class="n">_lazy_call_fn</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">_lazy_call_fn</span>
 
     <span class="k">def</span> <span class="nf">_call</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
