@@ -1810,7 +1810,7 @@
                 <span class="c1"># No certainty which module multiprocessing_context is</span>
                 <span class="n">parent_pipe</span><span class="p">,</span> <span class="n">child_pipe</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">Pipe</span><span class="p">()</span>
                 <span class="n">env_fun</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_env_fn</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">env_fun</span><span class="p">,</span> <span class="n">EnvCreator</span><span class="p">):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">env_fun</span><span class="p">,</span> <span class="p">(</span><span class="n">EnvCreator</span><span class="p">,</span> <span class="n">CloudpickleWrapper</span><span class="p">)):</span>
                     <span class="n">env_fun</span> <span class="o">=</span> <span class="n">CloudpickleWrapper</span><span class="p">(</span><span class="n">env_fun</span><span class="p">)</span>
                 <span class="n">kwargs</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
                     <span class="p">{</span>

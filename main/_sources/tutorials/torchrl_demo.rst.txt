@@ -638,7 +638,7 @@ Here are examples of using a replaybuffer with tensordicts.
  .. code-block:: none
 
 
-    tensor([0, 0])
+    tensor([0, 1])
 
 
 
@@ -668,8 +668,8 @@ Here are examples of using a replaybuffer with tensordicts.
 
  .. code-block:: none
 
-    0 0.28791671991348267
-    1 1.0
+    0 0.06984967738389969
+    1 0.28791671991348267
     2 0.0
 
 
@@ -882,17 +882,17 @@ Transforms
         env.reset()
       File "/pytorch/rl/torchrl/envs/common.py", line 2165, in reset
         tensordict_reset = self._reset(tensordict, **kwargs)
-      File "/pytorch/rl/torchrl/envs/transforms/transforms.py", line 819, in _reset
+      File "/pytorch/rl/torchrl/envs/transforms/transforms.py", line 823, in _reset
         tensordict_reset = self.transform._reset(tensordict, tensordict_reset)
-      File "/pytorch/rl/torchrl/envs/transforms/transforms.py", line 1134, in _reset
+      File "/pytorch/rl/torchrl/envs/transforms/transforms.py", line 1138, in _reset
         tensordict_reset = t._reset(tensordict, tensordict_reset)
-      File "/pytorch/rl/torchrl/envs/transforms/transforms.py", line 4529, in _reset
+      File "/pytorch/rl/torchrl/envs/transforms/transforms.py", line 4533, in _reset
         tensordict = parent.rand_step(tensordict)
       File "/pytorch/rl/torchrl/envs/common.py", line 2322, in rand_step
         return self.step(tensordict)
       File "/pytorch/rl/torchrl/envs/common.py", line 1505, in step
         next_tensordict = self._step(tensordict)
-      File "/pytorch/rl/torchrl/envs/transforms/transforms.py", line 784, in _step
+      File "/pytorch/rl/torchrl/envs/transforms/transforms.py", line 788, in _step
         next_tensordict = self.base_env._step(tensordict_in)
       File "/pytorch/rl/torchrl/envs/gym_like.py", line 308, in _step
         ) = self._output_transform(self._env.step(action))
@@ -1547,9 +1547,9 @@ The library is on PyPI: *pip install torchrl*
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (1 minutes 32.748 seconds)
+   **Total running time of the script:** (1 minutes 32.555 seconds)
 
-**Estimated memory usage:**  3286 MB
+**Estimated memory usage:**  3409 MB
 
 
 .. _sphx_glr_download_tutorials_torchrl_demo.py:

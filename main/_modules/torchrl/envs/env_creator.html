@@ -408,6 +408,7 @@
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
+<span class="kn">from</span> <span class="nn">multiprocessing.sharedctypes</span> <span class="kn">import</span> <span class="n">Synchronized</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">torch</span>
@@ -435,6 +436,8 @@
 <span class="sd">        create_env_kwargs (dict, optional): the kwargs of the env creator.</span>
 <span class="sd">        share_memory (bool, optional): if False, the resulting tensordict</span>
 <span class="sd">            from the environment won&#39;t be placed in shared memory.</span>
+<span class="sd">        **kwargs: additional keyword arguments to be passed to the environment</span>
+<span class="sd">            during construction.</span>
 
 <span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; # We create the same environment on 2 processes using VecNorm</span>
@@ -481,19 +484,37 @@
         <span class="n">create_env_fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">EnvBase</span><span class="p">],</span>
         <span class="n">create_env_kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">share_memory</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">create_env_fn</span><span class="p">,</span> <span class="n">EnvCreator</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">create_env_fn</span><span class="p">,</span> <span class="p">(</span><span class="n">EnvCreator</span><span class="p">,</span> <span class="n">CloudpickleWrapper</span><span class="p">)):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">create_env_fn</span> <span class="o">=</span> <span class="n">CloudpickleWrapper</span><span class="p">(</span><span class="n">create_env_fn</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">create_env_fn</span> <span class="o">=</span> <span class="n">create_env_fn</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">create_env_kwargs</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">create_env_kwargs</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">create_env_kwargs</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="k">else</span> <span class="p">{}</span>
-        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_env_kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">create_env_kwargs</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">create_env_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">create_env_kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">initialized</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_meta_data</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_share_memory</span> <span class="o">=</span> <span class="n">share_memory</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">init_</span><span class="p">()</span>
+
+<div class="viewcode-block" id="EnvCreator.make_variant"><a class="viewcode-back" href="../../../reference/generated/torchrl.envs.EnvCreator.html#torchrl.envs.EnvCreator.make_variant">[docs]</a>    <span class="k">def</span> <span class="nf">make_variant</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EnvCreator</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a variant of the EnvCreator, pointing to the same underlying metadata but with different keyword arguments during construction.</span>
+
+<span class="sd">        This can be useful with transforms that share a state, like :class:`~torchrl.envs.TrajCounter`.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; from torchrl.envs import GymEnv</span>
+<span class="sd">            &gt;&gt;&gt; env_creator_pendulum = EnvCreator(GymEnv, env_name=&quot;Pendulum-v1&quot;)</span>
+<span class="sd">            &gt;&gt;&gt; env_creator_cartpole = env_creator_pendulum(env_name=&quot;CartPole-v1&quot;)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Copy self</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+        <span class="n">out</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">create_env_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">out</span></div>
 
     <span class="k">def</span> <span class="nf">share_memory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_dict</span><span class="p">:</span> <span class="n">OrderedDict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">state_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
@@ -503,7 +524,7 @@
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">torchrl_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
                         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">env_type</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">item</span><span class="si">}</span><span class="s2"> is already shared&quot;</span>
-                    <span class="p">)</span>  <span class="c1"># , deleting key&#39;)</span>
+                    <span class="p">)</span>  <span class="c1"># , deleting key&#39;val)</span>
                     <span class="k">del</span> <span class="n">state_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">OrderedDict</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">share_memory</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
@@ -522,12 +543,43 @@
     <span class="k">def</span> <span class="nf">meta_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">EnvMetaData</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_meta_data</span> <span class="o">=</span> <span class="n">value</span>
 
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_is_mp_value</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
+
+        <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="p">(</span><span class="n">Synchronized</span><span class="p">,))</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="s2">&quot;_obj&quot;</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_find_mp_values</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">env_or_transform</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="p">()):</span>
+        <span class="kn">from</span> <span class="nn">torchrl.envs.transforms.transforms</span> <span class="kn">import</span> <span class="n">Compose</span><span class="p">,</span> <span class="n">TransformedEnv</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">env_or_transform</span><span class="p">,</span> <span class="n">EnvBase</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span>
+            <span class="n">env_or_transform</span><span class="p">,</span> <span class="n">TransformedEnv</span>
+        <span class="p">):</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">_find_mp_values</span><span class="p">(</span>
+                <span class="n">env_or_transform</span><span class="o">.</span><span class="n">transform</span><span class="p">,</span>
+                <span class="n">values</span><span class="o">=</span><span class="n">values</span><span class="p">,</span>
+                <span class="n">prefix</span><span class="o">=</span><span class="n">prefix</span> <span class="o">+</span> <span class="p">(</span><span class="s2">&quot;transform&quot;</span><span class="p">,),</span>
+            <span class="p">)</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">_find_mp_values</span><span class="p">(</span>
+                <span class="n">env_or_transform</span><span class="o">.</span><span class="n">base_env</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">values</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="n">prefix</span> <span class="o">+</span> <span class="p">(</span><span class="s2">&quot;base_env&quot;</span><span class="p">,)</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">env_or_transform</span><span class="p">,</span> <span class="n">Compose</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">env_or_transform</span><span class="o">.</span><span class="n">transforms</span><span class="p">):</span>
+                <span class="bp">cls</span><span class="o">.</span><span class="n">_find_mp_values</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">values</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="n">prefix</span> <span class="o">+</span> <span class="p">(</span><span class="n">i</span><span class="p">,))</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">env_or_transform</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_is_mp_value</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+                <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">prefix</span> <span class="o">+</span> <span class="p">(</span><span class="n">k</span><span class="p">,),</span> <span class="n">v</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">values</span>
+
     <span class="k">def</span> <span class="nf">init_</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EnvCreator</span><span class="p">:</span>
         <span class="n">shadow_env</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_env_fn</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">create_env_kwargs</span><span class="p">)</span>
         <span class="n">tensordict</span> <span class="o">=</span> <span class="n">shadow_env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
         <span class="n">shadow_env</span><span class="o">.</span><span class="n">rand_step</span><span class="p">(</span><span class="n">tensordict</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">env_type</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">shadow_env</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_transform_state_dict</span> <span class="o">=</span> <span class="n">shadow_env</span><span class="o">.</span><span class="n">state_dict</span><span class="p">()</span>
+        <span class="c1"># Extract any mp.Value object from the env</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mp_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_mp_values</span><span class="p">(</span><span class="n">shadow_env</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="p">[])</span>
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_share_memory</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">share_memory</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_transform_state_dict</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">initialized</span> <span class="o">=</span> <span class="kc">True</span>
@@ -536,11 +588,24 @@
         <span class="k">del</span> <span class="n">shadow_env</span>
         <span class="k">return</span> <span class="bp">self</span>
 
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_set_mp_value</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">env</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">int</span><span class="p">):</span>
+                <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_set_mp_value</span><span class="p">(</span><span class="n">env</span><span class="p">[</span><span class="n">key</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">key</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">value</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_set_mp_value</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">key</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">key</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">value</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">key</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">value</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EnvBase</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">initialized</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;EnvCreator must be initialized before being called.&quot;</span><span class="p">)</span>
         <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">create_env_kwargs</span><span class="p">)</span>  <span class="c1"># create_env_kwargs precedes</span>
         <span class="n">env</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_env_fn</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mp_values</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mp_values</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_set_mp_value</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
         <span class="n">env</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_transform_state_dict</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">env</span>
 
