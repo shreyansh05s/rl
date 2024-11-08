@@ -4998,11 +4998,10 @@
 <span class="sd">            The corresponding value has to be a TensorSpec instance indicating</span>
 <span class="sd">            what the value must be.</span>
 
-<span class="sd">    When used in a `TransformedEnv`, the spec shapes must match the environment&#39;s shape if</span>
-<span class="sd">    the parent environment is batch-locked (`env.batch_locked=True`). If the spec shapes and</span>
-<span class="sd">    parent shapes do not match, the spec shapes are modified in-place to match the leading</span>
-<span class="sd">    dimensions of the parent&#39;s batch size. This adjustment is made for cases where the parent</span>
-<span class="sd">    batch size dimension is not known during instantiation.</span>
+<span class="sd">    When used in a TransfomedEnv, the spec shapes must match the envs shape if</span>
+<span class="sd">    the parent env is batch-locked (:obj:`env.batch_locked=True`).</span>
+<span class="sd">    If the env is not batch-locked (e.g. model-based envs), it is assumed that the batch is</span>
+<span class="sd">    given by the input tensordict instead.</span>
 
 <span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; from torchrl.envs.libs.gym import GymEnv</span>
@@ -5041,40 +5040,6 @@
 <span class="sd">        &gt;&gt;&gt; print(td.get((&quot;next&quot;, &quot;mykey&quot;)))</span>
 <span class="sd">        tensor([[1., 1., 1.],</span>
 <span class="sd">                [1., 1., 1.]])</span>
-
-<span class="sd">    Examples:</span>
-<span class="sd">        &gt;&gt;&gt; from torchrl.envs.libs.gym import GymEnv</span>
-<span class="sd">        &gt;&gt;&gt; from torchrl.envs import SerialEnv, TransformedEnv</span>
-<span class="sd">        &gt;&gt;&gt; from torchrl.modules.utils import get_primers_from_module</span>
-<span class="sd">        &gt;&gt;&gt; from torchrl.modules import GRUModule</span>
-<span class="sd">        &gt;&gt;&gt; base_env = SerialEnv(2, lambda: GymEnv(&quot;Pendulum-v1&quot;))</span>
-<span class="sd">        &gt;&gt;&gt; env = TransformedEnv(base_env)</span>
-<span class="sd">        &gt;&gt;&gt; model = GRUModule(input_size=2, hidden_size=2, in_key=&quot;observation&quot;, out_key=&quot;action&quot;)</span>
-<span class="sd">        &gt;&gt;&gt; primers = get_primers_from_module(model)</span>
-<span class="sd">        &gt;&gt;&gt; print(primers) # Primers shape is independent of the env batch size</span>
-<span class="sd">        TensorDictPrimer(primers=Composite(</span>
-<span class="sd">            recurrent_state: UnboundedContinuous(</span>
-<span class="sd">                shape=torch.Size([1, 2]),</span>
-<span class="sd">                space=ContinuousBox(</span>
-<span class="sd">                    low=Tensor(shape=torch.Size([1, 2]), device=cpu, dtype=torch.float32, contiguous=True),</span>
-<span class="sd">                    high=Tensor(shape=torch.Size([1, 2]), device=cpu, dtype=torch.float32, contiguous=True)),</span>
-<span class="sd">                device=cpu,</span>
-<span class="sd">                dtype=torch.float32,</span>
-<span class="sd">                domain=continuous),</span>
-<span class="sd">            device=None,</span>
-<span class="sd">            shape=torch.Size([])), default_value={&#39;recurrent_state&#39;: 0.0}, random=None)</span>
-<span class="sd">        &gt;&gt;&gt; env.append_transform(primers)</span>
-<span class="sd">        &gt;&gt;&gt; print(env.reset()) # The primers are automatically expanded to match the env batch size</span>
-<span class="sd">        TensorDict(</span>
-<span class="sd">            fields={</span>
-<span class="sd">                done: Tensor(shape=torch.Size([2, 1]), device=cpu, dtype=torch.bool, is_shared=False),</span>
-<span class="sd">                observation: Tensor(shape=torch.Size([2, 3]), device=cpu, dtype=torch.float32, is_shared=False),</span>
-<span class="sd">                recurrent_state: Tensor(shape=torch.Size([2, 1, 2]), device=cpu, dtype=torch.float32, is_shared=False),</span>
-<span class="sd">                terminated: Tensor(shape=torch.Size([2, 1]), device=cpu, dtype=torch.bool, is_shared=False),</span>
-<span class="sd">                truncated: Tensor(shape=torch.Size([2, 1]), device=cpu, dtype=torch.bool, is_shared=False)},</span>
-<span class="sd">            batch_size=torch.Size([2]),</span>
-<span class="sd">            device=None,</span>
-<span class="sd">            is_shared=False)</span>
 
 <span class="sd">    .. note:: Some TorchRL modules rely on specific keys being present in the environment TensorDicts,</span>
 <span class="sd">        like :class:`~torchrl.modules.models.LSTM` or :class:`~torchrl.modules.models.GRU`.</span>
@@ -5201,7 +5166,7 @@
                 <span class="c1"># We try to set the primer shape to the observation spec shape</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">primers</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="n">observation_spec</span><span class="o">.</span><span class="n">shape</span>
             <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-                <span class="c1"># If we fail, we expand them to that shape</span>
+                <span class="c1"># If we fail, we expnad them to that shape</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">primers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_expand_shape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">primers</span><span class="p">)</span>
         <span class="n">device</span> <span class="o">=</span> <span class="n">observation_spec</span><span class="o">.</span><span class="n">device</span>
         <span class="n">observation_spec</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">primers</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">))</span>
@@ -5268,17 +5233,12 @@
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets the default values in the input tensordict.</span>
 
-<span class="sd">        If the parent is batch-locked, we make sure the specs have the appropriate leading</span>
+<span class="sd">        If the parent is batch-locked, we assume that the specs have the appropriate leading</span>
 <span class="sd">        shape. We allow for execution when the parent is missing, in which case the</span>
 <span class="sd">        spec shape is assumed to match the tensordict&#39;s.</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">_reset</span> <span class="o">=</span> <span class="n">_get_reset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reset_key</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">)</span>
-        <span class="k">if</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">parent</span>
-            <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">batch_locked</span>
-            <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">primers</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">shape</span><span class="p">)]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">batch_size</span>
-        <span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">primers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_expand_shape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">primers</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">_reset</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
             <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">spec</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">primers</span><span class="o">.</span><span class="n">items</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="p">:</span>

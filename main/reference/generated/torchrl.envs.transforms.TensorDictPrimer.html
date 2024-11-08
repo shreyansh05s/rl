@@ -444,11 +444,10 @@ what the value must be.</p></li>
 </ul>
 </dd>
 </dl>
-<p>When used in a <cite>TransformedEnv</cite>, the spec shapes must match the environment’s shape if
-the parent environment is batch-locked (<cite>env.batch_locked=True</cite>). If the spec shapes and
-parent shapes do not match, the spec shapes are modified in-place to match the leading
-dimensions of the parent’s batch size. This adjustment is made for cases where the parent
-batch size dimension is not known during instantiation.</p>
+<p>When used in a TransfomedEnv, the spec shapes must match the envs shape if
+the parent env is batch-locked (<code class="xref py py-obj docutils literal notranslate"><span class="pre">env.batch_locked=True</span></code>).
+If the env is not batch-locked (e.g. model-based envs), it is assumed that the batch is
+given by the input tensordict instead.</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.envs.libs.gym</span> <span class="kn">import</span> <span class="n">GymEnv</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.envs</span> <span class="kn">import</span> <span class="n">SerialEnv</span>
@@ -486,41 +485,6 @@ in the <code class="docutils literal notranslate"><span class="pre">&quot;next&q
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">td</span><span class="o">.</span><span class="n">get</span><span class="p">((</span><span class="s2">&quot;next&quot;</span><span class="p">,</span> <span class="s2">&quot;mykey&quot;</span><span class="p">)))</span>
 <span class="go">tensor([[1., 1., 1.],</span>
 <span class="go">        [1., 1., 1.]])</span>
-</pre></div>
-</div>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.envs.libs.gym</span> <span class="kn">import</span> <span class="n">GymEnv</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.envs</span> <span class="kn">import</span> <span class="n">SerialEnv</span><span class="p">,</span> <span class="n">TransformedEnv</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.modules.utils</span> <span class="kn">import</span> <span class="n">get_primers_from_module</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.modules</span> <span class="kn">import</span> <span class="n">GRUModule</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">base_env</span> <span class="o">=</span> <span class="n">SerialEnv</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">GymEnv</span><span class="p">(</span><span class="s2">&quot;Pendulum-v1&quot;</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">env</span> <span class="o">=</span> <span class="n">TransformedEnv</span><span class="p">(</span><span class="n">base_env</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">GRUModule</span><span class="p">(</span><span class="n">input_size</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">hidden_size</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">in_key</span><span class="o">=</span><span class="s2">&quot;observation&quot;</span><span class="p">,</span> <span class="n">out_key</span><span class="o">=</span><span class="s2">&quot;action&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">primers</span> <span class="o">=</span> <span class="n">get_primers_from_module</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">primers</span><span class="p">)</span> <span class="c1"># Primers shape is independent of the env batch size</span>
-<span class="go">TensorDictPrimer(primers=Composite(</span>
-<span class="go">    recurrent_state: UnboundedContinuous(</span>
-<span class="go">        shape=torch.Size([1, 2]),</span>
-<span class="go">        space=ContinuousBox(</span>
-<span class="go">            low=Tensor(shape=torch.Size([1, 2]), device=cpu, dtype=torch.float32, contiguous=True),</span>
-<span class="go">            high=Tensor(shape=torch.Size([1, 2]), device=cpu, dtype=torch.float32, contiguous=True)),</span>
-<span class="go">        device=cpu,</span>
-<span class="go">        dtype=torch.float32,</span>
-<span class="go">        domain=continuous),</span>
-<span class="go">    device=None,</span>
-<span class="go">    shape=torch.Size([])), default_value={&#39;recurrent_state&#39;: 0.0}, random=None)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">env</span><span class="o">.</span><span class="n">append_transform</span><span class="p">(</span><span class="n">primers</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">())</span> <span class="c1"># The primers are automatically expanded to match the env batch size</span>
-<span class="go">TensorDict(</span>
-<span class="go">    fields={</span>
-<span class="go">        done: Tensor(shape=torch.Size([2, 1]), device=cpu, dtype=torch.bool, is_shared=False),</span>
-<span class="go">        observation: Tensor(shape=torch.Size([2, 3]), device=cpu, dtype=torch.float32, is_shared=False),</span>
-<span class="go">        recurrent_state: Tensor(shape=torch.Size([2, 1, 2]), device=cpu, dtype=torch.float32, is_shared=False),</span>
-<span class="go">        terminated: Tensor(shape=torch.Size([2, 1]), device=cpu, dtype=torch.bool, is_shared=False),</span>
-<span class="go">        truncated: Tensor(shape=torch.Size([2, 1]), device=cpu, dtype=torch.bool, is_shared=False)},</span>
-<span class="go">    batch_size=torch.Size([2]),</span>
-<span class="go">    device=None,</span>
-<span class="go">    is_shared=False)</span>
 </pre></div>
 </div>
 <div class="admonition note">
