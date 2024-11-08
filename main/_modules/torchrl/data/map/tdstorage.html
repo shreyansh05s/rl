@@ -573,10 +573,12 @@
         <span class="n">dest</span><span class="p">,</span>
         <span class="n">in_keys</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">NestedKey</span><span class="p">],</span>
         <span class="n">out_keys</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">NestedKey</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">max_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
         <span class="n">storage_constructor</span><span class="p">:</span> <span class="nb">type</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">hash_module</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">collate_fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">write_fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">consolidated</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a new TensorDictStorage from a pair of tensordicts (source and dest) using pre-defined rules of thumb.</span>
 
@@ -587,16 +589,20 @@
 <span class="sd">            out_keys (List[NestedKey]): a list of keys to return in the output tensordict.</span>
 <span class="sd">                All keys absent from out_keys, even if present in ``dest``, will not be stored</span>
 <span class="sd">                in the storage. Defaults to ``None`` (all keys are registered).</span>
+<span class="sd">            max_size (int, optional): the maximum number of elements in the storage. Ignored if the</span>
+<span class="sd">                ``storage_constructor`` is passed. Defaults to ``1000``.</span>
 <span class="sd">            storage_constructor (type, optional): a type of tensor storage.</span>
 <span class="sd">                Defaults to :class:`~tensordict.nn.storage.LazyDynamicStorage`.</span>
 <span class="sd">                Other options include :class:`~tensordict.nn.storage.FixedStorage`.</span>
-<span class="sd">            hash_module (Callable, optional): a hash function to use in the :class:`~tensordict.nn.storage.QueryModule`.</span>
-<span class="sd">                Defaults to :class:`SipHash` for low-dimensional inputs, and :class:`~tensordict.nn.storage.RandomProjectionHash`</span>
+<span class="sd">            hash_module (Callable, optional): a hash function to use in the :class:`~torchrl.data.map.QueryModule`.</span>
+<span class="sd">                Defaults to :class:`SipHash` for low-dimensional inputs, and :class:`~torchrl.data.map.RandomProjectionHash`</span>
 <span class="sd">                for larger inputs.</span>
 <span class="sd">            collate_fn (callable, optional): a function to use to collate samples from the</span>
 <span class="sd">                storage. Defaults to a custom value for each known storage type (stack for</span>
 <span class="sd">                :class:`~torchrl.data.ListStorage`, identity for :class:`~torchrl.data.TensorStorage`</span>
 <span class="sd">                subtypes and others).</span>
+<span class="sd">            consolidated (bool, optional): whether to consolidate the storage in a single storage tensor.</span>
+<span class="sd">                Defaults to ``False``.</span>
 
 <span class="sd">        Examples:</span>
 <span class="sd">            &gt;&gt;&gt; # The following example requires torchrl and gymnasium to be installed</span>
@@ -644,7 +650,13 @@
 
         <span class="c1"># Build key_to_storage</span>
         <span class="k">if</span> <span class="n">storage_constructor</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">storage_constructor</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">LazyTensorStorage</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+            <span class="n">storage_constructor</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span>
+                <span class="n">LazyTensorStorage</span><span class="p">,</span> <span class="n">max_size</span><span class="p">,</span> <span class="n">consolidated</span><span class="o">=</span><span class="nb">bool</span><span class="p">(</span><span class="n">consolidated</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">consolidated</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">storage_constructor</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span>
+                <span class="n">storage_constructor</span><span class="p">,</span> <span class="n">consolidated</span><span class="o">=</span><span class="n">consolidated</span>
+            <span class="p">)</span>
         <span class="n">storage</span> <span class="o">=</span> <span class="n">storage_constructor</span><span class="p">()</span>
         <span class="n">result</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span>
             <span class="n">query_module</span><span class="o">=</span><span class="n">query_module</span><span class="p">,</span>
@@ -659,8 +671,10 @@
         <span class="k">for</span> <span class="n">mem</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
             <span class="n">mem</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">_to_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">,</span> <span class="n">extend</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
-        <span class="n">item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_module</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">extend</span><span class="o">=</span><span class="n">extend</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_to_index</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">,</span> <span class="n">extend</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">clone</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="n">item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_module</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">extend</span><span class="o">=</span><span class="n">extend</span><span class="p">,</span> <span class="n">clone</span><span class="o">=</span><span class="n">clone</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">item</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">index_key</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">_maybe_add_batch</span><span class="p">(</span>
@@ -682,9 +696,10 @@
         <span class="k">return</span> <span class="n">item</span>
 
     <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
+        <span class="n">item</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">item</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_maybe_add_batch</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
-        <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_index</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">extend</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_index</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">extend</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">clone</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
         <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
         <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">collate_fn</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
@@ -718,7 +733,7 @@
 
     <span class="k">def</span> <span class="nf">contains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
         <span class="n">item</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_maybe_add_batch</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_index</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">extend</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_index</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">extend</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">clone</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
         <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_maybe_remove_batch</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>

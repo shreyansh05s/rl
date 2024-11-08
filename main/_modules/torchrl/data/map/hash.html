@@ -409,9 +409,10 @@
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">List</span>
 
 <span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">torch.nn</span> <span class="kn">import</span> <span class="n">Module</span>
 
 
-<div class="viewcode-block" id="BinaryToDecimal"><a class="viewcode-back" href="../../../../reference/generated/torchrl.data.BinaryToDecimal.html#torchrl.data.BinaryToDecimal">[docs]</a><span class="k">class</span> <span class="nc">BinaryToDecimal</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<div class="viewcode-block" id="BinaryToDecimal"><a class="viewcode-back" href="../../../../reference/generated/torchrl.data.BinaryToDecimal.html#torchrl.data.BinaryToDecimal">[docs]</a><span class="k">class</span> <span class="nc">BinaryToDecimal</span><span class="p">(</span><span class="n">Module</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A Module to convert binaries encoded tensors to decimals.</span>
 
 <span class="sd">    This is a utility class that allow to convert a binary encoding tensor (e.g. `1001`) to</span>
@@ -473,7 +474,7 @@
         <span class="k">return</span> <span class="n">aggregated_digits</span></div></div>
 
 
-<div class="viewcode-block" id="SipHash"><a class="viewcode-back" href="../../../../reference/generated/torchrl.data.SipHash.html#torchrl.data.SipHash">[docs]</a><span class="k">class</span> <span class="nc">SipHash</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<div class="viewcode-block" id="SipHash"><a class="viewcode-back" href="../../../../reference/generated/torchrl.data.SipHash.html#torchrl.data.SipHash">[docs]</a><span class="k">class</span> <span class="nc">SipHash</span><span class="p">(</span><span class="n">Module</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A Module to Compute SipHash values for given tensors.</span>
 
 <span class="sd">    A hash function module based on SipHash implementation in python.</span>
