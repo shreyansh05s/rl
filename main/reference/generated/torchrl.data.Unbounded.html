@@ -545,6 +545,14 @@ to <code class="docutils literal notranslate"><span class="pre">TensorDict(...,<
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="torchrl.data.Unbounded.enumerate">
+<span class="sig-name descname"><span class="pre">enumerate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="reference internal" href="../../_modules/torchrl/data/tensor_specs.html#Unbounded.enumerate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.data.Unbounded.enumerate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns all the samples that can be obtained from the TensorSpec.</p>
+<p>The samples will be stacked along the first dimension.</p>
+<p>This method is only implemented for discrete specs.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="torchrl.data.Unbounded.expand">
 <span class="sig-name descname"><span class="pre">expand</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">shape</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/torchrl/data/tensor_specs.html#Unbounded.expand"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.data.Unbounded.expand" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a new Spec with the expanded shape.</p>
