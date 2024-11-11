@@ -918,7 +918,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">transform</span><span class="p">:</span> <span class="s2">&quot;Transform&quot;</span>  <span class="c1"># noqa: F821</span>
         <span class="o">|</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">TensorDictBase</span><span class="p">],</span> <span class="n">TensorDictBase</span><span class="p">],</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EnvBase</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a transformed environment where the callable/transform passed is applied.</span>
 
 <span class="sd">        Args:</span>
@@ -1882,6 +1882,78 @@
     <span class="k">def</span> <span class="nf">full_state_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spec</span><span class="p">:</span> <span class="n">Composite</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">state_spec</span> <span class="o">=</span> <span class="n">spec</span>
 
+    <span class="c1"># Single-env specs can be used to remove the batch size from the spec</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">batch_dims</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Number of batch dimensions of the env.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_make_single_env_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spec</span><span class="p">:</span> <span class="n">TensorSpec</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorSpec</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_dims</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">spec</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="mi">0</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_dims</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">spec</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">single_full_action_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Composite</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the action spec of the env as if it had no batch dimensions.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_single_env_spec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">full_action_spec</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">single_action_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorSpec</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the action spec of the env as if it had no batch dimensions.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_single_env_spec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">action_spec</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">single_full_observation_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Composite</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the observation spec of the env as if it had no batch dimensions.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_single_env_spec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">full_action_spec</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">single_observation_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Composite</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the observation spec of the env as if it had no batch dimensions.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_single_env_spec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">observation_spec</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">single_full_reward_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Composite</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the reward spec of the env as if it had no batch dimensions.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_single_env_spec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">full_action_spec</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">single_reward_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorSpec</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the reward spec of the env as if it had no batch dimensions.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_single_env_spec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reward_spec</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">single_full_done_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Composite</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the done spec of the env as if it had no batch dimensions.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_single_env_spec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">full_action_spec</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">single_done_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorSpec</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the done spec of the env as if it had no batch dimensions.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_single_env_spec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">done_spec</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">single_output_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Composite</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the output spec of the env as if it had no batch dimensions.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_single_env_spec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_spec</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">single_input_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Composite</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the input spec of the env as if it had no batch dimensions.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_single_env_spec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_spec</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">single_full_state_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Composite</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the state spec of the env as if it had no batch dimensions.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_single_env_spec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">full_state_spec</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">single_state_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorSpec</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the state spec of the env as if it had no batch dimensions.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_single_env_spec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state_spec</span><span class="p">)</span>
+
 <div class="viewcode-block" id="EnvBase.step"><a class="viewcode-back" href="../../../reference/generated/torchrl.envs.EnvBase.html#torchrl.envs.EnvBase.step">[docs]</a>    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Makes a step in the environment.</span>
 
@@ -2775,11 +2847,11 @@
         <span class="n">set_truncated</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">trust_policy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="p">):</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Executes a rollout in the environment.</span>
 
-<span class="sd">        The function will stop as soon as one of the contained environments</span>
-<span class="sd">        returns done=True.</span>
+<span class="sd">        The function will return as soon as any of the contained environments</span>
+<span class="sd">        reaches any of the done states.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            max_steps (int): maximum number of steps to be executed. The actual number of steps can be smaller if</span>
@@ -2795,14 +2867,16 @@
 <span class="sd">                the call to ``rollout``.</span>
 
 <span class="sd">        Keyword Args:</span>
-<span class="sd">            auto_reset (bool, optional): if ``True``, resets automatically the environment</span>
-<span class="sd">                if it is in a done state when the rollout is initiated.</span>
-<span class="sd">                Default is ``True``.</span>
+<span class="sd">            auto_reset (bool, optional): if ``True``, the contained environments will be reset before starting the</span>
+<span class="sd">                rollout. If ``False``, then the rollout will continue from a previous state, which requires the</span>
+<span class="sd">                ``tensordict`` argument to be passed with the previous rollout. Default is ``True``.</span>
 <span class="sd">            auto_cast_to_device (bool, optional): if ``True``, the device of the tensordict is automatically cast to the</span>
 <span class="sd">                policy device before the policy is used. Default is ``False``.</span>
-<span class="sd">            break_when_any_done (bool): breaks if any of the done state is True. If False, a reset() is</span>
-<span class="sd">                called on the sub-envs that are done. Default is True.</span>
-<span class="sd">            break_when_all_done (bool): TODO</span>
+<span class="sd">            break_when_any_done (bool): if ``True``, break when any of the contained environments reaches any of the</span>
+<span class="sd">                done states. If ``False``, then the done environments are reset automatically. Default is ``True``.</span>
+<span class="sd">            break_when_all_done (bool, optional): if ``True``, break if all of the contained environments reach any</span>
+<span class="sd">                of the done states. If ``False``, break if at least one environment reaches any of the done states.</span>
+<span class="sd">                Default is ``False``.</span>
 <span class="sd">            return_contiguous (bool): if False, a LazyStackedTensorDict will be returned. Default is True.</span>
 <span class="sd">            tensordict (TensorDict, optional): if ``auto_reset`` is False, an initial</span>
 <span class="sd">                tensordict must be provided. Rollout will check if this tensordict has done flags and reset the</span>
