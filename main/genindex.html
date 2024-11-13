@@ -311,6 +311,7 @@
 <li class="toctree-l1"><a class="reference internal" href="tutorials/pretrained_models.html">Using pretrained models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/dqn_with_rnn.html">Recurrent DQN: Training recurrent policies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/rb_tutorial.html">Using Replay Buffers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/export.html">Exporting TorchRL modules</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/multiagent_competitive_ddpg.html">Competitive Multi-Agent Reinforcement Learning (DDPG) with TorchRL Tutorial</a></li>
@@ -1414,6 +1415,8 @@
       <li><a href="reference/generated/torchrl.modules.DecisionTransformer.html#torchrl.modules.DecisionTransformer.DTConfig">DecisionTransformer.DTConfig (class in torchrl.modules)</a>
 </li>
       <li><a href="reference/generated/torchrl.modules.tensordict_module.DecisionTransformerInferenceWrapper.html#torchrl.modules.tensordict_module.DecisionTransformerInferenceWrapper">DecisionTransformerInferenceWrapper (class in torchrl.modules.tensordict_module)</a>
+</li>
+      <li><a href="reference/generated/torchrl.modules.ConvNet.html#torchrl.modules.ConvNet.default_atari_dqn">default_atari_dqn() (torchrl.modules.ConvNet class method)</a>
 </li>
       <li><a href="reference/generated/torchrl.modules.DTActor.html#torchrl.modules.DTActor.default_config">default_config() (torchrl.modules.DTActor class method)</a>
 
@@ -3381,6 +3384,12 @@
 </li>
       <li><a href="reference/generated/torchrl.envs.utils.make_composite_from_td.html#torchrl.envs.utils.make_composite_from_td">make_composite_from_td() (in module torchrl.envs.utils)</a>
 </li>
+      <li><a href="reference/generated/torchrl.modules.GRUModule.html#torchrl.modules.GRUModule.make_cudnn_based">make_cudnn_based() (torchrl.modules.GRUModule method)</a>
+
+      <ul>
+        <li><a href="reference/generated/torchrl.modules.LSTMModule.html#torchrl.modules.LSTMModule.make_cudnn_based">(torchrl.modules.LSTMModule method)</a>
+</li>
+      </ul></li>
       <li><a href="reference/generated/torchrl.trainers.helpers.make_dqn_loss.html#torchrl.trainers.helpers.make_dqn_loss">make_dqn_loss() (in module torchrl.trainers.helpers)</a>
 </li>
       <li><a href="reference/generated/torchrl.data.Binary.html#torchrl.data.Binary.make_neg_dim">make_neg_dim() (torchrl.data.Binary method)</a>
@@ -3437,6 +3446,12 @@
       </ul></li>
       <li><a href="reference/generated/torchrl.envs.transforms.VC1Transform.html#torchrl.envs.transforms.VC1Transform.make_noload_model">make_noload_model() (torchrl.envs.transforms.VC1Transform class method)</a>
 </li>
+      <li><a href="reference/generated/torchrl.modules.GRUModule.html#torchrl.modules.GRUModule.make_python_based">make_python_based() (torchrl.modules.GRUModule method)</a>
+
+      <ul>
+        <li><a href="reference/generated/torchrl.modules.LSTMModule.html#torchrl.modules.LSTMModule.make_python_based">(torchrl.modules.LSTMModule method)</a>
+</li>
+      </ul></li>
       <li><a href="reference/generated/torchrl.trainers.helpers.make_replay_buffer.html#torchrl.trainers.helpers.make_replay_buffer">make_replay_buffer() (in module torchrl.trainers.helpers)</a>
 </li>
       <li><a href="reference/generated/torchrl.trainers.helpers.make_target_updater.html#torchrl.trainers.helpers.make_target_updater">make_target_updater() (in module torchrl.trainers.helpers)</a>
@@ -3527,6 +3542,8 @@
 </li>
       <li><a href="reference/generated/torchrl.envs.MeltingpotWrapper.html#torchrl.envs.MeltingpotWrapper">MeltingpotWrapper() (in module torchrl.envs)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/generated/torchrl.data.PairwiseDataset.html#torchrl.data.PairwiseDataset.memmap">memmap() (torchrl.data.PairwiseDataset method)</a>
 
       <ul>
@@ -3537,8 +3554,6 @@
         <li><a href="reference/generated/torchrl.data.Tree.html#torchrl.data.Tree.memmap">(torchrl.data.Tree method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/generated/torchrl.data.PairwiseDataset.html#torchrl.data.PairwiseDataset.memmap_">memmap_() (torchrl.data.PairwiseDataset method)</a>
 
       <ul>
