@@ -715,7 +715,7 @@ argument that allows the user to quickly ask for image-based environments:
  .. code-block:: none
 
 
-    <matplotlib.image.AxesImage object at 0x7f7288201930>
+    <matplotlib.image.AxesImage object at 0x7f7e8805a1a0>
 
 
 
@@ -1518,7 +1518,7 @@ to access this attribute. Here's an example:
  .. code-block:: none
 
 
-    'bar_ef323910-a1f2-11ef-91a6-0242ac110002'
+    'bar_d37dc512-a252-11ef-aed4-0242ac110002'
 
 
 
@@ -1568,7 +1568,7 @@ to access this attribute. Here's an example:
  .. code-block:: none
 
 
-    <torchrl.envs.batched_envs._dispatch_caller_parallel object at 0x7f71ae9d63e0>
+    <torchrl.envs.batched_envs._dispatch_caller_parallel object at 0x7f7e04b0d600>
 
 
 
@@ -1588,7 +1588,7 @@ to access this attribute. Here's an example:
  .. code-block:: none
 
 
-    ['bar_f39d5778-a1f2-11ef-bba6-0242ac110002', 'bar_f3a790c6-a1f2-11ef-bd4e-0242ac110002', 'bar_f3a5e726-a1f2-11ef-9476-0242ac110002']
+    ['bar_d7ec3444-a252-11ef-a20b-0242ac110002', 'bar_d7ea4116-a252-11ef-9f72-0242ac110002', 'bar_d7efd78e-a252-11ef-93d1-0242ac110002']
 
 
 
@@ -1805,8 +1805,8 @@ In regular setting, using VecNorm is quite easy:
 
  .. code-block:: none
 
-    mean: : tensor([-0.1684,  0.0334,  0.1694])
-    std: : tensor([1.2233, 1.1957, 1.2095])
+    mean: : tensor([ 0.0769, -0.1260, -0.3121])
+    std: : tensor([1.1383, 1.1180, 1.1691])
 
 
 
@@ -1820,7 +1820,7 @@ method, retrieving tensordicts to share amongst processes in the environment
 class, and pointing each process to the right common, shared tensordict
 once created:
 
-.. GENERATED FROM PYTHON SOURCE LINES 690-707
+.. GENERATED FROM PYTHON SOURCE LINES 690-709
 
 .. code-block:: Python
 
@@ -1831,9 +1831,11 @@ once created:
 
     make_env = EnvCreator(lambda: TransformedEnv(GymEnv("CartPole-v1"), VecNorm(decay=1.0)))
     env = ParallelEnv(3, make_env)
-    make_env.state_dict()["_extra_state"]["td"]["observation_count"].fill_(0.0)
-    make_env.state_dict()["_extra_state"]["td"]["observation_ssq"].fill_(0.0)
-    make_env.state_dict()["_extra_state"]["td"]["observation_sum"].fill_(0.0)
+    print("env state dict:")
+    sd = TensorDict(make_env.state_dict())
+    print(sd)
+    # Zeroes all tensors
+    sd *= 0
 
     tensordict = env.rollout(max_steps=5)
 
@@ -1843,19 +1845,56 @@ once created:
 
 
 
+
+
 .. rst-class:: sphx-glr-script-out
 
-.. code-block:: pytb
+ .. code-block:: none
 
-    Traceback (most recent call last):
-      File "/pytorch/rl/docs/source/reference/generated/tutorials/torchrl_envs.py", line 697, in <module>
-        make_env.state_dict()["_extra_state"]["td"]["observation_count"].fill_(0.0)
-    KeyError: 'td'
+    env state dict:
+    TensorDict(
+        fields={
+            _extra_state: TensorDict(
+                fields={
+                    observation_count: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, is_shared=False),
+                    observation_ssq: Tensor(shape=torch.Size([4]), device=cpu, dtype=torch.float32, is_shared=False),
+                    observation_sum: Tensor(shape=torch.Size([4]), device=cpu, dtype=torch.float32, is_shared=False),
+                    reward_count: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, is_shared=False),
+                    reward_ssq: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, is_shared=False),
+                    reward_sum: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, is_shared=False)},
+                batch_size=torch.Size([]),
+                device=None,
+                is_shared=False)},
+        batch_size=torch.Size([]),
+        device=None,
+        is_shared=False)
+    tensordict:  TensorDict(
+        fields={
+            action: Tensor(shape=torch.Size([3, 5, 2]), device=cpu, dtype=torch.int64, is_shared=False),
+            done: Tensor(shape=torch.Size([3, 5, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+            next: TensorDict(
+                fields={
+                    done: Tensor(shape=torch.Size([3, 5, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+                    observation: Tensor(shape=torch.Size([3, 5, 4]), device=cpu, dtype=torch.float32, is_shared=False),
+                    reward: Tensor(shape=torch.Size([3, 5, 1]), device=cpu, dtype=torch.float32, is_shared=False),
+                    terminated: Tensor(shape=torch.Size([3, 5, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+                    truncated: Tensor(shape=torch.Size([3, 5, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
+                batch_size=torch.Size([3, 5]),
+                device=None,
+                is_shared=False),
+            observation: Tensor(shape=torch.Size([3, 5, 4]), device=cpu, dtype=torch.float32, is_shared=False),
+            terminated: Tensor(shape=torch.Size([3, 5, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+            truncated: Tensor(shape=torch.Size([3, 5, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
+        batch_size=torch.Size([3, 5]),
+        device=None,
+        is_shared=False)
+    mean: : tensor([-0.2196,  0.4779, -0.9259])
+    std: : tensor([1.4012, 1.3743, 4.3560])
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 708-713
+.. GENERATED FROM PYTHON SOURCE LINES 710-715
 
 The count is slightly higher than the number of steps (since we
 did not use any decay). The difference between the two is due to the fact
@@ -1863,7 +1902,7 @@ that ``ParallelEnv`` creates a dummy environment to initialize the shared
 ``TensorDict`` that is used to collect data from the dispached environments.
 This small difference will usually be absored throughout training.
 
-.. GENERATED FROM PYTHON SOURCE LINES 713-721
+.. GENERATED FROM PYTHON SOURCE LINES 715-723
 
 .. code-block:: Python
 
@@ -1877,11 +1916,24 @@ This small difference will usually be absored throughout training.
     del env
 
 
+.. rst-class:: sphx-glr-script-out
+
+.. code-block:: pytb
+
+    Traceback (most recent call last):
+      File "/pytorch/rl/docs/source/reference/generated/tutorials/torchrl_envs.py", line 718, in <module>
+        make_env.state_dict()["_extra_state"]["td"]["observation_count"],
+    KeyError: 'td'
+
+
+
+
+
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (3 minutes 27.647 seconds)
+   **Total running time of the script:** (3 minutes 32.045 seconds)
 
-**Estimated memory usage:**  3159 MB
+**Estimated memory usage:**  3309 MB
 
 
 .. _sphx_glr_download_tutorials_torchrl_envs.py:

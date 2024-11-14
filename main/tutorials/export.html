@@ -478,7 +478,6 @@ later.</p>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">tensordict.utils</span>
 
 <span class="kn">import</span> <span class="nn">torch</span>
 
@@ -1030,10 +1029,56 @@ This is particularly useful when you need to deploy your model on devices or pla
 <span class="nb">print</span><span class="p">(</span><span class="n">compiled_module</span><span class="p">(</span><a href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="torch.Tensor" class="sphx-glr-backref-module-torch sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">pixels</span></a><span class="o">=</span><a href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="torch.Tensor" class="sphx-glr-backref-module-torch sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">pixels</span></a><span class="p">))</span>
 </pre></div>
 </div>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>pkg_path /tmp/tmpb5iuwccd/model.pt2
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>pkg_path /tmp/tmp5eqb1mfo/model.pt2
 tensor(1)
 </pre></div>
 </div>
+<p>An extra feature of AOTInductor is its capacity of dealing with dynamic shapes. This can be useful if you don’t know
+the shape of your input data ahead of time. For instance, we may want to run our policy for one, two or more
+observations at a time. For this, let us re-export our policy, marking a new unsqueezed batch dimension as dynamic:</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">batch_dim</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">export</span><span class="o">.</span><span class="n">Dim</span><span class="p">(</span><span class="s2">&quot;batch&quot;</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">32</span><span class="p">)</span>
+<a href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="torch.Tensor" class="sphx-glr-backref-module-torch sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">pixels_unsqueeze</span></a> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="torch.Tensor" class="sphx-glr-backref-module-torch sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">pixels</span></a><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">exported_dynamic_policy</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/export.html#torch.export.export" title="torch.export.export" class="sphx-glr-backref-module-torch-export sphx-glr-backref-type-py-function"><span class="n">torch</span><span class="o">.</span><span class="n">export</span><span class="o">.</span><span class="n">export</span></a><span class="p">(</span>
+    <span class="n">policy_transform</span><span class="p">,</span>
+    <span class="n">args</span><span class="o">=</span><span class="p">(),</span>
+    <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;pixels&quot;</span><span class="p">:</span> <a href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="torch.Tensor" class="sphx-glr-backref-module-torch sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">pixels_unsqueeze</span></a><span class="p">},</span>
+    <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">dynamic_shapes</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;pixels&quot;</span><span class="p">:</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="n">batch_dim</span><span class="p">}},</span>
+<span class="p">)</span>
+<span class="c1"># Then recompile and export</span>
+<span class="n">pkg_path</span> <span class="o">=</span> <span class="n">aoti_compile_and_package</span><span class="p">(</span>
+    <span class="n">exported_dynamic_policy</span><span class="p">,</span>
+    <span class="n">args</span><span class="o">=</span><span class="p">(),</span>
+    <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;pixels&quot;</span><span class="p">:</span> <a href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="torch.Tensor" class="sphx-glr-backref-module-torch sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">pixels_unsqueeze</span></a><span class="p">},</span>
+    <span class="n">package_path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<div class="sphx-glr-script-out highlight-pytb notranslate"><div class="highlight"><pre><span></span><span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;/pytorch/rl/docs/source/reference/generated/tutorials/export.py&quot;</span>, line <span class="m">368</span>, in <span class="n">&lt;module&gt;</span>
+<span class="w">    </span><span class="n">exported_dynamic_policy</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/export.html#torch.export.export" title="torch.export.export" class="sphx-glr-backref-module-torch-export sphx-glr-backref-type-py-function"><span class="n">torch</span><span class="o">.</span><span class="n">export</span><span class="o">.</span><span class="n">export</span></a><span class="p">(</span>
+  File <span class="nb">&quot;/pytorch/rl/env/lib/python3.10/site-packages/torch/export/__init__.py&quot;</span>, line <span class="m">368</span>, in <span class="n">export</span>
+<span class="w">    </span><span class="k">return</span> <span class="n">_export</span><span class="p">(</span>
+  File <span class="nb">&quot;/pytorch/rl/env/lib/python3.10/site-packages/torch/export/_trace.py&quot;</span>, line <span class="m">1031</span>, in <span class="n">wrapper</span>
+<span class="w">    </span><span class="k">raise</span> <span class="n">e</span>
+  File <span class="nb">&quot;/pytorch/rl/env/lib/python3.10/site-packages/torch/export/_trace.py&quot;</span>, line <span class="m">1004</span>, in <span class="n">wrapper</span>
+<span class="w">    </span><span class="n">ep</span> <span class="o">=</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+  File <span class="nb">&quot;/pytorch/rl/env/lib/python3.10/site-packages/torch/export/exported_program.py&quot;</span>, line <span class="m">122</span>, in <span class="n">wrapper</span>
+<span class="w">    </span><span class="k">return</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+  File <span class="nb">&quot;/pytorch/rl/env/lib/python3.10/site-packages/torch/export/_trace.py&quot;</span>, line <span class="m">1957</span>, in <span class="n">_export</span>
+<span class="w">    </span><span class="n">export_artifact</span> <span class="o">=</span> <span class="n">export_func</span><span class="p">(</span>  <span class="c1"># type: ignore[operator]</span>
+  File <span class="nb">&quot;/pytorch/rl/env/lib/python3.10/site-packages/torch/export/_trace.py&quot;</span>, line <span class="m">1707</span>, in <span class="n">_non_strict_export</span>
+<span class="w">    </span><span class="p">)</span> <span class="o">=</span> <span class="n">make_fake_inputs</span><span class="p">(</span>
+  File <span class="nb">&quot;/pytorch/rl/env/lib/python3.10/site-packages/torch/_export/non_strict_utils.py&quot;</span>, line <span class="m">154</span>, in <span class="n">make_fake_inputs</span>
+<span class="w">    </span><span class="n">_check_dynamic_shapes</span><span class="p">(</span><span class="n">combined_args</span><span class="p">,</span> <span class="n">dynamic_shapes</span><span class="p">)</span>
+  File <span class="nb">&quot;/pytorch/rl/env/lib/python3.10/site-packages/torch/export/dynamic_shapes.py&quot;</span>, line <span class="m">771</span>, in <span class="n">_check_dynamic_shapes</span>
+<span class="w">    </span><span class="k">raise</span> <span class="n">UserError</span><span class="p">(</span>
+<span class="gr">torch._dynamo.exc.UserError</span>: <span class="n">When `dynamic_shapes` is specified as a dict, its top-level keys must be the arg names [&#39;kwargs&#39;] of `inputs`, but here they are [&#39;pixels&#39;]. Since here `inputs` is a list/tuple enclosing a single dict, maybe you just forgot to enclose `dynamic_shapes` in a list/tuple?</span>
+<span class="x">For more information about this error, see: https://pytorch.org/docs/main/generated/exportdb/index.html#dynamic-shapes-validation</span>
+</pre></div>
+</div>
+<p>More information about this can be found in the
+<a class="reference external" href="https://pytorch.org/tutorials/recipes/torch_export_aoti_python.html">AOTInductor tutorial</a>.</p>
 </section>
 <section id="exporting-torchrl-models-with-onnx">
 <h2>Exporting TorchRL models with ONNX<a class="headerlink" href="#exporting-torchrl-models-with-onnx" title="Permalink to this heading">¶</a></h2>
@@ -1080,27 +1125,19 @@ a good example of what we can achieve with ONNX.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Screen rendering of Pong game.&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<img src="../_images/sphx_glr_export_001.png" srcset="../_images/sphx_glr_export_001.png" alt="Screen rendering of Pong game." class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Observation from ALE simulator: &lt;class &#39;numpy.ndarray&#39;&gt; (210, 160, 3)
-
-Text(0.5, 1.0, &#39;Screen rendering of Pong game.&#39;)
-</pre></div>
-</div>
 <p>Exporting to ONNX is quite similar the Export/AOTI above:</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">onnxruntime</span>
 
 <span class="k">with</span> <span class="n">set_exploration_type</span><span class="p">(</span><span class="s2">&quot;DETERMINISTIC&quot;</span><span class="p">):</span>
     <span class="c1"># We use torch.onnx.dynamo_export to capture the computation graph from our policy_explore model</span>
     <a href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="torch.Tensor" class="sphx-glr-backref-module-torch sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">pixels</span></a> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.as_tensor.html#torch.as_tensor" title="torch.as_tensor" class="sphx-glr-backref-module-torch sphx-glr-backref-type-py-function"><span class="n">torch</span><span class="o">.</span><span class="n">as_tensor</span></a><span class="p">(</span><span class="n">screen_obs</span><span class="p">)</span>
-    <a href="https://pytorch.org/docs/stable/onnx_dynamo.html#torch.onnx.ONNXProgram" title="torch.onnx.ONNXProgram" class="sphx-glr-backref-module-torch-onnx sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">onnx_policy_export</span></a> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/onnx_dynamo.html#torch.onnx.dynamo_export" title="torch.onnx.dynamo_export" class="sphx-glr-backref-module-torch-onnx sphx-glr-backref-type-py-function"><span class="n">torch</span><span class="o">.</span><span class="n">onnx</span><span class="o">.</span><span class="n">dynamo_export</span></a><span class="p">(</span><span class="n">policy_transform</span><span class="p">,</span> <a href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="torch.Tensor" class="sphx-glr-backref-module-torch sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">pixels</span></a><span class="o">=</span><a href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="torch.Tensor" class="sphx-glr-backref-module-torch sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">pixels</span></a><span class="p">)</span>
-</pre></div>
-</div>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Applied 2 of general pattern rewrite rules.
+    <span class="n">onnx_policy_export</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/onnx_dynamo.html#torch.onnx.dynamo_export" title="torch.onnx.dynamo_export" class="sphx-glr-backref-module-torch-onnx sphx-glr-backref-type-py-function"><span class="n">torch</span><span class="o">.</span><span class="n">onnx</span><span class="o">.</span><span class="n">dynamo_export</span></a><span class="p">(</span><span class="n">policy_transform</span><span class="p">,</span> <a href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="torch.Tensor" class="sphx-glr-backref-module-torch sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">pixels</span></a><span class="o">=</span><a href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="torch.Tensor" class="sphx-glr-backref-module-torch sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">pixels</span></a><span class="p">)</span>
 </pre></div>
 </div>
 <p>We can now save the program on disk and load it:</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">TemporaryDirectory</span><span class="p">()</span> <span class="k">as</span> <span class="n">tmpdir</span><span class="p">:</span>
     <span class="n">onnx_file_path</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;policy.onnx&quot;</span><span class="p">)</span>
-    <a href="https://pytorch.org/docs/stable/onnx_dynamo.html#torch.onnx.ONNXProgram.save" title="torch.onnx.ONNXProgram.save" class="sphx-glr-backref-module-torch-onnx sphx-glr-backref-type-py-method"><span class="n">onnx_policy_export</span><span class="o">.</span><span class="n">save</span></a><span class="p">(</span><span class="n">onnx_file_path</span><span class="p">)</span>
+    <span class="n">onnx_policy_export</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">onnx_file_path</span><span class="p">)</span>
 
     <span class="n">ort_session</span> <span class="o">=</span> <span class="n">onnxruntime</span><span class="o">.</span><span class="n">InferenceSession</span><span class="p">(</span>
         <span class="n">onnx_file_path</span><span class="p">,</span> <span class="n">providers</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;CPUExecutionProvider&quot;</span><span class="p">]</span>
@@ -1135,10 +1172,6 @@ more lightweight, the ONNX version should be faster than the TorchRL one.</p>
 <span class="nb">print</span><span class="p">(</span><span class="n">timeit</span><span class="o">.</span><span class="n">print</span><span class="p">())</span>
 </pre></div>
 </div>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>ONNX rollout took 712.5 msec (total = 0.7125098705291748 sec)
-TorchRL version took 1.797e+03 msec (total = 1.7974421977996826 sec)
-</pre></div>
-</div>
 <p>Note that ONNX also offers the possibility of optimizing models directly, but this is beyond the scope of this
 tutorial.</p>
 </section>
@@ -1164,8 +1197,8 @@ information.</p></li>
 <li><p>Experiment with deploying exported models on different devices.</p></li>
 <li><p>Explore optimization techniques for ONNX models to improve performance.</p></li>
 </ul>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (1 minutes 11.340 seconds)</p>
-<p><strong>Estimated memory usage:</strong>  428 MB</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 56.457 seconds)</p>
+<p><strong>Estimated memory usage:</strong>  3306 MB</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-tutorials-export-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/4e8ac58ef63f1e596d49d1b7366ef9bc/export.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">export.ipynb</span></code></a></p>

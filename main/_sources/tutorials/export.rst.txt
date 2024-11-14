@@ -65,7 +65,7 @@ with Atari games as they are rendered by the gymnasium library.
 We will stick to the DQN example, and show how a policy that outputs a distribution over values can be used instead
 later.
 
-.. GENERATED FROM PYTHON SOURCE LINES 50-144
+.. GENERATED FROM PYTHON SOURCE LINES 50-143
 
 .. code-block:: Python
 
@@ -73,7 +73,6 @@ later.
     from pathlib import Path
 
     import numpy as np
-    import tensordict.utils
 
     import torch
 
@@ -170,7 +169,7 @@ later.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 145-161
+.. GENERATED FROM PYTHON SOURCE LINES 144-160
 
 Exporting a TensorDictModule-based policy
 -----------------------------------------
@@ -189,7 +188,7 @@ Here again, the magic of tensordict will unblock us: it happens that most of loc
 transforms can be used both as environment transforms or preprocessing blocks within a :class:`~torch.nn.Module`
 instance. Let's see how we can prepend them to our policy:
 
-.. GENERATED FROM PYTHON SOURCE LINES 161-170
+.. GENERATED FROM PYTHON SOURCE LINES 160-169
 
 .. code-block:: Python
 
@@ -209,7 +208,7 @@ instance. Let's see how we can prepend them to our policy:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 171-177
+.. GENERATED FROM PYTHON SOURCE LINES 170-176
 
 We create a fake input, and pass it to :func:`~torch.export.export` with the policy. This will give a "raw" python
 function that will read our input tensor and output an action without any reference to TorchRL or tensordict modules.
@@ -218,7 +217,7 @@ A good practice is to call :meth:`~tensordict.nn.TensorDictSequential.select_out
 we only want a certain set of outputs (in case the policy returns more than one tensor).
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 177-189
+.. GENERATED FROM PYTHON SOURCE LINES 176-188
 
 .. code-block:: Python
 
@@ -241,13 +240,13 @@ we only want a certain set of outputs (in case the policy returns more than one 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 190-193
+.. GENERATED FROM PYTHON SOURCE LINES 189-192
 
 Representing the policy can be quite insightful: we can see that the first operations are a permute, a div, unsqueeze,
 resize followed by the convolutional and MLP layers.
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 193-196
+.. GENERATED FROM PYTHON SOURCE LINES 192-195
 
 .. code-block:: Python
 
@@ -324,12 +323,12 @@ resize followed by the convolutional and MLP layers.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 197-199
+.. GENERATED FROM PYTHON SOURCE LINES 196-198
 
 As a final check, we can execute the policy with a dummy input. The output (for a single image) should be an integer
 from 0 to 6 representing the action to be executed in the game.
 
-.. GENERATED FROM PYTHON SOURCE LINES 199-203
+.. GENERATED FROM PYTHON SOURCE LINES 198-202
 
 .. code-block:: Python
 
@@ -350,7 +349,7 @@ from 0 to 6 representing the action to be executed in the game.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 204-230
+.. GENERATED FROM PYTHON SOURCE LINES 203-229
 
 Further details on exporting :class:`~tensordict.nn.TensorDictModule` instances can be found in the tensordict
 `documentation <https://pytorch.org/tensordict/stable/tutorials/export.html>`_.
@@ -379,7 +378,7 @@ Fortunately, export utils can understand that context manager and as long as the
 context manager, the behaviour of the policy should match what is indicated. To demonstrate this, let us try with
 another exploration type:
 
-.. GENERATED FROM PYTHON SOURCE LINES 230-239
+.. GENERATED FROM PYTHON SOURCE LINES 229-238
 
 .. code-block:: Python
 
@@ -399,14 +398,14 @@ another exploration type:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 240-244
+.. GENERATED FROM PYTHON SOURCE LINES 239-243
 
 Our exported policy should now have a random module at the end of the call stack, unlike the previous version.
 Indeed, the last three operations are: generate a random integer between 0 and 6, use a random mask and select
 the network output or the random action based on the value in the mask.
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 244-247
+.. GENERATED FROM PYTHON SOURCE LINES 243-246
 
 .. code-block:: Python
 
@@ -498,7 +497,7 @@ the network output or the random action based on the value in the mask.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 248-258
+.. GENERATED FROM PYTHON SOURCE LINES 247-257
 
 Working with recurrent policies
 -------------------------------
@@ -511,7 +510,7 @@ implementation of these modules that can be swapped with the CuDNN version when 
 To show this, let us write a prototypical policy that relies on an RNN:
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 258-269
+.. GENERATED FROM PYTHON SOURCE LINES 257-268
 
 .. code-block:: Python
 
@@ -533,12 +532,12 @@ To show this, let us write a prototypical policy that relies on an RNN:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 270-272
+.. GENERATED FROM PYTHON SOURCE LINES 269-271
 
 We set the recurrent mode to ``False`` to allow the module to read inputs one-by-one and not in batch.
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 272-274
+.. GENERATED FROM PYTHON SOURCE LINES 271-273
 
 .. code-block:: Python
 
@@ -551,13 +550,13 @@ We set the recurrent mode to ``False`` to allow the module to read inputs one-by
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 275-278
+.. GENERATED FROM PYTHON SOURCE LINES 274-277
 
 If the LSTM module is not python based but CuDNN (:class:`~torch.nn.LSTM`), the :meth:`~torchrl.modules.LSTMModule.make_python_based`
 method can be used to use the python version.
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 278-280
+.. GENERATED FROM PYTHON SOURCE LINES 277-279
 
 .. code-block:: Python
 
@@ -570,13 +569,13 @@ method can be used to use the python version.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 281-284
+.. GENERATED FROM PYTHON SOURCE LINES 280-283
 
 Let's now create the policy. We combine two layers that modify the shape of the input (unsqueeze/squeeze operations)
 with the LSTM and an MLP.
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 284-298
+.. GENERATED FROM PYTHON SOURCE LINES 283-297
 
 .. code-block:: Python
 
@@ -601,12 +600,12 @@ with the LSTM and an MLP.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 299-301
+.. GENERATED FROM PYTHON SOURCE LINES 298-300
 
 As before, we select the relevant keys:
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 301-306
+.. GENERATED FROM PYTHON SOURCE LINES 300-305
 
 .. code-block:: Python
 
@@ -629,12 +628,12 @@ As before, we select the relevant keys:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 307-309
+.. GENERATED FROM PYTHON SOURCE LINES 306-308
 
 We are now ready to export. To do this, we build fake inputs and pass them to :func:`~torch.export.export`:
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 309-331
+.. GENERATED FROM PYTHON SOURCE LINES 308-330
 
 .. code-block:: Python
 
@@ -790,7 +789,7 @@ We are now ready to export. To do this, we build fake inputs and pass them to :f
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 332-341
+.. GENERATED FROM PYTHON SOURCE LINES 331-340
 
 AOTInductor: Export your policy to pytorch-free C++ binaries
 ------------------------------------------------------------
@@ -802,7 +801,7 @@ Here's an example of how you can use AOTInductor to export your policy, inspired
 `AOTI documentation <https://pytorch.org/docs/main/torch.compiler_aot_inductor.html>`_:
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 341-362
+.. GENERATED FROM PYTHON SOURCE LINES 340-361
 
 .. code-block:: Python
 
@@ -835,13 +834,75 @@ Here's an example of how you can use AOTInductor to export your policy, inspired
 
  .. code-block:: none
 
-    pkg_path /tmp/tmpb5iuwccd/model.pt2
+    pkg_path /tmp/tmp5eqb1mfo/model.pt2
     tensor(1)
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 363-392
+.. GENERATED FROM PYTHON SOURCE LINES 362-365
+
+An extra feature of AOTInductor is its capacity of dealing with dynamic shapes. This can be useful if you don't know
+the shape of your input data ahead of time. For instance, we may want to run our policy for one, two or more
+observations at a time. For this, let us re-export our policy, marking a new unsqueezed batch dimension as dynamic:
+
+.. GENERATED FROM PYTHON SOURCE LINES 365-383
+
+.. code-block:: Python
+
+
+    batch_dim = torch.export.Dim("batch", min=1, max=32)
+    pixels_unsqueeze = pixels.unsqueeze(0)
+    exported_dynamic_policy = torch.export.export(
+        policy_transform,
+        args=(),
+        kwargs={"pixels": pixels_unsqueeze},
+        strict=False,
+        dynamic_shapes={"pixels": {0: batch_dim}},
+    )
+    # Then recompile and export
+    pkg_path = aoti_compile_and_package(
+        exported_dynamic_policy,
+        args=(),
+        kwargs={"pixels": pixels_unsqueeze},
+        package_path=path,
+    )
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+.. code-block:: pytb
+
+    Traceback (most recent call last):
+      File "/pytorch/rl/docs/source/reference/generated/tutorials/export.py", line 368, in <module>
+        exported_dynamic_policy = torch.export.export(
+      File "/pytorch/rl/env/lib/python3.10/site-packages/torch/export/__init__.py", line 368, in export
+        return _export(
+      File "/pytorch/rl/env/lib/python3.10/site-packages/torch/export/_trace.py", line 1031, in wrapper
+        raise e
+      File "/pytorch/rl/env/lib/python3.10/site-packages/torch/export/_trace.py", line 1004, in wrapper
+        ep = fn(*args, **kwargs)
+      File "/pytorch/rl/env/lib/python3.10/site-packages/torch/export/exported_program.py", line 122, in wrapper
+        return fn(*args, **kwargs)
+      File "/pytorch/rl/env/lib/python3.10/site-packages/torch/export/_trace.py", line 1957, in _export
+        export_artifact = export_func(  # type: ignore[operator]
+      File "/pytorch/rl/env/lib/python3.10/site-packages/torch/export/_trace.py", line 1707, in _non_strict_export
+        ) = make_fake_inputs(
+      File "/pytorch/rl/env/lib/python3.10/site-packages/torch/_export/non_strict_utils.py", line 154, in make_fake_inputs
+        _check_dynamic_shapes(combined_args, dynamic_shapes)
+      File "/pytorch/rl/env/lib/python3.10/site-packages/torch/export/dynamic_shapes.py", line 771, in _check_dynamic_shapes
+        raise UserError(
+    torch._dynamo.exc.UserError: When `dynamic_shapes` is specified as a dict, its top-level keys must be the arg names ['kwargs'] of `inputs`, but here they are ['pixels']. Since here `inputs` is a list/tuple enclosing a single dict, maybe you just forgot to enclose `dynamic_shapes` in a list/tuple?
+    For more information about this error, see: https://pytorch.org/docs/main/generated/exportdb/index.html#dynamic-shapes-validation
+
+
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 384-416
+
+More information about this can be found in the
+`AOTInductor tutorial <https://pytorch.org/tutorials/recipes/torch_export_aoti_python.html>`_.
 
 Exporting TorchRL models with ONNX
 ----------------------------------
@@ -873,7 +934,7 @@ a good example of what we can achieve with ONNX.
 
 Let us see what this API looks like:
 
-.. GENERATED FROM PYTHON SOURCE LINES 392-413
+.. GENERATED FROM PYTHON SOURCE LINES 416-437
 
 .. code-block:: Python
 
@@ -899,30 +960,12 @@ Let us see what this API looks like:
     plt.title("Screen rendering of Pong game.")
 
 
-
-
-.. image-sg:: /tutorials/images/sphx_glr_export_001.png
-   :alt: Screen rendering of Pong game.
-   :srcset: /tutorials/images/sphx_glr_export_001.png
-   :class: sphx-glr-single-img
-
-
-.. rst-class:: sphx-glr-script-out
-
- .. code-block:: none
-
-    Observation from ALE simulator: <class 'numpy.ndarray'> (210, 160, 3)
-
-    Text(0.5, 1.0, 'Screen rendering of Pong game.')
-
-
-
-.. GENERATED FROM PYTHON SOURCE LINES 414-416
+.. GENERATED FROM PYTHON SOURCE LINES 438-440
 
 Exporting to ONNX is quite similar the Export/AOTI above:
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 416-424
+.. GENERATED FROM PYTHON SOURCE LINES 440-448
 
 .. code-block:: Python
 
@@ -935,23 +978,11 @@ Exporting to ONNX is quite similar the Export/AOTI above:
         onnx_policy_export = torch.onnx.dynamo_export(policy_transform, pixels=pixels)
 
 
-
-
-
-.. rst-class:: sphx-glr-script-out
-
- .. code-block:: none
-
-    Applied 2 of general pattern rewrite rules.
-
-
-
-
-.. GENERATED FROM PYTHON SOURCE LINES 425-426
+.. GENERATED FROM PYTHON SOURCE LINES 449-450
 
 We can now save the program on disk and load it:
 
-.. GENERATED FROM PYTHON SOURCE LINES 426-437
+.. GENERATED FROM PYTHON SOURCE LINES 450-461
 
 .. code-block:: Python
 
@@ -967,13 +998,7 @@ We can now save the program on disk and load it:
     onnx_policy = ort_session.run(None, onnxruntime_input)
 
 
-
-
-
-
-
-
-.. GENERATED FROM PYTHON SOURCE LINES 438-443
+.. GENERATED FROM PYTHON SOURCE LINES 462-467
 
 Running a rollout with ONNX
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -981,7 +1006,7 @@ Running a rollout with ONNX
 We now have an ONNX model that runs our policy. Let's compare it to the original TorchRL instance: because it is
 more lightweight, the ONNX version should be faster than the TorchRL one.
 
-.. GENERATED FROM PYTHON SOURCE LINES 443-465
+.. GENERATED FROM PYTHON SOURCE LINES 467-489
 
 .. code-block:: Python
 
@@ -1008,20 +1033,7 @@ more lightweight, the ONNX version should be faster than the TorchRL one.
     print(timeit.print())
 
 
-
-
-
-.. rst-class:: sphx-glr-script-out
-
- .. code-block:: none
-
-    ONNX rollout took 712.5 msec (total = 0.7125098705291748 sec)
-    TorchRL version took 1.797e+03 msec (total = 1.7974421977996826 sec)
-
-
-
-
-.. GENERATED FROM PYTHON SOURCE LINES 466-492
+.. GENERATED FROM PYTHON SOURCE LINES 490-516
 
 Note that ONNX also offers the possibility of optimizing models directly, but this is beyond the scope of this
 tutorial.
@@ -1053,9 +1065,9 @@ Further reading and learning steps:
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (1 minutes 11.340 seconds)
+   **Total running time of the script:** (0 minutes 56.457 seconds)
 
-**Estimated memory usage:**  428 MB
+**Estimated memory usage:**  3306 MB
 
 
 .. _sphx_glr_download_tutorials_export.py:
