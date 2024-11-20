@@ -431,38 +431,35 @@ not present, it is simply ignored.</p>
 if they should be kept. Defaults to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 <li><p><strong>keep_dones</strong> (<em>bool</em><em>, </em><em>optional</em>) – if <code class="docutils literal notranslate"><span class="pre">False</span></code>, the done keys must be provided
 if they should be kept. Defaults to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
-<li><p><strong>gymnasium</strong> (<em>&gt;&gt;&gt; import</em>) – </p></li>
-<li><p><strong>GymWrapper</strong> (<em>...</em>) – </p></li>
-<li><p><strong>TransformedEnv</strong><strong>(</strong> (<em>&gt;&gt;&gt; env =</em>) – </p></li>
-<li><p><strong>GymWrapper</strong> – </p></li>
-<li><p><strong>SelectTransform</strong> (<em>...</em>) – </p></li>
-<li><p><strong>)</strong> (<em>...</em>) – </p></li>
-<li><p><strong>env.rollout</strong> (<em>&gt;&gt;&gt;</em>) – </p></li>
-<li><p><strong>TensorDict</strong><strong>(</strong> – <dl>
-<dt>fields={</dt><dd><p>action: Tensor(shape=torch.Size([3, 1]), device=cpu, dtype=torch.float32, is_shared=False),
-done: Tensor(shape=torch.Size([3, 1]), device=cpu, dtype=torch.bool, is_shared=False),
-next: TensorDict(</p>
-<blockquote>
-<div><dl class="simple">
-<dt>fields={</dt><dd><p>done: Tensor(shape=torch.Size([3, 1]), device=cpu, dtype=torch.bool, is_shared=False),
-observation: Tensor(shape=torch.Size([3, 3]), device=cpu, dtype=torch.float32, is_shared=False),
-reward: Tensor(shape=torch.Size([3, 1]), device=cpu, dtype=torch.float32, is_shared=False)},</p>
-</dd>
-</dl>
-<p>batch_size=torch.Size([3]),
-device=cpu,
-is_shared=False),</p>
-</div></blockquote>
-<p>observation: Tensor(shape=torch.Size([3, 3]), device=cpu, dtype=torch.float32, is_shared=False)},</p>
-</dd>
-</dl>
-<p>batch_size=torch.Size([3]),
-device=cpu,
-is_shared=False)</p>
-</p></li>
 </ul>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">gymnasium</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.envs</span> <span class="kn">import</span> <span class="n">GymWrapper</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">env</span> <span class="o">=</span> <span class="n">TransformedEnv</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">GymWrapper</span><span class="p">(</span><span class="n">gymnasium</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="s2">&quot;Pendulum-v1&quot;</span><span class="p">)),</span>
+<span class="gp">... </span>    <span class="n">SelectTransform</span><span class="p">(</span><span class="s2">&quot;observation&quot;</span><span class="p">,</span> <span class="s2">&quot;reward&quot;</span><span class="p">,</span> <span class="s2">&quot;done&quot;</span><span class="p">,</span> <span class="n">keep_dones</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span> <span class="c1"># we leave done behind</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">env</span><span class="o">.</span><span class="n">rollout</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>  <span class="c1"># the truncated key is now absent</span>
+<span class="go">TensorDict(</span>
+<span class="go">    fields={</span>
+<span class="go">        action: Tensor(shape=torch.Size([3, 1]), device=cpu, dtype=torch.float32, is_shared=False),</span>
+<span class="go">        done: Tensor(shape=torch.Size([3, 1]), device=cpu, dtype=torch.bool, is_shared=False),</span>
+<span class="go">        next: TensorDict(</span>
+<span class="go">            fields={</span>
+<span class="go">                done: Tensor(shape=torch.Size([3, 1]), device=cpu, dtype=torch.bool, is_shared=False),</span>
+<span class="go">                observation: Tensor(shape=torch.Size([3, 3]), device=cpu, dtype=torch.float32, is_shared=False),</span>
+<span class="go">                reward: Tensor(shape=torch.Size([3, 1]), device=cpu, dtype=torch.float32, is_shared=False)},</span>
+<span class="go">            batch_size=torch.Size([3]),</span>
+<span class="go">            device=cpu,</span>
+<span class="go">            is_shared=False),</span>
+<span class="go">        observation: Tensor(shape=torch.Size([3, 3]), device=cpu, dtype=torch.float32, is_shared=False)},</span>
+<span class="go">    batch_size=torch.Size([3]),</span>
+<span class="go">    device=cpu,</span>
+<span class="go">    is_shared=False)</span>
+</pre></div>
+</div>
 <dl class="py method">
 <dt class="sig sig-object py" id="torchrl.envs.transforms.SelectTransform.forward">
 <span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensordict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TensorDictBase</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">TensorDictBase</span></span></span><a class="headerlink" href="#torchrl.envs.transforms.SelectTransform.forward" title="Permalink to this definition">¶</a></dt>

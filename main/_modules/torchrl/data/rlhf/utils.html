@@ -444,7 +444,7 @@
 <span class="sd">    with.</span>
 
 <span class="sd">    Keyword Arguments:</span>
-<span class="sd">        kl_coef (float): The coefficient to multiply KL with when calculating the</span>
+<span class="sd">        kl_coef (:obj:`float`): The coefficient to multiply KL with when calculating the</span>
 <span class="sd">            reward.</span>
 <span class="sd">        model (nn.Module, optional): wrapped model that needs to be controlled.</span>
 <span class="sd">            Must have an attribute ``&quot;kl_coef&quot;``. If provided, the ``&quot;kl_coef&quot;`` will</span>
@@ -476,8 +476,8 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Adaptive KL Controller as described in Ziegler et al. &quot;Fine-Tuning Language Models from Human Preferences&quot;.</span>
 
 <span class="sd">    Keyword Arguments:</span>
-<span class="sd">        init_kl_coef (float): The starting value of the coefficient.</span>
-<span class="sd">        target (float): The target KL value. When the observed KL is smaller, the</span>
+<span class="sd">        init_kl_coef (:obj:`float`): The starting value of the coefficient.</span>
+<span class="sd">        target (:obj:`float`): The target KL value. When the observed KL is smaller, the</span>
 <span class="sd">            coefficient is decreased, thereby relaxing the KL penalty in the training</span>
 <span class="sd">            objective and allowing the model to stray further from the reference model.</span>
 <span class="sd">            When the observed KL is greater than the target, the KL coefficient is</span>
@@ -549,10 +549,10 @@
 <span class="sd">        reward_model: (nn.Module, tensordict.nn.TensorDictModule): a model which, given</span>
 <span class="sd">            ``input_ids`` and ``attention_mask``, calculates rewards for each token and</span>
 <span class="sd">            end_scores (the reward for the final token in each sequence).</span>
-<span class="sd">        kl_coef: (float, optional): initial kl coefficient.</span>
+<span class="sd">        kl_coef: (:obj:`float`, optional): initial kl coefficient.</span>
 <span class="sd">        max_new_tokens (int, optional): the maximum length of the sequence.</span>
 <span class="sd">            Defaults to 50.</span>
-<span class="sd">        score_clip (float, optional): Scores from the reward model are clipped to the</span>
+<span class="sd">        score_clip (:obj:`float`, optional): Scores from the reward model are clipped to the</span>
 <span class="sd">            range ``(-score_clip, score_clip)``. Defaults to 10.</span>
 <span class="sd">        kl_scheduler (KLControllerBase, optional): the KL coefficient scheduler.</span>
 <span class="sd">        num_steps (int, optional): number of steps between two optimization.</span>

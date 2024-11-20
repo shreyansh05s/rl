@@ -452,6 +452,8 @@ optimizing the model. This approach efficiently decouples the execution of
 the policy from its training and allows us to design training loops that are
 similar to what can be found in traditional supervised learning examples.</p>
 <p>The typical training loop therefore looks like this:</p>
+<blockquote>
+<div><p>..code - block::Python</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_collections</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="n">data</span> <span class="o">=</span> <span class="n">get_next_batch</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">policy</span><span class="p">)</span>
 <span class="gp">... </span>    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_optim</span><span class="p">):</span>
@@ -460,6 +462,7 @@ similar to what can be found in traditional supervised learning examples.</p>
 <span class="gp">... </span>        <a href="https://pytorch.org/docs/stable/generated/torch.optim.Adam.html#torch.optim.Adam.step" title="torch.optim.Adam.step" class="sphx-glr-backref-module-torch-optim sphx-glr-backref-type-py-method"><span class="n">optim</span><span class="o">.</span><span class="n">step</span></a><span class="p">()</span>
 </pre></div>
 </div>
+</div></blockquote>
 <p>In this concise tutorial, you will receive a brief overview of the loss modules. Due to the typically
 straightforward nature of the API for basic usage, this tutorial will be kept brief.</p>
 <section id="rl-objective-functions">
@@ -601,8 +604,8 @@ optimization step or each collection step:</p>
 <li><p>The <a class="reference internal" href="coding_ddpg.html#coding-ddpg"><span class="std std-ref">Coding a DDPG loss tutorial</span></a>;</p></li>
 <li><p>Losses in action in <a class="reference internal" href="coding_ppo.html#coding-ppo"><span class="std std-ref">PPO</span></a> or <a class="reference internal" href="coding_dqn.html#coding-dqn"><span class="std std-ref">DQN</span></a>.</p></li>
 </ul>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 26.804 seconds)</p>
-<p><strong>Estimated memory usage:</strong>  321 MB</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 26.680 seconds)</p>
+<p><strong>Estimated memory usage:</strong>  319 MB</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-tutorials-getting-started-2-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/ae2b99ca949badb94260561dacc8c210/getting-started-2.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">getting-started-2.ipynb</span></code></a></p>

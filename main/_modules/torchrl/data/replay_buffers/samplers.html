@@ -701,10 +701,10 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        max_capacity (int): maximum capacity of the buffer.</span>
-<span class="sd">        alpha (float): exponent α determines how much prioritization is used,</span>
+<span class="sd">        alpha (:obj:`float`): exponent α determines how much prioritization is used,</span>
 <span class="sd">            with α = 0 corresponding to the uniform case.</span>
-<span class="sd">        beta (float): importance sampling negative exponent.</span>
-<span class="sd">        eps (float, optional): delta added to the priorities to ensure that the buffer</span>
+<span class="sd">        beta (:obj:`float`): importance sampling negative exponent.</span>
+<span class="sd">        eps (:obj:`float`, optional): delta added to the priorities to ensure that the buffer</span>
 <span class="sd">            does not contain null priorities. Defaults to 1e-8.</span>
 <span class="sd">        reduction (str, optional): the reduction method for multidimensional</span>
 <span class="sd">            tensordicts (ie stored trajectory). Can be one of &quot;max&quot;, &quot;min&quot;,</span>
@@ -2055,10 +2055,10 @@
 <span class="sd">        :meth:`~.update_priority`.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        alpha (float): exponent α determines how much prioritization is used,</span>
+<span class="sd">        alpha (:obj:`float`): exponent α determines how much prioritization is used,</span>
 <span class="sd">            with α = 0 corresponding to the uniform case.</span>
-<span class="sd">        beta (float): importance sampling negative exponent.</span>
-<span class="sd">        eps (float, optional): delta added to the priorities to ensure that the buffer</span>
+<span class="sd">        beta (:obj:`float`): importance sampling negative exponent.</span>
+<span class="sd">        eps (:obj:`float`, optional): delta added to the priorities to ensure that the buffer</span>
 <span class="sd">            does not contain null priorities. Defaults to 1e-8.</span>
 <span class="sd">        reduction (str, optional): the reduction method for multidimensional</span>
 <span class="sd">            tensordicts (i.e., stored trajectory). Can be one of &quot;max&quot;, &quot;min&quot;,</span>
@@ -2576,7 +2576,7 @@
             <span class="p">[</span>
                 <span class="n">TensorDict</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">info</span><span class="p">,</span> <span class="n">batch_dims</span><span class="o">=</span><span class="n">samples</span><span class="o">.</span><span class="n">ndim</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">info</span>
-                <span class="k">else</span> <span class="n">TensorDict</span><span class="p">({},</span> <span class="p">[])</span>
+                <span class="k">else</span> <span class="n">TensorDict</span><span class="p">()</span>
                 <span class="k">for</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">infos</span>
             <span class="p">]</span>
         <span class="p">)</span>

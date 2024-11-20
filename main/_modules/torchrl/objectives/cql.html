@@ -462,11 +462,11 @@
 <span class="sd">    Keyword args:</span>
 <span class="sd">        loss_function (str, optional): loss function to be used with</span>
 <span class="sd">            the value function loss. Default is `&quot;smooth_l1&quot;`.</span>
-<span class="sd">        alpha_init (float, optional): initial entropy multiplier.</span>
+<span class="sd">        alpha_init (:obj:`float`, optional): initial entropy multiplier.</span>
 <span class="sd">            Default is 1.0.</span>
-<span class="sd">        min_alpha (float, optional): min value of alpha.</span>
+<span class="sd">        min_alpha (:obj:`float`, optional): min value of alpha.</span>
 <span class="sd">            Default is None (no minimum value).</span>
-<span class="sd">        max_alpha (float, optional): max value of alpha.</span>
+<span class="sd">        max_alpha (:obj:`float`, optional): max value of alpha.</span>
 <span class="sd">            Default is None (no maximum value).</span>
 <span class="sd">        action_spec (TensorSpec, optional): the action tensor spec. If not provided</span>
 <span class="sd">            and the target entropy is ``&quot;auto&quot;``, it will be retrieved from</span>
@@ -484,9 +484,9 @@
 <span class="sd">        delay_qvalue (bool, optional): Whether to separate the target Q value</span>
 <span class="sd">            networks from the Q value networks used for data collection.</span>
 <span class="sd">            Default is ``True``.</span>
-<span class="sd">        gamma (float, optional): Discount factor. Default is ``None``.</span>
-<span class="sd">        temperature (float, optional): CQL temperature. Default is 1.0.</span>
-<span class="sd">        min_q_weight (float, optional): Minimum Q weight. Default is 1.0.</span>
+<span class="sd">        gamma (:obj:`float`, optional): Discount factor. Default is ``None``.</span>
+<span class="sd">        temperature (:obj:`float`, optional): CQL temperature. Default is 1.0.</span>
+<span class="sd">        min_q_weight (:obj:`float`, optional): Minimum Q weight. Default is 1.0.</span>
 <span class="sd">        max_q_backup (bool, optional): Whether to use the max-min Q backup.</span>
 <span class="sd">            Default is ``False``.</span>
 <span class="sd">        deterministic_backup (bool, optional): Whether to use the deterministic. Default is ``True``.</span>
@@ -494,7 +494,7 @@
 <span class="sd">            Default is 10.</span>
 <span class="sd">        with_lagrange (bool, optional): Whether to use the Lagrange multiplier.</span>
 <span class="sd">            Default is ``False``.</span>
-<span class="sd">        lagrange_thresh (float, optional): Lagrange threshold. Default is 0.0.</span>
+<span class="sd">        lagrange_thresh (:obj:`float`, optional): Lagrange threshold. Default is 0.0.</span>
 <span class="sd">        reduction (str, optional): Specifies the reduction to apply to the output:</span>
 <span class="sd">            ``&quot;none&quot;`` | ``&quot;mean&quot;`` | ``&quot;sum&quot;``. ``&quot;none&quot;``: no reduction will be applied,</span>
 <span class="sd">            ``&quot;mean&quot;``: the sum of the output will be divided by the number of</span>
@@ -778,6 +778,7 @@
             <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_make_vmap</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reduction</span> <span class="o">=</span> <span class="n">reduction</span>
+        <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_entropy</span>
 
     <span class="k">def</span> <span class="nf">_make_vmap</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_vmap_qvalue_networkN0</span> <span class="o">=</span> <span class="n">_vmap_func</span><span class="p">(</span>
@@ -1318,7 +1319,7 @@
 <span class="sd">        delay_value (bool): Whether to separate the target Q value</span>
 <span class="sd">            networks from the Q value networks used for data collection.</span>
 <span class="sd">            Default is ``True``.</span>
-<span class="sd">        gamma (float, optional): Discount factor. Default is ``None``.</span>
+<span class="sd">        gamma (:obj:`float`, optional): Discount factor. Default is ``None``.</span>
 <span class="sd">        action_space: The action space of the environment. If None, it is inferred from the value network.</span>
 <span class="sd">            Defaults to None.</span>
 <span class="sd">        reduction (str, optional): Specifies the reduction to apply to the output:</span>

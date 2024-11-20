@@ -424,7 +424,7 @@ configuration which limits overfitting when fine-tuning using RLHF.</p>
 have the following features: it must have a set of input (<code class="docutils literal notranslate"><span class="pre">in_keys</span></code>)
 and output keys (<code class="docutils literal notranslate"><span class="pre">out_keys</span></code>). It must have a <code class="docutils literal notranslate"><span class="pre">get_dist</span></code> method
 that outputs the distribution of the action.</p></li>
-<li><p><strong>coef</strong> (<em>float</em>) – the coefficient of the KL term. Defaults to <code class="docutils literal notranslate"><span class="pre">1.0</span></code>.</p></li>
+<li><p><strong>coef</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>) – the coefficient of the KL term. Defaults to <code class="docutils literal notranslate"><span class="pre">1.0</span></code>.</p></li>
 <li><p><strong>in_keys</strong> (<em>str</em><em> or </em><em>list of str/tuples of str</em>) – the input key where the
 reward should be fetched. Defaults to <code class="docutils literal notranslate"><span class="pre">&quot;reward&quot;</span></code>.</p></li>
 <li><p><strong>out_keys</strong> (<em>str</em><em> or </em><em>list of str/tuples of str</em>) – the output key where the

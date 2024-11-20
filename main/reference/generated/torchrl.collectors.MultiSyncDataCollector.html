@@ -427,6 +427,7 @@ This class can be safely used with online RL sota-implementations.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.collectors</span> <span class="kn">import</span> <span class="n">MultiSyncDataCollector</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="c1"># Create your collector here</span>
+<span class="gp">... </span>    <span class="n">collector</span> <span class="o">=</span> <span class="n">MultiSyncDataCollector</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>See <a class="reference external" href="https://docs.python.org/3/library/multiprocessing.html">https://docs.python.org/3/library/multiprocessing.html</a> for more info.</p>
@@ -455,8 +456,8 @@ This class can be safely used with online RL sota-implementations.</p>
 <span class="gp">... </span>        <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
 <span class="gp">... </span>            <span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 <span class="gp">... </span>            <span class="k">break</span>
-<span class="gp">... </span><span class="n">collector</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
-<span class="gp">... </span><span class="k">del</span> <span class="n">collector</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">collector</span><span class="o">&gt;</span><span class="n">shutdown</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">del</span> <span class="n">collector</span>
 <span class="go">TensorDict(</span>
 <span class="go">    fields={</span>
 <span class="go">        action: Tensor(shape=torch.Size([200, 1]), device=cpu, dtype=torch.float32, is_shared=False),</span>
@@ -502,15 +503,14 @@ Other callables are accepted too:
 If the policy is not a <code class="docutils literal notranslate"><span class="pre">TensorDictModuleBase</span></code> (e.g., a regular <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></a>
 instances) it will be wrapped in a <cite>nn.Module</cite> first.
 Then, the collector will try to assess if these
-modules require wrapping in a <code class="xref py py-class docutils literal notranslate"><span class="pre">TensorDictModule</span></code> or not.
-- If the policy forward signature matches any of <code class="docutils literal notranslate"><span class="pre">forward(self,</span> <span class="pre">tensordict)</span></code>,</p>
-<blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">forward(self,</span> <span class="pre">td)</span></code> or <code class="docutils literal notranslate"><span class="pre">forward(self,</span> <span class="pre">&lt;anything&gt;:</span> <span class="pre">TensorDictBase)</span></code> (or
-any typing with a single argument typed as a subclass of <code class="docutils literal notranslate"><span class="pre">TensorDictBase</span></code>)
-then the policy won’t be wrapped in a <code class="xref py py-class docutils literal notranslate"><span class="pre">TensorDictModule</span></code>.</p>
-</div></blockquote>
+modules require wrapping in a <code class="xref py py-class docutils literal notranslate"><span class="pre">TensorDictModule</span></code> or not.</p>
 <ul>
-<li><p>In all other cases an attempt to wrap it will be undergone as such: <code class="docutils literal notranslate"><span class="pre">TensorDictModule(policy,</span> <span class="pre">in_keys=env_obs_key,</span> <span class="pre">out_keys=env.action_keys)</span></code>.</p></li>
+<li><p>If the policy forward signature matches any of <code class="docutils literal notranslate"><span class="pre">forward(self,</span> <span class="pre">tensordict)</span></code>,
+<code class="docutils literal notranslate"><span class="pre">forward(self,</span> <span class="pre">td)</span></code> or <code class="docutils literal notranslate"><span class="pre">forward(self,</span> <span class="pre">&lt;anything&gt;:</span> <span class="pre">TensorDictBase)</span></code> (or
+any typing with a single argument typed as a subclass of <code class="docutils literal notranslate"><span class="pre">TensorDictBase</span></code>)
+then the policy won’t be wrapped in a <code class="xref py py-class docutils literal notranslate"><span class="pre">TensorDictModule</span></code>.</p></li>
+<li><p>In all other cases an attempt to wrap it will be undergone as such:
+<code class="docutils literal notranslate"><span class="pre">TensorDictModule(policy,</span> <span class="pre">in_keys=env_obs_key,</span> <span class="pre">out_keys=env.action_keys)</span></code>.</p></li>
 </ul>
 </p></li>
 </ul>
@@ -605,7 +605,7 @@ entry will be reset at the corresponding indices.</p></li>
 <li><p><strong>update_at_each_batch</strong> (<em>boolm optional</em>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">update_policy_weight_()</span></code>
 will be called before (sync) or after (async) each data collection.
 Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
-<li><p><strong>preemptive_threshold</strong> (<a class="reference internal" href="torchrl.data.BinaryToDecimal.html#torchrl.data.BinaryToDecimal.float" title="torchrl.data.BinaryToDecimal.float"><em>float</em></a><em>, </em><em>optional</em>) – a value between 0.0 and 1.0 that specifies the ratio of workers
+<li><p><strong>preemptive_threshold</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>, optional) – a value between 0.0 and 1.0 that specifies the ratio of workers
 that will be allowed to finished collecting their rollout before the rest are forced to end early.</p></li>
 <li><p><strong>num_threads</strong> (<em>int</em><em>, </em><em>optional</em>) – number of threads for this process.
 Defaults to the number of workers.</p></li>

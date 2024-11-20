@@ -419,8 +419,8 @@ We can also customize the storage location on disk:
  .. code-block:: none
 
     The buffer has 3 elements
-    the 'a' tensor is stored in /pytorch/rl/docs/source/reference/generated/tutorials/<TemporaryDirectory '/tmp/tmph3sorb7k'>/a.memmap
-    the ('b', 'c') tensor is stored in /pytorch/rl/docs/source/reference/generated/tutorials/<TemporaryDirectory '/tmp/tmph3sorb7k'>/b/c.memmap
+    the 'a' tensor is stored in /pytorch/rl/docs/source/reference/generated/tutorials/<TemporaryDirectory '/tmp/tmpcazqjs7c'>/a.memmap
+    the ('b', 'c') tensor is stored in /pytorch/rl/docs/source/reference/generated/tutorials/<TemporaryDirectory '/tmp/tmpcazqjs7c'>/b/c.memmap
 
 
 
@@ -1094,7 +1094,7 @@ The info contains the relative weights of the items as well as the indices.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 538-576
+.. GENERATED FROM PYTHON SOURCE LINES 538-578
 
 We see that using a prioritized replay buffer requires a series of extra
 steps in the training loop compared with a regular buffer:
@@ -1127,6 +1127,8 @@ The combination of these features simplifies things in several ways:
   tensordict passed to the loss module, making it possible to update the
   weights without effort:
 
+  ..code - block::Python
+
      >>> data = replay_buffer.sample()
      >>> loss_val = loss_module(data)
      >>> replay_buffer.update_tensordict_priority(data)
@@ -1135,7 +1137,7 @@ The following code illustrates these concepts. We build a replay buffer with
 a prioritized sampler, and indicate in the constructor the entry where
 the priority signal should be fetched:
 
-.. GENERATED FROM PYTHON SOURCE LINES 576-585
+.. GENERATED FROM PYTHON SOURCE LINES 578-587
 
 .. code-block:: Python
 
@@ -1155,12 +1157,12 @@ the priority signal should be fetched:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 586-588
+.. GENERATED FROM PYTHON SOURCE LINES 588-590
 
 Let us choose a priority signal that is proportional to the storage index:
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 588-594
+.. GENERATED FROM PYTHON SOURCE LINES 590-596
 
 .. code-block:: Python
 
@@ -1177,11 +1179,11 @@ Let us choose a priority signal that is proportional to the storage index:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 595-596
+.. GENERATED FROM PYTHON SOURCE LINES 597-598
 
 higher indices should occur more frequently:
 
-.. GENERATED FROM PYTHON SOURCE LINES 596-601
+.. GENERATED FROM PYTHON SOURCE LINES 598-603
 
 .. code-block:: Python
 
@@ -1204,11 +1206,11 @@ higher indices should occur more frequently:
  .. code-block:: none
 
 
-    (array([139.,  69., 136.,  67., 132.,  61., 101.,  70., 125., 124.]), array([ 0. ,  1.5,  3. ,  4.5,  6. ,  7.5,  9. , 10.5, 12. , 13.5, 15. ]), <BarContainer object of 10 artists>)
+    (array([131.,  65., 114.,  53., 134.,  76., 118.,  76., 118., 139.]), array([ 0. ,  1.5,  3. ,  4.5,  6. ,  7.5,  9. , 10.5, 12. , 13.5, 15. ]), <BarContainer object of 10 artists>)
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 602-608
+.. GENERATED FROM PYTHON SOURCE LINES 604-610
 
 Once we have worked with our sample, we update the priority key using
 the :meth:`torchrl.data.TensorDictReplayBuffer.update_tensordict_priority`
@@ -1217,7 +1219,7 @@ For the sake of showing how this works, let us revert the priority of the
 sampled items:
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 608-612
+.. GENERATED FROM PYTHON SOURCE LINES 610-614
 
 .. code-block:: Python
 
@@ -1232,11 +1234,11 @@ sampled items:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 613-614
+.. GENERATED FROM PYTHON SOURCE LINES 615-616
 
 Now, higher indices should occur less frequently:
 
-.. GENERATED FROM PYTHON SOURCE LINES 614-620
+.. GENERATED FROM PYTHON SOURCE LINES 616-622
 
 .. code-block:: Python
 
@@ -1260,11 +1262,11 @@ Now, higher indices should occur less frequently:
  .. code-block:: none
 
 
-    (array([202.,  88., 189.,  83., 135.,  62., 118.,  35.,  75.,  37.]), array([ 0. ,  1.5,  3. ,  4.5,  6. ,  7.5,  9. , 10.5, 12. , 13.5, 15. ]), <BarContainer object of 10 artists>)
+    (array([197., 102., 171.,  71., 155.,  65., 116.,  47.,  65.,  35.]), array([ 0. ,  1.5,  3. ,  4.5,  6. ,  7.5,  9. , 10.5, 12. , 13.5, 15. ]), <BarContainer object of 10 artists>)
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 621-646
+.. GENERATED FROM PYTHON SOURCE LINES 623-648
 
 Using transforms
 ----------------
@@ -1292,7 +1294,7 @@ The following script show how one can build a collector that returns only
 the raw images but uses the transformed ones for inference, and how these
 transformations can be recycled in the replay buffer:
 
-.. GENERATED FROM PYTHON SOURCE LINES 646-668
+.. GENERATED FROM PYTHON SOURCE LINES 648-670
 
 .. code-block:: Python
 
@@ -1325,11 +1327,11 @@ transformations can be recycled in the replay buffer:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 669-670
+.. GENERATED FROM PYTHON SOURCE LINES 671-672
 
 let us have a look at a rollout:
 
-.. GENERATED FROM PYTHON SOURCE LINES 670-674
+.. GENERATED FROM PYTHON SOURCE LINES 672-676
 
 .. code-block:: Python
 
@@ -1371,7 +1373,7 @@ let us have a look at a rollout:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 675-680
+.. GENERATED FROM PYTHON SOURCE LINES 677-682
 
 We have just created an environment that produces pixels. These images
 are processed to be fed to a policy.
@@ -1379,7 +1381,7 @@ We would like to store the raw images, and not their transforms.
 To do this, we will append a transform to the collector to select the keys
 we want to see appearing:
 
-.. GENERATED FROM PYTHON SOURCE LINES 680-692
+.. GENERATED FROM PYTHON SOURCE LINES 682-694
 
 .. code-block:: Python
 
@@ -1402,12 +1404,12 @@ we want to see appearing:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 693-695
+.. GENERATED FROM PYTHON SOURCE LINES 695-697
 
 Let us have a look at a batch of data, and control that the
 ``"pixels_trsf"`` keys have been discarded:
 
-.. GENERATED FROM PYTHON SOURCE LINES 695-702
+.. GENERATED FROM PYTHON SOURCE LINES 697-704
 
 .. code-block:: Python
 
@@ -1450,7 +1452,7 @@ Let us have a look at a batch of data, and control that the
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 703-712
+.. GENERATED FROM PYTHON SOURCE LINES 705-714
 
 We create a replay buffer with the same transform as the environment.
 There is, however, a detail that needs to be addressed: transforms
@@ -1462,7 +1464,7 @@ Nevertheless, our data comes with a nested "next" tensordict that will be
 ignored by our transform if we don't explicitly instruct it to take care of
 it. We manually add these keys to the transform:
 
-.. GENERATED FROM PYTHON SOURCE LINES 712-726
+.. GENERATED FROM PYTHON SOURCE LINES 714-728
 
 .. code-block:: Python
 
@@ -1493,12 +1495,12 @@ it. We manually add these keys to the transform:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 727-729
+.. GENERATED FROM PYTHON SOURCE LINES 729-731
 
 We can check that a ``sample`` method sees the transformed images reappear:
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 729-732
+.. GENERATED FROM PYTHON SOURCE LINES 731-734
 
 .. code-block:: Python
 
@@ -1540,7 +1542,7 @@ We can check that a ``sample`` method sees the transformed images reappear:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 733-744
+.. GENERATED FROM PYTHON SOURCE LINES 735-746
 
 A more complex examples: using CatFrames
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1554,7 +1556,7 @@ problematic when the n-back window needs to be different (usually longer)
 during training and inference. We solve this problem by executing the
 ``CatFrames`` transform separately in the two phases.
 
-.. GENERATED FROM PYTHON SOURCE LINES 744-747
+.. GENERATED FROM PYTHON SOURCE LINES 746-749
 
 .. code-block:: Python
 
@@ -1568,12 +1570,12 @@ during training and inference. We solve this problem by executing the
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 748-750
+.. GENERATED FROM PYTHON SOURCE LINES 750-752
 
 We create a standard list of transforms for environments that return pixel-based
 observations:
 
-.. GENERATED FROM PYTHON SOURCE LINES 750-770
+.. GENERATED FROM PYTHON SOURCE LINES 752-772
 
 .. code-block:: Python
 
@@ -1637,13 +1639,13 @@ observations:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 771-774
+.. GENERATED FROM PYTHON SOURCE LINES 773-776
 
 The buffer transform looks pretty much like the environment one, but with
 extra ``("next", ...)`` keys like before:
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 774-789
+.. GENERATED FROM PYTHON SOURCE LINES 776-791
 
 .. code-block:: Python
 
@@ -1675,14 +1677,14 @@ extra ``("next", ...)`` keys like before:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 790-794
+.. GENERATED FROM PYTHON SOURCE LINES 792-796
 
 Let us sample one batch from the buffer. The shape of the transformed
 pixel keys should have a length of 4 along the 4th dimension starting from
 the end:
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 794-798
+.. GENERATED FROM PYTHON SOURCE LINES 796-800
 
 .. code-block:: Python
 
@@ -1731,12 +1733,12 @@ the end:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 799-801
+.. GENERATED FROM PYTHON SOURCE LINES 801-803
 
 After a bit of processing (excluding non-used keys etc), we see that the
 data generated online and offline match!
 
-.. GENERATED FROM PYTHON SOURCE LINES 801-804
+.. GENERATED FROM PYTHON SOURCE LINES 803-806
 
 .. code-block:: Python
 
@@ -1750,7 +1752,7 @@ data generated online and offline match!
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 805-825
+.. GENERATED FROM PYTHON SOURCE LINES 807-827
 
 Storing trajectories
 --------------------
@@ -1767,13 +1769,13 @@ about your data structure to do its job (not that as of now it is only
 compatible with tensordict-structured data): the number of slices or their
 length and some information about where the separation between the
 episodes can be found (e.g. :ref:`recall that <gs_storage_collector>` with a
-:ref:`DataCollector <data_collectors>`, the trajectory id is stored in
+:ref:`DataCollector <collectors>`, the trajectory id is stored in
 ``("collector", "traj_ids")``). In this simple example, we construct a data
 with 4 consecutive short trajectories and sample 4 slices out of it, each of
 length 2 (since the batch size is 8, and 8 items // 4 slices = 2 time steps).
 We mark the steps as well.
 
-.. GENERATED FROM PYTHON SOURCE LINES 825-854
+.. GENERATED FROM PYTHON SOURCE LINES 827-856
 
 .. code-block:: Python
 
@@ -1820,7 +1822,7 @@ We mark the steps as well.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 855-878
+.. GENERATED FROM PYTHON SOURCE LINES 857-880
 
 Conclusion
 ----------
@@ -1849,9 +1851,9 @@ Next steps
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (2 minutes 55.225 seconds)
+   **Total running time of the script:** (2 minutes 55.315 seconds)
 
-**Estimated memory usage:**  480 MB
+**Estimated memory usage:**  513 MB
 
 
 .. _sphx_glr_download_tutorials_rb_tutorial.py:

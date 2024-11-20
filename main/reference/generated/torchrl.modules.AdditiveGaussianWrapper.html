@@ -427,8 +427,8 @@ default: 1.0</p></li>
 default: 0.1</p></li>
 <li><p><strong>annealing_num_steps</strong> (<em>int</em><em>, </em><em>optional</em>) – number of steps it will take for
 sigma to reach the <code class="xref py py-obj docutils literal notranslate"><span class="pre">sigma_end</span></code> value.</p></li>
-<li><p><strong>mean</strong> (<a class="reference internal" href="torchrl.data.BinaryToDecimal.html#torchrl.data.BinaryToDecimal.float" title="torchrl.data.BinaryToDecimal.float"><em>float</em></a><em>, </em><em>optional</em>) – mean of each output element’s normal distribution.</p></li>
-<li><p><strong>std</strong> (<a class="reference internal" href="torchrl.data.BinaryToDecimal.html#torchrl.data.BinaryToDecimal.float" title="torchrl.data.BinaryToDecimal.float"><em>float</em></a><em>, </em><em>optional</em>) – standard deviation of each output element’s normal distribution.</p></li>
+<li><p><strong>mean</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>, optional) – mean of each output element’s normal distribution.</p></li>
+<li><p><strong>std</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>, optional) – standard deviation of each output element’s normal distribution.</p></li>
 <li><p><strong>action_key</strong> (<em>NestedKey</em><em>, </em><em>optional</em>) – if the policy module has more than one output key,
 its output spec will be of type Composite. One needs to know where to
 find the action spec.
@@ -440,6 +440,7 @@ the exploration wrapper will attempt to recover it from the policy.</p></li>
 is set to False but the spec is passed, the projection will still
 happen.
 Default is True.</p></li>
+<li><p><strong>device</strong> (<a class="reference external" href="https://pytorch.org/docs/stable/tensor_attributes.html#torch.device" title="(in PyTorch v2.5)"><em>torch.device</em></a><em>, </em><em>optional</em>) – the device where the buffers have to be stored.</p></li>
 </ul>
 </dd>
 </dl>

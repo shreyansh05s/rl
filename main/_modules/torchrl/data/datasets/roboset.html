@@ -649,7 +649,7 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_preproc_h5</span><span class="p">(</span><span class="n">h5_data_files</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_preproc_h5</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">h5_data_files</span><span class="p">):</span>
-        <span class="n">td_data</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="p">({},</span> <span class="p">[])</span>
+        <span class="n">td_data</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="p">()</span>
         <span class="n">total_steps</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">torchrl_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;first read through data files </span><span class="si">{</span><span class="n">h5_data_files</span><span class="si">}</span><span class="s2"> to create data structure...&quot;</span>

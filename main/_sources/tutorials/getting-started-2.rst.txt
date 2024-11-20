@@ -33,7 +33,7 @@ Getting started with model optimization
         !pip install tensordict
         !pip install torchrl
 
-.. GENERATED FROM PYTHON SOURCE LINES 20-66
+.. GENERATED FROM PYTHON SOURCE LINES 20-68
 
 In TorchRL, we try to treat optimization as it is custom to do in PyTorch,
 using dedicated loss modules which are designed with the sole purpose of
@@ -43,12 +43,14 @@ similar to what can be found in traditional supervised learning examples.
 
 The typical training loop therefore looks like this:
 
-  >>> for i in range(n_collections):
-  ...     data = get_next_batch(env, policy)
-  ...     for j in range(n_optim):
-  ...         loss = loss_fn(data)
-  ...         loss.backward()
-  ...         optim.step()
+  ..code - block::Python
+
+    >>> for i in range(n_collections):
+    ...     data = get_next_batch(env, policy)
+    ...     for j in range(n_optim):
+    ...         loss = loss_fn(data)
+    ...         loss.backward()
+    ...         optim.step()
 
 In this concise tutorial, you will receive a brief overview of the loss modules. Due to the typically
 straightforward nature of the API for basic usage, this tutorial will be kept brief.
@@ -82,7 +84,7 @@ To build the loss, we need both the actor and value networks.
 If they are built according to DDPG's expectations, it is all
 we need to get a trainable loss module:
 
-.. GENERATED FROM PYTHON SOURCE LINES 66-84
+.. GENERATED FROM PYTHON SOURCE LINES 68-86
 
 .. code-block:: Python
 
@@ -111,14 +113,14 @@ we need to get a trainable loss module:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 85-89
+.. GENERATED FROM PYTHON SOURCE LINES 87-91
 
 And that is it! Our loss module can now be run with data coming from the
 environment (we omit exploration, storage and other features to focus on
 the loss functionality):
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 89-94
+.. GENERATED FROM PYTHON SOURCE LINES 91-96
 
 .. code-block:: Python
 
@@ -151,7 +153,7 @@ the loss functionality):
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 95-112
+.. GENERATED FROM PYTHON SOURCE LINES 97-114
 
 LossModule's output
 -------------------
@@ -171,7 +173,7 @@ loss. If you want to make sure you're fully in control of what is happening,
 you can sum over only the entries which keys start with the ``"loss_"`` prefix:
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 112-118
+.. GENERATED FROM PYTHON SOURCE LINES 114-120
 
 .. code-block:: Python
 
@@ -188,7 +190,7 @@ you can sum over only the entries which keys start with the ``"loss_"`` prefix:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 119-130
+.. GENERATED FROM PYTHON SOURCE LINES 121-132
 
 Training a LossModule
 ---------------------
@@ -202,7 +204,7 @@ We'll need an optimizer (or one optimizer
 per module if that is your choice).
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 130-136
+.. GENERATED FROM PYTHON SOURCE LINES 132-138
 
 .. code-block:: Python
 
@@ -219,12 +221,12 @@ per module if that is your choice).
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 137-139
+.. GENERATED FROM PYTHON SOURCE LINES 139-141
 
 The following items will typically be
 found in your training loop:
 
-.. GENERATED FROM PYTHON SOURCE LINES 139-143
+.. GENERATED FROM PYTHON SOURCE LINES 141-145
 
 .. code-block:: Python
 
@@ -239,7 +241,7 @@ found in your training loop:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 144-162
+.. GENERATED FROM PYTHON SOURCE LINES 146-164
 
 Further considerations: Target parameters
 -----------------------------------------
@@ -260,7 +262,7 @@ which can be easily instantiated without requiring in-depth
 knowledge of the underlying mechanisms of the loss module.
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 162-166
+.. GENERATED FROM PYTHON SOURCE LINES 164-168
 
 .. code-block:: Python
 
@@ -275,12 +277,12 @@ knowledge of the underlying mechanisms of the loss module.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 167-169
+.. GENERATED FROM PYTHON SOURCE LINES 169-171
 
 In your training loop, you will need to update the target parameters at each
 optimization step or each collection step:
 
-.. GENERATED FROM PYTHON SOURCE LINES 169-172
+.. GENERATED FROM PYTHON SOURCE LINES 171-174
 
 .. code-block:: Python
 
@@ -294,7 +296,7 @@ optimization step or each collection step:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 173-181
+.. GENERATED FROM PYTHON SOURCE LINES 175-183
 
 This is all you need to know about loss modules to get started!
 
@@ -308,9 +310,9 @@ To further explore the topic, have a look at:
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 26.804 seconds)
+   **Total running time of the script:** (0 minutes 26.680 seconds)
 
-**Estimated memory usage:**  321 MB
+**Estimated memory usage:**  319 MB
 
 
 .. _sphx_glr_download_tutorials_getting-started-2.py:

@@ -418,11 +418,11 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>decay</strong> (<em>float</em><em>, </em><em>optional</em>) – exponential moving average decay parameter.
+<li><p><strong>decay</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>, optional) – exponential moving average decay parameter.
 Default is 0.999</p></li>
-<li><p><strong>scale</strong> (<em>float</em><em>, </em><em>optional</em>) – the scale used to multiply the reward once
+<li><p><strong>scale</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>, optional) – the scale used to multiply the reward once
 normalized. Defaults to 1.0.</p></li>
-<li><p><strong>eps</strong> (<em>float</em><em>, </em><em>optional</em>) – the epsilon jitter used to prevent numerical
+<li><p><strong>eps</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>, optional) – the epsilon jitter used to prevent numerical
 underflow. Defaults to <code class="docutils literal notranslate"><span class="pre">torch.finfo(DEFAULT_DTYPE).eps</span></code>
 where <code class="docutils literal notranslate"><span class="pre">DEFAULT_DTYPE=torch.get_default_dtype()</span></code>.</p></li>
 <li><p><strong>reward_key</strong> (<em>str</em><em> or </em><em>tuple</em><em>, </em><em>optional</em>) – the key where to find the reward

@@ -470,6 +470,11 @@ default: 1000</p></li>
 default: “action”</p></li>
 <li><p><strong>is_init_key</strong> (<em>NestedKey</em><em>, </em><em>optional</em>) – key where to find the is_init flag used to reset the noise steps.
 default: “is_init”</p></li>
+<li><p><strong>safe</strong> (<em>boolean</em><em>, </em><em>optional</em>) – if False, the TensorSpec can be None. If it
+is set to False but the spec is passed, the projection will still
+happen.
+Default is True.</p></li>
+<li><p><strong>device</strong> (<a class="reference external" href="https://pytorch.org/docs/stable/tensor_attributes.html#torch.device" title="(in PyTorch v2.5)"><em>torch.device</em></a><em>, </em><em>optional</em>) – the device where the buffers have to be stored.</p></li>
 </ul>
 </dd>
 </dl>

@@ -588,8 +588,8 @@ Using them makes it easy to abstract away the behaviour of the replay buffer for
         batch_size=torch.Size([2]),
         device=None,
         is_shared=False)
-    tensor([0, 1])
-    0 0.06984967738389969
+    tensor([1, 1])
+    0 1.0
     1 0.28791671991348267
     2 0.0
 
@@ -1595,8 +1595,8 @@ EnvCreator makes sure that we can send a lambda function from process to process
 We use a :class:`~torchrl.envs.SerialEnv` for simplicity (single worker), but for larger jobs a
 :class:`~torchrl.envs.ParallelEnv` (multi-workers) would be better suited.
 
-.. note::
-  Multiprocessed envs and multiprocessed collectors can be combined!
+.. note:: Multiprocessed envs and multiprocessed collectors can be combined!
+
 
 .. GENERATED FROM PYTHON SOURCE LINES 762-772
 
@@ -1622,7 +1622,7 @@ We use a :class:`~torchrl.envs.SerialEnv` for simplicity (single worker), but fo
 .. GENERATED FROM PYTHON SOURCE LINES 773-776
 
 Sync multiprocessed data collector
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 .. GENERATED FROM PYTHON SOURCE LINES 776-788
@@ -1896,9 +1896,9 @@ See the `Contributing guide <https://github.com/pytorch/rl/blob/main/CONTRIBUTIN
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (2 minutes 26.883 seconds)
+   **Total running time of the script:** (2 minutes 26.949 seconds)
 
-**Estimated memory usage:**  331 MB
+**Estimated memory usage:**  363 MB
 
 
 .. _sphx_glr_download_tutorials_torchrl_demo.py:

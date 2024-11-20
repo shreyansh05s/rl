@@ -191,7 +191,7 @@ number the corresponding transition belongs to:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 95-137
+.. GENERATED FROM PYTHON SOURCE LINES 95-141
 
 Data collectors are very useful when it comes to coding state-of-the-art
 algorithms, as performance is usually measured by the capability of a
@@ -199,8 +199,10 @@ specific technique to solve a problem in a given number of interactions with
 the environment (the ``total_frames`` argument in the collector).
 For this reason, most training loops in our examples look like this:
 
-  >>> for data in collector:
-  ...     # your algorithm here
+  ..code - block::Python
+
+    >>> for data in collector:
+    ...     # your algorithm here
 
 
 Replay Buffers
@@ -212,6 +214,8 @@ Now that we have explored how to collect data, we would like to know how to
 store it. In RL, the typical setting is that the data is collected, stored
 temporarily and cleared after a little while given some heuristic:
 first-in first-out or other. A typical pseudo-code would look like this:
+
+..code - block::Python
 
   >>> for data in collector:
   ...     storage.store(data)
@@ -236,7 +240,7 @@ Second, it uses :class:`~tensordict.MemoryMappedTensor` as a backend to save
 your data on disk in an efficient way. The only thing you need to know is
 how big you want your buffer to be.
 
-.. GENERATED FROM PYTHON SOURCE LINES 137-142
+.. GENERATED FROM PYTHON SOURCE LINES 141-146
 
 .. code-block:: Python
 
@@ -252,14 +256,14 @@ how big you want your buffer to be.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 143-147
+.. GENERATED FROM PYTHON SOURCE LINES 147-151
 
 Populating the buffer can be done via the
 :meth:`~torchrl.data.ReplayBuffer.add` (single element) or
 :meth:`~torchrl.data.ReplayBuffer.extend` (multiple elements) methods. Using
 the data we just collected, we initialize and populate the buffer in one go:
 
-.. GENERATED FROM PYTHON SOURCE LINES 147-150
+.. GENERATED FROM PYTHON SOURCE LINES 151-154
 
 .. code-block:: Python
 
@@ -273,12 +277,12 @@ the data we just collected, we initialize and populate the buffer in one go:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 151-153
+.. GENERATED FROM PYTHON SOURCE LINES 155-157
 
 We can check that the buffer now has the same number of elements than what
 we got from the collector:
 
-.. GENERATED FROM PYTHON SOURCE LINES 153-156
+.. GENERATED FROM PYTHON SOURCE LINES 157-160
 
 .. code-block:: Python
 
@@ -292,7 +296,7 @@ we got from the collector:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 157-162
+.. GENERATED FROM PYTHON SOURCE LINES 161-166
 
 The only thing left to know is how to gather data from the buffer.
 Naturally, this relies on the :meth:`~torchrl.data.ReplayBuffer.sample`
@@ -300,7 +304,7 @@ method. Because we did not specify that sampling had to be done without
 repetitions, it is not guaranteed that the samples gathered from our buffer
 will be unique:
 
-.. GENERATED FROM PYTHON SOURCE LINES 162-166
+.. GENERATED FROM PYTHON SOURCE LINES 166-170
 
 .. code-block:: Python
 
@@ -346,7 +350,7 @@ will be unique:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 167-189
+.. GENERATED FROM PYTHON SOURCE LINES 171-193
 
 Again, our sample looks exactly the same as the data we gathered from the
 collector!
@@ -374,9 +378,9 @@ Next steps
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 21.948 seconds)
+   **Total running time of the script:** (0 minutes 21.854 seconds)
 
-**Estimated memory usage:**  324 MB
+**Estimated memory usage:**  317 MB
 
 
 .. _sphx_glr_download_tutorials_getting-started-3.py:

@@ -451,7 +451,7 @@
 <span class="sd">            If there are multiple actions taken at this node, subtrees are stored in the corresponding</span>
 <span class="sd">            entry. Rollouts can be reconstructed using the :meth:`~.rollout_from_path` method.</span>
 <span class="sd">        node (TensorDict): Data defining this node (e.g., observations) before the next branching.</span>
-<span class="sd">            Entries usually matches the ``in_keys`` in ``MCTSForeset.node_map``.</span>
+<span class="sd">            Entries usually matches the ``in_keys`` in ``MCTSForest.node_map``.</span>
 <span class="sd">        subtree (Tree): A stack of subtrees produced when actions are taken.</span>
 <span class="sd">        num_children (int): The number of child nodes (read-only).</span>
 <span class="sd">        is_terminal (bool): whether the tree has children nodes (read-only).</span>
@@ -691,7 +691,7 @@
         <span class="p">)</span></div>
 
 
-<span class="k">class</span> <span class="nc">MCTSForest</span><span class="p">:</span>
+<div class="viewcode-block" id="MCTSForest"><a class="viewcode-back" href="../../../../reference/generated/torchrl.data.MCTSForest.html#torchrl.data.MCTSForest">[docs]</a><span class="k">class</span> <span class="nc">MCTSForest</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A collection of MCTS trees.</span>
 
 <span class="sd">    The class is aimed at storing rollouts in a storage, and produce trees based on a given root</span>
@@ -869,7 +869,7 @@
     <span class="k">def</span> <span class="nf">observation_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_observation_keys</span> <span class="o">=</span> <span class="n">value</span>
 
-    <span class="k">def</span> <span class="nf">get_keys_from_env</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">env</span><span class="p">:</span> <span class="n">EnvBase</span><span class="p">):</span>
+<div class="viewcode-block" id="MCTSForest.get_keys_from_env"><a class="viewcode-back" href="../../../../reference/generated/torchrl.data.MCTSForest.html#torchrl.data.MCTSForest.get_keys_from_env">[docs]</a>    <span class="k">def</span> <span class="nf">get_keys_from_env</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">env</span><span class="p">:</span> <span class="n">EnvBase</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Writes missing done, action and reward keys to the Forest given an environment.</span>
 
 <span class="sd">        Existing keys are not overwritten.</span>
@@ -881,7 +881,7 @@
         <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_action_keys&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">action_keys</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">action_keys</span>
         <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_observation_keys&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">observation_keys</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">observation_keys</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">observation_keys</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">observation_keys</span></div>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">_write_fn_stack</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">new</span><span class="p">,</span> <span class="n">old</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -1070,7 +1070,7 @@
         <span class="k">yield from</span> <span class="n">tree</span><span class="o">.</span><span class="n">valid_paths</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_map</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_map</span><span class="p">)</span></div>
 </pre></div>
 
              </article>

@@ -1277,11 +1277,11 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Reward normalizer hook.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        decay (float, optional): exponential moving average decay parameter.</span>
+<span class="sd">        decay (:obj:`float`, optional): exponential moving average decay parameter.</span>
 <span class="sd">            Default is 0.999</span>
-<span class="sd">        scale (float, optional): the scale used to multiply the reward once</span>
+<span class="sd">        scale (:obj:`float`, optional): the scale used to multiply the reward once</span>
 <span class="sd">            normalized. Defaults to 1.0.</span>
-<span class="sd">        eps (float, optional): the epsilon jitter used to prevent numerical</span>
+<span class="sd">        eps (:obj:`float`, optional): the epsilon jitter used to prevent numerical</span>
 <span class="sd">            underflow. Defaults to ``torch.finfo(DEFAULT_DTYPE).eps``</span>
 <span class="sd">            where ``DEFAULT_DTYPE=torch.get_default_dtype()``.</span>
 <span class="sd">        reward_key (str or tuple, optional): the key where to find the reward</span>

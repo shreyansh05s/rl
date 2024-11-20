@@ -1206,7 +1206,9 @@
                 <span class="n">num_envs</span><span class="o">=</span><span class="n">num_envs</span><span class="p">,</span>
                 <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-                <span class="k">else</span> <span class="n">torch</span><span class="o">.</span><span class="n">get_default_device</span><span class="p">(),</span>
+                <span class="k">else</span> <span class="nb">getattr</span><span class="p">(</span>
+                    <span class="n">torch</span><span class="p">,</span> <span class="s2">&quot;get_default_device&quot;</span><span class="p">,</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
+                <span class="p">)(),</span>
                 <span class="n">continuous_actions</span><span class="o">=</span><span class="n">continuous_actions</span><span class="p">,</span>
                 <span class="n">max_steps</span><span class="o">=</span><span class="n">max_steps</span><span class="p">,</span>
                 <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span>

@@ -434,7 +434,7 @@ if <code class="docutils literal notranslate"><span class="pre">sparse_mask</spa
 in the distribution. Exclusive with <code class="docutils literal notranslate"><span class="pre">indices</span></code>.</p></li>
 <li><p><strong>indices</strong> (<a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.5)"><em>torch.Tensor</em></a>) – A dense index tensor representing which actions
 must be taken into account. Exclusive with <code class="docutils literal notranslate"><span class="pre">mask</span></code>.</p></li>
-<li><p><strong>neg_inf</strong> (<a class="reference internal" href="torchrl.data.BinaryToDecimal.html#torchrl.data.BinaryToDecimal.float" title="torchrl.data.BinaryToDecimal.float"><em>float</em></a><em>, </em><em>optional</em>) – The log-probability value allocated to
+<li><p><strong>neg_inf</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>, optional) – The log-probability value allocated to
 invalid (out-of-mask) indices. Defaults to -inf.</p></li>
 <li><p><strong>padding_value</strong> – The padding value in the mask tensor. When
 sparse_mask == True, the padding_value will be ignored.</p></li>

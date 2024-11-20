@@ -39,7 +39,7 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="distance_loss" href="torchrl.objectives.distance_loss.html" />
+    <link rel="next" title="HardUpdate" href="torchrl.objectives.HardUpdate.html" />
     <link rel="prev" title="vec_generalized_advantage_estimate" href="torchrl.objectives.value.functional.vec_generalized_advantage_estimate.html" />
   <!-- Google Tag Manager -->
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -422,7 +422,7 @@
 received at each time step over multiple trajectories.</p></li>
 <li><p><strong>done</strong> (<em>Tensor</em>) – boolean flag for end of episode. Differs from
 truncated, where the episode did not end but was interrupted.</p></li>
-<li><p><strong>gamma</strong> (<em>float</em><em>, </em><em>optional</em>) – The discount factor to use for computing the
+<li><p><strong>gamma</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>, optional) – The discount factor to use for computing the
 discounted cumulative sum of rewards. Defaults to 1.0.</p></li>
 <li><p><strong>time_dim</strong> (<em>int</em>) – dimension where the time is unrolled. Defaults to -2.</p></li>
 </ul>
@@ -467,7 +467,7 @@ discounted cumulative sum of rewards. Defaults to 1.0.</p></li>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="torchrl.objectives.distance_loss.html" class="btn btn-neutral float-right" title="distance_loss" accesskey="n" rel="next">Next <img src="../../_static/images/chevron-right-orange.svg" class="next-page"></a>
+        <a href="torchrl.objectives.HardUpdate.html" class="btn btn-neutral float-right" title="HardUpdate" accesskey="n" rel="next">Next <img src="../../_static/images/chevron-right-orange.svg" class="next-page"></a>
       
       
         <a href="torchrl.objectives.value.functional.vec_generalized_advantage_estimate.html" class="btn btn-neutral" title="vec_generalized_advantage_estimate" accesskey="p" rel="prev"><img src="../../_static/images/chevron-right-orange.svg" class="previous-page"> Previous</a>

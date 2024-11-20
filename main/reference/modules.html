@@ -486,7 +486,7 @@ this module.</p>
 <td><p>Additive Gaussian PO wrapper.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.modules.ConsistentDropoutModule.html#torchrl.modules.ConsistentDropoutModule" title="torchrl.modules.ConsistentDropoutModule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ConsistentDropoutModule</span></code></a>(*args, **kwargs)</p></td>
-<td><p>A TensorDictModule wrapper for <code class="xref py py-class docutils literal notranslate"><span class="pre">ConsistentDropout</span></code>.</p></td>
+<td><p>A TensorDictModule wrapper for <a class="reference internal" href="generated/torchrl.modules.ConsistentDropout.html#torchrl.modules.ConsistentDropout" title="torchrl.modules.ConsistentDropout"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConsistentDropout</span></code></a>.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.modules.EGreedyModule.html#torchrl.modules.EGreedyModule" title="torchrl.modules.EGreedyModule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EGreedyModule</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Epsilon-Greedy exploration module.</p></td>
@@ -765,19 +765,22 @@ classes for RL usage.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.modules.BatchRenorm1d.html#torchrl.modules.BatchRenorm1d" title="torchrl.modules.BatchRenorm1d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BatchRenorm1d</span></code></a>(num_features, *[, momentum, ...])</p></td>
 <td><p>BatchRenorm Module (<a class="reference external" href="https://arxiv.org/abs/1702.03275">https://arxiv.org/abs/1702.03275</a>).</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.modules.Conv3dNet.html#torchrl.modules.Conv3dNet" title="torchrl.modules.Conv3dNet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Conv3dNet</span></code></a>(in_features, depth, num_cells, ...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.modules.ConsistentDropout.html#torchrl.modules.ConsistentDropout" title="torchrl.modules.ConsistentDropout"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ConsistentDropout</span></code></a>([p])</p></td>
+<td><p>Implements a <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.nn.Dropout.html#torch.nn.Dropout" title="(in PyTorch v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dropout</span></code></a> variant with consistent dropout.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.modules.Conv3dNet.html#torchrl.modules.Conv3dNet" title="torchrl.modules.Conv3dNet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Conv3dNet</span></code></a>(in_features, depth, num_cells, ...)</p></td>
 <td><p>A 3D-convolutional neural network.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.modules.ConvNet.html#torchrl.modules.ConvNet" title="torchrl.modules.ConvNet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ConvNet</span></code></a>(in_features, depth, num_cells, ...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.modules.ConvNet.html#torchrl.modules.ConvNet" title="torchrl.modules.ConvNet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ConvNet</span></code></a>(in_features, depth, num_cells, ...)</p></td>
 <td><p>A convolutional neural network.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.modules.MLP.html#torchrl.modules.MLP" title="torchrl.modules.MLP"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MLP</span></code></a>(in_features, out_features, ...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.modules.MLP.html#torchrl.modules.MLP" title="torchrl.modules.MLP"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MLP</span></code></a>(in_features, out_features, ...)</p></td>
 <td><p>A multi-layer perceptron.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.modules.Squeeze2dLayer.html#torchrl.modules.Squeeze2dLayer" title="torchrl.modules.Squeeze2dLayer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Squeeze2dLayer</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.modules.Squeeze2dLayer.html#torchrl.modules.Squeeze2dLayer" title="torchrl.modules.Squeeze2dLayer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Squeeze2dLayer</span></code></a>()</p></td>
 <td><p>Squeezing layer for convolutional neural networks.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.modules.SqueezeLayer.html#torchrl.modules.SqueezeLayer" title="torchrl.modules.SqueezeLayer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SqueezeLayer</span></code></a>([dims])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.modules.SqueezeLayer.html#torchrl.modules.SqueezeLayer" title="torchrl.modules.SqueezeLayer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SqueezeLayer</span></code></a>([dims])</p></td>
 <td><p>Squeezing layer.</p></td>
 </tr>
 </tbody>
@@ -848,6 +851,12 @@ algorithms, such as DQN, DDPG or Dreamer.</p>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.modules.RSSMPrior.html#torchrl.modules.RSSMPrior" title="torchrl.modules.RSSMPrior"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RSSMPrior</span></code></a>(action_spec[, hidden_dim, ...])</p></td>
 <td><p>The prior network of the RSSM.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.modules.set_recurrent_mode.html#torchrl.modules.set_recurrent_mode" title="torchrl.modules.set_recurrent_mode"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_recurrent_mode</span></code></a>([mode])</p></td>
+<td><p>Context manager for setting RNNs recurrent mode.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.modules.recurrent_mode.html#torchrl.modules.recurrent_mode" title="torchrl.modules.recurrent_mode"><code class="xref py py-obj docutils literal notranslate"><span class="pre">recurrent_mode</span></code></a>()</p></td>
+<td><p>Returns the current sampling type.</p></td>
 </tr>
 </tbody>
 </table>

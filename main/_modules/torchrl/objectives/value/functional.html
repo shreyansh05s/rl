@@ -415,6 +415,10 @@
 
 <span class="kn">import</span> <span class="nn">torch</span>
 
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">torch.compiler</span> <span class="kn">import</span> <span class="n">is_dynamo_compiling</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">torch._dynamo</span> <span class="kn">import</span> <span class="n">is_compiling</span> <span class="k">as</span> <span class="n">is_dynamo_compiling</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s2">&quot;generalized_advantage_estimate&quot;</span><span class="p">,</span>
@@ -550,7 +554,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">terminated</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">terminated</span> <span class="o">=</span> <span class="n">done</span>
+        <span class="n">terminated</span> <span class="o">=</span> <span class="n">done</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span>
         <span class="n">next_state_value</span><span class="o">.</span><span class="n">shape</span>
         <span class="o">==</span> <span class="n">state_value</span><span class="o">.</span><span class="n">shape</span>
@@ -584,19 +588,25 @@
 <span class="k">def</span> <span class="nf">_geom_series_like</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">thr</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates a geometric series of the form [1, gammalmbda, gammalmbda**2] with the shape of `t`.</span>
 
-<span class="sd">    Drops all elements which are smaller than `thr`.</span>
+<span class="sd">    Drops all elements which are smaller than `thr` (unless in compile mode).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
-        <span class="n">r</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
-
-    <span class="k">if</span> <span class="n">r</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">r</span> <span class="o">&gt;=</span> <span class="mf">1.0</span><span class="p">:</span>
-        <span class="n">lim</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">numel</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">is_dynamo_compiling</span><span class="p">():</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+            <span class="n">rs</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">expand_as</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">rs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">full_like</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">lim</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">thr</span><span class="p">)</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">r</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
 
-    <span class="n">rs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">full_like</span><span class="p">(</span><span class="n">t</span><span class="p">[:</span><span class="n">lim</span><span class="p">],</span> <span class="n">r</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">r</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">r</span> <span class="o">&gt;=</span> <span class="mf">1.0</span><span class="p">:</span>
+            <span class="n">lim</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">numel</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">lim</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">thr</span><span class="p">)</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">r</span><span class="p">))</span>
+
+        <span class="n">rs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">full_like</span><span class="p">(</span><span class="n">t</span><span class="p">[:</span><span class="n">lim</span><span class="p">],</span> <span class="n">r</span><span class="p">)</span>
     <span class="n">rs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
     <span class="n">rs</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">cumprod</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
     <span class="n">rs</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
@@ -626,7 +636,7 @@
 <span class="sd">        terminated (torch.Tensor): a [B, T] boolean tensor containing the terminated states.</span>
 <span class="sd">        gamma (scalar): the gamma decay (trajectory discount)</span>
 <span class="sd">        lmbda (scalar): the lambda decay (exponential mean discount)</span>
-<span class="sd">        thr (float): threshold for the filter. Below this limit, components will ignored.</span>
+<span class="sd">        thr (:obj:`float`): threshold for the filter. Below this limit, components will ignored.</span>
 <span class="sd">            Defaults to 1e-7.</span>
 
 <span class="sd">    All tensors (values, reward and done) must have shape</span>
@@ -695,7 +705,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">terminated</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">terminated</span> <span class="o">=</span> <span class="n">done</span>
+        <span class="n">terminated</span> <span class="o">=</span> <span class="n">done</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span>
         <span class="n">next_state_value</span><span class="o">.</span><span class="n">shape</span>
         <span class="o">==</span> <span class="n">state_value</span><span class="o">.</span><span class="n">shape</span>
@@ -794,7 +804,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">terminated</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">terminated</span> <span class="o">=</span> <span class="n">done</span>
+        <span class="n">terminated</span> <span class="o">=</span> <span class="n">done</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span>
         <span class="n">next_state_value</span><span class="o">.</span><span class="n">shape</span>
         <span class="o">==</span> <span class="n">state_value</span><span class="o">.</span><span class="n">shape</span>
@@ -838,7 +848,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">done</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">terminated</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">terminated</span> <span class="o">=</span> <span class="n">done</span>
+        <span class="n">terminated</span> <span class="o">=</span> <span class="n">done</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
             <span class="s2">&quot;done for td0_return_estimate is deprecated. Pass ``terminated`` instead.&quot;</span>
         <span class="p">)</span>
@@ -875,26 +885,30 @@
 <span class="sd">        terminated (Tensor): boolean flag for the end of episode. Defaults to ``done``</span>
 <span class="sd">            if not provided.</span>
 <span class="sd">        rolling_gamma (bool, optional): if ``True``, it is assumed that each gamma</span>
-<span class="sd">            if a gamma tensor is tied to a single event:</span>
-<span class="sd">              gamma = [g1, g2, g3, g4]</span>
-<span class="sd">              value = [v1, v2, v3, v4]</span>
-<span class="sd">              return = [</span>
-<span class="sd">                v1 + g1 v2 + g1 g2 v3 + g1 g2 g3 v4,</span>
-<span class="sd">                v2 + g2 v3 + g2 g3 v4,</span>
-<span class="sd">                v3 + g3 v4,</span>
-<span class="sd">                v4,</span>
-<span class="sd">              ]</span>
-<span class="sd">            if False, it is assumed that each gamma is tied to the upcoming</span>
+<span class="sd">            of a gamma tensor is tied to a single event:</span>
+
+<span class="sd">              &gt;&gt;&gt; gamma = [g1, g2, g3, g4]</span>
+<span class="sd">              &gt;&gt;&gt; value = [v1, v2, v3, v4]</span>
+<span class="sd">              &gt;&gt;&gt; return = [</span>
+<span class="sd">              ...   v1 + g1 v2 + g1 g2 v3 + g1 g2 g3 v4,</span>
+<span class="sd">              ...   v2 + g2 v3 + g2 g3 v4,</span>
+<span class="sd">              ...   v3 + g3 v4,</span>
+<span class="sd">              ...   v4,</span>
+<span class="sd">              ... ]</span>
+
+<span class="sd">            if ``False``, it is assumed that each gamma is tied to the upcoming</span>
 <span class="sd">            trajectory:</span>
-<span class="sd">              gamma = [g1, g2, g3, g4]</span>
-<span class="sd">              value = [v1, v2, v3, v4]</span>
-<span class="sd">              return = [</span>
-<span class="sd">                v1 + g1 v2 + g1**2 v3 + g**3 v4,</span>
-<span class="sd">                v2 + g2 v3 + g2**2 v4,</span>
-<span class="sd">                v3 + g3 v4,</span>
-<span class="sd">                v4,</span>
-<span class="sd">              ]</span>
-<span class="sd">            Default is True.</span>
+
+<span class="sd">              &gt;&gt;&gt; gamma = [g1, g2, g3, g4]</span>
+<span class="sd">              &gt;&gt;&gt; value = [v1, v2, v3, v4]</span>
+<span class="sd">              &gt;&gt;&gt; return = [</span>
+<span class="sd">              ...   v1 + g1 v2 + g1**2 v3 + g**3 v4,</span>
+<span class="sd">              ...   v2 + g2 v3 + g2**2 v4,</span>
+<span class="sd">              ...   v3 + g3 v4,</span>
+<span class="sd">              ...   v4,</span>
+<span class="sd">              ... ]</span>
+
+<span class="sd">            Default is ``True``.</span>
 <span class="sd">        time_dim (int): dimension where the time is unrolled. Defaults to -2.</span>
 
 <span class="sd">    All tensors (values, reward and done) must have shape</span>
@@ -902,7 +916,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">terminated</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">terminated</span> <span class="o">=</span> <span class="n">done</span>
+        <span class="n">terminated</span> <span class="o">=</span> <span class="n">done</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">next_state_value</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">reward</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">done</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">terminated</span><span class="o">.</span><span class="n">shape</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">SHAPE_ERR</span><span class="p">)</span>
     <span class="n">not_done</span> <span class="o">=</span> <span class="p">(</span><span class="o">~</span><span class="n">done</span><span class="p">)</span><span class="o">.</span><span class="n">int</span><span class="p">()</span>
@@ -972,26 +986,30 @@
 <span class="sd">        terminated (Tensor): boolean flag for the end of episode. Defaults to ``done``</span>
 <span class="sd">            if not provided.</span>
 <span class="sd">        rolling_gamma (bool, optional): if ``True``, it is assumed that each gamma</span>
-<span class="sd">            if a gamma tensor is tied to a single event:</span>
-<span class="sd">              gamma = [g1, g2, g3, g4]</span>
-<span class="sd">              value = [v1, v2, v3, v4]</span>
-<span class="sd">              return = [</span>
-<span class="sd">                v1 + g1 v2 + g1 g2 v3 + g1 g2 g3 v4,</span>
-<span class="sd">                v2 + g2 v3 + g2 g3 v4,</span>
-<span class="sd">                v3 + g3 v4,</span>
-<span class="sd">                v4,</span>
-<span class="sd">              ]</span>
-<span class="sd">            if False, it is assumed that each gamma is tied to the upcoming</span>
+<span class="sd">            of a gamma tensor is tied to a single event:</span>
+
+<span class="sd">              &gt;&gt;&gt; gamma = [g1, g2, g3, g4]</span>
+<span class="sd">              &gt;&gt;&gt; value = [v1, v2, v3, v4]</span>
+<span class="sd">              &gt;&gt;&gt; return = [</span>
+<span class="sd">              ...   v1 + g1 v2 + g1 g2 v3 + g1 g2 g3 v4,</span>
+<span class="sd">              ...   v2 + g2 v3 + g2 g3 v4,</span>
+<span class="sd">              ...   v3 + g3 v4,</span>
+<span class="sd">              ...   v4,</span>
+<span class="sd">              ... ]</span>
+
+<span class="sd">            if ``False``, it is assumed that each gamma is tied to the upcoming</span>
 <span class="sd">            trajectory:</span>
-<span class="sd">              gamma = [g1, g2, g3, g4]</span>
-<span class="sd">              value = [v1, v2, v3, v4]</span>
-<span class="sd">              return = [</span>
-<span class="sd">                v1 + g1 v2 + g1**2 v3 + g**3 v4,</span>
-<span class="sd">                v2 + g2 v3 + g2**2 v4,</span>
-<span class="sd">                v3 + g3 v4,</span>
-<span class="sd">                v4,</span>
-<span class="sd">              ]</span>
-<span class="sd">            Default is True.</span>
+
+<span class="sd">              &gt;&gt;&gt; gamma = [g1, g2, g3, g4]</span>
+<span class="sd">              &gt;&gt;&gt; value = [v1, v2, v3, v4]</span>
+<span class="sd">              &gt;&gt;&gt; return = [</span>
+<span class="sd">              ...   v1 + g1 v2 + g1**2 v3 + g**3 v4,</span>
+<span class="sd">              ...   v2 + g2 v3 + g2**2 v4,</span>
+<span class="sd">              ...   v3 + g3 v4,</span>
+<span class="sd">              ...   v4,</span>
+<span class="sd">              ... ]</span>
+
+<span class="sd">            Default is ``True``.</span>
 <span class="sd">        time_dim (int): dimension where the time is unrolled. Defaults to -2.</span>
 
 <span class="sd">    All tensors (values, reward and done) must have shape</span>
@@ -999,7 +1017,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">terminated</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">terminated</span> <span class="o">=</span> <span class="n">done</span>
+        <span class="n">terminated</span> <span class="o">=</span> <span class="n">done</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span>
         <span class="n">next_state_value</span><span class="o">.</span><span class="n">shape</span>
         <span class="o">==</span> <span class="n">state_value</span><span class="o">.</span><span class="n">shape</span>
@@ -1043,27 +1061,31 @@
 <span class="sd">        terminated (Tensor): boolean flag for the end of episode. Defaults to ``done``</span>
 <span class="sd">            if not provided.</span>
 <span class="sd">        rolling_gamma (bool, optional): if ``True``, it is assumed that each gamma</span>
-<span class="sd">            if a gamma tensor is tied to a single event:</span>
-<span class="sd">              gamma = [g1, g2, g3, g4]</span>
-<span class="sd">              value = [v1, v2, v3, v4]</span>
-<span class="sd">              return = [</span>
-<span class="sd">                v1 + g1 v2 + g1 g2 v3 + g1 g2 g3 v4,</span>
-<span class="sd">                v2 + g2 v3 + g2 g3 v4,</span>
-<span class="sd">                v3 + g3 v4,</span>
-<span class="sd">                v4,</span>
-<span class="sd">              ]</span>
-<span class="sd">            if False, it is assumed that each gamma is tied to the upcoming</span>
+<span class="sd">            of the gamma tensor is tied to a single event:</span>
+
+<span class="sd">              &gt;&gt;&gt; gamma = [g1, g2, g3, g4]</span>
+<span class="sd">              &gt;&gt;&gt; value = [v1, v2, v3, v4]</span>
+<span class="sd">              &gt;&gt;&gt; return = [</span>
+<span class="sd">              ...   v1 + g1 v2 + g1 g2 v3 + g1 g2 g3 v4,</span>
+<span class="sd">              ...   v2 + g2 v3 + g2 g3 v4,</span>
+<span class="sd">              ...   v3 + g3 v4,</span>
+<span class="sd">              ...   v4,</span>
+<span class="sd">              ... ]</span>
+
+<span class="sd">            if ``False``, it is assumed that each gamma is tied to the upcoming</span>
 <span class="sd">            trajectory:</span>
-<span class="sd">              gamma = [g1, g2, g3, g4]</span>
-<span class="sd">              value = [v1, v2, v3, v4]</span>
-<span class="sd">              return = [</span>
-<span class="sd">                v1 + g1 v2 + g1**2 v3 + g**3 v4,</span>
-<span class="sd">                v2 + g2 v3 + g2**2 v4,</span>
-<span class="sd">                v3 + g3 v4,</span>
-<span class="sd">                v4,</span>
-<span class="sd">              ]</span>
-<span class="sd">            Default is True.</span>
-<span class="sd">        time_dim (int): dimension where the time is unrolled. Defaults to -2.</span>
+
+<span class="sd">              &gt;&gt;&gt; gamma = [g1, g2, g3, g4]</span>
+<span class="sd">              &gt;&gt;&gt; value = [v1, v2, v3, v4]</span>
+<span class="sd">              &gt;&gt;&gt; return = [</span>
+<span class="sd">              ...   v1 + g1 v2 + g1**2 v3 + g**3 v4,</span>
+<span class="sd">              ...   v2 + g2 v3 + g2**2 v4,</span>
+<span class="sd">              ...   v3 + g3 v4,</span>
+<span class="sd">              ...   v4,</span>
+<span class="sd">              ... ]</span>
+
+<span class="sd">            Default is ``True``.</span>
+<span class="sd">        time_dim (int): dimension where the time is unrolled. Defaults to ``-2``.</span>
 
 <span class="sd">    All tensors (values, reward and done) must have shape</span>
 <span class="sd">    ``[*Batch x TimeSteps x *F]``, with ``*F`` feature dimensions.</span>
@@ -1102,26 +1124,30 @@
 <span class="sd">        terminated (Tensor): boolean flag for the end of episode. Defaults to ``done``</span>
 <span class="sd">            if not provided.</span>
 <span class="sd">        rolling_gamma (bool, optional): if ``True``, it is assumed that each gamma</span>
-<span class="sd">            if a gamma tensor is tied to a single event:</span>
-<span class="sd">              gamma = [g1, g2, g3, g4]</span>
-<span class="sd">              value = [v1, v2, v3, v4]</span>
-<span class="sd">              return = [</span>
-<span class="sd">                v1 + g1 v2 + g1 g2 v3 + g1 g2 g3 v4,</span>
-<span class="sd">                v2 + g2 v3 + g2 g3 v4,</span>
-<span class="sd">                v3 + g3 v4,</span>
-<span class="sd">                v4,</span>
-<span class="sd">              ]</span>
-<span class="sd">            if False, it is assumed that each gamma is tied to the upcoming</span>
+<span class="sd">            of a gamma tensor is tied to a single event:</span>
+
+<span class="sd">              &gt;&gt;&gt; gamma = [g1, g2, g3, g4]</span>
+<span class="sd">              &gt;&gt;&gt; value = [v1, v2, v3, v4]</span>
+<span class="sd">              &gt;&gt;&gt; return = [</span>
+<span class="sd">              ...   v1 + g1 v2 + g1 g2 v3 + g1 g2 g3 v4,</span>
+<span class="sd">              ...   v2 + g2 v3 + g2 g3 v4,</span>
+<span class="sd">              ...   v3 + g3 v4,</span>
+<span class="sd">              ...   v4,</span>
+<span class="sd">              ... ]</span>
+
+<span class="sd">            if ``False``, it is assumed that each gamma is tied to the upcoming</span>
 <span class="sd">            trajectory:</span>
-<span class="sd">              gamma = [g1, g2, g3, g4]</span>
-<span class="sd">              value = [v1, v2, v3, v4]</span>
-<span class="sd">              return = [</span>
-<span class="sd">                v1 + g1 v2 + g1**2 v3 + g**3 v4,</span>
-<span class="sd">                v2 + g2 v3 + g2**2 v4,</span>
-<span class="sd">                v3 + g3 v4,</span>
-<span class="sd">                v4,</span>
-<span class="sd">              ]</span>
-<span class="sd">            Default is True.</span>
+
+<span class="sd">              &gt;&gt;&gt; gamma = [g1, g2, g3, g4]</span>
+<span class="sd">              &gt;&gt;&gt; value = [v1, v2, v3, v4]</span>
+<span class="sd">              &gt;&gt;&gt; return = [</span>
+<span class="sd">              ...   v1 + g1 v2 + g1**2 v3 + g**3 v4,</span>
+<span class="sd">              ...   v2 + g2 v3 + g2**2 v4,</span>
+<span class="sd">              ...   v3 + g3 v4,</span>
+<span class="sd">              ...   v4,</span>
+<span class="sd">              ... ]</span>
+
+<span class="sd">            Default is ``True``.</span>
 <span class="sd">        time_dim (int): dimension where the time is unrolled. Defaults to -2.</span>
 
 <span class="sd">    All tensors (values, reward and done) must have shape</span>
@@ -1129,7 +1155,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">terminated</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">terminated</span> <span class="o">=</span> <span class="n">done</span>
+        <span class="n">terminated</span> <span class="o">=</span> <span class="n">done</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span>
         <span class="n">next_state_value</span><span class="o">.</span><span class="n">shape</span>
         <span class="o">==</span> <span class="n">state_value</span><span class="o">.</span><span class="n">shape</span>
@@ -1180,26 +1206,30 @@
 <span class="sd">        terminated (Tensor): boolean flag for the end of episode. Defaults to ``done``</span>
 <span class="sd">            if not provided.</span>
 <span class="sd">        rolling_gamma (bool, optional): if ``True``, it is assumed that each gamma</span>
-<span class="sd">            if a gamma tensor is tied to a single event:</span>
-<span class="sd">              gamma = [g1, g2, g3, g4]</span>
-<span class="sd">              value = [v1, v2, v3, v4]</span>
-<span class="sd">              return = [</span>
-<span class="sd">                v1 + g1 v2 + g1 g2 v3 + g1 g2 g3 v4,</span>
-<span class="sd">                v2 + g2 v3 + g2 g3 v4,</span>
-<span class="sd">                v3 + g3 v4,</span>
-<span class="sd">                v4,</span>
-<span class="sd">              ]</span>
-<span class="sd">            if False, it is assumed that each gamma is tied to the upcoming</span>
+<span class="sd">            of a gamma tensor is tied to a single event:</span>
+
+<span class="sd">              &gt;&gt;&gt; gamma = [g1, g2, g3, g4]</span>
+<span class="sd">              &gt;&gt;&gt; value = [v1, v2, v3, v4]</span>
+<span class="sd">              &gt;&gt;&gt; return = [</span>
+<span class="sd">              ...   v1 + g1 v2 + g1 g2 v3 + g1 g2 g3 v4,</span>
+<span class="sd">              ...   v2 + g2 v3 + g2 g3 v4,</span>
+<span class="sd">              ...   v3 + g3 v4,</span>
+<span class="sd">              ...   v4,</span>
+<span class="sd">              ... ]</span>
+
+<span class="sd">            if ``False``, it is assumed that each gamma is tied to the upcoming</span>
 <span class="sd">            trajectory:</span>
-<span class="sd">              gamma = [g1, g2, g3, g4]</span>
-<span class="sd">              value = [v1, v2, v3, v4]</span>
-<span class="sd">              return = [</span>
-<span class="sd">                v1 + g1 v2 + g1**2 v3 + g**3 v4,</span>
-<span class="sd">                v2 + g2 v3 + g2**2 v4,</span>
-<span class="sd">                v3 + g3 v4,</span>
-<span class="sd">                v4,</span>
-<span class="sd">              ]</span>
-<span class="sd">            Default is True.</span>
+
+<span class="sd">              &gt;&gt;&gt; gamma = [g1, g2, g3, g4]</span>
+<span class="sd">              &gt;&gt;&gt; value = [v1, v2, v3, v4]</span>
+<span class="sd">              &gt;&gt;&gt; return = [</span>
+<span class="sd">              ...   v1 + g1 v2 + g1**2 v3 + g**3 v4,</span>
+<span class="sd">              ...   v2 + g2 v3 + g2**2 v4,</span>
+<span class="sd">              ...   v3 + g3 v4,</span>
+<span class="sd">              ...   v4,</span>
+<span class="sd">              ... ]</span>
+
+<span class="sd">            Default is ``True``.</span>
 <span class="sd">        time_dim (int): dimension where the time is unrolled. Defaults to -2.</span>
 
 <span class="sd">    All tensors (values, reward and done) must have shape</span>
@@ -1207,7 +1237,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">terminated</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">terminated</span> <span class="o">=</span> <span class="n">done</span>
+        <span class="n">terminated</span> <span class="o">=</span> <span class="n">done</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">next_state_value</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">reward</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">done</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">terminated</span><span class="o">.</span><span class="n">shape</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">SHAPE_ERR</span><span class="p">)</span>
 
@@ -1286,26 +1316,30 @@
 <span class="sd">        terminated (Tensor): boolean flag for the end of episode. Defaults to ``done``</span>
 <span class="sd">            if not provided.</span>
 <span class="sd">        rolling_gamma (bool, optional): if ``True``, it is assumed that each gamma</span>
-<span class="sd">            if a gamma tensor is tied to a single event:</span>
-<span class="sd">              gamma = [g1, g2, g3, g4]</span>
-<span class="sd">              value = [v1, v2, v3, v4]</span>
-<span class="sd">              return = [</span>
-<span class="sd">                v1 + g1 v2 + g1 g2 v3 + g1 g2 g3 v4,</span>
-<span class="sd">                v2 + g2 v3 + g2 g3 v4,</span>
-<span class="sd">                v3 + g3 v4,</span>
-<span class="sd">                v4,</span>
-<span class="sd">              ]</span>
-<span class="sd">            if False, it is assumed that each gamma is tied to the upcoming</span>
+<span class="sd">            of a gamma tensor is tied to a single event:</span>
+
+<span class="sd">              &gt;&gt;&gt; gamma = [g1, g2, g3, g4]</span>
+<span class="sd">              &gt;&gt;&gt; value = [v1, v2, v3, v4]</span>
+<span class="sd">              &gt;&gt;&gt; return = [</span>
+<span class="sd">              ...   v1 + g1 v2 + g1 g2 v3 + g1 g2 g3 v4,</span>
+<span class="sd">              ...   v2 + g2 v3 + g2 g3 v4,</span>
+<span class="sd">              ...   v3 + g3 v4,</span>
+<span class="sd">              ...   v4,</span>
+<span class="sd">              ... ]</span>
+
+<span class="sd">            if ``False``, it is assumed that each gamma is tied to the upcoming</span>
 <span class="sd">            trajectory:</span>
-<span class="sd">              gamma = [g1, g2, g3, g4]</span>
-<span class="sd">              value = [v1, v2, v3, v4]</span>
-<span class="sd">              return = [</span>
-<span class="sd">                v1 + g1 v2 + g1**2 v3 + g**3 v4,</span>
-<span class="sd">                v2 + g2 v3 + g2**2 v4,</span>
-<span class="sd">                v3 + g3 v4,</span>
-<span class="sd">                v4,</span>
-<span class="sd">              ]</span>
-<span class="sd">            Default is True.</span>
+
+<span class="sd">              &gt;&gt;&gt; gamma = [g1, g2, g3, g4]</span>
+<span class="sd">              &gt;&gt;&gt; value = [v1, v2, v3, v4]</span>
+<span class="sd">              &gt;&gt;&gt; return = [</span>
+<span class="sd">              ...   v1 + g1 v2 + g1**2 v3 + g**3 v4,</span>
+<span class="sd">              ...   v2 + g2 v3 + g2**2 v4,</span>
+<span class="sd">              ...   v3 + g3 v4,</span>
+<span class="sd">              ...   v4,</span>
+<span class="sd">              ... ]</span>
+
+<span class="sd">            Default is ``True``.</span>
 <span class="sd">        time_dim (int): dimension where the time is unrolled. Defaults to -2.</span>
 
 <span class="sd">    All tensors (values, reward and done) must have shape</span>
@@ -1313,7 +1347,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">terminated</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">terminated</span> <span class="o">=</span> <span class="n">done</span>
+        <span class="n">terminated</span> <span class="o">=</span> <span class="n">done</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span>
         <span class="n">next_state_value</span><span class="o">.</span><span class="n">shape</span>
         <span class="o">==</span> <span class="n">state_value</span><span class="o">.</span><span class="n">shape</span>
@@ -1359,7 +1393,7 @@
 <span class="sd">        reward (torch.Tensor): a [*B, T, F] tensor containing rewards</span>
 <span class="sd">        done (Tensor): boolean flag for end of trajectory.</span>
 <span class="sd">        terminated (Tensor): boolean flag for end of episode.</span>
-<span class="sd">        thr (float): threshold for the filter. Below this limit, components will ignored.</span>
+<span class="sd">        thr (:obj:`float`): threshold for the filter. Below this limit, components will ignored.</span>
 <span class="sd">            Defaults to 1e-7.</span>
 
 <span class="sd">    All tensors (values, reward and done) must have shape</span>
@@ -1422,26 +1456,30 @@
 <span class="sd">        terminated (Tensor): boolean flag for the end of episode. Defaults to ``done``</span>
 <span class="sd">            if not provided.</span>
 <span class="sd">        rolling_gamma (bool, optional): if ``True``, it is assumed that each gamma</span>
-<span class="sd">            if a gamma tensor is tied to a single event:</span>
-<span class="sd">              gamma = [g1, g2, g3, g4]</span>
-<span class="sd">              value = [v1, v2, v3, v4]</span>
-<span class="sd">              return = [</span>
-<span class="sd">                v1 + g1 v2 + g1 g2 v3 + g1 g2 g3 v4,</span>
-<span class="sd">                v2 + g2 v3 + g2 g3 v4,</span>
-<span class="sd">                v3 + g3 v4,</span>
-<span class="sd">                v4,</span>
-<span class="sd">              ]</span>
-<span class="sd">            if False, it is assumed that each gamma is tied to the upcoming</span>
+<span class="sd">            of a gamma tensor is tied to a single event:</span>
+
+<span class="sd">              &gt;&gt;&gt; gamma = [g1, g2, g3, g4]</span>
+<span class="sd">              &gt;&gt;&gt; value = [v1, v2, v3, v4]</span>
+<span class="sd">              &gt;&gt;&gt; return = [</span>
+<span class="sd">              ...   v1 + g1 v2 + g1 g2 v3 + g1 g2 g3 v4,</span>
+<span class="sd">              ...   v2 + g2 v3 + g2 g3 v4,</span>
+<span class="sd">              ...   v3 + g3 v4,</span>
+<span class="sd">              ...   v4,</span>
+<span class="sd">              ... ]</span>
+
+<span class="sd">            if ``False``, it is assumed that each gamma is tied to the upcoming</span>
 <span class="sd">            trajectory:</span>
-<span class="sd">              gamma = [g1, g2, g3, g4]</span>
-<span class="sd">              value = [v1, v2, v3, v4]</span>
-<span class="sd">              return = [</span>
-<span class="sd">                v1 + g1 v2 + g1**2 v3 + g**3 v4,</span>
-<span class="sd">                v2 + g2 v3 + g2**2 v4,</span>
-<span class="sd">                v3 + g3 v4,</span>
-<span class="sd">                v4,</span>
-<span class="sd">              ]</span>
-<span class="sd">            Default is True.</span>
+
+<span class="sd">              &gt;&gt;&gt; gamma = [g1, g2, g3, g4]</span>
+<span class="sd">              &gt;&gt;&gt; value = [v1, v2, v3, v4]</span>
+<span class="sd">              &gt;&gt;&gt; return = [</span>
+<span class="sd">              ...   v1 + g1 v2 + g1**2 v3 + g**3 v4,</span>
+<span class="sd">              ...   v2 + g2 v3 + g2**2 v4,</span>
+<span class="sd">              ...   v3 + g3 v4,</span>
+<span class="sd">              ...   v4,</span>
+<span class="sd">              ... ]</span>
+
+<span class="sd">            Default is ``True``.</span>
 <span class="sd">        time_dim (int): dimension where the time is unrolled. Defaults to -2.</span>
 
 <span class="sd">    All tensors (values, reward and done) must have shape</span>
@@ -1449,7 +1487,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">terminated</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">terminated</span> <span class="o">=</span> <span class="n">done</span>
+        <span class="n">terminated</span> <span class="o">=</span> <span class="n">done</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">next_state_value</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">reward</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">done</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">terminated</span><span class="o">.</span><span class="n">shape</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">SHAPE_ERR</span><span class="p">)</span>
 
@@ -1572,26 +1610,30 @@
 <span class="sd">        terminated (Tensor): boolean flag for the end of episode. Defaults to ``done``</span>
 <span class="sd">            if not provided.</span>
 <span class="sd">        rolling_gamma (bool, optional): if ``True``, it is assumed that each gamma</span>
-<span class="sd">            if a gamma tensor is tied to a single event:</span>
-<span class="sd">              gamma = [g1, g2, g3, g4]</span>
-<span class="sd">              value = [v1, v2, v3, v4]</span>
-<span class="sd">              return = [</span>
-<span class="sd">                v1 + g1 v2 + g1 g2 v3 + g1 g2 g3 v4,</span>
-<span class="sd">                v2 + g2 v3 + g2 g3 v4,</span>
-<span class="sd">                v3 + g3 v4,</span>
-<span class="sd">                v4,</span>
-<span class="sd">              ]</span>
-<span class="sd">            if False, it is assumed that each gamma is tied to the upcoming</span>
+<span class="sd">            of a gamma tensor is tied to a single event:</span>
+
+<span class="sd">              &gt;&gt;&gt; gamma = [g1, g2, g3, g4]</span>
+<span class="sd">              &gt;&gt;&gt; value = [v1, v2, v3, v4]</span>
+<span class="sd">              &gt;&gt;&gt; return = [</span>
+<span class="sd">              ...   v1 + g1 v2 + g1 g2 v3 + g1 g2 g3 v4,</span>
+<span class="sd">              ...   v2 + g2 v3 + g2 g3 v4,</span>
+<span class="sd">              ...   v3 + g3 v4,</span>
+<span class="sd">              ...   v4,</span>
+<span class="sd">              ... ]</span>
+
+<span class="sd">            if ``False``, it is assumed that each gamma is tied to the upcoming</span>
 <span class="sd">            trajectory:</span>
-<span class="sd">              gamma = [g1, g2, g3, g4]</span>
-<span class="sd">              value = [v1, v2, v3, v4]</span>
-<span class="sd">              return = [</span>
-<span class="sd">                v1 + g1 v2 + g1**2 v3 + g**3 v4,</span>
-<span class="sd">                v2 + g2 v3 + g2**2 v4,</span>
-<span class="sd">                v3 + g3 v4,</span>
-<span class="sd">                v4,</span>
-<span class="sd">              ]</span>
-<span class="sd">            Default is True.</span>
+
+<span class="sd">              &gt;&gt;&gt; gamma = [g1, g2, g3, g4]</span>
+<span class="sd">              &gt;&gt;&gt; value = [v1, v2, v3, v4]</span>
+<span class="sd">              &gt;&gt;&gt; return = [</span>
+<span class="sd">              ...   v1 + g1 v2 + g1**2 v3 + g**3 v4,</span>
+<span class="sd">              ...   v2 + g2 v3 + g2**2 v4,</span>
+<span class="sd">              ...   v3 + g3 v4,</span>
+<span class="sd">              ...   v4,</span>
+<span class="sd">              ... ]</span>
+
+<span class="sd">            Default is ``True``.</span>
 <span class="sd">        time_dim (int): dimension where the time is unrolled. Defaults to -2.</span>
 
 <span class="sd">    All tensors (values, reward and done) must have shape</span>
@@ -1599,7 +1641,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">terminated</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">terminated</span> <span class="o">=</span> <span class="n">done</span>
+        <span class="n">terminated</span> <span class="o">=</span> <span class="n">done</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span>
         <span class="n">next_state_value</span><span class="o">.</span><span class="n">shape</span>
         <span class="o">==</span> <span class="n">state_value</span><span class="o">.</span><span class="n">shape</span>
@@ -1731,7 +1773,7 @@
 <span class="sd">            received at each time step over multiple trajectories.</span>
 <span class="sd">        done (Tensor): boolean flag for end of episode. Differs from</span>
 <span class="sd">            truncated, where the episode did not end but was interrupted.</span>
-<span class="sd">        gamma (float, optional): The discount factor to use for computing the</span>
+<span class="sd">        gamma (:obj:`float`, optional): The discount factor to use for computing the</span>
 <span class="sd">            discounted cumulative sum of rewards. Defaults to 1.0.</span>
 <span class="sd">        time_dim (int): dimension where the time is unrolled. Defaults to -2.</span>
 

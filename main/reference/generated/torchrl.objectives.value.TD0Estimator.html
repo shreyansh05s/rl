@@ -450,7 +450,8 @@ the advantage entry.  Defaults to <code class="docutils literal notranslate"><sp
 of the advantage entry.  Defaults to <code class="docutils literal notranslate"><span class="pre">&quot;value_target&quot;</span></code>.</p></li>
 <li><p><strong>value_key</strong> (<em>str</em><em> or </em><em>tuple of str</em><em>, </em><em>optional</em>) – [Deprecated] the value key to
 read from the input tensordict.  Defaults to <code class="docutils literal notranslate"><span class="pre">&quot;state_value&quot;</span></code>.</p></li>
-<li><p><strong>device</strong> (<a class="reference external" href="https://pytorch.org/docs/stable/tensor_attributes.html#torch.device" title="(in PyTorch v2.5)"><em>torch.device</em></a><em>, </em><em>optional</em>) – device of the module.</p></li>
+<li><p><strong>device</strong> (<a class="reference external" href="https://pytorch.org/docs/stable/tensor_attributes.html#torch.device" title="(in PyTorch v2.5)"><em>torch.device</em></a><em>, </em><em>optional</em>) – the device where the buffers will be instantiated.
+Defaults to <code class="docutils literal notranslate"><span class="pre">torch.get_default_device()</span></code>.</p></li>
 </ul>
 </dd>
 </dl>

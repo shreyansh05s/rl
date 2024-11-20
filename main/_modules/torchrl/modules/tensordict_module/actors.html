@@ -1534,7 +1534,7 @@
     <span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">action_space</span><span class="p">,</span> <span class="n">TensorSpec</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                <span class="s2">&quot;Using specs in action_space is deprecated.&quot;</span>
+                <span class="s2">&quot;Using specs in action_space is deprecated. &quot;</span>
                 <span class="s2">&quot;Please use the &#39;spec&#39; argument if you want to provide an action spec&quot;</span>
             <span class="p">)</span>
         <span class="n">action_space</span><span class="p">,</span> <span class="n">spec</span> <span class="o">=</span> <span class="n">_process_action_space_spec</span><span class="p">(</span><span class="n">action_space</span><span class="p">,</span> <span class="n">spec</span><span class="p">)</span>
@@ -2186,6 +2186,7 @@
 <span class="sd">            For example for an observation input of shape [batch_size, context, obs_dim] with context=20 and inference_context=5, the first 15 entries</span>
 <span class="sd">            of the context will be masked. Defaults to 5.</span>
 <span class="sd">        spec (Optional[TensorSpec]): The spec of the input TensorDict. If None, it will be inferred from the policy module.</span>
+<span class="sd">        device (torch.device, optional): if provided, the device where the buffers / specs will be placed.</span>
 
 <span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; import torch</span>
@@ -2239,6 +2240,7 @@
         <span class="o">*</span><span class="p">,</span>
         <span class="n">inference_context</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
         <span class="n">spec</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TensorSpec</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">device</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">policy</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">observation_key</span> <span class="o">=</span> <span class="s2">&quot;observation&quot;</span>
@@ -2260,6 +2262,8 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_spec</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">action_key</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_spec</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">({</span><span class="n">key</span><span class="p">:</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">policy</span><span class="o">.</span><span class="n">out_keys</span><span class="p">})</span>
+        <span class="k">if</span> <span class="n">device</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spec</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">checked</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="nd">@property</span>

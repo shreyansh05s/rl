@@ -602,7 +602,7 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">center_crop</span><span class="p">:</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">_has_tv</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
-                        <span class="s2">&quot;Could not import torchvision, `center_crop` not available.&quot;</span>
+                        <span class="s2">&quot;Could not import torchvision, `center_crop` not available. &quot;</span>
                         <span class="s2">&quot;Make sure torchvision is installed in your environment.&quot;</span>
                     <span class="p">)</span>
                 <span class="kn">from</span> <span class="nn">torchvision.transforms.functional</span> <span class="kn">import</span> <span class="p">(</span>
@@ -615,7 +615,7 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_grid</span> <span class="ow">and</span> <span class="n">observation_trsf</span><span class="o">.</span><span class="n">ndimension</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="mi">4</span><span class="p">:</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">_has_tv</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
-                        <span class="s2">&quot;Could not import torchvision, `make_grid` not available.&quot;</span>
+                        <span class="s2">&quot;Could not import torchvision, `make_grid` not available. &quot;</span>
                         <span class="s2">&quot;Make sure torchvision is installed in your environment.&quot;</span>
                     <span class="p">)</span>
                 <span class="kn">from</span> <span class="nn">torchvision.utils</span> <span class="kn">import</span> <span class="n">make_grid</span>

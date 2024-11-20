@@ -405,7 +405,6 @@
 <span class="c1">#</span>
 <span class="c1"># This source code is licensed under the MIT license found in the</span>
 <span class="c1"># LICENSE file in the root directory of this source tree.</span>
-
 <span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Union</span>
@@ -413,6 +412,9 @@
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">import</span> <span class="nn">torch.distributions</span> <span class="k">as</span> <span class="nn">D</span>
 <span class="kn">import</span> <span class="nn">torch.nn.functional</span> <span class="k">as</span> <span class="nn">F</span>
+
+<span class="kn">from</span> <span class="nn">torch.distributions.utils</span> <span class="kn">import</span> <span class="n">lazy_property</span><span class="p">,</span> <span class="n">logits_to_probs</span><span class="p">,</span> <span class="n">probs_to_logits</span>
+
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;OneHotCategorical&quot;</span><span class="p">,</span> <span class="s2">&quot;MaskedCategorical&quot;</span><span class="p">,</span> <span class="s2">&quot;Ordinal&quot;</span><span class="p">,</span> <span class="s2">&quot;OneHotOrdinal&quot;</span><span class="p">]</span>
 
@@ -482,6 +484,17 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="n">num_params</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="c1"># This is to make the compiler happy, see https://github.com/pytorch/pytorch/issues/140266</span>
+    <span class="nd">@lazy_property</span>
+    <span class="k">def</span> <span class="nf">logits</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">probs_to_logits</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">probs</span><span class="p">)</span>
+
+    <span class="nd">@lazy_property</span>
+    <span class="k">def</span> <span class="nf">probs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">logits_to_probs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logits</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">logits</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -508,6 +521,12 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">deterministic_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span>
+
+<div class="viewcode-block" id="OneHotCategorical.entropy"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.OneHotCategorical.html#torchrl.modules.OneHotCategorical.entropy">[docs]</a>    <span class="k">def</span> <span class="nf">entropy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">min_real</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logits</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">min</span>
+        <span class="n">logits</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logits</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="n">min_real</span><span class="p">)</span>
+        <span class="n">p_log_p</span> <span class="o">=</span> <span class="n">logits</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">probs</span>
+        <span class="k">return</span> <span class="o">-</span><span class="n">p_log_p</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="OneHotCategorical.sample"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.OneHotCategorical.html#torchrl.modules.OneHotCategorical.sample">[docs]</a>    <span class="nd">@_one_hot_wrapper</span><span class="p">(</span><span class="n">D</span><span class="o">.</span><span class="n">Categorical</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span>
@@ -564,7 +583,7 @@
 <span class="sd">            in the distribution. Exclusive with ``indices``.</span>
 <span class="sd">        indices (torch.Tensor): A dense index tensor representing which actions</span>
 <span class="sd">            must be taken into account. Exclusive with ``mask``.</span>
-<span class="sd">        neg_inf (float, optional): The log-probability value allocated to</span>
+<span class="sd">        neg_inf (:obj:`float`, optional): The log-probability value allocated to</span>
 <span class="sd">            invalid (out-of-mask) indices. Defaults to -inf.</span>
 <span class="sd">        padding_value: The padding value in the mask tensor. When</span>
 <span class="sd">            sparse_mask == True, the padding_value will be ignored.</span>
@@ -590,6 +609,14 @@
 <span class="sd">        tensor([   -inf, -2.1972, -2.1972, -2.1972, -2.1972, -2.1972, -2.1972, -2.1972,</span>
 <span class="sd">                -2.1972, -2.1972])</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@lazy_property</span>
+    <span class="k">def</span> <span class="nf">logits</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">probs_to_logits</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">probs</span><span class="p">)</span>
+
+    <span class="nd">@lazy_property</span>
+    <span class="k">def</span> <span class="nf">probs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">logits_to_probs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logits</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -715,7 +742,7 @@
 <span class="sd">            in the distribution. Exclusive with ``indices``.</span>
 <span class="sd">        indices (torch.Tensor): A dense index tensor representing which actions</span>
 <span class="sd">            must be taken into account. Exclusive with ``mask``.</span>
-<span class="sd">        neg_inf (float, optional): The log-probability value allocated to</span>
+<span class="sd">        neg_inf (:obj:`float`, optional): The log-probability value allocated to</span>
 <span class="sd">            invalid (out-of-mask) indices. Defaults to -inf.</span>
 <span class="sd">        padding_value: The padding value in then mask tensor when</span>
 <span class="sd">            sparse_mask == True, the padding_value will be ignored.</span>
@@ -727,6 +754,7 @@
 <span class="sd">            ``ReparamGradientStrategy.RelaxedOneHot`` will use</span>
 <span class="sd">            :class:`torch.distributions.RelaxedOneHot` to sample from the distribution.</span>
 
+<span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; torch.manual_seed(0)</span>
 <span class="sd">        &gt;&gt;&gt; logits = torch.randn(4) / 100  # almost equal probabilities</span>
 <span class="sd">        &gt;&gt;&gt; mask = torch.tensor([True, False, True, True])</span>
@@ -761,6 +789,14 @@
 <span class="sd">        tensor([   -inf, -2.1972, -2.1972, -2.1972, -2.1972, -2.1972, -2.1972, -2.1972,</span>
 <span class="sd">                -2.1972, -2.1972])</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@lazy_property</span>
+    <span class="k">def</span> <span class="nf">logits</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">probs_to_logits</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">probs</span><span class="p">)</span>
+
+    <span class="nd">@lazy_property</span>
+    <span class="k">def</span> <span class="nf">probs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">logits_to_probs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logits</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>

@@ -1300,16 +1300,14 @@
 
 <span class="sd">    All arguments are keyword-only arguments.</span>
 
-<span class="sd">    Presented in</span>
-<span class="sd">        &quot;Schaul, T.; Quan, J.; Antonoglou, I.; and Silver, D. 2015.</span>
-<span class="sd">        Prioritized experience replay.&quot;</span>
-<span class="sd">        (https://arxiv.org/abs/1511.05952)</span>
+<span class="sd">    Presented in &quot;Schaul, T.; Quan, J.; Antonoglou, I.; and Silver, D. 2015.</span>
+<span class="sd">    Prioritized experience replay.&quot; (https://arxiv.org/abs/1511.05952)</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        alpha (float): exponent α determines how much prioritization is used,</span>
+<span class="sd">        alpha (:obj:`float`): exponent α determines how much prioritization is used,</span>
 <span class="sd">            with α = 0 corresponding to the uniform case.</span>
-<span class="sd">        beta (float): importance sampling negative exponent.</span>
-<span class="sd">        eps (float): delta added to the priorities to ensure that the buffer</span>
+<span class="sd">        beta (:obj:`float`): importance sampling negative exponent.</span>
+<span class="sd">        eps (:obj:`float`): delta added to the priorities to ensure that the buffer</span>
 <span class="sd">            does not contain null priorities.</span>
 <span class="sd">        storage (Storage, optional): the storage to be used. If none is provided</span>
 <span class="sd">            a default :class:`~torchrl.data.replay_buffers.ListStorage` with</span>
@@ -1769,10 +1767,10 @@
 <span class="sd">    tensordict to be passed to it with its new priority value.</span>
 
 <span class="sd">    Keyword Args:</span>
-<span class="sd">        alpha (float): exponent α determines how much prioritization is used,</span>
+<span class="sd">        alpha (:obj:`float`): exponent α determines how much prioritization is used,</span>
 <span class="sd">            with α = 0 corresponding to the uniform case.</span>
-<span class="sd">        beta (float): importance sampling negative exponent.</span>
-<span class="sd">        eps (float): delta added to the priorities to ensure that the buffer</span>
+<span class="sd">        beta (:obj:`float`): importance sampling negative exponent.</span>
+<span class="sd">        eps (:obj:`float`): delta added to the priorities to ensure that the buffer</span>
 <span class="sd">            does not contain null priorities.</span>
 <span class="sd">        storage (Storage, optional): the storage to be used. If none is provided</span>
 <span class="sd">            a default :class:`~torchrl.data.replay_buffers.ListStorage` with</span>

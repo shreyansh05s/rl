@@ -433,8 +433,8 @@ formula for the entropy, a Monte-Carlo estimate will be used.
 <code class="docutils literal notranslate"><span class="pre">samples_mc_entropy</span></code> will control how many
 samples will be used to compute this estimate.
 Defaults to <code class="docutils literal notranslate"><span class="pre">1</span></code>.</p></li>
-<li><p><strong>entropy_coef</strong> (<em>float</em>) – the weight of the entropy loss. Defaults to <cite>0.01`</cite>.</p></li>
-<li><p><strong>critic_coef</strong> (<em>float</em>) – the weight of the critic loss. Defaults to <code class="docutils literal notranslate"><span class="pre">1.0</span></code>. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, the critic
+<li><p><strong>entropy_coef</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>) – the weight of the entropy loss. Defaults to <cite>0.01`</cite>.</p></li>
+<li><p><strong>critic_coef</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>) – the weight of the critic loss. Defaults to <code class="docutils literal notranslate"><span class="pre">1.0</span></code>. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, the critic
 loss won’t be included and the in-keys will miss the critic inputs.</p></li>
 <li><p><strong>loss_critic_type</strong> (<em>str</em>) – loss function for the value discrepancy.
 Can be one of “l1”, “l2” or “smooth_l1”. Defaults to <code class="docutils literal notranslate"><span class="pre">&quot;smooth_l1&quot;</span></code>.</p></li>
@@ -454,7 +454,7 @@ with a little cost. Defaults to <code class="docutils literal notranslate"><span
 <code class="docutils literal notranslate"><span class="pre">&quot;none&quot;</span></code> | <code class="docutils literal notranslate"><span class="pre">&quot;mean&quot;</span></code> | <code class="docutils literal notranslate"><span class="pre">&quot;sum&quot;</span></code>. <code class="docutils literal notranslate"><span class="pre">&quot;none&quot;</span></code>: no reduction will be applied,
 <code class="docutils literal notranslate"><span class="pre">&quot;mean&quot;</span></code>: the sum of the output will be divided by the number of
 elements in the output, <code class="docutils literal notranslate"><span class="pre">&quot;sum&quot;</span></code>: the output will be summed. Default: <code class="docutils literal notranslate"><span class="pre">&quot;mean&quot;</span></code>.</p></li>
-<li><p><strong>clip_value</strong> (<em>float</em><em>, </em><em>optional</em>) – If provided, it will be used to compute a clipped version of the value
+<li><p><strong>clip_value</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>, optional) – If provided, it will be used to compute a clipped version of the value
 prediction with respect to the input value estimate and use it to calculate the value loss.
 The purpose of clipping is to limit the impact of extreme value predictions, helping stabilize training
 and preventing large updates. However, it will have no impact if the value estimate was done by the current

@@ -432,11 +432,11 @@
 <span class="sd">        actor_network (ProbabilisticActor): stochastic actor</span>
 
 <span class="sd">    Keyword Args:</span>
-<span class="sd">        alpha_init (float, optional): initial entropy multiplier.</span>
+<span class="sd">        alpha_init (:obj:`float`, optional): initial entropy multiplier.</span>
 <span class="sd">            Default is 1.0.</span>
-<span class="sd">        min_alpha (float, optional): min value of alpha.</span>
+<span class="sd">        min_alpha (:obj:`float`, optional): min value of alpha.</span>
 <span class="sd">            Default is None (no minimum value).</span>
-<span class="sd">        max_alpha (float, optional): max value of alpha.</span>
+<span class="sd">        max_alpha (:obj:`float`, optional): max value of alpha.</span>
 <span class="sd">            Default is None (no maximum value).</span>
 <span class="sd">        fixed_alpha (bool, optional): if ``True``, alpha will be fixed to its</span>
 <span class="sd">            initial value. Otherwise, alpha will be optimized to</span>
@@ -695,6 +695,7 @@
         <span class="o">*</span><span class="p">,</span>
         <span class="n">loss_function</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;l2&quot;</span><span class="p">,</span>
         <span class="n">reduction</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">device</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_in_keys</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_out_keys</span> <span class="o">=</span> <span class="kc">None</span>
@@ -746,7 +747,7 @@
     <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the loss for the Online Decision Transformer.&quot;&quot;&quot;</span>
         <span class="c1"># extract action targets</span>
-        <span class="n">tensordict</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">clone</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">tensordict</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">target_actions</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tensor_keys</span><span class="o">.</span><span class="n">action_target</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
 
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">actor_network_params</span><span class="o">.</span><span class="n">to_module</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">actor_network</span><span class="p">):</span>
@@ -759,10 +760,7 @@
             <span class="n">loss_function</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">loss_function</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">loss</span> <span class="o">=</span> <span class="n">_reduce</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="n">reduction</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">reduction</span><span class="p">)</span>
-        <span class="n">out</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;loss&quot;</span><span class="p">:</span> <span class="n">loss</span><span class="p">,</span>
-        <span class="p">}</span>
-        <span class="n">td_out</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="n">td_out</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="p">(</span><span class="n">loss</span><span class="o">=</span><span class="n">loss</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">td_out</span></div></div>
 </pre></div>
 

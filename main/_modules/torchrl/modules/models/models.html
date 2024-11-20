@@ -470,7 +470,7 @@
 <span class="sd">        norm_kwargs (dict or list of dicts, optional): kwargs to be used with</span>
 <span class="sd">            the normalization layers. Aslo accepts a list of kwargs of length</span>
 <span class="sd">            ``depth + int(activate_last_layer)``.</span>
-<span class="sd">        dropout (float, optional): dropout probability. Defaults to ``None`` (no</span>
+<span class="sd">        dropout (:obj:`float`, optional): dropout probability. Defaults to ``None`` (no</span>
 <span class="sd">            dropout);</span>
 <span class="sd">        bias_last_layer (bool): if ``True``, the last Linear layer will have a bias parameter.</span>
 <span class="sd">            default: True;</span>
@@ -1462,7 +1462,7 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        module (nn.Module): an actor or critic to be initialized.</span>
-<span class="sd">        scale (float, optional): the noise scale. Defaults to ``6e-4``.</span>
+<span class="sd">        scale (:obj:`float`, optional): the noise scale. Defaults to ``6e-4``.</span>
 <span class="sd">        device (torch.device, optional): the device where the noise should be</span>
 <span class="sd">            created. Defaults to the device of the last layer&#39;s weight</span>
 <span class="sd">            parameter.</span>

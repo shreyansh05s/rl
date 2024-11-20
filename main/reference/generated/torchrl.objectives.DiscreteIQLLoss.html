@@ -428,18 +428,18 @@
 <dd class="field-even"><ul class="simple">
 <li><p><strong>action_space</strong> (<em>str</em><em> or </em><a class="reference internal" href="torchrl.data.TensorSpec.html#torchrl.data.TensorSpec" title="torchrl.data.TensorSpec"><em>TensorSpec</em></a>) – Action space. Must be one of
 <code class="docutils literal notranslate"><span class="pre">&quot;one-hot&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;mult_one_hot&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;binary&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;categorical&quot;</span></code>,
-or an instance of the corresponding specs (<code class="xref py py-class docutils literal notranslate"><span class="pre">torchrl.data.OneHot</span></code>,
+or an instance of the corresponding specs (<a class="reference internal" href="torchrl.data.OneHot.html#torchrl.data.OneHot" title="torchrl.data.OneHot"><code class="xref py py-class docutils literal notranslate"><span class="pre">torchrl.data.OneHot</span></code></a>,
 <a class="reference internal" href="torchrl.data.MultiOneHot.html#torchrl.data.MultiOneHot" title="torchrl.data.MultiOneHot"><code class="xref py py-class docutils literal notranslate"><span class="pre">torchrl.data.MultiOneHot</span></code></a>,
 <a class="reference internal" href="torchrl.data.Binary.html#torchrl.data.Binary" title="torchrl.data.Binary"><code class="xref py py-class docutils literal notranslate"><span class="pre">torchrl.data.Binary</span></code></a> or <a class="reference internal" href="torchrl.data.Categorical.html#torchrl.data.Categorical" title="torchrl.data.Categorical"><code class="xref py py-class docutils literal notranslate"><span class="pre">torchrl.data.Categorical</span></code></a>).</p></li>
 <li><p><strong>num_qvalue_nets</strong> (<em>integer</em><em>, </em><em>optional</em>) – number of Q-Value networks used.
 Defaults to <code class="docutils literal notranslate"><span class="pre">2</span></code>.</p></li>
 <li><p><strong>loss_function</strong> (<em>str</em><em>, </em><em>optional</em>) – loss function to be used with
 the value function loss. Default is <cite>“smooth_l1”</cite>.</p></li>
-<li><p><strong>temperature</strong> (<a class="reference internal" href="torchrl.data.BinaryToDecimal.html#torchrl.data.BinaryToDecimal.float" title="torchrl.data.BinaryToDecimal.float"><em>float</em></a><em>, </em><em>optional</em>) – Inverse temperature (beta).
+<li><p><strong>temperature</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>, optional) – Inverse temperature (beta).
 For smaller hyperparameter values, the objective behaves similarly to
 behavioral cloning, while for larger values, it attempts to recover the
 maximum of the Q-function.</p></li>
-<li><p><strong>expectile</strong> (<a class="reference internal" href="torchrl.data.BinaryToDecimal.html#torchrl.data.BinaryToDecimal.float" title="torchrl.data.BinaryToDecimal.float"><em>float</em></a><em>, </em><em>optional</em>) – expectile <span class="math notranslate nohighlight">\(\tau\)</span>. A larger value of <span class="math notranslate nohighlight">\(\tau\)</span> is crucial
+<li><p><strong>expectile</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>, optional) – expectile <span class="math notranslate nohighlight">\(\tau\)</span>. A larger value of <span class="math notranslate nohighlight">\(\tau\)</span> is crucial
 for antmaze tasks that require dynamical programming (“stichting”).</p></li>
 <li><p><strong>priority_key</strong> (<em>str</em><em>, </em><em>optional</em>) – [Deprecated, use .set_keys(priority_key=priority_key) instead]
 tensordict key where to write the priority (for prioritized replay

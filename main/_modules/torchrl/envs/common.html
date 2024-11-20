@@ -1243,15 +1243,15 @@
 <span class="sd">            ...     break</span>
 <span class="sd">            &gt;&gt;&gt; env = BraxEnv(envname)</span>
 <span class="sd">            &gt;&gt;&gt; env.full_action_spec</span>
-<span class="sd">        Composite(</span>
-<span class="sd">            action: BoundedContinuous(</span>
-<span class="sd">                shape=torch.Size([8]),</span>
-<span class="sd">                space=ContinuousBox(</span>
-<span class="sd">                    low=Tensor(shape=torch.Size([8]), device=cpu, dtype=torch.float32, contiguous=True),</span>
-<span class="sd">                    high=Tensor(shape=torch.Size([8]), device=cpu, dtype=torch.float32, contiguous=True)),</span>
-<span class="sd">                device=cpu,</span>
-<span class="sd">                dtype=torch.float32,</span>
-<span class="sd">                domain=continuous), device=cpu, shape=torch.Size([]))</span>
+<span class="sd">            Composite(</span>
+<span class="sd">                action: BoundedContinuous(</span>
+<span class="sd">                    shape=torch.Size([8]),</span>
+<span class="sd">                    space=ContinuousBox(</span>
+<span class="sd">                        low=Tensor(shape=torch.Size([8]), device=cpu, dtype=torch.float32, contiguous=True),</span>
+<span class="sd">                        high=Tensor(shape=torch.Size([8]), device=cpu, dtype=torch.float32, contiguous=True)),</span>
+<span class="sd">                    device=cpu,</span>
+<span class="sd">                    dtype=torch.float32,</span>
+<span class="sd">                    domain=continuous), device=cpu, shape=torch.Size([]))</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">full_action_spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_spec</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;full_action_spec&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
@@ -2194,7 +2194,7 @@
 <span class="sd">                (results are tensors).</span>
 <span class="sd">                This arg can be passed during a call to :func:`~gym.make` (see</span>
 <span class="sd">                example below).</span>
-<span class="sd">            reward_threshold (float, optional): [Gym kwarg] The reward threshold</span>
+<span class="sd">            reward_threshold (:obj:`float`, optional): [Gym kwarg] The reward threshold</span>
 <span class="sd">                considered to have learnt an environment.</span>
 <span class="sd">            nondeterministic (bool, optional): [Gym kwarg If the environment is nondeterministic</span>
 <span class="sd">                (even with knowledge of the initial seed and all actions). Defaults to</span>
@@ -3605,7 +3605,7 @@
         <span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;`_EnvWrapper.__init__` received a non-empty args list of arguments.&quot;</span>
+                <span class="s2">&quot;`_EnvWrapper.__init__` received a non-empty args list of arguments. &quot;</span>
                 <span class="s2">&quot;Make sure only keywords arguments are used when calling `super().__init__`.&quot;</span>
             <span class="p">)</span>
 

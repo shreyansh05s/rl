@@ -423,12 +423,14 @@
 <span class="kn">from</span> <span class="nn">tensordict.utils</span> <span class="kn">import</span> <span class="n">NestedKey</span>
 <span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">distributions</span> <span class="k">as</span> <span class="n">d</span>
 
+<span class="kn">from</span> <span class="nn">torchrl.modules.distributions</span> <span class="kn">import</span> <span class="n">HAS_ENTROPY</span>
 <span class="kn">from</span> <span class="nn">torchrl.objectives.common</span> <span class="kn">import</span> <span class="n">LossModule</span>
 
 <span class="kn">from</span> <span class="nn">torchrl.objectives.utils</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">_cache_values</span><span class="p">,</span>
     <span class="n">_clip_value_loss</span><span class="p">,</span>
     <span class="n">_GAMMA_LMBDA_DEPREC_ERROR</span><span class="p">,</span>
+    <span class="n">_get_default_device</span><span class="p">,</span>
     <span class="n">_reduce</span><span class="p">,</span>
     <span class="n">default_value_kwargs</span><span class="p">,</span>
     <span class="n">distance_loss</span><span class="p">,</span>
@@ -464,8 +466,8 @@
 <span class="sd">            ``samples_mc_entropy`` will control how many</span>
 <span class="sd">            samples will be used to compute this estimate.</span>
 <span class="sd">            Defaults to ``1``.</span>
-<span class="sd">        entropy_coef (float): the weight of the entropy loss. Defaults to `0.01``.</span>
-<span class="sd">        critic_coef (float): the weight of the critic loss. Defaults to ``1.0``. If ``None``, the critic</span>
+<span class="sd">        entropy_coef (:obj:`float`): the weight of the entropy loss. Defaults to `0.01``.</span>
+<span class="sd">        critic_coef (:obj:`float`): the weight of the critic loss. Defaults to ``1.0``. If ``None``, the critic</span>
 <span class="sd">            loss won&#39;t be included and the in-keys will miss the critic inputs.</span>
 <span class="sd">        loss_critic_type (str): loss function for the value discrepancy.</span>
 <span class="sd">            Can be one of &quot;l1&quot;, &quot;l2&quot; or &quot;smooth_l1&quot;. Defaults to ``&quot;smooth_l1&quot;``.</span>
@@ -485,7 +487,7 @@
 <span class="sd">            ``&quot;none&quot;`` | ``&quot;mean&quot;`` | ``&quot;sum&quot;``. ``&quot;none&quot;``: no reduction will be applied,</span>
 <span class="sd">            ``&quot;mean&quot;``: the sum of the output will be divided by the number of</span>
 <span class="sd">            elements in the output, ``&quot;sum&quot;``: the output will be summed. Default: ``&quot;mean&quot;``.</span>
-<span class="sd">        clip_value (float, optional): If provided, it will be used to compute a clipped version of the value</span>
+<span class="sd">        clip_value (:obj:`float`, optional): If provided, it will be used to compute a clipped version of the value</span>
 <span class="sd">            prediction with respect to the input value estimate and use it to calculate the value loss.</span>
 <span class="sd">            The purpose of clipping is to limit the impact of extreme value predictions, helping stabilize training</span>
 <span class="sd">            and preventing large updates. However, it will have no impact if the value estimate was done by the current</span>
@@ -719,10 +721,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">entropy_bonus</span> <span class="o">=</span> <span class="n">entropy_bonus</span> <span class="ow">and</span> <span class="n">entropy_coef</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reduction</span> <span class="o">=</span> <span class="n">reduction</span>
 
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">device</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span><span class="o">.</span><span class="n">device</span>
-        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-            <span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
+        <span class="n">device</span> <span class="o">=</span> <span class="n">_get_default_device</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span>
             <span class="s2">&quot;entropy_coef&quot;</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">as_tensor</span><span class="p">(</span><span class="n">entropy_coef</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
@@ -750,7 +749,11 @@
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;clip_value must be a float or a scalar tensor, got </span><span class="si">{</span><span class="n">clip_value</span><span class="si">}</span><span class="s2">.&quot;</span>
                 <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">&quot;clip_value&quot;</span><span class="p">,</span> <span class="n">clip_value</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span>
+                <span class="s2">&quot;clip_value&quot;</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">as_tensor</span><span class="p">(</span><span class="n">clip_value</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">clip_value</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">functional</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -801,9 +804,9 @@
         <span class="k">pass</span>
 
     <span class="k">def</span> <span class="nf">get_entropy_bonus</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dist</span><span class="p">:</span> <span class="n">d</span><span class="o">.</span><span class="n">Distribution</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
-        <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">HAS_ENTROPY</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">dist</span><span class="p">),</span> <span class="kc">False</span><span class="p">):</span>
             <span class="n">entropy</span> <span class="o">=</span> <span class="n">dist</span><span class="o">.</span><span class="n">entropy</span><span class="p">()</span>
-        <span class="k">except</span> <span class="ne">NotImplementedError</span><span class="p">:</span>
+        <span class="k">else</span><span class="p">:</span>
             <span class="n">x</span> <span class="o">=</span> <span class="n">dist</span><span class="o">.</span><span class="n">rsample</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">samples_mc_entropy</span><span class="p">,))</span>
             <span class="n">log_prob</span> <span class="o">=</span> <span class="n">dist</span><span class="o">.</span><span class="n">log_prob</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">is_tensor_collection</span><span class="p">(</span><span class="n">log_prob</span><span class="p">):</span>
@@ -859,7 +862,7 @@
             <span class="n">old_state_value</span> <span class="o">=</span> <span class="n">old_state_value</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
 
         <span class="c1"># TODO: if the advantage is gathered by forward, this introduces an</span>
-        <span class="c1"># overhead that we could easily reduce.</span>
+        <span class="c1">#  overhead that we could easily reduce.</span>
         <span class="n">target_return</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tensor_keys</span><span class="o">.</span><span class="n">value_target</span><span class="p">,</span> <span class="kc">None</span>
         <span class="p">)</span>  <span class="c1"># TODO: None soon to be removed</span>
@@ -890,7 +893,7 @@
             <span class="n">loss_value</span><span class="p">,</span> <span class="n">clip_fraction</span> <span class="o">=</span> <span class="n">_clip_value_loss</span><span class="p">(</span>
                 <span class="n">old_state_value</span><span class="p">,</span>
                 <span class="n">state_value</span><span class="p">,</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">clip_value</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">state_value</span><span class="o">.</span><span class="n">device</span><span class="p">),</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">clip_value</span><span class="p">,</span>
                 <span class="n">target_return</span><span class="p">,</span>
                 <span class="n">loss_value</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">loss_critic_type</span><span class="p">,</span>
@@ -943,6 +946,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">value_type</span> <span class="o">=</span> <span class="n">value_type</span>
         <span class="n">hp</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">default_value_kwargs</span><span class="p">(</span><span class="n">value_type</span><span class="p">))</span>
         <span class="n">hp</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">hyperparams</span><span class="p">)</span>
+
+        <span class="n">device</span> <span class="o">=</span> <span class="n">_get_default_device</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">hp</span><span class="p">[</span><span class="s2">&quot;device&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">device</span>
 
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;gamma&quot;</span><span class="p">):</span>
             <span class="n">hp</span><span class="p">[</span><span class="s2">&quot;gamma&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gamma</span>

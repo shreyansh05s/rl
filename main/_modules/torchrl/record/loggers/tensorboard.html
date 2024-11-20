@@ -457,7 +457,7 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            name (str): The name of the scalar.</span>
-<span class="sd">            value (float): The value of the scalar.</span>
+<span class="sd">            value (:obj:`float`): The value of the scalar.</span>
 <span class="sd">            step (int, optional): The step at which the scalar is logged. Defaults to None.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -525,7 +525,7 @@
 <span class="sd">        Keyword Args:</span>
 <span class="sd">            step (int): Global step value to record</span>
 <span class="sd">            bins (str): One of {‘tensorflow’,’auto’, ‘fd’, …}. This determines how the bins are made. You can find other options in: https://docs.scipy.org/doc/numpy/reference/generated/numpy.histogram.html</span>
-<span class="sd">            walltime (float): Optional override default walltime (time.time()) seconds after epoch of event</span>
+<span class="sd">            walltime (:obj:`float`): Optional override default walltime (time.time()) seconds after epoch of event</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">global_step</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;step&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>

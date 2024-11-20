@@ -538,7 +538,7 @@ entry will be reset at the corresponding indices.</p></li>
 <li><p><strong>update_at_each_batch</strong> (<em>boolm optional</em>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">update_policy_weight_()</span></code>
 will be called before (sync) or after (async) each data collection.
 Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
-<li><p><strong>preemptive_threshold</strong> (<a class="reference internal" href="torchrl.data.BinaryToDecimal.html#torchrl.data.BinaryToDecimal.float" title="torchrl.data.BinaryToDecimal.float"><em>float</em></a><em>, </em><em>optional</em>) – a value between 0.0 and 1.0 that specifies the ratio of workers
+<li><p><strong>preemptive_threshold</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>, optional) – a value between 0.0 and 1.0 that specifies the ratio of workers
 that will be allowed to finished collecting their rollout before the rest are forced to end early.</p></li>
 <li><p><strong>num_threads</strong> (<em>int</em><em>, </em><em>optional</em>) – number of threads for this process.
 Defaults to the number of workers.</p></li>

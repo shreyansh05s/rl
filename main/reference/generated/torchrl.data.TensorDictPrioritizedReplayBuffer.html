@@ -422,10 +422,10 @@ tensordict to be passed to it with its new priority value.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Keyword Arguments<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>alpha</strong> (<a class="reference internal" href="torchrl.data.BinaryToDecimal.html#torchrl.data.BinaryToDecimal.float" title="torchrl.data.BinaryToDecimal.float"><em>float</em></a>) – exponent α determines how much prioritization is used,
+<li><p><strong>alpha</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>) – exponent α determines how much prioritization is used,
 with α = 0 corresponding to the uniform case.</p></li>
-<li><p><strong>beta</strong> (<a class="reference internal" href="torchrl.data.BinaryToDecimal.html#torchrl.data.BinaryToDecimal.float" title="torchrl.data.BinaryToDecimal.float"><em>float</em></a>) – importance sampling negative exponent.</p></li>
-<li><p><strong>eps</strong> (<a class="reference internal" href="torchrl.data.BinaryToDecimal.html#torchrl.data.BinaryToDecimal.float" title="torchrl.data.BinaryToDecimal.float"><em>float</em></a>) – delta added to the priorities to ensure that the buffer
+<li><p><strong>beta</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>) – importance sampling negative exponent.</p></li>
+<li><p><strong>eps</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>) – delta added to the priorities to ensure that the buffer
 does not contain null priorities.</p></li>
 <li><p><strong>storage</strong> (<a class="reference internal" href="torchrl.data.replay_buffers.Storage.html#torchrl.data.replay_buffers.Storage" title="torchrl.data.replay_buffers.Storage"><em>Storage</em></a><em>, </em><em>optional</em>) – the storage to be used. If none is provided
 a default <a class="reference internal" href="torchrl.data.replay_buffers.ListStorage.html#torchrl.data.replay_buffers.ListStorage" title="torchrl.data.replay_buffers.ListStorage"><code class="xref py py-class docutils literal notranslate"><span class="pre">ListStorage</span></code></a> with

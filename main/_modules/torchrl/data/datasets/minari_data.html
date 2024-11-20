@@ -648,7 +648,7 @@
             <span class="n">minari</span><span class="o">.</span><span class="n">download_dataset</span><span class="p">(</span><span class="n">dataset_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset_id</span><span class="p">)</span>
             <span class="n">parent_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset_id</span> <span class="o">/</span> <span class="s2">&quot;data&quot;</span>
 
-            <span class="n">td_data</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="p">({},</span> <span class="p">[])</span>
+            <span class="n">td_data</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="p">()</span>
             <span class="n">total_steps</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="n">torchrl_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;first read through data to create data structure...&quot;</span><span class="p">)</span>
             <span class="n">h5_data</span> <span class="o">=</span> <span class="n">PersistentTensorDict</span><span class="o">.</span><span class="n">from_h5</span><span class="p">(</span><span class="n">parent_dir</span> <span class="o">/</span> <span class="s2">&quot;main_data.hdf5&quot;</span><span class="p">)</span>

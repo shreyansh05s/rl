@@ -415,6 +415,7 @@
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
 
+<span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">from</span> <span class="nn">tensordict</span> <span class="kn">import</span> <span class="n">is_tensor_collection</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">,</span> <span class="n">TensorDictBase</span>
 
 <span class="kn">from</span> <span class="nn">tensordict.nn</span> <span class="kn">import</span> <span class="n">TensorDictModule</span><span class="p">,</span> <span class="n">TensorDictModuleBase</span><span class="p">,</span> <span class="n">TensorDictParams</span>
@@ -423,6 +424,7 @@
 <span class="kn">from</span> <span class="nn">torch.nn</span> <span class="kn">import</span> <span class="n">Parameter</span>
 <span class="kn">from</span> <span class="nn">torchrl._utils</span> <span class="kn">import</span> <span class="n">RL_WARNINGS</span>
 <span class="kn">from</span> <span class="nn">torchrl.envs.utils</span> <span class="kn">import</span> <span class="n">ExplorationType</span><span class="p">,</span> <span class="n">set_exploration_type</span>
+<span class="kn">from</span> <span class="nn">torchrl.modules</span> <span class="kn">import</span> <span class="n">set_recurrent_mode</span>
 
 <span class="kn">from</span> <span class="nn">torchrl.objectives.utils</span> <span class="kn">import</span> <span class="n">RANDOM_MODULE_LIST</span><span class="p">,</span> <span class="n">ValueEstimators</span>
 <span class="kn">from</span> <span class="nn">torchrl.objectives.value</span> <span class="kn">import</span> <span class="n">ValueEstimatorBase</span>
@@ -448,7 +450,9 @@
 <span class="k">def</span> <span class="nf">_forward_wrapper</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
     <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">new_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="k">with</span> <span class="n">set_exploration_type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">deterministic_sampling_mode</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">set_exploration_type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">deterministic_sampling_mode</span><span class="p">),</span> <span class="n">set_recurrent_mode</span><span class="p">(</span>
+            <span class="kc">True</span>
+        <span class="p">):</span>
             <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">new_forward</span>
@@ -458,6 +462,9 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">attr_dict</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">attr_dict</span><span class="p">)</span>
         <span class="bp">cls</span><span class="o">.</span><span class="n">forward</span> <span class="o">=</span> <span class="n">_forward_wrapper</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">forward</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;loss&quot;</span><span class="p">):</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">_forward_wrapper</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
 
 
 <div class="viewcode-block" id="LossModule"><a class="viewcode-back" href="../../../reference/generated/torchrl.objectives.LossModule.html#torchrl.objectives.LossModule">[docs]</a><span class="k">class</span> <span class="nc">LossModule</span><span class="p">(</span><span class="n">TensorDictModuleBase</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">_LossMeta</span><span class="p">):</span>
@@ -918,7 +925,22 @@
 <span class="sd">        from :obj:`torchrl.objectives.utils.DEFAULT_VALUE_FUN_PARAMS`.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">make_value_estimator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_value_estimator</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">make_value_estimator</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">default_value_estimator</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_default_device</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">_default_device</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;A util to find the default device.</span>
+
+<span class="sd">        Returns ``None`` if parameters are spread across multiple devices.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">devices</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">():</span>
+            <span class="n">devices</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">devices</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">devices</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="LossModule.make_value_estimator"><a class="viewcode-back" href="../../../reference/generated/torchrl.objectives.LossModule.html#torchrl.objectives.LossModule.make_value_estimator">[docs]</a>    <span class="k">def</span> <span class="nf">make_value_estimator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value_type</span><span class="p">:</span> <span class="n">ValueEstimators</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">hyperparams</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Value-function constructor.</span>

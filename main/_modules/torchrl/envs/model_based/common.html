@@ -444,7 +444,7 @@
 <span class="sd">        ...         self.reward_spec = Unbounded((1,))</span>
 <span class="sd">        ...</span>
 <span class="sd">        ...     def _reset(self, tensordict: TensorDict) -&gt; TensorDict:</span>
-<span class="sd">        ...         tensordict = TensorDict({},</span>
+<span class="sd">        ...         tensordict = TensorDict(</span>
 <span class="sd">        ...             batch_size=self.batch_size,</span>
 <span class="sd">        ...             device=self.device,</span>
 <span class="sd">        ...         )</span>

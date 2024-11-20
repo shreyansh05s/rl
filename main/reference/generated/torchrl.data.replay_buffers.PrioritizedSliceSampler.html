@@ -433,10 +433,10 @@ Currently, it is the user responsibility to aggregate priorities across items of
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>alpha</strong> (<em>float</em>) – exponent α determines how much prioritization is used,
+<li><p><strong>alpha</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>) – exponent α determines how much prioritization is used,
 with α = 0 corresponding to the uniform case.</p></li>
-<li><p><strong>beta</strong> (<em>float</em>) – importance sampling negative exponent.</p></li>
-<li><p><strong>eps</strong> (<em>float</em><em>, </em><em>optional</em>) – delta added to the priorities to ensure that the buffer
+<li><p><strong>beta</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>) – importance sampling negative exponent.</p></li>
+<li><p><strong>eps</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>, optional) – delta added to the priorities to ensure that the buffer
 does not contain null priorities. Defaults to 1e-8.</p></li>
 <li><p><strong>reduction</strong> (<em>str</em><em>, </em><em>optional</em>) – the reduction method for multidimensional
 tensordicts (i.e., stored trajectory). Can be one of “max”, “min”,

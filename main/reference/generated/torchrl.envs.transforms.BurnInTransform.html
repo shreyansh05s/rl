@@ -448,7 +448,8 @@ sequential data.</p>
 <span class="gp">... </span>    <span class="n">hidden_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">in_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;observation&quot;</span><span class="p">,</span> <span class="s2">&quot;hidden&quot;</span><span class="p">],</span>
 <span class="gp">... </span>    <span class="n">out_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;intermediate&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;next&quot;</span><span class="p">,</span> <span class="s2">&quot;hidden&quot;</span><span class="p">)],</span>
-<span class="gp">... </span><span class="p">)</span><span class="o">.</span><span class="n">set_recurrent_mode</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="n">default_recurrent_mode</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">burn_in_transform</span> <span class="o">=</span> <span class="n">BurnInTransform</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="n">modules</span><span class="o">=</span><span class="p">[</span><span class="n">gru_module</span><span class="p">],</span>
 <span class="gp">... </span>    <span class="n">burn_in</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>

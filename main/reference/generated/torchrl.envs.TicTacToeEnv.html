@@ -436,115 +436,92 @@ generate the next action. Any policy executed on this env should take this
 mask into account, as well as the turn of the player (stored in the <code class="docutils literal notranslate"><span class="pre">&quot;turn&quot;</span></code>
 output entry).</p>
 <dl>
-<dt>Specs:</dt><dd><dl>
-<dt>Composite(</dt><dd><dl>
-<dt>output_spec: Composite(</dt><dd><dl>
-<dt>full_observation_spec: Composite(</dt><dd><dl class="simple">
-<dt>board: Categorical(</dt><dd><p>shape=torch.Size([3, 3]),
-space=DiscreteBox(n=2),
-dtype=torch.int32,
-domain=discrete),</p>
-</dd>
-<dt>turn: Categorical(</dt><dd><p>shape=torch.Size([1]),
-space=DiscreteBox(n=2),
-dtype=torch.int32,
-domain=discrete),</p>
-</dd>
-<dt>mask: Categorical(</dt><dd><p>shape=torch.Size([9]),
-space=DiscreteBox(n=2),
-dtype=torch.bool,
-domain=discrete),</p>
-</dd>
-</dl>
-<p>shape=torch.Size([])),</p>
-</dd>
-<dt>full_reward_spec: Composite(</dt><dd><dl>
-<dt>player0: Composite(</dt><dd><dl>
-<dt>reward: UnboundedContinuous(</dt><dd><p>shape=torch.Size([1]),
-space=ContinuousBox(</p>
-<blockquote>
-<div><p>low=Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, contiguous=True),
-high=Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, contiguous=True)),</p>
-</div></blockquote>
-<p>dtype=torch.float32,
-domain=continuous),</p>
-</dd>
-</dl>
-<p>shape=torch.Size([])),</p>
-</dd>
-<dt>player1: Composite(</dt><dd><dl>
-<dt>reward: UnboundedContinuous(</dt><dd><p>shape=torch.Size([1]),
-space=ContinuousBox(</p>
-<blockquote>
-<div><p>low=Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, contiguous=True),
-high=Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, contiguous=True)),</p>
-</div></blockquote>
-<p>dtype=torch.float32,
-domain=continuous),</p>
-</dd>
-</dl>
-<p>shape=torch.Size([])),</p>
-</dd>
-</dl>
-<p>shape=torch.Size([])),</p>
-</dd>
-<dt>full_done_spec: Composite(</dt><dd><dl class="simple">
-<dt>done: Categorical(</dt><dd><p>shape=torch.Size([1]),
-space=DiscreteBox(n=2),
-dtype=torch.bool,
-domain=discrete),</p>
-</dd>
-<dt>terminated: Categorical(</dt><dd><p>shape=torch.Size([1]),
-space=DiscreteBox(n=2),
-dtype=torch.bool,
-domain=discrete),</p>
-</dd>
-<dt>truncated: Categorical(</dt><dd><p>shape=torch.Size([1]),
-space=DiscreteBox(n=2),
-dtype=torch.bool,
-domain=discrete),</p>
-</dd>
-</dl>
-<p>shape=torch.Size([])),</p>
-</dd>
-</dl>
-<p>shape=torch.Size([])),</p>
-</dd>
-<dt>input_spec: Composite(</dt><dd><dl>
-<dt>full_state_spec: Composite(</dt><dd><dl class="simple">
-<dt>board: Categorical(</dt><dd><p>shape=torch.Size([3, 3]),
-space=DiscreteBox(n=2),
-dtype=torch.int32,
-domain=discrete),</p>
-</dd>
-<dt>turn: Categorical(</dt><dd><p>shape=torch.Size([1]),
-space=DiscreteBox(n=2),
-dtype=torch.int32,
-domain=discrete),</p>
-</dd>
-<dt>mask: Categorical(</dt><dd><p>shape=torch.Size([9]),
-space=DiscreteBox(n=2),
-dtype=torch.bool,
-domain=discrete), shape=torch.Size([])),</p>
-</dd>
-</dl>
-</dd>
-<dt>full_action_spec: Composite(</dt><dd><dl class="simple">
-<dt>action: Categorical(</dt><dd><p>shape=torch.Size([1]),
-space=DiscreteBox(n=9),
-dtype=torch.int64,
-domain=discrete),</p>
-</dd>
-</dl>
-<p>shape=torch.Size([])),</p>
-</dd>
-</dl>
-<p>shape=torch.Size([])),</p>
-</dd>
-</dl>
-<p>shape=torch.Size([]))</p>
-</dd>
-</dl>
+<dt>Specs:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">env</span><span class="o">.</span><span class="n">specs</span><span class="p">)</span>
+<span class="go">Composite(</span>
+<span class="go">    output_spec: Composite(</span>
+<span class="go">        full_observation_spec: Composite(</span>
+<span class="go">            board: Categorical(</span>
+<span class="go">                shape=torch.Size([3, 3]),</span>
+<span class="go">                space=DiscreteBox(n=2),</span>
+<span class="go">                dtype=torch.int32,</span>
+<span class="go">                domain=discrete),</span>
+<span class="go">            turn: Categorical(</span>
+<span class="go">                shape=torch.Size([1]),</span>
+<span class="go">                space=DiscreteBox(n=2),</span>
+<span class="go">                dtype=torch.int32,</span>
+<span class="go">                domain=discrete),</span>
+<span class="go">            mask: Categorical(</span>
+<span class="go">                shape=torch.Size([9]),</span>
+<span class="go">                space=DiscreteBox(n=2),</span>
+<span class="go">                dtype=torch.bool,</span>
+<span class="go">                domain=discrete),</span>
+<span class="go">            shape=torch.Size([])),</span>
+<span class="go">        full_reward_spec: Composite(</span>
+<span class="go">            player0: Composite(</span>
+<span class="go">                reward: UnboundedContinuous(</span>
+<span class="go">                    shape=torch.Size([1]),</span>
+<span class="go">                    space=ContinuousBox(</span>
+<span class="go">                        low=Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, contiguous=True),</span>
+<span class="go">                        high=Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, contiguous=True)),</span>
+<span class="go">                    dtype=torch.float32,</span>
+<span class="go">                    domain=continuous),</span>
+<span class="go">                shape=torch.Size([])),</span>
+<span class="go">            player1: Composite(</span>
+<span class="go">                reward: UnboundedContinuous(</span>
+<span class="go">                    shape=torch.Size([1]),</span>
+<span class="go">                    space=ContinuousBox(</span>
+<span class="go">                        low=Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, contiguous=True),</span>
+<span class="go">                        high=Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, contiguous=True)),</span>
+<span class="go">                    dtype=torch.float32,</span>
+<span class="go">                    domain=continuous),</span>
+<span class="go">                shape=torch.Size([])),</span>
+<span class="go">            shape=torch.Size([])),</span>
+<span class="go">        full_done_spec: Composite(</span>
+<span class="go">            done: Categorical(</span>
+<span class="go">                shape=torch.Size([1]),</span>
+<span class="go">                space=DiscreteBox(n=2),</span>
+<span class="go">                dtype=torch.bool,</span>
+<span class="go">                domain=discrete),</span>
+<span class="go">            terminated: Categorical(</span>
+<span class="go">                shape=torch.Size([1]),</span>
+<span class="go">                space=DiscreteBox(n=2),</span>
+<span class="go">                dtype=torch.bool,</span>
+<span class="go">                domain=discrete),</span>
+<span class="go">            truncated: Categorical(</span>
+<span class="go">                shape=torch.Size([1]),</span>
+<span class="go">                space=DiscreteBox(n=2),</span>
+<span class="go">                dtype=torch.bool,</span>
+<span class="go">                domain=discrete),</span>
+<span class="go">            shape=torch.Size([])),</span>
+<span class="go">        shape=torch.Size([])),</span>
+<span class="go">    input_spec: Composite(</span>
+<span class="go">        full_state_spec: Composite(</span>
+<span class="go">            board: Categorical(</span>
+<span class="go">                shape=torch.Size([3, 3]),</span>
+<span class="go">                space=DiscreteBox(n=2),</span>
+<span class="go">                dtype=torch.int32,</span>
+<span class="go">                domain=discrete),</span>
+<span class="go">            turn: Categorical(</span>
+<span class="go">                shape=torch.Size([1]),</span>
+<span class="go">                space=DiscreteBox(n=2),</span>
+<span class="go">                dtype=torch.int32,</span>
+<span class="go">                domain=discrete),</span>
+<span class="go">            mask: Categorical(</span>
+<span class="go">                shape=torch.Size([9]),</span>
+<span class="go">                space=DiscreteBox(n=2),</span>
+<span class="go">                dtype=torch.bool,</span>
+<span class="go">                domain=discrete), shape=torch.Size([])),</span>
+<span class="go">        full_action_spec: Composite(</span>
+<span class="go">            action: Categorical(</span>
+<span class="go">                shape=torch.Size([1]),</span>
+<span class="go">                space=DiscreteBox(n=9),</span>
+<span class="go">                dtype=torch.int64,</span>
+<span class="go">                domain=discrete),</span>
+<span class="go">            shape=torch.Size([])),</span>
+<span class="go">        shape=torch.Size([])),</span>
+<span class="go">    shape=torch.Size([]))</span>
+</pre></div>
+</div>
 </dd>
 </dl>
 <p>To run a dummy rollout, execute the following command:</p>
@@ -1087,23 +1064,17 @@ that contains all the action entries.</p>
 <span class="gp">... </span>    <span class="k">break</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">env</span> <span class="o">=</span> <span class="n">BraxEnv</span><span class="p">(</span><span class="n">envname</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">env</span><span class="o">.</span><span class="n">full_action_spec</span>
+<span class="go">Composite(</span>
+<span class="go">    action: BoundedContinuous(</span>
+<span class="go">        shape=torch.Size([8]),</span>
+<span class="go">        space=ContinuousBox(</span>
+<span class="go">            low=Tensor(shape=torch.Size([8]), device=cpu, dtype=torch.float32, contiguous=True),</span>
+<span class="go">            high=Tensor(shape=torch.Size([8]), device=cpu, dtype=torch.float32, contiguous=True)),</span>
+<span class="go">        device=cpu,</span>
+<span class="go">        dtype=torch.float32,</span>
+<span class="go">        domain=continuous), device=cpu, shape=torch.Size([]))</span>
 </pre></div>
 </div>
-<dl>
-<dt>Composite(</dt><dd><dl>
-<dt>action: BoundedContinuous(</dt><dd><p>shape=torch.Size([8]),
-space=ContinuousBox(</p>
-<blockquote>
-<div><p>low=Tensor(shape=torch.Size([8]), device=cpu, dtype=torch.float32, contiguous=True),
-high=Tensor(shape=torch.Size([8]), device=cpu, dtype=torch.float32, contiguous=True)),</p>
-</div></blockquote>
-<p>device=cpu,
-dtype=torch.float32,
-domain=continuous), device=cpu, shape=torch.Size([]))</p>
-</dd>
-</dl>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py property">
@@ -2050,7 +2021,7 @@ or any other backend compatible with <code class="xref py py-class docutils lite
 (results are tensors).
 This arg can be passed during a call to <code class="xref py py-func docutils literal notranslate"><span class="pre">make()</span></code> (see
 example below).</p></li>
-<li><p><strong>reward_threshold</strong> (<a class="reference internal" href="#torchrl.envs.TicTacToeEnv.float" title="torchrl.envs.TicTacToeEnv.float"><em>float</em></a><em>, </em><em>optional</em>) – [Gym kwarg] The reward threshold
+<li><p><strong>reward_threshold</strong> (<a class="reference internal" href="#torchrl.envs.TicTacToeEnv.float" title="torchrl.envs.TicTacToeEnv.float"><code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code></a>, optional) – [Gym kwarg] The reward threshold
 considered to have learnt an environment.</p></li>
 <li><p><strong>nondeterministic</strong> (<em>bool</em><em>, </em><em>optional</em>) – [Gym kwarg If the environment is nondeterministic
 (even with knowledge of the initial seed and all actions). Defaults to

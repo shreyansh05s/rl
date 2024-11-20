@@ -455,11 +455,11 @@
 <span class="sd">            Defaults to ``2``.</span>
 <span class="sd">        loss_function (str, optional): loss function to be used with</span>
 <span class="sd">            the value function loss. Default is `&quot;smooth_l1&quot;`.</span>
-<span class="sd">        temperature (float, optional):  Inverse temperature (beta).</span>
+<span class="sd">        temperature (:obj:`float`, optional):  Inverse temperature (beta).</span>
 <span class="sd">            For smaller hyperparameter values, the objective behaves similarly to</span>
 <span class="sd">            behavioral cloning, while for larger values, it attempts to recover the</span>
 <span class="sd">            maximum of the Q-function.</span>
-<span class="sd">        expectile (float, optional): expectile :math:`\tau`. A larger value of :math:`\tau` is crucial</span>
+<span class="sd">        expectile (:obj:`float`, optional): expectile :math:`\tau`. A larger value of :math:`\tau` is crucial</span>
 <span class="sd">            for antmaze tasks that require dynamical programming (&quot;stichting&quot;).</span>
 <span class="sd">        priority_key (str, optional): [Deprecated, use .set_keys(priority_key=priority_key) instead]</span>
 <span class="sd">            tensordict key where to write the priority (for prioritized replay</span>
@@ -942,11 +942,11 @@
 <span class="sd">            Defaults to ``2``.</span>
 <span class="sd">        loss_function (str, optional): loss function to be used with</span>
 <span class="sd">            the value function loss. Default is `&quot;smooth_l1&quot;`.</span>
-<span class="sd">        temperature (float, optional):  Inverse temperature (beta).</span>
+<span class="sd">        temperature (:obj:`float`, optional):  Inverse temperature (beta).</span>
 <span class="sd">            For smaller hyperparameter values, the objective behaves similarly to</span>
 <span class="sd">            behavioral cloning, while for larger values, it attempts to recover the</span>
 <span class="sd">            maximum of the Q-function.</span>
-<span class="sd">        expectile (float, optional): expectile :math:`\tau`. A larger value of :math:`\tau` is crucial</span>
+<span class="sd">        expectile (:obj:`float`, optional): expectile :math:`\tau`. A larger value of :math:`\tau` is crucial</span>
 <span class="sd">            for antmaze tasks that require dynamical programming (&quot;stichting&quot;).</span>
 <span class="sd">        priority_key (str, optional): [Deprecated, use .set_keys(priority_key=priority_key) instead]</span>
 <span class="sd">            tensordict key where to write the priority (for prioritized replay</span>
@@ -1167,8 +1167,8 @@
         <span class="p">)</span>
         <span class="k">if</span> <span class="n">action_space</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="s2">&quot;action_space was not specified. DiscreteIQLLoss will default to &#39;one-hot&#39;.&quot;</span>
-                <span class="s2">&quot;This behavior will be deprecated soon and a space will have to be passed.&quot;</span>
+                <span class="s2">&quot;action_space was not specified. DiscreteIQLLoss will default to &#39;one-hot&#39;. &quot;</span>
+                <span class="s2">&quot;This behavior will be deprecated soon and a space will have to be passed. &quot;</span>
                 <span class="s2">&quot;Check the DiscreteIQLLoss documentation to see how to pass the action space. &quot;</span>
             <span class="p">)</span>
             <span class="n">action_space</span> <span class="o">=</span> <span class="s2">&quot;one-hot&quot;</span>

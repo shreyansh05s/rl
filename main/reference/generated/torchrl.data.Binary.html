@@ -417,7 +417,7 @@
 <dd><p>A binary discrete tensor spec.</p>
 <p>A binary tensor spec encodes tensors of arbitrary size where the values are either 0 or 1 (or <code class="docutils literal notranslate"><span class="pre">True</span></code> or <code class="docutils literal notranslate"><span class="pre">False</span></code>
 if the dtype it <code class="docutils literal notranslate"><span class="pre">torch.bool</span></code>).</p>
-<p>Unlike <code class="xref py py-class docutils literal notranslate"><span class="pre">OneHot</span></code>, <cite>Binary</cite> can have more than one non-null element along the last dimension.</p>
+<p>Unlike <a class="reference internal" href="torchrl.data.OneHot.html#torchrl.data.OneHot" title="torchrl.data.OneHot"><code class="xref py py-class docutils literal notranslate"><span class="pre">OneHot</span></code></a>, <cite>Binary</cite> can have more than one non-null element along the last dimension.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -426,7 +426,7 @@ If not provided, <code class="docutils literal notranslate"><span class="pre">sh
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>the <code class="docutils literal notranslate"><span class="pre">n</span></code> argument from <code class="docutils literal notranslate"><span class="pre">Binary</span></code> must not be confused with the <code class="docutils literal notranslate"><span class="pre">n</span></code> argument from <a class="reference internal" href="torchrl.data.Categorical.html#torchrl.data.Categorical" title="torchrl.data.Categorical"><code class="xref py py-class docutils literal notranslate"><span class="pre">Categorical</span></code></a>
-or <code class="xref py py-class docutils literal notranslate"><span class="pre">OneHot</span></code> which denotes the maximum nmber of elements that can be sampled.
+or <a class="reference internal" href="torchrl.data.OneHot.html#torchrl.data.OneHot" title="torchrl.data.OneHot"><code class="xref py py-class docutils literal notranslate"><span class="pre">OneHot</span></code></a> which denotes the maximum nmber of elements that can be sampled.
 For clarity, use <code class="docutils literal notranslate"><span class="pre">shape</span></code> instead.</p>
 </div>
 </p></li>
@@ -765,7 +765,7 @@ Defaults to the value of the <code class="docutils literal notranslate"><span cl
 
 <dl class="py method">
 <dt class="sig sig-object py" id="torchrl.data.Binary.to_one_hot_spec">
-<span class="sig-name descname"><span class="pre">to_one_hot_spec</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">OneHot</span></span></span><a class="headerlink" href="#torchrl.data.Binary.to_one_hot_spec" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">to_one_hot_spec</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="torchrl.data.OneHot.html#torchrl.data.OneHot" title="torchrl.data.tensor_specs.OneHot"><span class="pre">OneHot</span></a></span></span><a class="headerlink" href="#torchrl.data.Binary.to_one_hot_spec" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts the spec to the equivalent one-hot spec.</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">categ</span> <span class="o">=</span> <span class="n">Categorical</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>

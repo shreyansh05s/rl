@@ -430,10 +430,10 @@ reference model during training.</p></li>
 <li><p><strong>reward_model</strong> – (nn.Module, tensordict.nn.TensorDictModule): a model which, given
 <code class="docutils literal notranslate"><span class="pre">input_ids</span></code> and <code class="docutils literal notranslate"><span class="pre">attention_mask</span></code>, calculates rewards for each token and
 end_scores (the reward for the final token in each sequence).</p></li>
-<li><p><strong>kl_coef</strong> – (float, optional): initial kl coefficient.</p></li>
+<li><p><strong>kl_coef</strong> – (<code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>, optional): initial kl coefficient.</p></li>
 <li><p><strong>max_new_tokens</strong> (<em>int</em><em>, </em><em>optional</em>) – the maximum length of the sequence.
 Defaults to 50.</p></li>
-<li><p><strong>score_clip</strong> (<em>float</em><em>, </em><em>optional</em>) – Scores from the reward model are clipped to the
+<li><p><strong>score_clip</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>, optional) – Scores from the reward model are clipped to the
 range <code class="docutils literal notranslate"><span class="pre">(-score_clip,</span> <span class="pre">score_clip)</span></code>. Defaults to 10.</p></li>
 <li><p><strong>kl_scheduler</strong> (<em>KLControllerBase</em><em>, </em><em>optional</em>) – the KL coefficient scheduler.</p></li>
 <li><p><strong>num_steps</strong> (<em>int</em><em>, </em><em>optional</em>) – number of steps between two optimization.</p></li>

@@ -1301,19 +1301,22 @@ not predictable.</p>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.data.NonTensor.html#torchrl.data.NonTensor" title="torchrl.data.NonTensor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NonTensor</span></code></a>([shape, device, dtype])</p></td>
 <td><p>A spec for non-tensor data.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.data.Stacked.html#torchrl.data.Stacked" title="torchrl.data.Stacked"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Stacked</span></code></a>(*specs, dim)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.data.OneHot.html#torchrl.data.OneHot" title="torchrl.data.OneHot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OneHot</span></code></a>(n[, shape, device, dtype, ...])</p></td>
+<td><p>A unidimensional, one-hot discrete tensor spec.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.data.Stacked.html#torchrl.data.Stacked" title="torchrl.data.Stacked"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Stacked</span></code></a>(*specs, dim)</p></td>
 <td><p>A lazy representation of a stack of tensor specs.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.data.StackedComposite.html#torchrl.data.StackedComposite" title="torchrl.data.StackedComposite"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StackedComposite</span></code></a>(*args, **kwargs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.data.StackedComposite.html#torchrl.data.StackedComposite" title="torchrl.data.StackedComposite"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StackedComposite</span></code></a>(*args, **kwargs)</p></td>
 <td><p>A lazy representation of a stack of composite specs.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.data.Unbounded.html#torchrl.data.Unbounded" title="torchrl.data.Unbounded"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Unbounded</span></code></a>(*args, **kwargs)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.data.Unbounded.html#torchrl.data.Unbounded" title="torchrl.data.Unbounded"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Unbounded</span></code></a>(*args, **kwargs)</p></td>
 <td><p>An unbounded tensor spec.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.data.UnboundedContinuous.html#torchrl.data.UnboundedContinuous" title="torchrl.data.UnboundedContinuous"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UnboundedContinuous</span></code></a>(*args, **kwargs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.data.UnboundedContinuous.html#torchrl.data.UnboundedContinuous" title="torchrl.data.UnboundedContinuous"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UnboundedContinuous</span></code></a>(*args, **kwargs)</p></td>
 <td><p>A specialized version of <a class="reference internal" href="generated/torchrl.data.Unbounded.html#torchrl.data.Unbounded" title="torchrl.data.Unbounded"><code class="xref py py-class docutils literal notranslate"><span class="pre">torchrl.data.Unbounded</span></code></a> with continuous space.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.data.UnboundedDiscrete.html#torchrl.data.UnboundedDiscrete" title="torchrl.data.UnboundedDiscrete"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UnboundedDiscrete</span></code></a>(*args, **kwargs)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.data.UnboundedDiscrete.html#torchrl.data.UnboundedDiscrete" title="torchrl.data.UnboundedDiscrete"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UnboundedDiscrete</span></code></a>(*args, **kwargs)</p></td>
 <td><p>A specialized version of <a class="reference internal" href="generated/torchrl.data.Unbounded.html#torchrl.data.Unbounded" title="torchrl.data.Unbounded"><code class="xref py py-class docutils literal notranslate"><span class="pre">torchrl.data.Unbounded</span></code></a> with discrete space.</p></td>
 </tr>
 </tbody>
@@ -1349,7 +1352,7 @@ not predictable.</p>
 <td><p>Deprecated version of <a class="reference internal" href="generated/torchrl.data.NonTensor.html#torchrl.data.NonTensor" title="torchrl.data.NonTensor"><code class="xref py py-class docutils literal notranslate"><span class="pre">torchrl.data.NonTensor</span></code></a>.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.data.OneHotDiscreteTensorSpec.html#torchrl.data.OneHotDiscreteTensorSpec" title="torchrl.data.OneHotDiscreteTensorSpec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OneHotDiscreteTensorSpec</span></code></a>(*args, **kwargs)</p></td>
-<td><p>Deprecated version of <code class="xref py py-class docutils literal notranslate"><span class="pre">torchrl.data.OneHot</span></code>.</p></td>
+<td><p>Deprecated version of <a class="reference internal" href="generated/torchrl.data.OneHot.html#torchrl.data.OneHot" title="torchrl.data.OneHot"><code class="xref py py-class docutils literal notranslate"><span class="pre">torchrl.data.OneHot</span></code></a>.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.data.UnboundedContinuousTensorSpec.html#torchrl.data.UnboundedContinuousTensorSpec" title="torchrl.data.UnboundedContinuousTensorSpec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UnboundedContinuousTensorSpec</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Deprecated version of <a class="reference internal" href="generated/torchrl.data.Unbounded.html#torchrl.data.Unbounded" title="torchrl.data.Unbounded"><code class="xref py py-class docutils literal notranslate"><span class="pre">torchrl.data.Unbounded</span></code></a> with continuous space.</p></td>
@@ -1398,14 +1401,14 @@ a (set of) rollout that we can use further.</p>
 <section id="mctsforest">
 <h3>MCTSForest<a class="headerlink" href="#mctsforest" title="Permalink to this heading">¶</a></h3>
 <p>Building a tree from an initial observation then becomes just a matter of organizing data efficiently.
-The <code class="xref py py-class docutils literal notranslate"><span class="pre">MCTSForest</span></code> has at its core two storages: a first storage links observations to hashes and
+The <a class="reference internal" href="generated/torchrl.data.MCTSForest.html#torchrl.data.MCTSForest" title="torchrl.data.MCTSForest"><code class="xref py py-class docutils literal notranslate"><span class="pre">MCTSForest</span></code></a> has at its core two storages: a first storage links observations to hashes and
 indices of actions encountered in the past in the dataset:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="p">(</span><span class="n">observation</span><span class="o">=</span><span class="n">observation</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">metadata</span> <span class="o">=</span> <span class="n">forest</span><span class="o">.</span><span class="n">node_map</span><span class="p">[</span><span class="n">data</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">index</span> <span class="o">=</span> <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;_index&quot;</span><span class="p">]</span>
 </pre></div>
 </div>
-<p>where <code class="docutils literal notranslate"><span class="pre">forest</span></code> is a <code class="xref py py-class docutils literal notranslate"><span class="pre">MCTSForest</span></code> instance.
+<p>where <code class="docutils literal notranslate"><span class="pre">forest</span></code> is a <a class="reference internal" href="generated/torchrl.data.MCTSForest.html#torchrl.data.MCTSForest" title="torchrl.data.MCTSForest"><code class="xref py py-class docutils literal notranslate"><span class="pre">MCTSForest</span></code></a> instance.
 Then, a second storage keeps track of the actions and results associated with the observation:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">next_data</span> <span class="o">=</span> <span class="n">forest</span><span class="o">.</span><span class="n">data_map</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
 </pre></div>
@@ -1416,7 +1419,7 @@ and the tree can be expanded for each of these. The following figure shows how t
 <figure class="align-default" id="id3">
 <img alt="../_images/collector-copy.png" src="../_images/collector-copy.png" />
 <figcaption>
-<p><span class="caption-text">Building a <a class="reference internal" href="generated/torchrl.data.Tree.html#torchrl.data.Tree" title="torchrl.data.Tree"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tree</span></code></a> from a <code class="xref py py-class docutils literal notranslate"><span class="pre">MCTSForest</span></code> object.
+<p><span class="caption-text">Building a <a class="reference internal" href="generated/torchrl.data.Tree.html#torchrl.data.Tree" title="torchrl.data.Tree"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tree</span></code></a> from a <a class="reference internal" href="generated/torchrl.data.MCTSForest.html#torchrl.data.MCTSForest" title="torchrl.data.MCTSForest"><code class="xref py py-class docutils literal notranslate"><span class="pre">MCTSForest</span></code></a> object.
 The flowchart represents a tree being built from an initial observation <cite>o</cite>. The <code class="xref py py-class docutils literal notranslate"><span class="pre">get_tree</span></code>
 method passed the input data structure (the root node) to the <code class="docutils literal notranslate"><span class="pre">node_map</span></code> <a class="reference internal" href="generated/torchrl.data.TensorDictMap.html#torchrl.data.TensorDictMap" title="torchrl.data.TensorDictMap"><code class="xref py py-class docutils literal notranslate"><span class="pre">TensorDictMap</span></code></a> instance
 that returns a set of hashes and indices. These indices are then used to query the corresponding tuples of
@@ -1435,22 +1438,25 @@ expanded anymore.</span><a class="headerlink" href="#id3" title="Permalink to th
 <tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.data.HashToInt.html#torchrl.data.HashToInt" title="torchrl.data.HashToInt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">HashToInt</span></code></a>()</p></td>
 <td><p>Converts a hash value to an integer that can be used for indexing a contiguous storage.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.data.QueryModule.html#torchrl.data.QueryModule" title="torchrl.data.QueryModule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">QueryModule</span></code></a>(*args, **kwargs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.data.MCTSForest.html#torchrl.data.MCTSForest" title="torchrl.data.MCTSForest"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MCTSForest</span></code></a>(*[, data_map, node_map, ...])</p></td>
+<td><p>A collection of MCTS trees.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.data.QueryModule.html#torchrl.data.QueryModule" title="torchrl.data.QueryModule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">QueryModule</span></code></a>(*args, **kwargs)</p></td>
 <td><p>A Module to generate compatible indices for storage.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.data.RandomProjectionHash.html#torchrl.data.RandomProjectionHash" title="torchrl.data.RandomProjectionHash"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RandomProjectionHash</span></code></a>(*[, n_components, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.data.RandomProjectionHash.html#torchrl.data.RandomProjectionHash" title="torchrl.data.RandomProjectionHash"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RandomProjectionHash</span></code></a>(*[, n_components, ...])</p></td>
 <td><p>A module that combines random projections with SipHash to get a low-dimensional tensor, easier to embed through <a class="reference internal" href="generated/torchrl.data.SipHash.html#torchrl.data.SipHash" title="torchrl.data.SipHash"><code class="xref py py-class docutils literal notranslate"><span class="pre">SipHash</span></code></a>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.data.SipHash.html#torchrl.data.SipHash" title="torchrl.data.SipHash"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SipHash</span></code></a>([as_tensor])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.data.SipHash.html#torchrl.data.SipHash" title="torchrl.data.SipHash"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SipHash</span></code></a>([as_tensor])</p></td>
 <td><p>A Module to Compute SipHash values for given tensors.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.data.TensorDictMap.html#torchrl.data.TensorDictMap" title="torchrl.data.TensorDictMap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TensorDictMap</span></code></a>(*args, **kwargs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.data.TensorDictMap.html#torchrl.data.TensorDictMap" title="torchrl.data.TensorDictMap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TensorDictMap</span></code></a>(*args, **kwargs)</p></td>
 <td><p>A Map-Storage for TensorDict.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.data.TensorMap.html#torchrl.data.TensorMap" title="torchrl.data.TensorMap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TensorMap</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.data.TensorMap.html#torchrl.data.TensorMap" title="torchrl.data.TensorMap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TensorMap</span></code></a>()</p></td>
 <td><p>An Abstraction for implementing different storage.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/torchrl.data.Tree.html#torchrl.data.Tree" title="torchrl.data.Tree"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Tree</span></code></a>([count, index, hash, node_id, rollout, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/torchrl.data.Tree.html#torchrl.data.Tree" title="torchrl.data.Tree"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Tree</span></code></a>([count, index, hash, node_id, rollout, ...])</p></td>
 <td><p></p></td>
 </tr>
 </tbody>

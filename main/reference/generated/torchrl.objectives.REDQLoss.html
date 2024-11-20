@@ -445,11 +445,11 @@ Default is <code class="docutils literal notranslate"><span class="pre">2</span>
 <li><p><strong>loss_function</strong> (<em>str</em><em>, </em><em>optional</em>) – loss function to be used for the Q-value.
 Can be one of  <code class="docutils literal notranslate"><span class="pre">&quot;smooth_l1&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;l2&quot;</span></code>,
 <code class="docutils literal notranslate"><span class="pre">&quot;l1&quot;</span></code>, Default is <code class="docutils literal notranslate"><span class="pre">&quot;smooth_l1&quot;</span></code>.</p></li>
-<li><p><strong>alpha_init</strong> (<a class="reference internal" href="torchrl.data.BinaryToDecimal.html#torchrl.data.BinaryToDecimal.float" title="torchrl.data.BinaryToDecimal.float"><em>float</em></a><em>, </em><em>optional</em>) – initial entropy multiplier.
+<li><p><strong>alpha_init</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>, optional) – initial entropy multiplier.
 Default is <code class="docutils literal notranslate"><span class="pre">1.0</span></code>.</p></li>
-<li><p><strong>min_alpha</strong> (<a class="reference internal" href="torchrl.data.BinaryToDecimal.html#torchrl.data.BinaryToDecimal.float" title="torchrl.data.BinaryToDecimal.float"><em>float</em></a><em>, </em><em>optional</em>) – min value of alpha.
+<li><p><strong>min_alpha</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>, optional) – min value of alpha.
 Default is <code class="docutils literal notranslate"><span class="pre">0.1</span></code>.</p></li>
-<li><p><strong>max_alpha</strong> (<a class="reference internal" href="torchrl.data.BinaryToDecimal.html#torchrl.data.BinaryToDecimal.float" title="torchrl.data.BinaryToDecimal.float"><em>float</em></a><em>, </em><em>optional</em>) – max value of alpha.
+<li><p><strong>max_alpha</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>, optional) – max value of alpha.
 Default is <code class="docutils literal notranslate"><span class="pre">10.0</span></code>.</p></li>
 <li><p><strong>action_spec</strong> (<a class="reference internal" href="torchrl.data.TensorSpec.html#torchrl.data.TensorSpec" title="torchrl.data.TensorSpec"><em>TensorSpec</em></a><em>, </em><em>optional</em>) – the action tensor spec. If not provided
 and the target entropy is <code class="docutils literal notranslate"><span class="pre">&quot;auto&quot;</span></code>, it will be retrieved from

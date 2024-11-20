@@ -519,7 +519,7 @@
     <span class="k">if</span> <span class="n">from_pixels</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">cfg</span><span class="o">.</span><span class="n">catframes</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                <span class="s2">&quot;this env builder currently only accepts positive catframes values&quot;</span>
+                <span class="s2">&quot;this env builder currently only accepts positive catframes values &quot;</span>
                 <span class="s2">&quot;when pixels are being used.&quot;</span>
             <span class="p">)</span>
         <span class="n">env</span><span class="o">.</span><span class="n">append_transform</span><span class="p">(</span><span class="n">ToTensorImage</span><span class="p">())</span>

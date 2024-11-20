@@ -415,59 +415,6 @@
 <dt class="sig sig-object py" id="torchrl.modules.EGreedyWrapper">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">torchrl.modules.</span></span><span class="sig-name descname"><span class="pre">EGreedyWrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/torchrl/modules/tensordict_module/exploration.html#EGreedyWrapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.modules.EGreedyWrapper" title="Permalink to this definition">¶</a></dt>
 <dd><p>[Deprecated] Epsilon-Greedy PO wrapper.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>policy</strong> (<em>TensorDictModule</em>) – a deterministic policy.</p>
-</dd>
-<dt class="field-even">Keyword Arguments<span class="colon">:</span></dt>
-<dd class="field-even"><ul class="simple">
-<li><p><strong>eps_init</strong> (<em>scalar</em><em>, </em><em>optional</em>) – initial epsilon value.
-default: 1.0</p></li>
-<li><p><strong>eps_end</strong> (<em>scalar</em><em>, </em><em>optional</em>) – final epsilon value.
-default: 0.1</p></li>
-<li><p><strong>annealing_num_steps</strong> (<em>int</em><em>, </em><em>optional</em>) – number of steps it will take for epsilon to reach the eps_end value</p></li>
-<li><p><strong>action_key</strong> (<em>NestedKey</em><em>, </em><em>optional</em>) – the key where the action can be found in the input tensordict.
-Default is <code class="docutils literal notranslate"><span class="pre">&quot;action&quot;</span></code>.</p></li>
-<li><p><strong>action_mask_key</strong> (<em>NestedKey</em><em>, </em><em>optional</em>) – the key where the action mask can be found in the input tensordict.
-Default is <code class="docutils literal notranslate"><span class="pre">None</span></code> (corresponding to no mask).</p></li>
-<li><p><strong>spec</strong> (<a class="reference internal" href="torchrl.data.TensorSpec.html#torchrl.data.TensorSpec" title="torchrl.data.TensorSpec"><em>TensorSpec</em></a><em>, </em><em>optional</em>) – if provided, the sampled action will be
-taken from this action space. If not provided,
-the exploration wrapper will attempt to recover it from the policy.</p></li>
-</ul>
-</dd>
-</dl>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Once a module has been wrapped in <a class="reference internal" href="#torchrl.modules.EGreedyWrapper" title="torchrl.modules.EGreedyWrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">EGreedyWrapper</span></code></a>, it is
-crucial to incorporate a call to <a class="reference internal" href="torchrl.envs.EnvBase.html#id4" title="torchrl.envs.EnvBase.step"><code class="xref py py-meth docutils literal notranslate"><span class="pre">step()</span></code></a> in the training loop
-to update the exploration factor.
-Since it is not easy to capture this omission no warning or exception
-will be raised if this is ommitted!</p>
-</div>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">torch</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">tensordict</span> <span class="kn">import</span> <span class="n">TensorDict</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.modules</span> <span class="kn">import</span> <span class="n">EGreedyWrapper</span><span class="p">,</span> <span class="n">Actor</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchrl.data</span> <span class="kn">import</span> <span class="n">Bounded</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">spec</span> <span class="o">=</span> <span class="n">Bounded</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">([</span><span class="mi">4</span><span class="p">]))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">module</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">policy</span> <span class="o">=</span> <span class="n">Actor</span><span class="p">(</span><span class="n">spec</span><span class="o">=</span><span class="n">spec</span><span class="p">,</span> <span class="n">module</span><span class="o">=</span><span class="n">module</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">explorative_policy</span> <span class="o">=</span> <span class="n">EGreedyWrapper</span><span class="p">(</span><span class="n">policy</span><span class="p">,</span> <span class="n">eps_init</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">td</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="p">({</span><span class="s2">&quot;observation&quot;</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">4</span><span class="p">)},</span> <span class="n">batch_size</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">explorative_policy</span><span class="p">(</span><span class="n">td</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;action&quot;</span><span class="p">))</span>
-<span class="go">tensor([[ 0.0000,  0.0000,  0.0000,  0.0000],</span>
-<span class="go">        [ 0.0000,  0.0000,  0.0000,  0.0000],</span>
-<span class="go">        [ 0.9055, -0.9277, -0.6295, -0.2532],</span>
-<span class="go">        [ 0.0000,  0.0000,  0.0000,  0.0000],</span>
-<span class="go">        [ 0.0000,  0.0000,  0.0000,  0.0000],</span>
-<span class="go">        [ 0.0000,  0.0000,  0.0000,  0.0000],</span>
-<span class="go">        [ 0.0000,  0.0000,  0.0000,  0.0000],</span>
-<span class="go">        [ 0.0000,  0.0000,  0.0000,  0.0000],</span>
-<span class="go">        [ 0.0000,  0.0000,  0.0000,  0.0000],</span>
-<span class="go">        [ 0.0000,  0.0000,  0.0000,  0.0000]], grad_fn=&lt;AddBackward0&gt;)</span>
-</pre></div>
-</div>
 </dd></dl>
 
 </section>

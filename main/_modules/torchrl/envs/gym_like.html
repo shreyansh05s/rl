@@ -712,7 +712,6 @@
 
             <span class="k">if</span> <span class="n">_reward</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">reward</span> <span class="o">=</span> <span class="n">reward</span> <span class="o">+</span> <span class="n">_reward</span>
-
             <span class="n">terminated</span><span class="p">,</span> <span class="n">truncated</span><span class="p">,</span> <span class="n">done</span><span class="p">,</span> <span class="n">do_break</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_done</span><span class="p">(</span>
                 <span class="n">terminated</span><span class="o">=</span><span class="n">terminated</span><span class="p">,</span> <span class="n">truncated</span><span class="o">=</span><span class="n">truncated</span><span class="p">,</span> <span class="n">done</span><span class="o">=</span><span class="n">done</span>
             <span class="p">)</span>
@@ -726,7 +725,7 @@
         <span class="c1"># if truncated/terminated is not in the keys, we just don&#39;t pass it even if it</span>
         <span class="c1"># is defined.</span>
         <span class="k">if</span> <span class="n">terminated</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">terminated</span> <span class="o">=</span> <span class="n">done</span>
+            <span class="n">terminated</span> <span class="o">=</span> <span class="n">done</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">truncated</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">obs_dict</span><span class="p">[</span><span class="s2">&quot;truncated&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">truncated</span>
         <span class="n">obs_dict</span><span class="p">[</span><span class="s2">&quot;done&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">done</span>

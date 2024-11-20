@@ -702,8 +702,8 @@ TensorDict(
     batch_size=torch.Size([2]),
     device=None,
     is_shared=False)
-tensor([0, 1])
-0 0.06984967738389969
+tensor([1, 1])
+0 1.0
 1 0.28791671991348267
 2 0.0
 </pre></div>
@@ -1378,6 +1378,8 @@ We use a <a class="reference internal" href="../reference/generated/torchrl.envs
 <span class="n">actor</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">TensorDictModule</span></a><span class="p">(</span><a href="https://pytorch.org/docs/stable/generated/torch.nn.Linear.html#torch.nn.Linear" title="torch.nn.Linear" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">actor_module</span></a><span class="p">,</span> <span class="n">in_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;observation&quot;</span><span class="p">],</span> <span class="n">out_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;action&quot;</span><span class="p">])</span>
 </pre></div>
 </div>
+<section id="sync-multiprocessed-data-collector">
+<h3>Sync multiprocessed data collector<a class="headerlink" href="#sync-multiprocessed-data-collector" title="Permalink to this heading">¶</a></h3>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">devices</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;cpu&quot;</span><span class="p">,</span> <span class="s2">&quot;cpu&quot;</span><span class="p">]</span>
 
 <span class="n">collector</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.IterableDataset" title="torch.utils.data.IterableDataset" class="sphx-glr-backref-module-torch-utils-data sphx-glr-backref-type-py-class"><span class="n">MultiSyncDataCollector</span></a><span class="p">(</span>
@@ -1428,6 +1430,8 @@ We use a <a class="reference internal" href="../reference/generated/torchrl.envs
 3
 </pre></div>
 </div>
+<section id="async-multiprocessed-data-collector">
+<h4>Async multiprocessed data collector<a class="headerlink" href="#async-multiprocessed-data-collector" title="Permalink to this heading">¶</a></h4>
 <p>This class allows you to collect data while the model is training. This is particularily useful in off-policy settings
 as it decouples the inference and the model trainning. Data is delived in a first-ready-first-served basis (workers
 will queue their results):</p>
@@ -1480,6 +1484,8 @@ will queue their results):</p>
 3
 </pre></div>
 </div>
+</section>
+</section>
 </section>
 <section id="objectives">
 <h2>Objectives<a class="headerlink" href="#objectives" title="Permalink to this heading">¶</a></h2>
@@ -1567,8 +1573,8 @@ RL (or just curious), try it! Give us feedback: what will make the success of
 TorchRL is how well it covers researchers needs. To do that, we need their input!
 Since the library is nascent, it is a great time for you to shape it the way you want!</p>
 <p>See the <a class="reference external" href="https://github.com/pytorch/rl/blob/main/CONTRIBUTING.md">Contributing guide</a> for more info.</p>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (2 minutes 26.883 seconds)</p>
-<p><strong>Estimated memory usage:</strong>  331 MB</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (2 minutes 26.949 seconds)</p>
+<p><strong>Estimated memory usage:</strong>  363 MB</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-tutorials-torchrl-demo-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/36fe09d5d4546649ee1a029c7144936e/torchrl_demo.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">torchrl_demo.ipynb</span></code></a></p>
@@ -1654,7 +1660,13 @@ Since the library is nascent, it is a great time for you to shape it the way you
 </ul>
 </li>
 <li><a class="reference internal" href="#using-environments-and-modules">Using Environments and Modules</a></li>
-<li><a class="reference internal" href="#collectors">Collectors</a></li>
+<li><a class="reference internal" href="#collectors">Collectors</a><ul>
+<li><a class="reference internal" href="#sync-multiprocessed-data-collector">Sync multiprocessed data collector</a><ul>
+<li><a class="reference internal" href="#async-multiprocessed-data-collector">Async multiprocessed data collector</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li><a class="reference internal" href="#objectives">Objectives</a></li>
 <li><a class="reference internal" href="#installing-the-library">Installing the Library</a></li>
 <li><a class="reference internal" href="#contributing">Contributing</a></li>

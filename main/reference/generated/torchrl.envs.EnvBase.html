@@ -1094,23 +1094,17 @@ that contains all the action entries.</p>
 <span class="gp">... </span>    <span class="k">break</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">env</span> <span class="o">=</span> <span class="n">BraxEnv</span><span class="p">(</span><span class="n">envname</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">env</span><span class="o">.</span><span class="n">full_action_spec</span>
+<span class="go">Composite(</span>
+<span class="go">    action: BoundedContinuous(</span>
+<span class="go">        shape=torch.Size([8]),</span>
+<span class="go">        space=ContinuousBox(</span>
+<span class="go">            low=Tensor(shape=torch.Size([8]), device=cpu, dtype=torch.float32, contiguous=True),</span>
+<span class="go">            high=Tensor(shape=torch.Size([8]), device=cpu, dtype=torch.float32, contiguous=True)),</span>
+<span class="go">        device=cpu,</span>
+<span class="go">        dtype=torch.float32,</span>
+<span class="go">        domain=continuous), device=cpu, shape=torch.Size([]))</span>
 </pre></div>
 </div>
-<dl>
-<dt>Composite(</dt><dd><dl>
-<dt>action: BoundedContinuous(</dt><dd><p>shape=torch.Size([8]),
-space=ContinuousBox(</p>
-<blockquote>
-<div><p>low=Tensor(shape=torch.Size([8]), device=cpu, dtype=torch.float32, contiguous=True),
-high=Tensor(shape=torch.Size([8]), device=cpu, dtype=torch.float32, contiguous=True)),</p>
-</div></blockquote>
-<p>device=cpu,
-dtype=torch.float32,
-domain=continuous), device=cpu, shape=torch.Size([]))</p>
-</dd>
-</dl>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py property">
@@ -2057,7 +2051,7 @@ or any other backend compatible with <code class="xref py py-class docutils lite
 (results are tensors).
 This arg can be passed during a call to <code class="xref py py-func docutils literal notranslate"><span class="pre">make()</span></code> (see
 example below).</p></li>
-<li><p><strong>reward_threshold</strong> (<a class="reference internal" href="#torchrl.envs.EnvBase.float" title="torchrl.envs.EnvBase.float"><em>float</em></a><em>, </em><em>optional</em>) – [Gym kwarg] The reward threshold
+<li><p><strong>reward_threshold</strong> (<a class="reference internal" href="#torchrl.envs.EnvBase.float" title="torchrl.envs.EnvBase.float"><code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code></a>, optional) – [Gym kwarg] The reward threshold
 considered to have learnt an environment.</p></li>
 <li><p><strong>nondeterministic</strong> (<em>bool</em><em>, </em><em>optional</em>) – [Gym kwarg If the environment is nondeterministic
 (even with knowledge of the initial seed and all actions). Defaults to

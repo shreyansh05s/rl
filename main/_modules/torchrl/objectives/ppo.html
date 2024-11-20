@@ -509,7 +509,7 @@
 <span class="sd">            ``&quot;none&quot;`` | ``&quot;mean&quot;`` | ``&quot;sum&quot;``. ``&quot;none&quot;``: no reduction will be applied,</span>
 <span class="sd">            ``&quot;mean&quot;``: the sum of the output will be divided by the number of</span>
 <span class="sd">            elements in the output, ``&quot;sum&quot;``: the output will be summed. Default: ``&quot;mean&quot;``.</span>
-<span class="sd">        clip_value (float, optional): If provided, it will be used to compute a clipped version of the value</span>
+<span class="sd">        clip_value (:obj:`float`, optional): If provided, it will be used to compute a clipped version of the value</span>
 <span class="sd">            prediction with respect to the input tensordict value estimate and use it to calculate the value loss.</span>
 <span class="sd">            The purpose of clipping is to limit the impact of extreme value predictions, helping stabilize training</span>
 <span class="sd">            and preventing large updates. However, it will have no impact if the value estimate was done by the current</span>
@@ -1363,7 +1363,7 @@
 <span class="sd">            ``&quot;none&quot;`` | ``&quot;mean&quot;`` | ``&quot;sum&quot;``. ``&quot;none&quot;``: no reduction will be applied,</span>
 <span class="sd">            ``&quot;mean&quot;``: the sum of the output will be divided by the number of</span>
 <span class="sd">            elements in the output, ``&quot;sum&quot;``: the output will be summed. Default: ``&quot;mean&quot;``.</span>
-<span class="sd">        clip_value (float, optional): If provided, it will be used to compute a clipped version of the value</span>
+<span class="sd">        clip_value (:obj:`float`, optional): If provided, it will be used to compute a clipped version of the value</span>
 <span class="sd">            prediction with respect to the input tensordict value estimate and use it to calculate the value loss.</span>
 <span class="sd">            The purpose of clipping is to limit the impact of extreme value predictions, helping stabilize training</span>
 <span class="sd">            and preventing large updates. However, it will have no impact if the value estimate was done by the current</span>

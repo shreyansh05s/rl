@@ -470,11 +470,11 @@
 <span class="sd">            Defaults to ``2``.</span>
 <span class="sd">        loss_function (str, optional): loss function to be used with</span>
 <span class="sd">            the value function loss. Default is `&quot;smooth_l1&quot;`.</span>
-<span class="sd">        alpha_init (float, optional): initial entropy multiplier.</span>
+<span class="sd">        alpha_init (:obj:`float`, optional): initial entropy multiplier.</span>
 <span class="sd">            Default is 1.0.</span>
-<span class="sd">        min_alpha (float, optional): min value of alpha.</span>
+<span class="sd">        min_alpha (:obj:`float`, optional): min value of alpha.</span>
 <span class="sd">            Default is None (no minimum value).</span>
-<span class="sd">        max_alpha (float, optional): max value of alpha.</span>
+<span class="sd">        max_alpha (:obj:`float`, optional): max value of alpha.</span>
 <span class="sd">            Default is None (no maximum value).</span>
 <span class="sd">        action_spec (TensorSpec, optional): the action tensor spec. If not provided</span>
 <span class="sd">            and the target entropy is ``&quot;auto&quot;``, it will be retrieved from</span>
@@ -743,6 +743,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_action_spec</span> <span class="o">=</span> <span class="n">action_spec</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_make_vmap</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reduction</span> <span class="o">=</span> <span class="n">reduction</span>
+        <span class="c1"># init target entropy</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">maybe_init_target_entropy</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_make_vmap</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_vmap_qnetworkN0</span> <span class="o">=</span> <span class="n">_vmap_func</span><span class="p">(</span>
@@ -757,22 +759,23 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_entropy</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">target_entropy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">target_entropy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buffers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_target_entropy&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">target_entropy</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">target_entropy</span>
+<div class="viewcode-block" id="CrossQLoss.maybe_init_target_entropy"><a class="viewcode-back" href="../../../reference/generated/torchrl.objectives.CrossQLoss.html#torchrl.objectives.CrossQLoss.maybe_init_target_entropy">[docs]</a>    <span class="k">def</span> <span class="nf">maybe_init_target_entropy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fault_tolerant</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the target entropy.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            fault_tolerant (bool, optional): if ``True``, returns None if the target entropy</span>
+<span class="sd">                cannot be determined. Raises an exception otherwise. Defaults to ``True``.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s2">&quot;_target_entropy&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buffers</span><span class="p">:</span>
+            <span class="k">return</span>
         <span class="n">target_entropy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_target_entropy</span>
-        <span class="n">action_spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_action_spec</span>
-        <span class="n">actor_network</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">actor_network</span>
-        <span class="n">device</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span><span class="o">.</span><span class="n">device</span>
         <span class="k">if</span> <span class="n">target_entropy</span> <span class="o">==</span> <span class="s2">&quot;auto&quot;</span><span class="p">:</span>
-            <span class="n">action_spec</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="n">action_spec</span>
-                <span class="k">if</span> <span class="n">action_spec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-                <span class="k">else</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">actor_network</span><span class="p">,</span> <span class="s2">&quot;spec&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-            <span class="p">)</span>
+            <span class="n">device</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span><span class="o">.</span><span class="n">device</span>
+            <span class="n">action_spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_action_spec</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">action_spec</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">fault_tolerant</span><span class="p">:</span>
+                    <span class="k">return</span>
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
                     <span class="s2">&quot;Cannot infer the dimensionality of the action. Consider providing &quot;</span>
                     <span class="s2">&quot;the target entropy explicitely or provide the spec of the &quot;</span>
@@ -780,6 +783,8 @@
                 <span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">action_spec</span><span class="p">,</span> <span class="n">Composite</span><span class="p">):</span>
                 <span class="n">action_spec</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">({</span><span class="bp">self</span><span class="o">.</span><span class="n">tensor_keys</span><span class="o">.</span><span class="n">action</span><span class="p">:</span> <span class="n">action_spec</span><span class="p">})</span>
+            <span class="k">elif</span> <span class="n">fault_tolerant</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">tensor_keys</span><span class="o">.</span><span class="n">action</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">action_spec</span><span class="p">:</span>
+                <span class="k">return</span>
             <span class="k">if</span> <span class="p">(</span>
                 <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tensor_keys</span><span class="o">.</span><span class="n">action</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span>
                 <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tensor_keys</span><span class="o">.</span><span class="n">action</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span>
@@ -796,7 +801,29 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span>
             <span class="s2">&quot;_target_entropy&quot;</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">target_entropy</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
         <span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_target_entropy</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_target_entropy</span></div>
+
+    <span class="k">def</span> <span class="nf">get_action_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">action_spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_action_spec</span>
+        <span class="n">actor_network</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">actor_network</span>
+        <span class="n">action_spec</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">action_spec</span>
+            <span class="k">if</span> <span class="n">action_spec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">actor_network</span><span class="p">,</span> <span class="s2">&quot;spec&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">action_spec</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">target_entropy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">target_entropy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buffers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_target_entropy&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">target_entropy</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">target_entropy</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">maybe_init_target_entropy</span><span class="p">(</span><span class="n">fault_tolerant</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<div class="viewcode-block" id="CrossQLoss.set_keys"><a class="viewcode-back" href="../../../reference/generated/torchrl.objectives.CrossQLoss.html#torchrl.objectives.CrossQLoss.set_keys">[docs]</a>    <span class="k">def</span> <span class="nf">set_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">set_keys</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">maybe_init_target_entropy</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">out</span></div>
 
     <span class="n">state_dict</span> <span class="o">=</span> <span class="n">_delezify</span><span class="p">(</span><span class="n">LossModule</span><span class="o">.</span><span class="n">state_dict</span><span class="p">)</span>
     <span class="n">load_state_dict</span> <span class="o">=</span> <span class="n">_delezify</span><span class="p">(</span><span class="n">LossModule</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">)</span>
@@ -916,15 +943,7 @@
             <span class="o">**</span><span class="n">metadata_actor</span><span class="p">,</span>
             <span class="o">**</span><span class="n">value_metadata</span><span class="p">,</span>
         <span class="p">}</span>
-        <span class="n">td_out</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="p">[])</span>
-        <span class="c1"># td_out = td_out.named_apply(</span>
-        <span class="c1">#     lambda name, value: (</span>
-        <span class="c1">#         _reduce(value, reduction=self.reduction)</span>
-        <span class="c1">#         if name.startswith(&quot;loss_&quot;)</span>
-        <span class="c1">#         else value</span>
-        <span class="c1">#     ),</span>
-        <span class="c1">#     batch_size=[],</span>
-        <span class="c1"># )</span>
+        <span class="n">td_out</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">td_out</span></div>
 
     <span class="nd">@property</span>
@@ -946,6 +965,7 @@
 
 <span class="sd">        Returns: a differentiable tensor with the alpha loss along with a metadata dictionary containing the detached `&quot;log_prob&quot;` of the sampled action.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">tensordict</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="k">with</span> <span class="n">set_exploration_type</span><span class="p">(</span>
             <span class="n">ExplorationType</span><span class="o">.</span><span class="n">RANDOM</span>
         <span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">actor_network_params</span><span class="o">.</span><span class="n">to_module</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">actor_network</span><span class="p">):</span>
@@ -987,6 +1007,7 @@
 <span class="sd">        Returns: a differentiable tensor with the qvalue loss along with a metadata dictionary containing</span>
 <span class="sd">            the detached `&quot;td_error&quot;` to be used for prioritized sampling.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">tensordict</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="c1"># # compute next action</span>
         <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
             <span class="k">with</span> <span class="n">set_exploration_type</span><span class="p">(</span>

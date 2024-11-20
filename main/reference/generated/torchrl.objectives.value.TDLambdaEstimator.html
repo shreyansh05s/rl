@@ -451,7 +451,8 @@ only one time step (which is not the case with multi-step value
 estimation, for instance) and (2) when the parameters used at time
 <code class="docutils literal notranslate"><span class="pre">t</span></code> and <code class="docutils literal notranslate"><span class="pre">t+1</span></code> are identical (which is not the case when target
 parameters are to be used). Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
-<li><p><strong>device</strong> (<a class="reference external" href="https://pytorch.org/docs/stable/tensor_attributes.html#torch.device" title="(in PyTorch v2.5)"><em>torch.device</em></a><em>, </em><em>optional</em>) – device of the module.</p></li>
+<li><p><strong>device</strong> (<a class="reference external" href="https://pytorch.org/docs/stable/tensor_attributes.html#torch.device" title="(in PyTorch v2.5)"><em>torch.device</em></a><em>, </em><em>optional</em>) – the device where the buffers will be instantiated.
+Defaults to <code class="docutils literal notranslate"><span class="pre">torch.get_default_device()</span></code>.</p></li>
 <li><p><strong>time_dim</strong> (<em>int</em><em>, </em><em>optional</em>) – the dimension corresponding to the time
 in the input tensordict. If not provided, defaults to the dimension
 markes with the <code class="docutils literal notranslate"><span class="pre">&quot;time&quot;</span></code> name if any, and to the last dimension

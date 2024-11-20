@@ -414,12 +414,8 @@
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">packaging</span> <span class="kn">import</span> <span class="n">version</span>
 <span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">distributions</span> <span class="k">as</span> <span class="n">D</span><span class="p">,</span> <span class="n">nn</span>
-
-<span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">torch.compiler</span> <span class="kn">import</span> <span class="n">assume_constant_result</span>
-<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">torch._dynamo</span> <span class="kn">import</span> <span class="n">assume_constant_result</span>
 
 <span class="kn">from</span> <span class="nn">torch.distributions</span> <span class="kn">import</span> <span class="n">constraints</span>
 <span class="kn">from</span> <span class="nn">torch.distributions.transforms</span> <span class="kn">import</span> <span class="n">_InverseTransform</span>
@@ -440,9 +436,17 @@
 <span class="n">D</span><span class="o">.</span><span class="n">Distribution</span><span class="o">.</span><span class="n">set_default_validate_args</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
 
 <span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">torch.compiler</span> <span class="kn">import</span> <span class="n">assume_constant_result</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">torch._dynamo</span> <span class="kn">import</span> <span class="n">assume_constant_result</span>
+
+<span class="k">try</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">torch.compiler</span> <span class="kn">import</span> <span class="n">is_dynamo_compiling</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">torch._dynamo</span> <span class="kn">import</span> <span class="n">is_compiling</span> <span class="k">as</span> <span class="n">is_dynamo_compiling</span>
+
+<span class="n">TORCH_VERSION</span> <span class="o">=</span> <span class="n">version</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span><span class="o">.</span><span class="n">base_version</span>
+<span class="n">TORCH_VERSION_PRE_2_6</span> <span class="o">=</span> <span class="n">version</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">TORCH_VERSION</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">version</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;2.6.0&quot;</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="IndependentNormal"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.IndependentNormal.html#torchrl.modules.IndependentNormal">[docs]</a><span class="k">class</span> <span class="nc">IndependentNormal</span><span class="p">(</span><span class="n">D</span><span class="o">.</span><span class="n">Independent</span><span class="p">):</span>
@@ -796,7 +800,6 @@
         <span class="n">event_dims</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">tanh_loc</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">safe_tanh</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">loc</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
             <span class="n">loc</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">as_tensor</span><span class="p">(</span><span class="n">loc</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">get_default_dtype</span><span class="p">())</span>
@@ -806,15 +809,16 @@
             <span class="n">event_dims</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">loc</span><span class="o">.</span><span class="n">ndim</span><span class="p">)</span>
 
         <span class="n">err_msg</span> <span class="o">=</span> <span class="s2">&quot;TanhNormal high values must be strictly greater than low values&quot;</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">high</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">low</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">high</span> <span class="o">&gt;</span> <span class="n">low</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
-                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">err_msg</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">high</span><span class="p">,</span> <span class="n">Number</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">low</span><span class="p">,</span> <span class="n">Number</span><span class="p">):</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">high</span> <span class="o">&gt;</span> <span class="n">low</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">err_msg</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">high</span> <span class="o">&gt;</span> <span class="n">low</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">err_msg</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">is_dynamo_compiling</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">high</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">low</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">high</span> <span class="o">&gt;</span> <span class="n">low</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">err_msg</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">high</span><span class="p">,</span> <span class="n">Number</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">low</span><span class="p">,</span> <span class="n">Number</span><span class="p">):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">high</span> <span class="o">&gt;</span> <span class="n">low</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">err_msg</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">high</span> <span class="o">&gt;</span> <span class="n">low</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">err_msg</span><span class="p">)</span>
 
         <span class="n">high</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">as_tensor</span><span class="p">(</span><span class="n">high</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">loc</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
         <span class="n">low</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">as_tensor</span><span class="p">(</span><span class="n">low</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">loc</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
@@ -840,7 +844,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">high</span> <span class="o">=</span> <span class="n">high</span>
 
         <span class="k">if</span> <span class="n">safe_tanh</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">is_dynamo_compiling</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">is_dynamo_compiling</span><span class="p">()</span> <span class="ow">and</span> <span class="n">TORCH_VERSION_PRE_2_6</span><span class="p">:</span>
                 <span class="n">_err_compile_safetanh</span><span class="p">()</span>
             <span class="n">t</span> <span class="o">=</span> <span class="n">SafeTanhTransform</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
@@ -1010,6 +1014,15 @@
             <span class="n">event_shape</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">batch_shape</span><span class="o">=</span><span class="n">batch_shape</span><span class="p">,</span> <span class="n">event_shape</span><span class="o">=</span><span class="n">event_shape</span><span class="p">)</span>
 
+<div class="viewcode-block" id="Delta.expand"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.Delta.html#torchrl.modules.Delta.expand">[docs]</a>    <span class="k">def</span> <span class="nf">expand</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch_shape</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">,</span> <span class="n">_instance</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_shape</span> <span class="o">!=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">batch_shape</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">param</span><span class="o">.</span><span class="n">expand</span><span class="p">((</span><span class="o">*</span><span class="n">batch_shape</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">event_shape</span><span class="p">)),</span>
+                <span class="n">atol</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">atol</span><span class="p">,</span>
+                <span class="n">rtol</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">rtol</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
     <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">param</span> <span class="o">=</span> <span class="n">param</span>
 
@@ -1081,6 +1094,7 @@
         <span class="n">event_dims</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
         <span class="n">atol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-6</span><span class="p">,</span>
         <span class="n">rtol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-6</span><span class="p">,</span>
+        <span class="n">safe</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="n">minmax_msg</span> <span class="o">=</span> <span class="s2">&quot;high value has been found to be equal or less than low value&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">high</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">low</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
@@ -1093,12 +1107,19 @@
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">high</span> <span class="o">&gt;</span> <span class="n">low</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">minmax_msg</span><span class="p">)</span>
 
-        <span class="n">t</span> <span class="o">=</span> <span class="n">SafeTanhTransform</span><span class="p">()</span>
-        <span class="n">non_trivial_min</span> <span class="o">=</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">low</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">low</span> <span class="o">!=</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">())</span> <span class="ow">or</span> <span class="p">(</span>
-            <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">low</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="ow">and</span> <span class="n">low</span> <span class="o">!=</span> <span class="o">-</span><span class="mf">1.0</span>
+        <span class="k">if</span> <span class="n">safe</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">is_dynamo_compiling</span><span class="p">():</span>
+                <span class="n">_err_compile_safetanh</span><span class="p">()</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">SafeTanhTransform</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">distributions</span><span class="o">.</span><span class="n">TanhTransform</span><span class="p">()</span>
+        <span class="n">non_trivial_min</span> <span class="o">=</span> <span class="n">is_dynamo_compiling</span> <span class="ow">or</span> <span class="p">(</span>
+            <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">low</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">low</span> <span class="o">!=</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">())</span>
+            <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">low</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="ow">and</span> <span class="n">low</span> <span class="o">!=</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">)</span>
         <span class="p">)</span>
-        <span class="n">non_trivial_max</span> <span class="o">=</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">high</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">high</span> <span class="o">!=</span> <span class="mf">1.0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">())</span> <span class="ow">or</span> <span class="p">(</span>
-            <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">high</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="ow">and</span> <span class="n">high</span> <span class="o">!=</span> <span class="mf">1.0</span>
+        <span class="n">non_trivial_max</span> <span class="o">=</span> <span class="n">is_dynamo_compiling</span> <span class="ow">or</span> <span class="p">(</span>
+            <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">high</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">high</span> <span class="o">!=</span> <span class="mf">1.0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">())</span>
+            <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">high</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="ow">and</span> <span class="n">high</span> <span class="o">!=</span> <span class="mf">1.0</span><span class="p">)</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">non_trivial</span> <span class="o">=</span> <span class="n">non_trivial_min</span> <span class="ow">or</span> <span class="n">non_trivial_max</span>
 
@@ -1175,8 +1196,8 @@
 
 <span class="k">def</span> <span class="nf">_err_compile_safetanh</span><span class="p">():</span>
     <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-        <span class="s2">&quot;safe_tanh=True in TanhNormal is not compatible with torch.compile. To deactivate it, pass&quot;</span>
-        <span class="s2">&quot;safe_tanh=False. &quot;</span>
+        <span class="s2">&quot;safe_tanh=True in TanhNormal is not compatible with torch.compile with torch pre 2.6.0. &quot;</span>
+        <span class="s2">&quot; To deactivate it, pass safe_tanh=False. &quot;</span>
         <span class="s2">&quot;If you are using a ProbabilisticTensorDictModule, this can be done via &quot;</span>
         <span class="s2">&quot;`distribution_kwargs={&#39;safe_tanh&#39;: False}`. &quot;</span>
         <span class="s2">&quot;See https://github.com/pytorch/pytorch/issues/133529 for more details.&quot;</span>

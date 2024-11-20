@@ -470,6 +470,15 @@
     <span class="n">set_exploration_type</span><span class="p">,</span>
 <span class="p">)</span>
 
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">torch.compiler</span> <span class="kn">import</span> <span class="n">cudagraph_mark_step_begin</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="nf">cudagraph_mark_step_begin</span><span class="p">():</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Placeholder for missing cudagraph_mark_step_begin method.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;cudagraph_mark_step_begin not implemented.&quot;</span><span class="p">)</span>
+
+
 <span class="n">_TIMEOUT</span> <span class="o">=</span> <span class="mf">1.0</span>
 <span class="n">INSTANTIATE_TIMEOUT</span> <span class="o">=</span> <span class="mi">20</span>
 <span class="n">_MIN_TIMEOUT</span> <span class="o">=</span> <span class="mf">1e-3</span>  <span class="c1"># should be several orders of magnitude inferior wrt time spent collecting a trajectory</span>
@@ -540,6 +549,7 @@
 
     <span class="n">_iterator</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">total_frames</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">requested_frames_per_batch</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">frames_per_batch</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">trust_policy</span><span class="p">:</span> <span class="nb">bool</span>
     <span class="n">compiled_policy</span><span class="p">:</span> <span class="nb">bool</span>
@@ -554,6 +564,8 @@
         <span class="n">env_maker_kwargs</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">TensorDictModule</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="nb">dict</span><span class="p">]]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Util method to get a policy and its device given the collector __init__ inputs.</span>
+
+<span class="sd">        We want to copy the policy and then move the data there, not call policy.to(device).</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            policy (TensorDictModule, optional): a policy to be used</span>
@@ -612,7 +624,7 @@
             <span class="n">weight</span> <span class="o">=</span> <span class="n">weight</span><span class="o">.</span><span class="n">data</span>
             <span class="k">if</span> <span class="n">weight</span><span class="o">.</span><span class="n">device</span> <span class="o">!=</span> <span class="n">policy_device</span><span class="p">:</span>
                 <span class="n">weight</span> <span class="o">=</span> <span class="n">weight</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">policy_device</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">weight</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">,</span> <span class="s2">&quot;mps&quot;</span><span class="p">):</span>
+            <span class="k">elif</span> <span class="n">weight</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">,):</span>
                 <span class="n">weight</span> <span class="o">=</span> <span class="n">weight</span><span class="o">.</span><span class="n">share_memory_</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">is_param</span><span class="p">:</span>
                 <span class="n">weight</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="n">weight</span><span class="p">,</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -626,7 +638,7 @@
             <span class="n">policy</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">policy</span><span class="p">)</span>
 
         <span class="n">param_and_buf</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
-            <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">map_weight</span><span class="p">),</span>
+            <span class="n">map_weight</span><span class="p">,</span>
             <span class="n">filter_empty</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="p">)</span><span class="o">.</span><span class="n">to_module</span><span class="p">(</span><span class="n">policy</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">policy</span><span class="p">,</span> <span class="n">get_original_weights</span>
@@ -699,7 +711,7 @@
 
     <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_frames</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span> <span class="o">-</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">total_frames</span> <span class="o">//</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">frames_per_batch</span><span class="p">)</span>
+            <span class="k">return</span> <span class="o">-</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">total_frames</span> <span class="o">//</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">requested_frames_per_batch</span><span class="p">)</span>
         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Non-terminating collectors do not have a length&quot;</span><span class="p">)</span></div>
 
 
@@ -1094,7 +1106,7 @@
             <span class="n">remainder</span> <span class="o">=</span> <span class="n">total_frames</span> <span class="o">%</span> <span class="n">frames_per_batch</span>
             <span class="k">if</span> <span class="n">remainder</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">RL_WARNINGS</span><span class="p">:</span>
                 <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;total_frames (</span><span class="si">{</span><span class="n">total_frames</span><span class="si">}</span><span class="s2">) is not exactly divisible by frames_per_batch (</span><span class="si">{</span><span class="n">frames_per_batch</span><span class="si">}</span><span class="s2">).&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;total_frames (</span><span class="si">{</span><span class="n">total_frames</span><span class="si">}</span><span class="s2">) is not exactly divisible by frames_per_batch (</span><span class="si">{</span><span class="n">frames_per_batch</span><span class="si">}</span><span class="s2">). &quot;</span>
                     <span class="sa">f</span><span class="s2">&quot;This means </span><span class="si">{</span><span class="n">frames_per_batch</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">remainder</span><span class="si">}</span><span class="s2"> additional frames will be collected.&quot;</span>
                     <span class="s2">&quot;To silence this message, set the environment variable RL_WARNINGS to False.&quot;</span>
                 <span class="p">)</span>
@@ -1128,11 +1140,11 @@
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;frames_per_batch (</span><span class="si">{</span><span class="n">frames_per_batch</span><span class="si">}</span><span class="s2">) is not exactly divisible by the number of batched environments (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_env</span><span class="si">}</span><span class="s2">), &quot;</span>
                 <span class="sa">f</span><span class="s2">&quot; this results in more frames_per_batch per iteration that requested&quot;</span>
-                <span class="sa">f</span><span class="s2">&quot; (</span><span class="si">{</span><span class="o">-</span><span class="p">(</span><span class="o">-</span><span class="n">frames_per_batch</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">n_env</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">n_env</span><span class="si">}</span><span class="s2">).&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot; (</span><span class="si">{</span><span class="o">-</span><span class="p">(</span><span class="o">-</span><span class="n">frames_per_batch</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">n_env</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">n_env</span><span class="si">}</span><span class="s2">). &quot;</span>
                 <span class="s2">&quot;To silence this message, set the environment variable RL_WARNINGS to False.&quot;</span>
             <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">requested_frames_per_batch</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">frames_per_batch</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">frames_per_batch</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="o">-</span><span class="n">frames_per_batch</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_env</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">requested_frames_per_batch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">frames_per_batch</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_env</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">exploration_type</span> <span class="o">=</span> <span class="p">(</span>
             <span class="n">exploration_type</span> <span class="k">if</span> <span class="n">exploration_type</span> <span class="k">else</span> <span class="n">DEFAULT_EXPLORATION_TYPE</span>
         <span class="p">)</span>
@@ -1235,6 +1247,8 @@
                 <span class="n">policy_input_clone</span> <span class="o">=</span> <span class="p">(</span>
                     <span class="n">policy_input</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
                 <span class="p">)</span>  <span class="c1"># to test if values have changed in-place</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">compiled_policy</span><span class="p">:</span>
+                    <span class="n">cudagraph_mark_step_begin</span><span class="p">()</span>
                 <span class="n">policy_output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">policy</span><span class="p">(</span><span class="n">policy_input</span><span class="p">)</span>
 
                 <span class="c1"># check that we don&#39;t have exclusive keys, because they don&#39;t appear in keys</span>
@@ -1548,7 +1562,11 @@
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">policy_input</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shuttle</span>
                     <span class="c1"># we still do the assignment for security</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">compiled_policy</span><span class="p">:</span>
+                        <span class="n">cudagraph_mark_step_begin</span><span class="p">()</span>
                     <span class="n">policy_output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">policy</span><span class="p">(</span><span class="n">policy_input</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">compiled_policy</span><span class="p">:</span>
+                        <span class="n">policy_output</span> <span class="o">=</span> <span class="n">policy_output</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
                     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shuttle</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">policy_output</span><span class="p">:</span>
                         <span class="c1"># ad-hoc update shuttle</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">_shuttle</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
@@ -1787,11 +1805,13 @@
 <span class="sd">            instances) it will be wrapped in a `nn.Module` first.</span>
 <span class="sd">            Then, the collector will try to assess if these</span>
 <span class="sd">            modules require wrapping in a :class:`~tensordict.nn.TensorDictModule` or not.</span>
+
 <span class="sd">            - If the policy forward signature matches any of ``forward(self, tensordict)``,</span>
 <span class="sd">              ``forward(self, td)`` or ``forward(self, &lt;anything&gt;: TensorDictBase)`` (or</span>
 <span class="sd">              any typing with a single argument typed as a subclass of ``TensorDictBase``)</span>
 <span class="sd">              then the policy won&#39;t be wrapped in a :class:`~tensordict.nn.TensorDictModule`.</span>
-<span class="sd">            - In all other cases an attempt to wrap it will be undergone as such: ``TensorDictModule(policy, in_keys=env_obs_key, out_keys=env.action_keys)``.</span>
+<span class="sd">            - In all other cases an attempt to wrap it will be undergone as such:</span>
+<span class="sd">              ``TensorDictModule(policy, in_keys=env_obs_key, out_keys=env.action_keys)``.</span>
 
 <span class="sd">    Keyword Args:</span>
 <span class="sd">        frames_per_batch (int): A keyword-only argument representing the</span>
@@ -1879,7 +1899,7 @@
 <span class="sd">        update_at_each_batch (boolm optional): if ``True``, :meth:`~.update_policy_weight_()`</span>
 <span class="sd">            will be called before (sync) or after (async) each data collection.</span>
 <span class="sd">            Defaults to ``False``.</span>
-<span class="sd">        preemptive_threshold (float, optional): a value between 0.0 and 1.0 that specifies the ratio of workers</span>
+<span class="sd">        preemptive_threshold (:obj:`float`, optional): a value between 0.0 and 1.0 that specifies the ratio of workers</span>
 <span class="sd">            that will be allowed to finished collecting their rollout before the rest are forced to end early.</span>
 <span class="sd">        num_threads (int, optional): number of threads for this process.</span>
 <span class="sd">            Defaults to the number of workers.</span>
@@ -2039,14 +2059,15 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_get_weights_fn_dict</span><span class="p">[</span><span class="n">policy_device</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_weights_fn</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">policy</span> <span class="o">=</span> <span class="n">policy</span>
 
+        <span class="n">remainder</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">if</span> <span class="n">total_frames</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">total_frames</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">total_frames</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;inf&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">remainder</span> <span class="o">=</span> <span class="n">total_frames</span> <span class="o">%</span> <span class="n">frames_per_batch</span>
             <span class="k">if</span> <span class="n">remainder</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">RL_WARNINGS</span><span class="p">:</span>
                 <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;total_frames (</span><span class="si">{</span><span class="n">total_frames</span><span class="si">}</span><span class="s2">) is not exactly divisible by frames_per_batch (</span><span class="si">{</span><span class="n">frames_per_batch</span><span class="si">}</span><span class="s2">).&quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;This means </span><span class="si">{</span><span class="n">frames_per_batch</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">remainder</span><span class="si">}</span><span class="s2"> additional frames will be collected.&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;total_frames (</span><span class="si">{</span><span class="n">total_frames</span><span class="si">}</span><span class="s2">) is not exactly divisible by frames_per_batch (</span><span class="si">{</span><span class="n">frames_per_batch</span><span class="si">}</span><span class="s2">). &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;This means </span><span class="si">{</span><span class="n">frames_per_batch</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">remainder</span><span class="si">}</span><span class="s2"> additional frames will be collected. &quot;</span>
                     <span class="s2">&quot;To silence this message, set the environment variable RL_WARNINGS to False.&quot;</span>
                 <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">total_frames</span> <span class="o">=</span> <span class="p">(</span>
@@ -2496,11 +2517,13 @@
 <span class="sd">    trajectory and the start of the next collection.</span>
 <span class="sd">    This class can be safely used with online RL sota-implementations.</span>
 
-<span class="sd">    .. note:: Python requires multiprocessed code to be instantiated within a main guard:</span>
+<span class="sd">    .. note::</span>
+<span class="sd">        Python requires multiprocessed code to be instantiated within a main guard:</span>
 
 <span class="sd">            &gt;&gt;&gt; from torchrl.collectors import MultiSyncDataCollector</span>
 <span class="sd">            &gt;&gt;&gt; if __name__ == &quot;__main__&quot;:</span>
 <span class="sd">            ...     # Create your collector here</span>
+<span class="sd">            ...     collector = MultiSyncDataCollector(...)</span>
 
 <span class="sd">        See https://docs.python.org/3/library/multiprocessing.html for more info.</span>
 
@@ -2528,8 +2551,8 @@
 <span class="sd">        ...         if i == 2:</span>
 <span class="sd">        ...             print(data)</span>
 <span class="sd">        ...             break</span>
-<span class="sd">        ... collector.shutdown()</span>
-<span class="sd">        ... del collector</span>
+<span class="sd">        &gt;&gt;&gt; collector&gt;shutdown()</span>
+<span class="sd">        &gt;&gt;&gt; del collector</span>
 <span class="sd">        TensorDict(</span>
 <span class="sd">            fields={</span>
 <span class="sd">                action: Tensor(shape=torch.Size([200, 1]), device=cpu, dtype=torch.float32, is_shared=False),</span>
@@ -3156,7 +3179,7 @@
 <span class="sd">        update_at_each_batch (boolm optional): if ``True``, :meth:`~.update_policy_weight_()`</span>
 <span class="sd">            will be called before (sync) or after (async) each data collection.</span>
 <span class="sd">            Defaults to ``False``.</span>
-<span class="sd">        preemptive_threshold (float, optional): a value between 0.0 and 1.0 that specifies the ratio of workers</span>
+<span class="sd">        preemptive_threshold (:obj:`float`, optional): a value between 0.0 and 1.0 that specifies the ratio of workers</span>
 <span class="sd">            that will be allowed to finished collecting their rollout before the rest are forced to end early.</span>
 <span class="sd">        num_threads (int, optional): number of threads for this process.</span>
 <span class="sd">            Defaults to the number of workers.</span>

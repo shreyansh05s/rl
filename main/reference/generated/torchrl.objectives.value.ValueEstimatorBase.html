@@ -444,6 +444,8 @@ feature dimension(s). The tensordict must have shape <code class="docutils liter
 to be passed to the functional value network module.</p></li>
 <li><p><strong>target_params</strong> (<em>TensorDictBase</em><em>, </em><em>optional</em>) – A nested TensorDict containing the
 target params to be passed to the functional value network module.</p></li>
+<li><p><strong>device</strong> (<a class="reference external" href="https://pytorch.org/docs/stable/tensor_attributes.html#torch.device" title="(in PyTorch v2.5)"><em>torch.device</em></a><em>, </em><em>optional</em>) – the device where the buffers will be instantiated.
+Defaults to <code class="docutils literal notranslate"><span class="pre">torch.get_default_device()</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
