@@ -408,6 +408,7 @@
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">import</span> <span class="nn">importlib.util</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
 
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
@@ -731,9 +732,9 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">group_map</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">group_map</span><span class="o">.</span><span class="n">get_group_map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">agent_names</span><span class="p">)</span>
         <span class="n">check_marl_grouping</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">group_map</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent_names</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">unbatched_action_spec</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">unbatched_observation_spec</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">unbatched_reward_spec</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">full_action_spec_unbatched</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">full_observation_spec_unbatched</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">full_reward_spec_unbatched</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">het_specs</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">het_specs_map</span> <span class="o">=</span> <span class="p">{}</span>
@@ -744,18 +745,18 @@
                 <span class="n">group_reward_spec</span><span class="p">,</span>
                 <span class="n">group_info_spec</span><span class="p">,</span>
             <span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_unbatched_group_specs</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">unbatched_action_spec</span><span class="p">[</span><span class="n">group</span><span class="p">]</span> <span class="o">=</span> <span class="n">group_action_spec</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">unbatched_observation_spec</span><span class="p">[</span><span class="n">group</span><span class="p">]</span> <span class="o">=</span> <span class="n">group_observation_spec</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">unbatched_reward_spec</span><span class="p">[</span><span class="n">group</span><span class="p">]</span> <span class="o">=</span> <span class="n">group_reward_spec</span>
+            <span class="n">full_action_spec_unbatched</span><span class="p">[</span><span class="n">group</span><span class="p">]</span> <span class="o">=</span> <span class="n">group_action_spec</span>
+            <span class="n">full_observation_spec_unbatched</span><span class="p">[</span><span class="n">group</span><span class="p">]</span> <span class="o">=</span> <span class="n">group_observation_spec</span>
+            <span class="n">full_reward_spec_unbatched</span><span class="p">[</span><span class="n">group</span><span class="p">]</span> <span class="o">=</span> <span class="n">group_reward_spec</span>
             <span class="k">if</span> <span class="n">group_info_spec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">unbatched_observation_spec</span><span class="p">[(</span><span class="n">group</span><span class="p">,</span> <span class="s2">&quot;info&quot;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">group_info_spec</span>
+                <span class="n">full_observation_spec_unbatched</span><span class="p">[(</span><span class="n">group</span><span class="p">,</span> <span class="s2">&quot;info&quot;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">group_info_spec</span>
             <span class="n">group_het_specs</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span>
                 <span class="n">group_observation_spec</span><span class="p">,</span> <span class="n">StackedComposite</span>
             <span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">group_action_spec</span><span class="p">,</span> <span class="n">StackedComposite</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">het_specs_map</span><span class="p">[</span><span class="n">group</span><span class="p">]</span> <span class="o">=</span> <span class="n">group_het_specs</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">het_specs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">het_specs</span> <span class="ow">or</span> <span class="n">group_het_specs</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">unbatched_done_spec</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">(</span>
+        <span class="n">full_done_spec_unbatched</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">(</span>
             <span class="p">{</span>
                 <span class="s2">&quot;done&quot;</span><span class="p">:</span> <span class="n">Categorical</span><span class="p">(</span>
                     <span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
@@ -766,18 +767,42 @@
             <span class="p">},</span>
         <span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">action_spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unbatched_action_spec</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span>
-            <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">unbatched_action_spec</span><span class="o">.</span><span class="n">shape</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">full_action_spec_unbatched</span> <span class="o">=</span> <span class="n">full_action_spec_unbatched</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">full_observation_spec_unbatched</span> <span class="o">=</span> <span class="n">full_observation_spec_unbatched</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">full_reward_spec_unbatched</span> <span class="o">=</span> <span class="n">full_reward_spec_unbatched</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">full_done_spec_unbatched</span> <span class="o">=</span> <span class="n">full_done_spec_unbatched</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">unbatched_action_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;unbatched_action_spec is deprecated and will be removed in v0.9. &quot;</span>
+            <span class="s2">&quot;Please use full_action_spec_unbatched instead.&quot;</span>
         <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">observation_spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unbatched_observation_spec</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span>
-            <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">unbatched_observation_spec</span><span class="o">.</span><span class="n">shape</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">full_action_spec_unbatched</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">unbatched_observation_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;unbatched_observation_spec is deprecated and will be removed in v0.9. &quot;</span>
+            <span class="s2">&quot;Please use full_observation_spec_unbatched instead.&quot;</span>
         <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">reward_spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unbatched_reward_spec</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span>
-            <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">unbatched_reward_spec</span><span class="o">.</span><span class="n">shape</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">full_observation_spec_unbatched</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">unbatched_reward_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;unbatched_reward_spec is deprecated and will be removed in v0.9. &quot;</span>
+            <span class="s2">&quot;Please use full_reward_spec_unbatched instead.&quot;</span>
         <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">done_spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unbatched_done_spec</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span>
-            <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">unbatched_done_spec</span><span class="o">.</span><span class="n">shape</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">full_reward_spec_unbatched</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">unbatched_done_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;unbatched_done_spec is deprecated and will be removed in v0.9. &quot;</span>
+            <span class="s2">&quot;Please use full_done_spec_unbatched instead.&quot;</span>
         <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">full_done_spec_unbatched</span>
 
     <span class="k">def</span> <span class="nf">_make_unbatched_group_specs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="c1"># Agent specs</span>
@@ -1021,7 +1046,9 @@
 
     <span class="k">def</span> <span class="nf">read_action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="n">group</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;agents&quot;</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">continuous_actions</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">categorical_actions</span><span class="p">:</span>
-            <span class="n">action</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unbatched_action_spec</span><span class="p">[</span><span class="n">group</span><span class="p">,</span> <span class="s2">&quot;action&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to_categorical</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+            <span class="n">action</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">full_action_spec_unbatched</span><span class="p">[</span><span class="n">group</span><span class="p">,</span> <span class="s2">&quot;action&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to_categorical</span><span class="p">(</span>
+                <span class="n">action</span>
+            <span class="p">)</span>
         <span class="n">agent_actions</span> <span class="o">=</span> <span class="n">action</span><span class="o">.</span><span class="n">unbind</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">agent_actions</span>
 

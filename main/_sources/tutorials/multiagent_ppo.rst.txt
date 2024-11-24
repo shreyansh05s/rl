@@ -747,13 +747,13 @@ the :class:`TensorDictModule` above) has to end with the
 
     policy = ProbabilisticActor(
         module=policy_module,
-        spec=env.unbatched_action_spec,
+        spec=env.action_spec_unbatched,
         in_keys=[("agents", "loc"), ("agents", "scale")],
         out_keys=[env.action_key],
         distribution_class=TanhNormal,
         distribution_kwargs={
-            "low": env.unbatched_action_spec[env.action_key].space.low,
-            "high": env.unbatched_action_spec[env.action_key].space.high,
+            "low": env.action_spec_unbatched[env.action_key].space.low,
+            "high": env.action_spec_unbatched[env.action_key].space.high,
         },
         return_log_prob=True,
         log_prob_key=("agents", "sample_log_prob"),
@@ -761,7 +761,18 @@ the :class:`TensorDictModule` above) has to end with the
 
 
 
+.. rst-class:: sphx-glr-script-out
 
+.. code-block:: pytb
+
+    Traceback (most recent call last):
+      File "/pytorch/rl/docs/source/reference/generated/tutorials/multiagent_ppo.py", line 453, in <module>
+        "low": env.action_spec_unbatched[env.action_key].space.low,
+      File "/pytorch/rl/torchrl/data/tensor_specs.py", line 2340, in __getitem__
+        indexed_shape = _size(_shape_indexing(self.shape, idx))
+      File "/pytorch/rl/torchrl/data/tensor_specs.py", line 299, in _shape_indexing
+        raise IndexError(
+    IndexError: tuple indexing only supports integers, ranges, slices (`:`), ellipsis (`...`), new axis (`None`), tuples, list, tensor and ndarray indices. <class 'tuple'> received
 
 
 
@@ -829,12 +840,6 @@ all the values along the ``n_agents`` dimension will be identical.
     )
 
 
-
-
-
-
-
-
 .. GENERATED FROM PYTHON SOURCE LINES 517-525
 
 Let us try our policy and critic modules. As pointed earlier, the usage of
@@ -852,66 +857,6 @@ components as in single-agent learning. Isn't this fantastic?**
 
     print("Running policy:", policy(env.reset()))
     print("Running value:", critic(env.reset()))
-
-
-
-
-
-.. rst-class:: sphx-glr-script-out
-
- .. code-block:: none
-
-    Running policy: TensorDict(
-        fields={
-            agents: TensorDict(
-                fields={
-                    action: Tensor(shape=torch.Size([60, 3, 2]), device=cpu, dtype=torch.float32, is_shared=False),
-                    episode_reward: Tensor(shape=torch.Size([60, 3, 1]), device=cpu, dtype=torch.float32, is_shared=False),
-                    info: TensorDict(
-                        fields={
-                            agent_collisions: Tensor(shape=torch.Size([60, 3, 1]), device=cpu, dtype=torch.float32, is_shared=False),
-                            final_rew: Tensor(shape=torch.Size([60, 3, 1]), device=cpu, dtype=torch.float32, is_shared=False),
-                            pos_rew: Tensor(shape=torch.Size([60, 3, 1]), device=cpu, dtype=torch.float32, is_shared=False)},
-                        batch_size=torch.Size([60, 3]),
-                        device=cpu,
-                        is_shared=False),
-                    loc: Tensor(shape=torch.Size([60, 3, 2]), device=cpu, dtype=torch.float32, is_shared=False),
-                    observation: Tensor(shape=torch.Size([60, 3, 18]), device=cpu, dtype=torch.float32, is_shared=False),
-                    sample_log_prob: Tensor(shape=torch.Size([60, 3]), device=cpu, dtype=torch.float32, is_shared=False),
-                    scale: Tensor(shape=torch.Size([60, 3, 2]), device=cpu, dtype=torch.float32, is_shared=False)},
-                batch_size=torch.Size([60, 3]),
-                device=cpu,
-                is_shared=False),
-            done: Tensor(shape=torch.Size([60, 1]), device=cpu, dtype=torch.bool, is_shared=False),
-            terminated: Tensor(shape=torch.Size([60, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
-        batch_size=torch.Size([60]),
-        device=cpu,
-        is_shared=False)
-    Running value: TensorDict(
-        fields={
-            agents: TensorDict(
-                fields={
-                    episode_reward: Tensor(shape=torch.Size([60, 3, 1]), device=cpu, dtype=torch.float32, is_shared=False),
-                    info: TensorDict(
-                        fields={
-                            agent_collisions: Tensor(shape=torch.Size([60, 3, 1]), device=cpu, dtype=torch.float32, is_shared=False),
-                            final_rew: Tensor(shape=torch.Size([60, 3, 1]), device=cpu, dtype=torch.float32, is_shared=False),
-                            pos_rew: Tensor(shape=torch.Size([60, 3, 1]), device=cpu, dtype=torch.float32, is_shared=False)},
-                        batch_size=torch.Size([60, 3]),
-                        device=cpu,
-                        is_shared=False),
-                    observation: Tensor(shape=torch.Size([60, 3, 18]), device=cpu, dtype=torch.float32, is_shared=False),
-                    state_value: Tensor(shape=torch.Size([60, 3, 1]), device=cpu, dtype=torch.float32, is_shared=False)},
-                batch_size=torch.Size([60, 3]),
-                device=cpu,
-                is_shared=False),
-            done: Tensor(shape=torch.Size([60, 1]), device=cpu, dtype=torch.bool, is_shared=False),
-            terminated: Tensor(shape=torch.Size([60, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
-        batch_size=torch.Size([60]),
-        device=cpu,
-        is_shared=False)
-
-
 
 
 .. GENERATED FROM PYTHON SOURCE LINES 529-541
@@ -943,12 +888,6 @@ with the only difference that it will auto reset done states until the desired f
     )
 
 
-
-
-
-
-
-
 .. GENERATED FROM PYTHON SOURCE LINES 551-563
 
 Replay buffer
@@ -976,12 +915,6 @@ makes it easy for us to build the inner training loop in a reproducible way.
         sampler=SamplerWithoutReplacement(),
         batch_size=minibatch_size,  # We will sample minibatches of this size
     )
-
-
-
-
-
-
 
 
 .. GENERATED FROM PYTHON SOURCE LINES 573-594
@@ -1037,12 +970,6 @@ return the policy and value losses.
     GAE = loss_module.value_estimator
 
     optim = torch.optim.Adam(loss_module.parameters(), lr)
-
-
-
-
-
-
 
 
 .. GENERATED FROM PYTHON SOURCE LINES 621-638
@@ -1130,17 +1057,6 @@ The steps include:
         pbar.update()
 
 
-
-
-
-.. rst-class:: sphx-glr-script-out
-
- .. code-block:: none
-
-    episode_reward_mean = 0:   0%|          | 0/10 [00:00<?, ?it/s]    episode_reward_mean = -0.4579917788505554:  10%|█         | 1/10 [00:05<00:49,  5.49s/it]    episode_reward_mean = 0.1908240020275116:  20%|██        | 2/10 [00:10<00:43,  5.50s/it]     episode_reward_mean = 1.1533541679382324:  30%|███       | 3/10 [00:16<00:38,  5.49s/it]    episode_reward_mean = 1.4060252904891968:  40%|████      | 4/10 [00:21<00:32,  5.50s/it]    episode_reward_mean = 1.9768800735473633:  50%|█████     | 5/10 [00:27<00:27,  5.49s/it]    episode_reward_mean = 2.2022643089294434:  60%|██████    | 6/10 [00:32<00:21,  5.49s/it]    episode_reward_mean = 2.217116594314575:  70%|███████   | 7/10 [00:38<00:16,  5.49s/it]     episode_reward_mean = 2.61687970161438:  80%|████████  | 8/10 [00:43<00:11,  5.51s/it]     episode_reward_mean = 2.596367120742798:  90%|█████████ | 9/10 [00:49<00:05,  5.53s/it]    episode_reward_mean = 2.7731399536132812: 100%|██████████| 10/10 [00:55<00:00,  5.55s/it]
-
-
-
 .. GENERATED FROM PYTHON SOURCE LINES 699-706
 
 Results
@@ -1160,17 +1076,6 @@ To make training last longer, increase the ``n_iters`` hyperparameter.
     plt.ylabel("Reward")
     plt.title("Episode reward mean")
     plt.show()
-
-
-
-
-.. image-sg:: /tutorials/images/sphx_glr_multiagent_ppo_001.png
-   :alt: Episode reward mean
-   :srcset: /tutorials/images/sphx_glr_multiagent_ppo_001.png
-   :class: sphx-glr-single-img
-
-
-
 
 
 .. GENERATED FROM PYTHON SOURCE LINES 713-767
@@ -1268,9 +1173,9 @@ Here are a few videos of some possible scenarios you can try in VMAS.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (1 minutes 51.728 seconds)
+   **Total running time of the script:** (0 minutes 34.155 seconds)
 
-**Estimated memory usage:**  401 MB
+**Estimated memory usage:**  4755 MB
 
 
 .. _sphx_glr_download_tutorials_multiagent_ppo.py:

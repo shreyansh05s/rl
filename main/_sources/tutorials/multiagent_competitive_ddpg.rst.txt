@@ -800,8 +800,8 @@ the :class:`TensorDictModule` above) has to end with the
             out_keys=[(group, "action")],
             distribution_class=TanhDelta,
             distribution_kwargs={
-                "low": env.full_action_spec[group, "action"].space.low,
-                "high": env.full_action_spec[group, "action"].space.high,
+                "low": env.full_action_spec_unbatched[group, "action"].space.low,
+                "high": env.full_action_spec_unbatched[group, "action"].space.high,
             },
             return_log_prob=False,
         )
@@ -1331,71 +1331,13 @@ The steps include:
 
 
 
+
+
 .. rst-class:: sphx-glr-script-out
 
-.. code-block:: pytb
+ .. code-block:: none
 
-    Traceback (most recent call last):
-      File "/pytorch/rl/docs/source/reference/generated/tutorials/multiagent_competitive_ddpg.py", line 808, in <module>
-        loss_vals = losses[group](subdata)
-      File "/pytorch/rl/env/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1740, in _wrapped_call_impl
-        return self._call_impl(*args, **kwargs)
-      File "/pytorch/rl/env/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1848, in _call_impl
-        return inner()
-      File "/pytorch/rl/env/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1794, in inner
-        result = forward_call(*args, **kwargs)
-      File "/pytorch/rl/torchrl/objectives/common.py", line 53, in new_forward
-        return func(self, *args, **kwargs)
-      File "/pytorch/rl/env/lib/python3.10/site-packages/tensordict/nn/common.py", line 314, in wrapper
-        return func(_self, tensordict, *args, **kwargs)
-      File "/pytorch/rl/torchrl/objectives/ddpg.py", line 298, in forward
-        loss_value, metadata = self.loss_value(tensordict)
-      File "/pytorch/rl/torchrl/objectives/ddpg.py", line 333, in loss_value
-        target_value = self.value_estimator.value_estimate(
-      File "/pytorch/rl/torchrl/objectives/value/advantages.py", line 692, in value_estimate
-        next_value = self._next_value(tensordict, target_params, kwargs=kwargs)
-      File "/pytorch/rl/torchrl/objectives/value/advantages.py", line 354, in _next_value
-        self.value_network(step_td)
-      File "/pytorch/rl/env/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1740, in _wrapped_call_impl
-        return self._call_impl(*args, **kwargs)
-      File "/pytorch/rl/env/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1751, in _call_impl
-        return forward_call(*args, **kwargs)
-      File "/pytorch/rl/env/lib/python3.10/site-packages/tensordict/nn/common.py", line 314, in wrapper
-        return func(_self, tensordict, *args, **kwargs)
-      File "/pytorch/rl/env/lib/python3.10/site-packages/tensordict/nn/utils.py", line 359, in wrapper
-        result = func(_self, tensordict, *args, **kwargs)
-      File "/pytorch/rl/env/lib/python3.10/site-packages/tensordict/nn/sequence.py", line 481, in forward
-        tensordict_exec = self._run_module(module, tensordict_exec, **kwargs)
-      File "/pytorch/rl/env/lib/python3.10/site-packages/tensordict/nn/sequence.py", line 456, in _run_module
-        tensordict = module(tensordict, **kwargs)
-      File "/pytorch/rl/env/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1740, in _wrapped_call_impl
-        return self._call_impl(*args, **kwargs)
-      File "/pytorch/rl/env/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1751, in _call_impl
-        return forward_call(*args, **kwargs)
-      File "/pytorch/rl/env/lib/python3.10/site-packages/tensordict/nn/common.py", line 314, in wrapper
-        return func(_self, tensordict, *args, **kwargs)
-      File "/pytorch/rl/env/lib/python3.10/site-packages/tensordict/nn/utils.py", line 359, in wrapper
-        result = func(_self, tensordict, *args, **kwargs)
-      File "/pytorch/rl/env/lib/python3.10/site-packages/tensordict/nn/probabilistic.py", line 634, in forward
-        return self.module[-1](tensordict_out, _requires_sample=self._requires_sample)
-      File "/pytorch/rl/env/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1740, in _wrapped_call_impl
-        return self._call_impl(*args, **kwargs)
-      File "/pytorch/rl/env/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1751, in _call_impl
-        return forward_call(*args, **kwargs)
-      File "/pytorch/rl/env/lib/python3.10/site-packages/tensordict/nn/common.py", line 314, in wrapper
-        return func(_self, tensordict, *args, **kwargs)
-      File "/pytorch/rl/env/lib/python3.10/site-packages/tensordict/nn/utils.py", line 359, in wrapper
-        result = func(_self, tensordict, *args, **kwargs)
-      File "/pytorch/rl/env/lib/python3.10/site-packages/tensordict/nn/probabilistic.py", line 403, in forward
-        dist = self.get_dist(tensordict)
-      File "/pytorch/rl/env/lib/python3.10/site-packages/tensordict/nn/probabilistic.py", line 360, in get_dist
-        dist = self.distribution_class(
-      File "/pytorch/rl/torchrl/modules/distributions/continuous.py", line 725, in __init__
-        loc = self.update(param)
-      File "/pytorch/rl/torchrl/modules/distributions/continuous.py", line 763, in update
-        loc = loc + shift / 2 + _cast_device(self.low, device)
-    RuntimeError: The size of tensor a (128) must match the size of tensor b (10) at non-singleton dimension 0
-
+    episode_reward_mean_adversary = 0, episode_reward_mean_agent = 0:   0%|          | 0/10 [00:00<?, ?it/s]    episode_reward_mean_adversary = 1.0, episode_reward_mean_agent = -1.0:  10%|█         | 1/10 [00:02<00:25,  2.79s/it]    episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  20%|██        | 2/10 [00:05<00:23,  2.90s/it]     episode_reward_mean_adversary = 1.0, episode_reward_mean_agent = -1.0:  30%|███       | 3/10 [00:08<00:20,  2.97s/it]    episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  40%|████      | 4/10 [00:11<00:17,  2.99s/it]     episode_reward_mean_adversary = 2.0, episode_reward_mean_agent = -2.0:  50%|█████     | 5/10 [00:14<00:14,  2.98s/it]    episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  60%|██████    | 6/10 [00:17<00:11,  2.96s/it]     episode_reward_mean_adversary = 2.0, episode_reward_mean_agent = -2.0:  70%|███████   | 7/10 [00:19<00:08,  2.70s/it]    episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  80%|████████  | 8/10 [00:22<00:05,  2.54s/it]     episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  90%|█████████ | 9/10 [00:24<00:02,  2.43s/it]    episode_reward_mean_adversary = 1.0, episode_reward_mean_agent = -1.0: 100%|██████████| 10/10 [00:26<00:00,  2.33s/it]
 
 
 
@@ -1429,6 +1371,17 @@ proceed with the rest of the screen.
         axs[i].legend()
     axs[-1].set_xlabel("Training iterations")
     plt.show()
+
+
+
+
+.. image-sg:: /tutorials/images/sphx_glr_multiagent_competitive_ddpg_001.png
+   :alt: multiagent competitive ddpg
+   :srcset: /tutorials/images/sphx_glr_multiagent_competitive_ddpg_001.png
+   :class: sphx-glr-single-img
+
+
+
 
 
 .. GENERATED FROM PYTHON SOURCE LINES 881-893
@@ -1480,6 +1433,12 @@ logger `video_logger`. Note that this code may require some external dependencie
 
 
 
+
+
+
+
+
+
 .. GENERATED FROM PYTHON SOURCE LINES 923-951
 
 Conclusion and next steps
@@ -1514,9 +1473,9 @@ Here are a few videos of some possible scenarios you can try in VMAS.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 57.508 seconds)
+   **Total running time of the script:** (1 minutes 29.770 seconds)
 
-**Estimated memory usage:**  5324 MB
+**Estimated memory usage:**  319 MB
 
 
 .. _sphx_glr_download_tutorials_multiagent_competitive_ddpg.py:

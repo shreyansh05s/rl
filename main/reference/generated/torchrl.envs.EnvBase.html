@@ -678,6 +678,12 @@ this function will return the whole spec.</p>
 </div>
 </dd></dl>
 
+<dl class="py property">
+<dt class="sig sig-object py" id="torchrl.envs.EnvBase.action_spec_unbatched">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">action_spec_unbatched</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="torchrl.data.TensorSpec.html#torchrl.data.TensorSpec" title="torchrl.data.tensor_specs.TensorSpec"><span class="pre">TensorSpec</span></a></em><a class="headerlink" href="#torchrl.envs.EnvBase.action_spec_unbatched" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the action spec of the env as if it had no batch dimensions.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="torchrl.envs.EnvBase.add_module">
 <span class="sig-name descname"><span class="pre">add_module</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch v2.5)"><span class="pre">Module</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#torchrl.envs.EnvBase.add_module" title="Permalink to this definition">¶</a></dt>
@@ -988,6 +994,12 @@ this function will return the whole spec.</p>
 </div>
 </dd></dl>
 
+<dl class="py property">
+<dt class="sig sig-object py" id="torchrl.envs.EnvBase.done_spec_unbatched">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">done_spec_unbatched</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="torchrl.data.TensorSpec.html#torchrl.data.TensorSpec" title="torchrl.data.tensor_specs.TensorSpec"><span class="pre">TensorSpec</span></a></em><a class="headerlink" href="#torchrl.envs.EnvBase.done_spec_unbatched" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the done spec of the env as if it had no batch dimensions.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="torchrl.envs.EnvBase.double">
 <span class="sig-name descname"><span class="pre">double</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">T</span></span></span><a class="headerlink" href="#torchrl.envs.EnvBase.double" title="Permalink to this definition">¶</a></dt>
@@ -1108,6 +1120,12 @@ that contains all the action entries.</p>
 </dd></dl>
 
 <dl class="py property">
+<dt class="sig sig-object py" id="torchrl.envs.EnvBase.full_action_spec_unbatched">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">full_action_spec_unbatched</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="torchrl.data.Composite.html#torchrl.data.Composite" title="torchrl.data.tensor_specs.Composite"><span class="pre">Composite</span></a></em><a class="headerlink" href="#torchrl.envs.EnvBase.full_action_spec_unbatched" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the action spec of the env as if it had no batch dimensions.</p>
+</dd></dl>
+
+<dl class="py property">
 <dt class="sig sig-object py" id="torchrl.envs.EnvBase.full_done_spec">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">full_done_spec</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="torchrl.data.Composite.html#torchrl.data.Composite" title="torchrl.data.tensor_specs.Composite"><span class="pre">Composite</span></a></em><a class="headerlink" href="#torchrl.envs.EnvBase.full_done_spec" title="Permalink to this definition">¶</a></dt>
 <dd><p>The full done spec.</p>
@@ -1138,6 +1156,18 @@ one obtained at runtime.</p>
 </dd></dl>
 
 <dl class="py property">
+<dt class="sig sig-object py" id="torchrl.envs.EnvBase.full_done_spec_unbatched">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">full_done_spec_unbatched</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="torchrl.data.Composite.html#torchrl.data.Composite" title="torchrl.data.tensor_specs.Composite"><span class="pre">Composite</span></a></em><a class="headerlink" href="#torchrl.envs.EnvBase.full_done_spec_unbatched" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the done spec of the env as if it had no batch dimensions.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="torchrl.envs.EnvBase.full_observation_spec_unbatched">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">full_observation_spec_unbatched</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="torchrl.data.Composite.html#torchrl.data.Composite" title="torchrl.data.tensor_specs.Composite"><span class="pre">Composite</span></a></em><a class="headerlink" href="#torchrl.envs.EnvBase.full_observation_spec_unbatched" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the observation spec of the env as if it had no batch dimensions.</p>
+</dd></dl>
+
+<dl class="py property">
 <dt class="sig sig-object py" id="torchrl.envs.EnvBase.full_reward_spec">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">full_reward_spec</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="torchrl.data.Composite.html#torchrl.data.Composite" title="torchrl.data.tensor_specs.Composite"><span class="pre">Composite</span></a></em><a class="headerlink" href="#torchrl.envs.EnvBase.full_reward_spec" title="Permalink to this definition">¶</a></dt>
 <dd><p>The full reward spec.</p>
@@ -1164,6 +1194,12 @@ that contains all the reward entries.</p>
 </dd></dl>
 
 <dl class="py property">
+<dt class="sig sig-object py" id="torchrl.envs.EnvBase.full_reward_spec_unbatched">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">full_reward_spec_unbatched</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="torchrl.data.Composite.html#torchrl.data.Composite" title="torchrl.data.tensor_specs.Composite"><span class="pre">Composite</span></a></em><a class="headerlink" href="#torchrl.envs.EnvBase.full_reward_spec_unbatched" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the reward spec of the env as if it had no batch dimensions.</p>
+</dd></dl>
+
+<dl class="py property">
 <dt class="sig sig-object py" id="torchrl.envs.EnvBase.full_state_spec">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">full_state_spec</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="torchrl.data.Composite.html#torchrl.data.Composite" title="torchrl.data.tensor_specs.Composite"><span class="pre">Composite</span></a></em><a class="headerlink" href="#torchrl.envs.EnvBase.full_state_spec" title="Permalink to this definition">¶</a></dt>
 <dd><p>The full state spec.</p>
@@ -1187,6 +1223,12 @@ that contains all the state entries (ie, the input data that is not action).</p>
 <span class="go">    [...], device=cpu, shape=torch.Size([])), device=cpu, shape=torch.Size([])), device=cpu, shape=torch.Size([]))</span>
 </pre></div>
 </div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="torchrl.envs.EnvBase.full_state_spec_unbatched">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">full_state_spec_unbatched</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="torchrl.data.Composite.html#torchrl.data.Composite" title="torchrl.data.tensor_specs.Composite"><span class="pre">Composite</span></a></em><a class="headerlink" href="#torchrl.envs.EnvBase.full_state_spec_unbatched" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the state spec of the env as if it had no batch dimensions.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1360,6 +1402,12 @@ Instead, to set the specs contained in it, use the respective properties.</p>
 <span class="go">            domain=continuous), device=cpu, shape=torch.Size([])), device=cpu, shape=torch.Size([]))</span>
 </pre></div>
 </div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="torchrl.envs.EnvBase.input_spec_unbatched">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">input_spec_unbatched</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="torchrl.data.Composite.html#torchrl.data.Composite" title="torchrl.data.tensor_specs.Composite"><span class="pre">Composite</span></a></em><a class="headerlink" href="#torchrl.envs.EnvBase.input_spec_unbatched" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the input spec of the env as if it had no batch dimensions.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1650,6 +1698,12 @@ a generic data container for environment outputs that are not done or reward dat
 </dd></dl>
 
 <dl class="py property">
+<dt class="sig sig-object py" id="torchrl.envs.EnvBase.observation_spec_unbatched">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">observation_spec_unbatched</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="torchrl.data.Composite.html#torchrl.data.Composite" title="torchrl.data.tensor_specs.Composite"><span class="pre">Composite</span></a></em><a class="headerlink" href="#torchrl.envs.EnvBase.observation_spec_unbatched" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the observation spec of the env as if it had no batch dimensions.</p>
+</dd></dl>
+
+<dl class="py property">
 <dt class="sig sig-object py" id="torchrl.envs.EnvBase.output_spec">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">output_spec</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="torchrl.data.TensorSpec.html#torchrl.data.TensorSpec" title="torchrl.data.tensor_specs.TensorSpec"><span class="pre">TensorSpec</span></a></em><a class="headerlink" href="#torchrl.envs.EnvBase.output_spec" title="Permalink to this definition">¶</a></dt>
 <dd><p>Output spec.</p>
@@ -1692,6 +1746,12 @@ Instead, to set the specs contained in it, use the respective properties.</p>
 <span class="go">            domain=discrete), device=cpu, shape=torch.Size([])), device=cpu, shape=torch.Size([]))</span>
 </pre></div>
 </div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="torchrl.envs.EnvBase.output_spec_unbatched">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">output_spec_unbatched</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="torchrl.data.Composite.html#torchrl.data.Composite" title="torchrl.data.tensor_specs.Composite"><span class="pre">Composite</span></a></em><a class="headerlink" href="#torchrl.envs.EnvBase.output_spec_unbatched" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the output spec of the env as if it had no batch dimensions.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -2395,6 +2455,12 @@ this function will return the whole spec.</p>
 </div>
 </dd></dl>
 
+<dl class="py property">
+<dt class="sig sig-object py" id="torchrl.envs.EnvBase.reward_spec_unbatched">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">reward_spec_unbatched</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="torchrl.data.TensorSpec.html#torchrl.data.TensorSpec" title="torchrl.data.tensor_specs.TensorSpec"><span class="pre">TensorSpec</span></a></em><a class="headerlink" href="#torchrl.envs.EnvBase.reward_spec_unbatched" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the reward spec of the env as if it had no batch dimensions.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="id2">
 <span class="sig-name descname"><span class="pre">rollout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_steps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">policy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">TensorDictBase</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">TensorDictBase</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">TensorDictBase</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auto_reset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auto_cast_to_device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">break_when_any_done</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">break_when_all_done</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_contiguous</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tensordict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">TensorDictBase</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">set_truncated</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trust_policy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">TensorDictBase</span></span></span><a class="reference internal" href="../../_modules/torchrl/envs/common.html#EnvBase.rollout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id2" title="Permalink to this definition">¶</a></dt>
@@ -2726,78 +2792,6 @@ fully-qualified string.)</p></li>
 </dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="torchrl.envs.EnvBase.single_action_spec">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">single_action_spec</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="torchrl.data.TensorSpec.html#torchrl.data.TensorSpec" title="torchrl.data.tensor_specs.TensorSpec"><span class="pre">TensorSpec</span></a></em><a class="headerlink" href="#torchrl.envs.EnvBase.single_action_spec" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the action spec of the env as if it had no batch dimensions.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="torchrl.envs.EnvBase.single_done_spec">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">single_done_spec</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="torchrl.data.TensorSpec.html#torchrl.data.TensorSpec" title="torchrl.data.tensor_specs.TensorSpec"><span class="pre">TensorSpec</span></a></em><a class="headerlink" href="#torchrl.envs.EnvBase.single_done_spec" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the done spec of the env as if it had no batch dimensions.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="torchrl.envs.EnvBase.single_full_action_spec">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">single_full_action_spec</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="torchrl.data.Composite.html#torchrl.data.Composite" title="torchrl.data.tensor_specs.Composite"><span class="pre">Composite</span></a></em><a class="headerlink" href="#torchrl.envs.EnvBase.single_full_action_spec" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the action spec of the env as if it had no batch dimensions.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="torchrl.envs.EnvBase.single_full_done_spec">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">single_full_done_spec</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="torchrl.data.Composite.html#torchrl.data.Composite" title="torchrl.data.tensor_specs.Composite"><span class="pre">Composite</span></a></em><a class="headerlink" href="#torchrl.envs.EnvBase.single_full_done_spec" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the done spec of the env as if it had no batch dimensions.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="torchrl.envs.EnvBase.single_full_observation_spec">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">single_full_observation_spec</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="torchrl.data.Composite.html#torchrl.data.Composite" title="torchrl.data.tensor_specs.Composite"><span class="pre">Composite</span></a></em><a class="headerlink" href="#torchrl.envs.EnvBase.single_full_observation_spec" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the observation spec of the env as if it had no batch dimensions.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="torchrl.envs.EnvBase.single_full_reward_spec">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">single_full_reward_spec</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="torchrl.data.Composite.html#torchrl.data.Composite" title="torchrl.data.tensor_specs.Composite"><span class="pre">Composite</span></a></em><a class="headerlink" href="#torchrl.envs.EnvBase.single_full_reward_spec" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the reward spec of the env as if it had no batch dimensions.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="torchrl.envs.EnvBase.single_full_state_spec">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">single_full_state_spec</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="torchrl.data.Composite.html#torchrl.data.Composite" title="torchrl.data.tensor_specs.Composite"><span class="pre">Composite</span></a></em><a class="headerlink" href="#torchrl.envs.EnvBase.single_full_state_spec" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the state spec of the env as if it had no batch dimensions.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="torchrl.envs.EnvBase.single_input_spec">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">single_input_spec</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="torchrl.data.Composite.html#torchrl.data.Composite" title="torchrl.data.tensor_specs.Composite"><span class="pre">Composite</span></a></em><a class="headerlink" href="#torchrl.envs.EnvBase.single_input_spec" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the input spec of the env as if it had no batch dimensions.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="torchrl.envs.EnvBase.single_observation_spec">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">single_observation_spec</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="torchrl.data.Composite.html#torchrl.data.Composite" title="torchrl.data.tensor_specs.Composite"><span class="pre">Composite</span></a></em><a class="headerlink" href="#torchrl.envs.EnvBase.single_observation_spec" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the observation spec of the env as if it had no batch dimensions.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="torchrl.envs.EnvBase.single_output_spec">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">single_output_spec</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="torchrl.data.Composite.html#torchrl.data.Composite" title="torchrl.data.tensor_specs.Composite"><span class="pre">Composite</span></a></em><a class="headerlink" href="#torchrl.envs.EnvBase.single_output_spec" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the output spec of the env as if it had no batch dimensions.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="torchrl.envs.EnvBase.single_reward_spec">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">single_reward_spec</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="torchrl.data.TensorSpec.html#torchrl.data.TensorSpec" title="torchrl.data.tensor_specs.TensorSpec"><span class="pre">TensorSpec</span></a></em><a class="headerlink" href="#torchrl.envs.EnvBase.single_reward_spec" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the reward spec of the env as if it had no batch dimensions.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="torchrl.envs.EnvBase.single_state_spec">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">single_state_spec</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="torchrl.data.TensorSpec.html#torchrl.data.TensorSpec" title="torchrl.data.tensor_specs.TensorSpec"><span class="pre">TensorSpec</span></a></em><a class="headerlink" href="#torchrl.envs.EnvBase.single_state_spec" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the state spec of the env as if it had no batch dimensions.</p>
-</dd></dl>
-
-<dl class="py property">
 <dt class="sig sig-object py" id="torchrl.envs.EnvBase.specs">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">specs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="torchrl.data.Composite.html#torchrl.data.Composite" title="torchrl.data.tensor_specs.Composite"><span class="pre">Composite</span></a></em><a class="headerlink" href="#torchrl.envs.EnvBase.specs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a Composite container where all the environment are present.</p>
@@ -2896,6 +2890,12 @@ a generic data container for environment inputs that are not action data.</p>
 <span class="go">    [...], device=cpu, shape=torch.Size([])), device=cpu, shape=torch.Size([])), device=cpu, shape=torch.Size([]))</span>
 </pre></div>
 </div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="torchrl.envs.EnvBase.state_spec_unbatched">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">state_spec_unbatched</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="torchrl.data.TensorSpec.html#torchrl.data.TensorSpec" title="torchrl.data.tensor_specs.TensorSpec"><span class="pre">TensorSpec</span></a></em><a class="headerlink" href="#torchrl.envs.EnvBase.state_spec_unbatched" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the state spec of the env as if it had no batch dimensions.</p>
 </dd></dl>
 
 <dl class="py method">
