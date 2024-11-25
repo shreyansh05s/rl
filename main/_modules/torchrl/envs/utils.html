@@ -419,8 +419,6 @@
 <span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
 
-<span class="kn">import</span> <span class="nn">tensordict.base</span>
-
 <span class="kn">import</span> <span class="nn">torch</span>
 
 <span class="kn">from</span> <span class="nn">tensordict</span> <span class="kn">import</span> <span class="p">(</span>
@@ -432,7 +430,7 @@
     <span class="n">TensorDictBase</span><span class="p">,</span>
     <span class="n">unravel_key</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">tensordict.base</span> <span class="kn">import</span> <span class="n">_is_leaf_nontensor</span>
+<span class="kn">from</span> <span class="nn">tensordict.base</span> <span class="kn">import</span> <span class="n">_default_is_leaf</span><span class="p">,</span> <span class="n">_is_leaf_nontensor</span>
 <span class="kn">from</span> <span class="nn">tensordict.nn</span> <span class="kn">import</span> <span class="n">TensorDictModule</span><span class="p">,</span> <span class="n">TensorDictModuleBase</span>
 <span class="kn">from</span> <span class="nn">tensordict.nn.probabilistic</span> <span class="kn">import</span> <span class="p">(</span>  <span class="c1"># noqa</span>
     <span class="n">interaction_type</span> <span class="k">as</span> <span class="n">exploration_type</span><span class="p">,</span>
@@ -1094,7 +1092,11 @@
 
 
 <div class="viewcode-block" id="check_env_specs"><a class="viewcode-back" href="../../../reference/generated/torchrl.envs.utils.check_env_specs.html#torchrl.envs.check_env_specs">[docs]</a><span class="k">def</span> <span class="nf">check_env_specs</span><span class="p">(</span>
-    <span class="n">env</span><span class="p">,</span> <span class="n">return_contiguous</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">check_dtype</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">env</span><span class="p">,</span>
+    <span class="n">return_contiguous</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">check_dtype</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Tests an environment specs against the results of short rollout.</span>
 
@@ -1118,6 +1120,7 @@
 <span class="sd">            setting the rng state back to what is was isn&#39;t a feature of most environment,</span>
 <span class="sd">            we leave it to the user to accomplish that.</span>
 <span class="sd">            Defaults to ``None``.</span>
+<span class="sd">        tensordict (TensorDict, optional): an optional tensordict instance to use for reset.</span>
 
 <span class="sd">    Caution: this function resets the env seed. It should be used &quot;offline&quot; to</span>
 <span class="sd">    check that an env is adequately constructed, but it may affect the seeding</span>
@@ -1135,7 +1138,16 @@
             <span class="p">)</span>
 
     <span class="n">fake_tensordict</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">fake_tensordict</span><span class="p">()</span>
-    <span class="n">real_tensordict</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">rollout</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">return_contiguous</span><span class="o">=</span><span class="n">return_contiguous</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">env</span><span class="o">.</span><span class="n">_batch_locked</span> <span class="ow">and</span> <span class="n">tensordict</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">broadcast_shapes</span><span class="p">(</span><span class="n">fake_tensordict</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="n">fake_tensordict</span> <span class="o">=</span> <span class="n">fake_tensordict</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+        <span class="n">tensordict</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+    <span class="n">real_tensordict</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">rollout</span><span class="p">(</span>
+        <span class="mi">3</span><span class="p">,</span>
+        <span class="n">return_contiguous</span><span class="o">=</span><span class="n">return_contiguous</span><span class="p">,</span>
+        <span class="n">tensordict</span><span class="o">=</span><span class="n">tensordict</span><span class="p">,</span>
+        <span class="n">auto_reset</span><span class="o">=</span><span class="n">tensordict</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span>
 
     <span class="k">if</span> <span class="n">return_contiguous</span><span class="p">:</span>
         <span class="n">fake_tensordict</span> <span class="o">=</span> <span class="n">fake_tensordict</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="n">real_tensordict</span><span class="o">.</span><span class="n">batch_dims</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
@@ -1146,17 +1158,17 @@
         <span class="p">)</span>
     <span class="c1"># eliminate empty containers</span>
     <span class="n">fake_tensordict_select</span> <span class="o">=</span> <span class="n">fake_tensordict</span><span class="o">.</span><span class="n">select</span><span class="p">(</span>
-        <span class="o">*</span><span class="n">fake_tensordict</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">is_leaf</span><span class="o">=</span><span class="n">tensordict</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">_default_is_leaf</span><span class="p">)</span>
+        <span class="o">*</span><span class="n">fake_tensordict</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">is_leaf</span><span class="o">=</span><span class="n">_default_is_leaf</span><span class="p">)</span>
     <span class="p">)</span>
     <span class="n">real_tensordict_select</span> <span class="o">=</span> <span class="n">real_tensordict</span><span class="o">.</span><span class="n">select</span><span class="p">(</span>
-        <span class="o">*</span><span class="n">real_tensordict</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">is_leaf</span><span class="o">=</span><span class="n">tensordict</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">_default_is_leaf</span><span class="p">)</span>
+        <span class="o">*</span><span class="n">real_tensordict</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">is_leaf</span><span class="o">=</span><span class="n">_default_is_leaf</span><span class="p">)</span>
     <span class="p">)</span>
     <span class="c1"># check keys</span>
     <span class="n">fake_tensordict_keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span>
-        <span class="n">fake_tensordict</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">is_leaf</span><span class="o">=</span><span class="n">tensordict</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">_is_leaf_nontensor</span><span class="p">)</span>
+        <span class="n">fake_tensordict</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">is_leaf</span><span class="o">=</span><span class="n">_is_leaf_nontensor</span><span class="p">)</span>
     <span class="p">)</span>
     <span class="n">real_tensordict_keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span>
-        <span class="n">real_tensordict</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">is_leaf</span><span class="o">=</span><span class="n">tensordict</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">_is_leaf_nontensor</span><span class="p">)</span>
+        <span class="n">real_tensordict</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">is_leaf</span><span class="o">=</span><span class="n">_is_leaf_nontensor</span><span class="p">)</span>
     <span class="p">)</span>
     <span class="k">if</span> <span class="n">fake_tensordict_keys</span> <span class="o">!=</span> <span class="n">real_tensordict_keys</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span>

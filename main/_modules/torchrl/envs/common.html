@@ -759,6 +759,9 @@
 <span class="sd">    .. note:: Learn more about dynamic specs and environments :ref:`here &lt;dynamic_envs&gt;`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="n">_batch_size</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Size</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="n">_device</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span> <span class="o">|</span> <span class="kc">None</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
@@ -767,33 +770,177 @@
         <span class="n">run_type_checks</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">allow_done_after_reset</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;_batch_size&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">device</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s2">&quot;_device&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_make_ordinal_device</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="n">device</span><span class="p">))</span>
-            <span class="n">output_spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_output_spec&quot;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">output_spec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s2">&quot;_output_spec&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="n">output_spec</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-                    <span class="k">else</span> <span class="n">output_spec</span>
-                <span class="p">)</span>
-            <span class="n">input_spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_input_spec&quot;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">input_spec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s2">&quot;_input_spec&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="n">input_spec</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-                    <span class="k">else</span> <span class="n">input_spec</span>
-                <span class="p">)</span>
-
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="k">if</span> <span class="s2">&quot;is_closed&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__dir__</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">is_closed</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;_batch_size&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;_device&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="n">batch_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># we want an error to be raised if we pass batch_size but</span>
             <span class="c1"># it&#39;s already been set</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">(</span><span class="n">batch_size</span><span class="p">)</span>
+            <span class="n">batch_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">(</span><span class="n">batch_size</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">batch_size</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">(())</span>
+
+        <span class="k">if</span> <span class="n">device</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">device</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s2">&quot;_device&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_make_ordinal_device</span><span class="p">(</span>
+                <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="n">output_spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_output_spec&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">output_spec</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">output_spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s2">&quot;_output_spec&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">(</span>
+                <span class="n">shape</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">lock_</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_spec</span><span class="o">.</span><span class="n">device</span> <span class="o">!=</span> <span class="n">device</span> <span class="ow">and</span> <span class="n">device</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s2">&quot;_output_spec&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s2">&quot;_output_spec&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">device</span>
+            <span class="p">)</span>
+        <span class="n">input_spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_input_spec&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">input_spec</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">input_spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s2">&quot;_input_spec&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">(</span>
+                <span class="n">shape</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">lock_</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_spec</span><span class="o">.</span><span class="n">device</span> <span class="o">!=</span> <span class="n">device</span> <span class="ow">and</span> <span class="n">device</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s2">&quot;_input_spec&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s2">&quot;_input_spec&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+
+        <span class="n">output_spec</span><span class="o">.</span><span class="n">unlock_</span><span class="p">()</span>
+        <span class="n">input_spec</span><span class="o">.</span><span class="n">unlock_</span><span class="p">()</span>
+        <span class="k">if</span> <span class="s2">&quot;full_observation_spec&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">output_spec</span><span class="p">:</span>
+            <span class="n">output_spec</span><span class="p">[</span><span class="s2">&quot;full_observation_spec&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">()</span>
+        <span class="k">if</span> <span class="s2">&quot;full_done_spec&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">output_spec</span><span class="p">:</span>
+            <span class="n">output_spec</span><span class="p">[</span><span class="s2">&quot;full_done_spec&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">()</span>
+        <span class="k">if</span> <span class="s2">&quot;full_reward_spec&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">output_spec</span><span class="p">:</span>
+            <span class="n">output_spec</span><span class="p">[</span><span class="s2">&quot;full_reward_spec&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">()</span>
+        <span class="k">if</span> <span class="s2">&quot;full_state_spec&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">input_spec</span><span class="p">:</span>
+            <span class="n">input_spec</span><span class="p">[</span><span class="s2">&quot;full_state_spec&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">()</span>
+        <span class="k">if</span> <span class="s2">&quot;full_action_spec&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">input_spec</span><span class="p">:</span>
+            <span class="n">input_spec</span><span class="p">[</span><span class="s2">&quot;full_action_spec&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">()</span>
+        <span class="n">output_spec</span><span class="o">.</span><span class="n">lock_</span><span class="p">()</span>
+        <span class="n">input_spec</span><span class="o">.</span><span class="n">lock_</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="s2">&quot;is_closed&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__dir__</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">is_closed</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_run_type_checks</span> <span class="o">=</span> <span class="n">run_type_checks</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_allow_done_after_reset</span> <span class="o">=</span> <span class="n">allow_done_after_reset</span>
+
+<div class="viewcode-block" id="EnvBase.auto_specs_"><a class="viewcode-back" href="../../../reference/generated/torchrl.envs.EnvBase.html#torchrl.envs.EnvBase.auto_specs_">[docs]</a>    <span class="k">def</span> <span class="nf">auto_specs_</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">policy</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">TensorDictBase</span><span class="p">],</span> <span class="n">TensorDictBase</span><span class="p">],</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">action_key</span><span class="p">:</span> <span class="n">NestedKey</span> <span class="o">|</span> <span class="n">List</span><span class="p">[</span><span class="n">NestedKey</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;action&quot;</span><span class="p">,</span>
+        <span class="n">done_key</span><span class="p">:</span> <span class="n">NestedKey</span> <span class="o">|</span> <span class="n">List</span><span class="p">[</span><span class="n">NestedKey</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">observation_key</span><span class="p">:</span> <span class="n">NestedKey</span> <span class="o">|</span> <span class="n">List</span><span class="p">[</span><span class="n">NestedKey</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;observation&quot;</span><span class="p">,</span>
+        <span class="n">reward_key</span><span class="p">:</span> <span class="n">NestedKey</span> <span class="o">|</span> <span class="n">List</span><span class="p">[</span><span class="n">NestedKey</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;reward&quot;</span><span class="p">,</span>
+        <span class="n">batch_size</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Size</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Automatically sets the specifications (specs) of the environment based on a random rollout using a given policy.</span>
+
+<span class="sd">        This method performs a rollout using the provided policy to infer the input and output specifications of the environment.</span>
+<span class="sd">        It updates the environment&#39;s specs for actions, observations, rewards, and done signals based on the data collected</span>
+<span class="sd">        during the rollout.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            policy (Callable[[TensorDictBase], TensorDictBase]):</span>
+<span class="sd">                A callable policy that takes a `TensorDictBase` as input and returns a `TensorDictBase` as output.</span>
+<span class="sd">                This policy is used to perform the rollout and determine the specs.</span>
+
+<span class="sd">        Keyword Args:</span>
+<span class="sd">            tensordict (TensorDictBase, optional):</span>
+<span class="sd">                An optional `TensorDictBase` instance to be used as the initial state for the rollout.</span>
+<span class="sd">                If not provided, the environment&#39;s `reset` method will be called to obtain the initial state.</span>
+<span class="sd">            action_key (NestedKey or List[NestedKey], optional):</span>
+<span class="sd">                The key(s) used to identify actions in the `TensorDictBase`. Defaults to &quot;action&quot;.</span>
+<span class="sd">            done_key (NestedKey or List[NestedKey], optional):</span>
+<span class="sd">                The key(s) used to identify done signals in the `TensorDictBase`. Defaults to ``None``, which will</span>
+<span class="sd">                attempt to use [&quot;done&quot;, &quot;terminated&quot;, &quot;truncated&quot;] as potential keys.</span>
+<span class="sd">            observation_key (NestedKey or List[NestedKey], optional):</span>
+<span class="sd">                The key(s) used to identify observations in the `TensorDictBase`. Defaults to &quot;observation&quot;.</span>
+<span class="sd">            reward_key (NestedKey or List[NestedKey], optional):</span>
+<span class="sd">                The key(s) used to identify rewards in the `TensorDictBase`. Defaults to &quot;reward&quot;.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            EnvBase: The environment instance with updated specs.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            RuntimeError: If there are keys in the output specs that are not accounted for in the provided keys.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_locked</span> <span class="ow">or</span> <span class="n">tensordict</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">batch_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">batch_size</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">batch_size</span>
+        <span class="k">if</span> <span class="n">tensordict</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">tensordict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+
+        <span class="c1"># Input specs</span>
+        <span class="n">tensordict</span> <span class="o">=</span> <span class="n">policy</span><span class="p">(</span><span class="n">tensordict</span><span class="p">)</span>
+        <span class="n">step_0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">tensordict</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+        <span class="n">tensordict2</span> <span class="o">=</span> <span class="n">step_0</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;next&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">step_1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">policy</span><span class="p">(</span><span class="n">tensordict2</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+        <span class="n">nexts_0</span><span class="p">:</span> <span class="n">TensorDictBase</span> <span class="o">=</span> <span class="n">step_0</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;next&quot;</span><span class="p">)</span>
+        <span class="n">nexts_1</span><span class="p">:</span> <span class="n">TensorDictBase</span> <span class="o">=</span> <span class="n">step_1</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;next&quot;</span><span class="p">)</span>
+
+        <span class="n">input_spec_stack</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">tensordict</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+            <span class="n">partial</span><span class="p">(</span><span class="n">_tensor_to_spec</span><span class="p">,</span> <span class="n">stack</span><span class="o">=</span><span class="n">input_spec_stack</span><span class="p">),</span>
+            <span class="n">tensordict2</span><span class="p">,</span>
+            <span class="n">named</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">nested_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">input_spec</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">(</span><span class="n">input_spec_stack</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_locked</span> <span class="ow">and</span> <span class="n">batch_size</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">:</span>
+            <span class="k">while</span> <span class="n">input_spec</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+                <span class="n">input_spec</span> <span class="o">=</span> <span class="n">input_spec</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">action_key</span><span class="p">,</span> <span class="n">NestedKey</span><span class="p">):</span>
+            <span class="n">action_key</span> <span class="o">=</span> <span class="p">[</span><span class="n">action_key</span><span class="p">]</span>
+        <span class="n">full_action_spec</span> <span class="o">=</span> <span class="n">input_spec</span><span class="o">.</span><span class="n">separates</span><span class="p">(</span><span class="o">*</span><span class="n">action_key</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+        <span class="c1"># Output specs</span>
+
+        <span class="n">output_spec_stack</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">nexts_0</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+            <span class="n">partial</span><span class="p">(</span><span class="n">_tensor_to_spec</span><span class="p">,</span> <span class="n">stack</span><span class="o">=</span><span class="n">output_spec_stack</span><span class="p">),</span>
+            <span class="n">nexts_1</span><span class="p">,</span>
+            <span class="n">named</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">nested_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">output_spec</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">(</span><span class="n">output_spec_stack</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_locked</span> <span class="ow">and</span> <span class="n">batch_size</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">:</span>
+            <span class="k">while</span> <span class="n">output_spec</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+                <span class="n">output_spec</span> <span class="o">=</span> <span class="n">output_spec</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">done_key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">done_key</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;done&quot;</span><span class="p">,</span> <span class="s2">&quot;terminated&quot;</span><span class="p">,</span> <span class="s2">&quot;truncated&quot;</span><span class="p">]</span>
+        <span class="n">full_done_spec</span> <span class="o">=</span> <span class="n">output_spec</span><span class="o">.</span><span class="n">separates</span><span class="p">(</span><span class="o">*</span><span class="n">done_key</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">full_done_spec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">full_done_spec</span> <span class="o">=</span> <span class="n">full_done_spec</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">reward_key</span><span class="p">,</span> <span class="n">NestedKey</span><span class="p">):</span>
+            <span class="n">reward_key</span> <span class="o">=</span> <span class="p">[</span><span class="n">reward_key</span><span class="p">]</span>
+        <span class="n">full_reward_spec</span> <span class="o">=</span> <span class="n">output_spec</span><span class="o">.</span><span class="n">separates</span><span class="p">(</span><span class="o">*</span><span class="n">reward_key</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">observation_key</span><span class="p">,</span> <span class="n">NestedKey</span><span class="p">):</span>
+            <span class="n">observation_key</span> <span class="o">=</span> <span class="p">[</span><span class="n">observation_key</span><span class="p">]</span>
+        <span class="n">full_observation_spec</span> <span class="o">=</span> <span class="n">output_spec</span><span class="o">.</span><span class="n">separates</span><span class="p">(</span><span class="o">*</span><span class="n">observation_key</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">output_spec</span><span class="o">.</span><span class="n">is_empty</span><span class="p">(</span><span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Keys </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">output_spec</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span><span class="w"> </span><span class="kc">True</span><span class="p">))</span><span class="si">}</span><span class="s2"> are unaccounted for.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">full_action_spec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">full_action_spec</span> <span class="o">=</span> <span class="n">full_action_spec</span>
+        <span class="k">if</span> <span class="n">full_done_spec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">full_done_specs</span> <span class="o">=</span> <span class="n">full_done_spec</span>
+        <span class="k">if</span> <span class="n">full_observation_spec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">full_observation_spec</span> <span class="o">=</span> <span class="n">full_observation_spec</span>
+        <span class="k">if</span> <span class="n">full_reward_spec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">full_reward_spec</span> <span class="o">=</span> <span class="n">full_reward_spec</span>
+        <span class="n">full_state_spec</span> <span class="o">=</span> <span class="n">input_spec</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">full_state_spec</span> <span class="o">=</span> <span class="n">full_state_spec</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div>
 
     <span class="nd">@wraps</span><span class="p">(</span><span class="n">check_env_specs_func</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">check_env_specs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -878,7 +1025,7 @@
 <span class="sd">        in parallel).</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">_batch_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s2">&quot;_batch_size&quot;</span><span class="p">]</span>
+        <span class="n">_batch_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_batch_size&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">_batch_size</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">_batch_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_size</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">([])</span>
         <span class="k">return</span> <span class="n">_batch_size</span>
@@ -1070,8 +1217,6 @@
         <span class="k">if</span> <span class="n">action_keys</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">action_keys</span>
         <span class="n">keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">full_action_spec</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">keys</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;Could not find action spec&quot;</span><span class="p">)</span>
         <span class="n">keys</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">_repr_by_depth</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s2">&quot;_action_keys&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">keys</span>
         <span class="k">return</span> <span class="n">keys</span>
@@ -1230,15 +1375,7 @@
                     <span class="s2">&quot;Please use `env.action_spec_unbatched = value` to set unbatched versions instead.&quot;</span>
                 <span class="p">)</span>
 
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Composite</span><span class="p">):</span>
-                <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="n">values</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>  <span class="c1"># noqa: B007</span>
-                    <span class="k">break</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                        <span class="s2">&quot;An empty Composite was passed for the action spec. &quot;</span>
-                        <span class="s2">&quot;This is currently not permitted.&quot;</span>
-                    <span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Composite</span><span class="p">):</span>
                 <span class="n">value</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">(</span>
                     <span class="n">action</span><span class="o">=</span><span class="n">value</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span> <span class="n">shape</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span>
                 <span class="p">)</span>
@@ -1295,7 +1432,6 @@
         <span class="n">reward_keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_reward_keys&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">reward_keys</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">reward_keys</span>
-
         <span class="n">reward_keys</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">full_reward_spec</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="n">_repr_by_depth</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s2">&quot;_reward_keys&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">reward_keys</span>
         <span class="k">return</span> <span class="n">reward_keys</span>
@@ -1433,15 +1569,7 @@
                     <span class="sa">f</span><span class="s2">&quot;The value of spec.shape (</span><span class="si">{</span><span class="n">value</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">) must match the env batch size (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="si">}</span><span class="s2">). &quot;</span>
                     <span class="s2">&quot;Please use `env.reward_spec_unbatched = value` to set unbatched versions instead.&quot;</span>
                 <span class="p">)</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Composite</span><span class="p">):</span>
-                <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="n">values</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>  <span class="c1"># noqa: B007</span>
-                    <span class="k">break</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                        <span class="s2">&quot;An empty Composite was passed for the reward spec. &quot;</span>
-                        <span class="s2">&quot;This is currently not permitted.&quot;</span>
-                    <span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Composite</span><span class="p">):</span>
                 <span class="n">value</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">(</span>
                     <span class="n">reward</span><span class="o">=</span><span class="n">value</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span> <span class="n">shape</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span>
                 <span class="p">)</span>
@@ -1722,15 +1850,7 @@
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;The value of spec.shape (</span><span class="si">{</span><span class="n">value</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">) must match the env batch size (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="si">}</span><span class="s2">).&quot;</span>
                 <span class="p">)</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Composite</span><span class="p">):</span>
-                <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="n">values</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>  <span class="c1"># noqa: B007</span>
-                    <span class="k">break</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                        <span class="s2">&quot;An empty Composite was passed for the done spec. &quot;</span>
-                        <span class="s2">&quot;This is currently not permitted.&quot;</span>
-                    <span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Composite</span><span class="p">):</span>
                 <span class="n">value</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">(</span>
                     <span class="n">done</span><span class="o">=</span><span class="n">value</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
                     <span class="n">terminated</span><span class="o">=</span><span class="n">value</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
@@ -3848,6 +3968,14 @@
         <span class="nb">any</span><span class="p">(</span><span class="n">s</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">spec</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">spec</span> <span class="ow">in</span> <span class="n">spec</span><span class="o">.</span><span class="n">values</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">is_leaf</span><span class="o">=</span><span class="n">_NESTED_TENSORS_AS_LISTS</span><span class="p">)</span>
     <span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_tensor_to_spec</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">leaf</span><span class="p">,</span> <span class="n">leaf_compare</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">stack</span><span class="p">):</span>
+    <span class="n">shape</span> <span class="o">=</span> <span class="n">leaf</span><span class="o">.</span><span class="n">shape</span>
+    <span class="k">if</span> <span class="n">leaf_compare</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">shape_compare</span> <span class="o">=</span> <span class="n">leaf_compare</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="p">[</span><span class="n">s0</span> <span class="k">if</span> <span class="n">s0</span> <span class="o">==</span> <span class="n">s1</span> <span class="k">else</span> <span class="o">-</span><span class="mi">1</span> <span class="k">for</span> <span class="n">s0</span><span class="p">,</span> <span class="n">s1</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">shape_compare</span><span class="p">)]</span>
+    <span class="n">stack</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">Unbounded</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">leaf</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">leaf</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
 </pre></div>
 
              </article>

@@ -415,8 +415,10 @@
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span>
 
 <span class="kn">import</span> <span class="nn">torch</span>
-<span class="kn">from</span> <span class="nn">tensordict.utils</span> <span class="kn">import</span> <span class="n">strtobool</span>
+<span class="kn">from</span> <span class="nn">tensordict.utils</span> <span class="kn">import</span> <span class="n">_ContextManager</span><span class="p">,</span> <span class="n">strtobool</span>
 <span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span>
+
+<span class="kn">from</span> <span class="nn">torch.utils._contextlib</span> <span class="kn">import</span> <span class="n">_DecoratorContextManager</span>
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">torch.compiler</span> <span class="kn">import</span> <span class="n">is_dynamo_compiling</span>
@@ -424,13 +426,13 @@
     <span class="kn">from</span> <span class="nn">torch._dynamo</span> <span class="kn">import</span> <span class="n">is_compiling</span> <span class="k">as</span> <span class="n">is_dynamo_compiling</span>
 
 
-<span class="n">DISPATCH_TDNN_MODULES</span> <span class="o">=</span> <span class="n">strtobool</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;DISPATCH_TDNN_MODULES&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">))</span>
+<span class="n">_dispatch_tdnn_modules</span> <span class="o">=</span> <span class="n">_ContextManager</span><span class="p">(</span>
+    <span class="n">default</span><span class="o">=</span><span class="n">strtobool</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;DISPATCH_TDNN_MODULES&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">))</span>
+<span class="p">)</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;mappings&quot;</span><span class="p">,</span> <span class="s2">&quot;inv_softplus&quot;</span><span class="p">,</span> <span class="s2">&quot;biased_softplus&quot;</span><span class="p">]</span>
 
-<span class="n">_SKIP_EXISTING</span> <span class="o">=</span> <span class="kc">False</span>
-
-<span class="kn">from</span> <span class="nn">torch.utils._contextlib</span> <span class="kn">import</span> <span class="n">_DecoratorContextManager</span>
+<span class="n">_skip_existing</span> <span class="o">=</span> <span class="n">_ContextManager</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="inv_softplus"><a class="viewcode-back" href="../../../reference/generated/torchrl.modules.utils.inv_softplus.html#torchrl.modules.utils.inv_softplus">[docs]</a><span class="k">def</span> <span class="nf">inv_softplus</span><span class="p">(</span><span class="n">bias</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
@@ -703,10 +705,9 @@
     <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="ow">and</span> <span class="n">is_dynamo_compiling</span><span class="p">():</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;skip_existing is not compatible with TorchDynamo.&quot;</span><span class="p">)</span>
-        <span class="k">global</span> <span class="n">_SKIP_EXISTING</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">prev</span> <span class="o">=</span> <span class="n">_SKIP_EXISTING</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prev</span> <span class="o">=</span> <span class="n">_skip_existing</span><span class="o">.</span><span class="n">get_mode</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">_SKIP_EXISTING</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span>
+            <span class="n">_skip_existing</span><span class="o">.</span><span class="n">set_mode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">)</span>
         <span class="k">elif</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_called</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;It seems you are using </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> as a context manager with ``None`` input. &quot;</span>
@@ -714,8 +715,7 @@
             <span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">exc_value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">traceback</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">global</span> <span class="n">_SKIP_EXISTING</span>
-        <span class="n">_SKIP_EXISTING</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prev</span>
+        <span class="n">_skip_existing</span><span class="o">.</span><span class="n">set_mode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prev</span><span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">_set_skip_existing_None</span><span class="p">(</span><span class="n">set_skip_existing</span><span class="p">):</span>
@@ -756,12 +756,11 @@
                 <span class="k">return</span> <span class="n">tensordict</span>
             <span class="k">if</span> <span class="n">is_dynamo_compiling</span><span class="p">():</span>
                 <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="n">_self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-            <span class="k">global</span> <span class="n">_SKIP_EXISTING</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">prev</span> <span class="o">=</span> <span class="n">_SKIP_EXISTING</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">prev</span> <span class="o">=</span> <span class="n">_skip_existing</span><span class="o">.</span><span class="n">get_mode</span><span class="p">()</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">result</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="n">_self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="k">finally</span><span class="p">:</span>
-                <span class="n">_SKIP_EXISTING</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prev</span>
+                <span class="n">_skip_existing</span><span class="o">.</span><span class="n">set_mode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prev</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">result</span>
 
         <span class="k">return</span> <span class="n">wrapper</span>
@@ -778,7 +777,7 @@
 
 <span class="k">def</span> <span class="nf">skip_existing</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns whether or not existing entries in a tensordict should be re-computed by a module.&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_SKIP_EXISTING</span>
+    <span class="k">return</span> <span class="n">_skip_existing</span><span class="o">.</span><span class="n">get_mode</span><span class="p">()</span>
 
 
 <span class="k">def</span> <span class="nf">_rebuild_buffer</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">requires_grad</span><span class="p">,</span> <span class="n">backward_hooks</span><span class="p">):</span>
@@ -800,7 +799,7 @@
 
 <span class="k">def</span> <span class="nf">_dispatch_td_nn_modules</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns ``True`` if @dispatch should be used. Not using dispatch is faster and also better compatible with torch.compile.&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">DISPATCH_TDNN_MODULES</span>
+    <span class="k">return</span> <span class="n">_dispatch_tdnn_modules</span><span class="o">.</span><span class="n">get_mode</span><span class="p">()</span>
 
 
 <span class="k">class</span> <span class="nc">_set_dispatch_td_nn_modules</span><span class="p">(</span><span class="n">_DecoratorContextManager</span><span class="p">):</span>
@@ -814,17 +813,15 @@
         <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)(</span><span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">global</span> <span class="n">DISPATCH_TDNN_MODULES</span>
         <span class="c1"># We want to avoid changing global variables because compile puts guards on them</span>
-        <span class="k">if</span> <span class="n">DISPATCH_TDNN_MODULES</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_saved_mode</span> <span class="o">=</span> <span class="n">DISPATCH_TDNN_MODULES</span>
-            <span class="n">DISPATCH_TDNN_MODULES</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span>
+        <span class="k">if</span> <span class="n">_dispatch_tdnn_modules</span><span class="o">.</span><span class="n">get_mode</span><span class="p">()</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_saved_mode</span> <span class="o">=</span> <span class="n">_dispatch_tdnn_modules</span>
+            <span class="n">_dispatch_tdnn_modules</span><span class="o">.</span><span class="n">set_mode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_saved_mode</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
-        <span class="k">global</span> <span class="n">DISPATCH_TDNN_MODULES</span>
-        <span class="n">DISPATCH_TDNN_MODULES</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_saved_mode</span>
+        <span class="n">_dispatch_tdnn_modules</span><span class="o">.</span><span class="n">set_mode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_saved_mode</span><span class="p">)</span>
 
 
 <span class="c1"># Reproduce StrEnum for python&lt;3.11</span>
