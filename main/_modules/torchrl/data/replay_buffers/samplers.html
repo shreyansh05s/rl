@@ -1205,6 +1205,112 @@
 <span class="sd">        attempt to find the ``traj_key`` entry in the storage. If it cannot be</span>
 <span class="sd">        found, the ``end_key`` will be used to reconstruct the episodes.</span>
 
+<span class="sd">    .. note:: When using `strict_length=False`, it is recommended to use</span>
+<span class="sd">        :func:`~torchrl.collectors.utils.split_trajectories` to split the sampled trajectories.</span>
+<span class="sd">        However, if two samples from the same episode are placed next to each other,</span>
+<span class="sd">        this may produce incorrect results. To avoid this issue, consider one of these solutions:</span>
+
+<span class="sd">        - using a :class:`~torchrl.data.TensorDictReplayBuffer` instance with the slice sampler</span>
+
+<span class="sd">            &gt;&gt;&gt; import torch</span>
+<span class="sd">            &gt;&gt;&gt; from tensordict import TensorDict</span>
+<span class="sd">            &gt;&gt;&gt; from torchrl.collectors.utils import split_trajectories</span>
+<span class="sd">            &gt;&gt;&gt; from torchrl.data import TensorDictReplayBuffer, ReplayBuffer, LazyTensorStorage, SliceSampler, SliceSamplerWithoutReplacement</span>
+<span class="sd">            &gt;&gt;&gt;</span>
+<span class="sd">            &gt;&gt;&gt; rb = TensorDictReplayBuffer(storage=LazyTensorStorage(max_size=1000),</span>
+<span class="sd">            ...                   sampler=SliceSampler(</span>
+<span class="sd">            ...                       slice_len=5, traj_key=&quot;episode&quot;,strict_length=False,</span>
+<span class="sd">            ...                   ))</span>
+<span class="sd">            ...</span>
+<span class="sd">            &gt;&gt;&gt; ep_1 = TensorDict(</span>
+<span class="sd">            ...     {&quot;obs&quot;: torch.arange(100),</span>
+<span class="sd">            ...     &quot;episode&quot;: torch.zeros(100),},</span>
+<span class="sd">            ...     batch_size=[100]</span>
+<span class="sd">            ... )</span>
+<span class="sd">            &gt;&gt;&gt; ep_2 = TensorDict(</span>
+<span class="sd">            ...     {&quot;obs&quot;: torch.arange(4),</span>
+<span class="sd">            ...     &quot;episode&quot;: torch.ones(4),},</span>
+<span class="sd">            ...     batch_size=[4]</span>
+<span class="sd">            ... )</span>
+<span class="sd">            &gt;&gt;&gt; rb.extend(ep_1)</span>
+<span class="sd">            &gt;&gt;&gt; rb.extend(ep_2)</span>
+<span class="sd">            &gt;&gt;&gt;</span>
+<span class="sd">            &gt;&gt;&gt; s = rb.sample(50)</span>
+<span class="sd">            &gt;&gt;&gt; print(s)</span>
+<span class="sd">            TensorDict(</span>
+<span class="sd">                fields={</span>
+<span class="sd">                    episode: Tensor(shape=torch.Size([46]), device=cpu, dtype=torch.float32, is_shared=False),</span>
+<span class="sd">                    index: Tensor(shape=torch.Size([46, 1]), device=cpu, dtype=torch.int64, is_shared=False),</span>
+<span class="sd">                    next: TensorDict(</span>
+<span class="sd">                        fields={</span>
+<span class="sd">                            done: Tensor(shape=torch.Size([46, 1]), device=cpu, dtype=torch.bool, is_shared=False),</span>
+<span class="sd">                            terminated: Tensor(shape=torch.Size([46, 1]), device=cpu, dtype=torch.bool, is_shared=False),</span>
+<span class="sd">                            truncated: Tensor(shape=torch.Size([46, 1]), device=cpu, dtype=torch.bool, is_shared=False)},</span>
+<span class="sd">                        batch_size=torch.Size([46]),</span>
+<span class="sd">                        device=cpu,</span>
+<span class="sd">                        is_shared=False),</span>
+<span class="sd">                    obs: Tensor(shape=torch.Size([46]), device=cpu, dtype=torch.int64, is_shared=False)},</span>
+<span class="sd">                batch_size=torch.Size([46]),</span>
+<span class="sd">                device=cpu,</span>
+<span class="sd">                is_shared=False)</span>
+<span class="sd">            &gt;&gt;&gt; t = split_trajectories(s, done_key=&quot;truncated&quot;)</span>
+<span class="sd">            &gt;&gt;&gt; print(t[&quot;obs&quot;])</span>
+<span class="sd">            tensor([[73, 74, 75, 76, 77],</span>
+<span class="sd">                    [ 0,  1,  2,  3,  0],</span>
+<span class="sd">                    [ 0,  1,  2,  3,  0],</span>
+<span class="sd">                    [41, 42, 43, 44, 45],</span>
+<span class="sd">                    [ 0,  1,  2,  3,  0],</span>
+<span class="sd">                    [67, 68, 69, 70, 71],</span>
+<span class="sd">                    [27, 28, 29, 30, 31],</span>
+<span class="sd">                    [80, 81, 82, 83, 84],</span>
+<span class="sd">                    [17, 18, 19, 20, 21],</span>
+<span class="sd">                    [ 0,  1,  2,  3,  0]])</span>
+<span class="sd">            &gt;&gt;&gt; print(t[&quot;episode&quot;])</span>
+<span class="sd">            tensor([[0., 0., 0., 0., 0.],</span>
+<span class="sd">                    [1., 1., 1., 1., 0.],</span>
+<span class="sd">                    [1., 1., 1., 1., 0.],</span>
+<span class="sd">                    [0., 0., 0., 0., 0.],</span>
+<span class="sd">                    [1., 1., 1., 1., 0.],</span>
+<span class="sd">                    [0., 0., 0., 0., 0.],</span>
+<span class="sd">                    [0., 0., 0., 0., 0.],</span>
+<span class="sd">                    [0., 0., 0., 0., 0.],</span>
+<span class="sd">                    [0., 0., 0., 0., 0.],</span>
+<span class="sd">                    [1., 1., 1., 1., 0.]])</span>
+
+<span class="sd">        - using a :class:`~torchrl.data.replay_buffers.samplers.SliceSamplerWithoutReplacement`</span>
+
+<span class="sd">            &gt;&gt;&gt; import torch</span>
+<span class="sd">            &gt;&gt;&gt; from tensordict import TensorDict</span>
+<span class="sd">            &gt;&gt;&gt; from torchrl.collectors.utils import split_trajectories</span>
+<span class="sd">            &gt;&gt;&gt; from torchrl.data import ReplayBuffer, LazyTensorStorage, SliceSampler, SliceSamplerWithoutReplacement</span>
+<span class="sd">            &gt;&gt;&gt;</span>
+<span class="sd">            &gt;&gt;&gt; rb = ReplayBuffer(storage=LazyTensorStorage(max_size=1000),</span>
+<span class="sd">            ...                   sampler=SliceSamplerWithoutReplacement(</span>
+<span class="sd">            ...                       slice_len=5, traj_key=&quot;episode&quot;,strict_length=False</span>
+<span class="sd">            ...                   ))</span>
+<span class="sd">            ...</span>
+<span class="sd">            &gt;&gt;&gt; ep_1 = TensorDict(</span>
+<span class="sd">            ...     {&quot;obs&quot;: torch.arange(100),</span>
+<span class="sd">            ...     &quot;episode&quot;: torch.zeros(100),},</span>
+<span class="sd">            ...     batch_size=[100]</span>
+<span class="sd">            ... )</span>
+<span class="sd">            &gt;&gt;&gt; ep_2 = TensorDict(</span>
+<span class="sd">            ...     {&quot;obs&quot;: torch.arange(4),</span>
+<span class="sd">            ...     &quot;episode&quot;: torch.ones(4),},</span>
+<span class="sd">            ...     batch_size=[4]</span>
+<span class="sd">            ... )</span>
+<span class="sd">            &gt;&gt;&gt; rb.extend(ep_1)</span>
+<span class="sd">            &gt;&gt;&gt; rb.extend(ep_2)</span>
+<span class="sd">            &gt;&gt;&gt;</span>
+<span class="sd">            &gt;&gt;&gt; s = rb.sample(50)</span>
+<span class="sd">            &gt;&gt;&gt; t = split_trajectories(s, trajectory_key=&quot;episode&quot;)</span>
+<span class="sd">            &gt;&gt;&gt; print(t[&quot;obs&quot;])</span>
+<span class="sd">            tensor([[75, 76, 77, 78, 79],</span>
+<span class="sd">                    [ 0,  1,  2,  3,  0]])</span>
+<span class="sd">            &gt;&gt;&gt; print(t[&quot;episode&quot;])</span>
+<span class="sd">            tensor([[0., 0., 0., 0., 0.],</span>
+<span class="sd">                    [1., 1., 1., 1., 0.]])</span>
+
 <span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; import torch</span>
 <span class="sd">        &gt;&gt;&gt; from tensordict import TensorDict</span>
@@ -1830,6 +1936,10 @@
 <div class="viewcode-block" id="SliceSamplerWithoutReplacement"><a class="viewcode-back" href="../../../../reference/generated/torchrl.data.replay_buffers.SliceSamplerWithoutReplacement.html#torchrl.data.replay_buffers.SliceSamplerWithoutReplacement">[docs]</a><span class="k">class</span> <span class="nc">SliceSamplerWithoutReplacement</span><span class="p">(</span><span class="n">SliceSampler</span><span class="p">,</span> <span class="n">SamplerWithoutReplacement</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Samples slices of data along the first dimension, given start and stop signals, without replacement.</span>
 
+<span class="sd">    In this context, ``without replacement`` means that the same element (NOT trajectory) will not be sampled twice</span>
+<span class="sd">    before the counter is automatically reset. Within a single sample, however, only one slice of a given trajectory</span>
+<span class="sd">    will appear (see example below).</span>
+
 <span class="sd">    This class is to be used with static replay buffers or in between two</span>
 <span class="sd">    replay buffer extensions. Extending the replay buffer will reset the</span>
 <span class="sd">    the sampler, and continuous sampling without replacement is currently not</span>
@@ -1935,6 +2045,52 @@
 <span class="sd">        tensor([ 5,  6,  8, 11, 12, 14, 16, 17, 19, 24])</span>
 <span class="sd">        tensor([ 1,  2,  7,  9, 10, 13, 15, 18, 21, 22])</span>
 <span class="sd">        tensor([ 0,  3,  4, 20, 23])</span>
+
+<span class="sd">    When requesting a large total number of samples with few trajectories and small span, the batch will contain</span>
+<span class="sd">    only at most one sample of each trajectory:</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; import torch</span>
+<span class="sd">        &gt;&gt;&gt; from tensordict import TensorDict</span>
+<span class="sd">        &gt;&gt;&gt; from torchrl.collectors.utils import split_trajectories</span>
+<span class="sd">        &gt;&gt;&gt; from torchrl.data import ReplayBuffer, LazyTensorStorage, SliceSampler, SliceSamplerWithoutReplacement</span>
+<span class="sd">        &gt;&gt;&gt;</span>
+<span class="sd">        &gt;&gt;&gt; rb = ReplayBuffer(storage=LazyTensorStorage(max_size=1000),</span>
+<span class="sd">        ...                   sampler=SliceSamplerWithoutReplacement(</span>
+<span class="sd">        ...                       slice_len=5, traj_key=&quot;episode&quot;,strict_length=False</span>
+<span class="sd">        ...                   ))</span>
+<span class="sd">        ...</span>
+<span class="sd">        &gt;&gt;&gt; ep_1 = TensorDict(</span>
+<span class="sd">        ...     {&quot;obs&quot;: torch.arange(100),</span>
+<span class="sd">        ...     &quot;episode&quot;: torch.zeros(100),},</span>
+<span class="sd">        ...     batch_size=[100]</span>
+<span class="sd">        ... )</span>
+<span class="sd">        &gt;&gt;&gt; ep_2 = TensorDict(</span>
+<span class="sd">        ...     {&quot;obs&quot;: torch.arange(51),</span>
+<span class="sd">        ...     &quot;episode&quot;: torch.ones(51),},</span>
+<span class="sd">        ...     batch_size=[51]</span>
+<span class="sd">        ... )</span>
+<span class="sd">        &gt;&gt;&gt; rb.extend(ep_1)</span>
+<span class="sd">        &gt;&gt;&gt; rb.extend(ep_2)</span>
+<span class="sd">        &gt;&gt;&gt;</span>
+<span class="sd">        &gt;&gt;&gt; s = rb.sample(50)</span>
+<span class="sd">        &gt;&gt;&gt; t = split_trajectories(s, trajectory_key=&quot;episode&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; print(t[&quot;obs&quot;])</span>
+<span class="sd">        tensor([[14, 15, 16, 17, 18],</span>
+<span class="sd">                [ 3,  4,  5,  6,  7]])</span>
+<span class="sd">        &gt;&gt;&gt; print(t[&quot;episode&quot;])</span>
+<span class="sd">        tensor([[0., 0., 0., 0., 0.],</span>
+<span class="sd">                [1., 1., 1., 1., 1.]])</span>
+<span class="sd">        &gt;&gt;&gt;</span>
+<span class="sd">        &gt;&gt;&gt; s = rb.sample(50)</span>
+<span class="sd">        &gt;&gt;&gt; t = split_trajectories(s, trajectory_key=&quot;episode&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; print(t[&quot;obs&quot;])</span>
+<span class="sd">        tensor([[ 4,  5,  6,  7,  8],</span>
+<span class="sd">                [26, 27, 28, 29, 30]])</span>
+<span class="sd">        &gt;&gt;&gt; print(t[&quot;episode&quot;])</span>
+<span class="sd">        tensor([[0., 0., 0., 0., 0.],</span>
+<span class="sd">                [1., 1., 1., 1., 1.]])</span>
+
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
