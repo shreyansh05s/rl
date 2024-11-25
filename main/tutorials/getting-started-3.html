@@ -603,7 +603,7 @@ the data we just collected, we initialize and populate the buffer in one go:</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><a href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="torch.Tensor" class="sphx-glr-backref-module-torch sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">indices</span></a> <span class="o">=</span> <span class="n">buffer</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>We can check that the buffer now has the same number of elements than what
+<p>We can check that the buffer now has the same number of elements as what
 we got from the collector:</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">buffer</span><span class="p">)</span> <span class="o">==</span> <span class="n">collector</span><span class="o">.</span><span class="n">frames_per_batch</span>
 </pre></div>
@@ -651,7 +651,7 @@ collector!</p>
 <section id="next-steps">
 <h2>Next steps<a class="headerlink" href="#next-steps" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
-<li><p>You can have look at other multirpocessed
+<li><p>You can have look at other multiprocessed
 collectors such as <a class="reference internal" href="../reference/generated/torchrl.collectors.MultiSyncDataCollector.html#torchrl.collectors.MultiSyncDataCollector" title="torchrl.collectors.collectors.MultiSyncDataCollector"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiSyncDataCollector</span></code></a> or
 <a class="reference internal" href="../reference/generated/torchrl.collectors.MultiaSyncDataCollector.html#torchrl.collectors.MultiaSyncDataCollector" title="torchrl.collectors.collectors.MultiaSyncDataCollector"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiaSyncDataCollector</span></code></a>.</p></li>
 <li><p>TorchRL also offers distributed collectors if you have multiple nodes to
@@ -667,7 +667,7 @@ simplicity. Try it out for yourself: build a buffer and indicate its
 batch-size in the constructor, then try to iterate over it. This is
 equivalent to calling <code class="docutils literal notranslate"><span class="pre">rb.sample()</span></code> within a loop!</p></li>
 </ul>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 21.836 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 21.901 seconds)</p>
 <p><strong>Estimated memory usage:</strong>  318 MB</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-tutorials-getting-started-3-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">

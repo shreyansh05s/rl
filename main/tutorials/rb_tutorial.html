@@ -558,7 +558,7 @@ unchanging data structures of medium size:</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">buffer_lazytensor</span> <span class="o">=</span> <span class="n">ReplayBuffer</span><span class="p">(</span><span class="n">storage</span><span class="o">=</span><span class="n">LazyTensorStorage</span><span class="p">(</span><span class="n">size</span><span class="p">))</span>
 </pre></div>
 </div>
-<p>Let us create a batch of data of size <a href="#id1"><span class="problematic" id="id2">``</span></a>torch.Size([3])` with 2 tensors
+<p>Let us create a batch of data of size <code class="docutils literal notranslate"><span class="pre">torch.Size([3])</span></code> with 2 tensors
 stored in it:</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">from</span> <span class="nn">tensordict</span> <span class="kn">import</span> <span class="n">TensorDict</span>
@@ -647,8 +647,8 @@ samples: a= tensor([[ 8,  9, 10, 11],
 </pre></div>
 </div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>The buffer has 3 elements
-the &#39;a&#39; tensor is stored in /pytorch/rl/docs/source/reference/generated/tutorials/&lt;TemporaryDirectory &#39;/tmp/tmp0h_azljs&#39;&gt;/a.memmap
-the (&#39;b&#39;, &#39;c&#39;) tensor is stored in /pytorch/rl/docs/source/reference/generated/tutorials/&lt;TemporaryDirectory &#39;/tmp/tmp0h_azljs&#39;&gt;/b/c.memmap
+the &#39;a&#39; tensor is stored in /pytorch/rl/docs/source/reference/generated/tutorials/&lt;TemporaryDirectory &#39;/tmp/tmprwm2myq9&#39;&gt;/a.memmap
+the (&#39;b&#39;, &#39;c&#39;) tensor is stored in /pytorch/rl/docs/source/reference/generated/tutorials/&lt;TemporaryDirectory &#39;/tmp/tmprwm2myq9&#39;&gt;/b/c.memmap
 </pre></div>
 </div>
 </section>
@@ -1068,7 +1068,7 @@ the priority signal should be fetched:</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">sample</span><span class="p">[</span><span class="s2">&quot;index&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">numpy</span><span class="p">())</span>
 </pre></div>
 </div>
-<img src="../_images/sphx_glr_rb_tutorial_001.png" srcset="../_images/sphx_glr_rb_tutorial_001.png" alt="rb tutorial" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>(array([132.,  63., 104.,  63., 147.,  69., 115.,  59., 146., 126.]), array([ 0. ,  1.5,  3. ,  4.5,  6. ,  7.5,  9. , 10.5, 12. , 13.5, 15. ]), &lt;BarContainer object of 10 artists&gt;)
+<img src="../_images/sphx_glr_rb_tutorial_001.png" srcset="../_images/sphx_glr_rb_tutorial_001.png" alt="rb tutorial" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>(array([141.,  62., 132.,  55., 134.,  67., 139.,  57., 114., 123.]), array([ 0. ,  1.5,  3. ,  4.5,  6. ,  7.5,  9. , 10.5, 12. , 13.5, 15. ]), &lt;BarContainer object of 10 artists&gt;)
 </pre></div>
 </div>
 <p>Once we have worked with our sample, we update the priority key using
@@ -1088,7 +1088,7 @@ sampled items:</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">sample</span><span class="p">[</span><span class="s2">&quot;index&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">numpy</span><span class="p">())</span>
 </pre></div>
 </div>
-<img src="../_images/sphx_glr_rb_tutorial_002.png" srcset="../_images/sphx_glr_rb_tutorial_002.png" alt="rb tutorial" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>(array([217., 109., 187.,  71., 147.,  60.,  97.,  37.,  70.,  29.]), array([ 0. ,  1.5,  3. ,  4.5,  6. ,  7.5,  9. , 10.5, 12. , 13.5, 15. ]), &lt;BarContainer object of 10 artists&gt;)
+<img src="../_images/sphx_glr_rb_tutorial_002.png" srcset="../_images/sphx_glr_rb_tutorial_002.png" alt="rb tutorial" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>(array([221.,  91., 165.,  85., 159.,  46., 132.,  38.,  57.,  30.]), array([ 0. ,  1.5,  3. ,  4.5,  6. ,  7.5,  9. , 10.5, 12. , 13.5, 15. ]), &lt;BarContainer object of 10 artists&gt;)
 </pre></div>
 </div>
 </section>
@@ -1464,8 +1464,8 @@ which are based on our Replay Buffer API;</p></li>
 such as <code class="xref py py-class docutils literal notranslate"><span class="pre">TensorDictMaxValueWriter</span></code>.</p></li>
 <li><p>Check how to checkpoint ReplayBuffers in <a class="reference internal" href="../reference/data.html#checkpoint-rb"><span class="std std-ref">the doc</span></a>.</p></li>
 </ul>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (2 minutes 54.036 seconds)</p>
-<p><strong>Estimated memory usage:</strong>  491 MB</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (2 minutes 55.144 seconds)</p>
+<p><strong>Estimated memory usage:</strong>  482 MB</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-tutorials-rb-tutorial-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/c64b1e484ba3e0219549719cc3c37479/rb_tutorial.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">rb_tutorial.ipynb</span></code></a></p>

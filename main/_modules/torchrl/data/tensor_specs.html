@@ -4661,6 +4661,14 @@
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
 
     <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">batch_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span>
+
+    <span class="nd">@batch_size</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">batch_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span>
 
@@ -4681,8 +4689,22 @@
                     <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span> <span class="o">=</span> <span class="n">_size</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Composite.is_empty"><a class="viewcode-back" href="../../../reference/generated/torchrl.data.Composite.html#torchrl.data.Composite.is_empty">[docs]</a>    <span class="k">def</span> <span class="nf">is_empty</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Whether the composite spec contains specs or not.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Composite.is_empty"><a class="viewcode-back" href="../../../reference/generated/torchrl.data.Composite.html#torchrl.data.Composite.is_empty">[docs]</a>    <span class="k">def</span> <span class="nf">is_empty</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">recurse</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Whether the composite spec contains specs or not.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            recurse (bool): whether to recursively assess if the spec is empty.</span>
+<span class="sd">                If ``True``, will return ``True`` if there are no leaves. If ``False``</span>
+<span class="sd">                (default) will return whether there is any spec defined at the root level.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">recurse</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">spec</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_specs</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">spec</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">Composite</span><span class="p">)</span> <span class="ow">and</span> <span class="n">spec</span><span class="o">.</span><span class="n">is_empty</span><span class="p">(</span><span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+                    <span class="k">continue</span>
+                <span class="k">return</span> <span class="kc">False</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_specs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span></div>
 
     <span class="nd">@property</span>
@@ -4691,6 +4713,61 @@
 
 <div class="viewcode-block" id="Composite.ndimension"><a class="viewcode-back" href="../../../reference/generated/torchrl.data.Composite.html#torchrl.data.Composite.ndimension">[docs]</a>    <span class="k">def</span> <span class="nf">ndimension</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Composite.pop"><a class="viewcode-back" href="../../../reference/generated/torchrl.data.Composite.html#torchrl.data.Composite.pop">[docs]</a>    <span class="k">def</span> <span class="nf">pop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="n">NestedKey</span><span class="p">,</span> <span class="n">default</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="n">NO_DEFAULT</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Removes and returns the value associated with the specified key from the composite spec.</span>
+
+<span class="sd">        This method searches for the given key in the composite spec, removes it, and returns its associated value.</span>
+<span class="sd">        If the key is not found, it returns the provided default value if specified, otherwise raises a `KeyError`.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key (NestedKey):</span>
+<span class="sd">                The key to be removed from the composite spec. It can be a single key or a nested key.</span>
+<span class="sd">            default (Any, optional):</span>
+<span class="sd">                The value to return if the specified key is not found in the composite spec.</span>
+<span class="sd">                If not provided and the key is not found, a `KeyError` is raised.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Any: The value associated with the specified key that was removed from the composite spec.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            KeyError: If the specified key is not found in the composite spec and no default value is provided.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="n">unravel_key</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">result</span>
+        <span class="k">elif</span> <span class="n">default</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">NO_DEFAULT</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">default</span>
+        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> not found in composite spec.&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Composite.separates"><a class="viewcode-back" href="../../../reference/generated/torchrl.data.Composite.html#torchrl.data.Composite.separates">[docs]</a>    <span class="k">def</span> <span class="nf">separates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">keys</span><span class="p">:</span> <span class="n">NestedKey</span><span class="p">,</span> <span class="n">default</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Composite</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Splits the composite spec by extracting specified keys and their associated values into a new composite spec.</span>
+
+<span class="sd">        This method iterates over the provided keys, removes them from the current composite spec, and adds them to a new</span>
+<span class="sd">        composite spec. If a key is not found, the specified default value is used. The new composite spec is returned.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            *keys (NestedKey):</span>
+<span class="sd">                One or more keys to be extracted from the composite spec. Each key can be a single key or a nested key.</span>
+<span class="sd">            default (Any, optional):</span>
+<span class="sd">                The value to use if a specified key is not found in the composite spec. Defaults to `None`.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Composite: A new composite spec containing the extracted keys and their associated values.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            If none of the specified keys are found, the method returns `None`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">default</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">out</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">out</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">(</span><span class="n">batch_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+                <span class="n">out</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span>
+        <span class="k">return</span> <span class="n">out</span></div>
 
     <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">spec</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">locked</span><span class="p">:</span>

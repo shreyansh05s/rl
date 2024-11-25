@@ -967,6 +967,38 @@ are direct members of this module.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="torchrl.envs.ParallelEnv.check_env_specs">
+<span class="sig-name descname"><span class="pre">check_env_specs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">return_contiguous</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#torchrl.envs.ParallelEnv.check_env_specs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests an environment specs against the results of short rollout.</p>
+<p>This test function should be used as a sanity check for an env wrapped with
+torchrl’s EnvBase subclasses: any discrepancy between the expected data and
+the data collected should raise an assertion error.</p>
+<p>A broken environment spec will likely make it impossible to use parallel
+environments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>env</strong> (<a class="reference internal" href="torchrl.envs.EnvBase.html#torchrl.envs.EnvBase" title="torchrl.envs.EnvBase"><em>EnvBase</em></a>) – the env for which the specs have to be checked against data.</p></li>
+<li><p><strong>return_contiguous</strong> (<em>bool</em><em>, </em><em>optional</em>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code>, the random rollout will be called with
+return_contiguous=True. This will fail in some cases (e.g. heterogeneous shapes
+of inputs/outputs). Defaults to True.</p></li>
+<li><p><strong>check_dtype</strong> (<em>bool</em><em>, </em><em>optional</em>) – if False, dtype checks will be skipped.
+Defaults to True.</p></li>
+<li><p><strong>seed</strong> (<em>int</em><em>, </em><em>optional</em>) – for reproducibility, a seed can be set.
+The seed will be set in pytorch temporarily, then the RNG state will
+be reverted to what it was before. For the env, we set the seed but since
+setting the rng state back to what is was isn’t a feature of most environment,
+we leave it to the user to accomplish that.
+Defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Caution: this function resets the env seed. It should be used “offline” to
+check that an env is adequately constructed, but it may affect the seeding
+of an experiment and as such should be kept out of training scripts.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="torchrl.envs.ParallelEnv.children">
 <span class="sig-name descname"><span class="pre">children</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Iterator</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch v2.5)"><span class="pre">Module</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#torchrl.envs.ParallelEnv.children" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an iterator over immediate children modules.</p>

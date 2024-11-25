@@ -554,8 +554,15 @@ from it if the current dimension is a singleton.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="torchrl.data.LazyStackedCompositeSpec.is_empty">
-<span class="sig-name descname"><span class="pre">is_empty</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#torchrl.data.LazyStackedCompositeSpec.is_empty" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">is_empty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recurse</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#torchrl.data.LazyStackedCompositeSpec.is_empty" title="Permalink to this definition">¶</a></dt>
 <dd><p>Whether the composite spec contains specs or not.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>recurse</strong> (<em>bool</em>) – whether to recursively assess if the spec is empty.
+If <code class="docutils literal notranslate"><span class="pre">True</span></code>, will return <code class="docutils literal notranslate"><span class="pre">True</span></code> if there are no leaves. If <code class="docutils literal notranslate"><span class="pre">False</span></code>
+(default) will return whether there is any spec defined at the root level.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -717,6 +724,32 @@ The primary use case of <code class="docutils literal notranslate"><span class="
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="torchrl.data.LazyStackedCompositeSpec.pop">
+<span class="sig-name descname"><span class="pre">pop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">NestedKey</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">_NoDefault.ZERO</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="headerlink" href="#torchrl.data.LazyStackedCompositeSpec.pop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes and returns the value associated with the specified key from the composite spec.</p>
+<p>This method searches for the given key in the composite spec, removes it, and returns its associated value.
+If the key is not found, it returns the provided default value if specified, otherwise raises a <cite>KeyError</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>NestedKey</em>) – The key to be removed from the composite spec. It can be a single key or a nested key.</p></li>
+<li><p><strong>default</strong> (<em>Any</em><em>, </em><em>optional</em>) – The value to return if the specified key is not found in the composite spec.
+If not provided and the key is not found, a <cite>KeyError</cite> is raised.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The value associated with the specified key that was removed from the composite spec.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Any</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>KeyError</strong> – If the specified key is not found in the composite spec and no default value is provided.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="torchrl.data.LazyStackedCompositeSpec.project">
 <span class="sig-name descname"><span class="pre">project</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TensorDictBase</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">TensorDictBase</span></span></span><a class="headerlink" href="#torchrl.data.LazyStackedCompositeSpec.project" title="Permalink to this definition">¶</a></dt>
 <dd><p>If the input tensor is not in the TensorSpec box, it maps it back to it given some defined heuristic.</p>
@@ -758,6 +791,32 @@ will be drawn.</p>
 <span class="sig-name descname"><span class="pre">sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://pytorch.org/docs/stable/size.html#torch.Size" title="(in PyTorch v2.5)"><span class="pre">Size</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.5)"><span class="pre">torch.Tensor</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">tensordict.base.TensorDictBase</span></span></span><a class="headerlink" href="#torchrl.data.LazyStackedCompositeSpec.sample" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a random tensor in the space defined by the spec.</p>
 <p>See <a class="reference internal" href="#torchrl.data.LazyStackedCompositeSpec.rand" title="torchrl.data.LazyStackedCompositeSpec.rand"><code class="xref py py-meth docutils literal notranslate"><span class="pre">rand()</span></code></a> for details.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="torchrl.data.LazyStackedCompositeSpec.separates">
+<span class="sig-name descname"><span class="pre">separates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">keys</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">NestedKey</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="torchrl.data.Composite.html#torchrl.data.Composite" title="torchrl.data.tensor_specs.Composite"><span class="pre">Composite</span></a></span></span><a class="headerlink" href="#torchrl.data.LazyStackedCompositeSpec.separates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Splits the composite spec by extracting specified keys and their associated values into a new composite spec.</p>
+<p>This method iterates over the provided keys, removes them from the current composite spec, and adds them to a new
+composite spec. If a key is not found, the specified default value is used. The new composite spec is returned.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>*keys</strong> (<em>NestedKey</em>) – One or more keys to be extracted from the composite spec. Each key can be a single key or a nested key.</p></li>
+<li><p><strong>default</strong> (<em>Any</em><em>, </em><em>optional</em>) – The value to use if a specified key is not found in the composite spec. Defaults to <cite>None</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A new composite spec containing the extracted keys and their associated values.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="torchrl.data.Composite.html#torchrl.data.Composite" title="torchrl.data.Composite">Composite</a></p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If none of the specified keys are found, the method returns <cite>None</cite>.</p>
+</div>
 </dd></dl>
 
 <dl class="py method">
