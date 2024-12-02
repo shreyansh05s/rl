@@ -284,7 +284,23 @@ video locally (notice that we are not exploring).
 
 
 
+.. rst-class:: sphx-glr-script-out
 
+.. code-block:: pytb
+
+    Traceback (most recent call last):
+      File "/pytorch/rl/docs/source/reference/generated/tutorials/getting-started-5.py", line 182, in <module>
+        video_recorder.dump()
+      File "/pytorch/rl/torchrl/record/recorder.py", line 253, in dump
+        self.logger.log_video(
+      File "/pytorch/rl/torchrl/record/loggers/csv.py", line 198, in log_video
+        self.experiment.add_video(
+      File "/pytorch/rl/torchrl/record/loggers/csv.py", line 102, in add_video
+        torchvision.io.write_video(filepath, vid_tensor, **kwargs)
+      File "/pytorch/rl/env/lib/python3.10/site-packages/torchvision/io/video.py", line 158, in write_video
+        frame.pict_type = "NONE"
+      File "av/video/frame.pyx", line 193, in av.video.frame.VideoFrame.pict_type.__set__
+    TypeError: an integer is required
 
 
 
@@ -303,9 +319,9 @@ Feel free to share feedback about it on GitHub.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 22.766 seconds)
+   **Total running time of the script:** (0 minutes 20.631 seconds)
 
-**Estimated memory usage:**  321 MB
+**Estimated memory usage:**  4519 MB
 
 
 .. _sphx_glr_download_tutorials_getting-started-5.py:

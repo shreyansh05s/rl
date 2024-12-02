@@ -418,11 +418,14 @@
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">from</span> <span class="nn">tensordict</span> <span class="kn">import</span> <span class="n">TensorDictBase</span>
 <span class="kn">from</span> <span class="nn">tensordict.nn</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">CompositeDistribution</span><span class="p">,</span>
     <span class="n">dispatch</span><span class="p">,</span>
+    <span class="n">ProbabilisticTensorDictModule</span><span class="p">,</span>
     <span class="n">set_skip_existing</span><span class="p">,</span>
     <span class="n">TensorDictModule</span><span class="p">,</span>
     <span class="n">TensorDictModuleBase</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="kn">from</span> <span class="nn">tensordict.nn.probabilistic</span> <span class="kn">import</span> <span class="n">interaction_type</span>
 <span class="kn">from</span> <span class="nn">tensordict.utils</span> <span class="kn">import</span> <span class="n">NestedKey</span>
 <span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">Tensor</span>
 
@@ -477,14 +480,22 @@
 
 
 <span class="k">def</span> <span class="nf">_call_actor_net</span><span class="p">(</span>
-    <span class="n">actor_net</span><span class="p">:</span> <span class="n">TensorDictModuleBase</span><span class="p">,</span>
+    <span class="n">actor_net</span><span class="p">:</span> <span class="n">ProbabilisticTensorDictModule</span><span class="p">,</span>
     <span class="n">data</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">,</span>
     <span class="n">params</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">,</span>
     <span class="n">log_prob_key</span><span class="p">:</span> <span class="n">NestedKey</span><span class="p">,</span>
 <span class="p">):</span>
-    <span class="c1"># TODO: extend to handle time dimension (and vmap?)</span>
-    <span class="n">log_pi</span> <span class="o">=</span> <span class="n">actor_net</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="o">*</span><span class="n">actor_net</span><span class="o">.</span><span class="n">in_keys</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">log_prob_key</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">log_pi</span>
+    <span class="n">dist</span> <span class="o">=</span> <span class="n">actor_net</span><span class="o">.</span><span class="n">get_dist</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="o">*</span><span class="n">actor_net</span><span class="o">.</span><span class="n">in_keys</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="n">CompositeDistribution</span><span class="p">):</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;aggregate_probabilities&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s2">&quot;inplace&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="s2">&quot;include_sum&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">actor_net</span><span class="o">.</span><span class="n">_dist_sample</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="n">interaction_type</span><span class="o">=</span><span class="n">interaction_type</span><span class="p">())</span>
+    <span class="k">return</span> <span class="n">dist</span><span class="o">.</span><span class="n">log_prob</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="ValueEstimatorBase"><a class="viewcode-back" href="../../../../reference/generated/torchrl.objectives.value.ValueEstimatorBase.html#torchrl.objectives.value.ValueEstimatorBase">[docs]</a><span class="k">class</span> <span class="nc">ValueEstimatorBase</span><span class="p">(</span><span class="n">TensorDictModuleBase</span><span class="p">):</span>
@@ -2174,7 +2185,8 @@
                 <span class="n">data</span><span class="o">=</span><span class="n">tensordict</span><span class="p">,</span>
                 <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                 <span class="n">log_prob_key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tensor_keys</span><span class="o">.</span><span class="n">sample_log_prob</span><span class="p">,</span>
-            <span class="p">)</span><span class="o">.</span><span class="n">view_as</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">log_pi</span> <span class="o">=</span> <span class="n">log_pi</span><span class="o">.</span><span class="n">view_as</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
         <span class="c1"># Compute the V-Trace correction</span>
         <span class="n">done</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">get</span><span class="p">((</span><span class="s2">&quot;next&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tensor_keys</span><span class="o">.</span><span class="n">done</span><span class="p">))</span>
