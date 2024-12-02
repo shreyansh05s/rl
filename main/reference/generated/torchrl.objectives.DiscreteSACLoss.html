@@ -452,6 +452,10 @@ parameters for both policy and critic losses.</p></li>
 <code class="docutils literal notranslate"><span class="pre">&quot;none&quot;</span></code> | <code class="docutils literal notranslate"><span class="pre">&quot;mean&quot;</span></code> | <code class="docutils literal notranslate"><span class="pre">&quot;sum&quot;</span></code>. <code class="docutils literal notranslate"><span class="pre">&quot;none&quot;</span></code>: no reduction will be applied,
 <code class="docutils literal notranslate"><span class="pre">&quot;mean&quot;</span></code>: the sum of the output will be divided by the number of
 elements in the output, <code class="docutils literal notranslate"><span class="pre">&quot;sum&quot;</span></code>: the output will be summed. Default: <code class="docutils literal notranslate"><span class="pre">&quot;mean&quot;</span></code>.</p></li>
+<li><p><strong>skip_done_states</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether the actor network used for value computation should only be run on
+valid, non-terminating next states. If <code class="docutils literal notranslate"><span class="pre">True</span></code>, it is assumed that the done state can be broadcast to the
+shape of the data and that masking the data results in a valid data structure. Among other things, this may
+not be true in MARL settings or when using RNNs. Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
 </ul>
 </dd>
 </dl>
