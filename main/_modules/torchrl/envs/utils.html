@@ -690,6 +690,8 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">tensordict</span><span class="p">):</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">keep_other</span><span class="p">:</span>
                 <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exclude</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exclude_from_root</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">out</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">out</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">empty</span><span class="p">()</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">out</span> <span class="o">=</span> <span class="n">next_td</span><span class="o">.</span><span class="n">empty</span><span class="p">()</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_grab_and_place</span><span class="p">(</span>
