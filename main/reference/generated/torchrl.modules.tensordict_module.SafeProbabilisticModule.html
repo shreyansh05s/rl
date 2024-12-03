@@ -456,12 +456,12 @@ check will only occur for the distribution sample, but not the other tensors
 returned by the input module. If the sample is out of bounds, it is
 projected back onto the desired space using the <cite>TensorSpec.project</cite> method.
 Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
-<li><p><strong>default_interaction_type</strong> (<em>str</em><em>, </em><em>optional</em>) – default method to be used to retrieve
-the output value. Should be one of: ‘mode’, ‘median’, ‘mean’ or ‘random’
+<li><p><strong>default_interaction_type</strong> (<em>tensordict.nn.InteractionType</em><em>, </em><em>optional</em>) – default method to be used to retrieve
+the output value. Should be one of: <code class="docutils literal notranslate"><span class="pre">InteractionType.MODE</span></code>, <code class="docutils literal notranslate"><span class="pre">InteractionType.MEDIAN</span></code>, <code class="docutils literal notranslate"><span class="pre">InteractionType.MEAN</span></code> or <code class="docutils literal notranslate"><span class="pre">InteractionType.RANDOM</span></code>
 (in which case the value is sampled randomly from the distribution). Default
-is ‘mode’.
+is <code class="docutils literal notranslate"><span class="pre">InteractionType.MODE</span></code>.
 Note: When a sample is drawn, the <code class="xref py py-obj docutils literal notranslate"><span class="pre">ProbabilisticTDModule</span></code> instance will
-fist look for the interaction mode dictated by the <cite>interaction_typ()</cite>
+fist look for the interaction mode dictated by the <cite>interaction_type()</cite>
 global function. If this returns <cite>None</cite> (its default value), then the
 <cite>default_interaction_type</cite> of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ProbabilisticTDModule</span></code>
 instance will be used. Note that DataCollector instances will use

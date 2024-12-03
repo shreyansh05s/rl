@@ -594,21 +594,6 @@ video locally (notice that we are not exploring).</p>
 <span class="n">video_recorder</span><span class="o">.</span><span class="n">dump</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="sphx-glr-script-out highlight-pytb notranslate"><div class="highlight"><pre><span></span><span class="gt">Traceback (most recent call last):</span>
-  File <span class="nb">&quot;/pytorch/rl/docs/source/reference/generated/tutorials/getting-started-5.py&quot;</span>, line <span class="m">182</span>, in <span class="n">&lt;module&gt;</span>
-<span class="w">    </span><span class="n">video_recorder</span><span class="o">.</span><span class="n">dump</span><span class="p">()</span>
-  File <span class="nb">&quot;/pytorch/rl/torchrl/record/recorder.py&quot;</span>, line <span class="m">253</span>, in <span class="n">dump</span>
-<span class="w">    </span><span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">log_video</span><span class="p">(</span>
-  File <span class="nb">&quot;/pytorch/rl/torchrl/record/loggers/csv.py&quot;</span>, line <span class="m">198</span>, in <span class="n">log_video</span>
-<span class="w">    </span><span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">add_video</span><span class="p">(</span>
-  File <span class="nb">&quot;/pytorch/rl/torchrl/record/loggers/csv.py&quot;</span>, line <span class="m">102</span>, in <span class="n">add_video</span>
-<span class="w">    </span><span class="n">torchvision</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">write_video</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">vid_tensor</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-  File <span class="nb">&quot;/pytorch/rl/env/lib/python3.10/site-packages/torchvision/io/video.py&quot;</span>, line <span class="m">158</span>, in <span class="n">write_video</span>
-<span class="w">    </span><span class="n">frame</span><span class="o">.</span><span class="n">pict_type</span> <span class="o">=</span> <span class="s2">&quot;NONE&quot;</span>
-  File <span class="nb">&quot;av/video/frame.pyx&quot;</span>, line <span class="m">193</span>, in <span class="n">av.video.frame.VideoFrame.pict_type.__set__</span>
-<span class="gr">TypeError</span>: <span class="n">an integer is required</span>
-</pre></div>
-</div>
 <p>This is what your rendered CartPole video will look like after a full
 training loop:</p>
 <figure class="align-default">
@@ -616,8 +601,8 @@ training loop:</p>
 </figure>
 <p>This concludes our series of “Getting started with TorchRL” tutorials!
 Feel free to share feedback about it on GitHub.</p>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 20.923 seconds)</p>
-<p><strong>Estimated memory usage:</strong>  4692 MB</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 22.657 seconds)</p>
+<p><strong>Estimated memory usage:</strong>  327 MB</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-tutorials-getting-started-5-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/d04ba01cba3add54c2b1a3c96ae6320d/getting-started-5.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">getting-started-5.ipynb</span></code></a></p>

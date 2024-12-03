@@ -433,8 +433,8 @@ In practice, the location is computed according to</p>
 \[loc = tanh(loc / upscale) * upscale.\]</div>
 <p>Default is 5.0</p>
 </p></li>
-<li><p><strong>min</strong> (<a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.5)"><em>torch.Tensor</em></a><em> or </em><em>number</em><em>, </em><em>optional</em>) – minimum value of the distribution. Default = -1.0;</p></li>
-<li><p><strong>max</strong> (<a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.5)"><em>torch.Tensor</em></a><em> or </em><em>number</em><em>, </em><em>optional</em>) – maximum value of the distribution. Default = 1.0;</p></li>
+<li><p><strong>low</strong> (<a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.5)"><em>torch.Tensor</em></a><em> or </em><em>number</em><em>, </em><em>optional</em>) – minimum value of the distribution. Default = -1.0;</p></li>
+<li><p><strong>high</strong> (<a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.5)"><em>torch.Tensor</em></a><em> or </em><em>number</em><em>, </em><em>optional</em>) – maximum value of the distribution. Default = 1.0;</p></li>
 <li><p><strong>tanh_loc</strong> (<em>bool</em><em>, </em><em>optional</em>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code>, the above formula is used for
 the location scaling, otherwise the raw value is kept.
 Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>;</p></li>

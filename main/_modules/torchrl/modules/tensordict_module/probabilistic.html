@@ -471,12 +471,12 @@
 <span class="sd">            returned by the input module. If the sample is out of bounds, it is</span>
 <span class="sd">            projected back onto the desired space using the `TensorSpec.project` method.</span>
 <span class="sd">            Default is ``False``.</span>
-<span class="sd">        default_interaction_type (str, optional): default method to be used to retrieve</span>
-<span class="sd">            the output value. Should be one of: &#39;mode&#39;, &#39;median&#39;, &#39;mean&#39; or &#39;random&#39;</span>
+<span class="sd">        default_interaction_type (tensordict.nn.InteractionType, optional): default method to be used to retrieve</span>
+<span class="sd">            the output value. Should be one of: ``InteractionType.MODE``, ``InteractionType.MEDIAN``, ``InteractionType.MEAN`` or ``InteractionType.RANDOM``</span>
 <span class="sd">            (in which case the value is sampled randomly from the distribution). Default</span>
-<span class="sd">            is &#39;mode&#39;.</span>
+<span class="sd">            is ``InteractionType.MODE``.</span>
 <span class="sd">            Note: When a sample is drawn, the :obj:`ProbabilisticTDModule` instance will</span>
-<span class="sd">            fist look for the interaction mode dictated by the `interaction_typ()`</span>
+<span class="sd">            fist look for the interaction mode dictated by the `interaction_type()`</span>
 <span class="sd">            global function. If this returns `None` (its default value), then the</span>
 <span class="sd">            `default_interaction_type` of the :class:`~.ProbabilisticTDModule`</span>
 <span class="sd">            instance will be used. Note that DataCollector instances will use</span>
