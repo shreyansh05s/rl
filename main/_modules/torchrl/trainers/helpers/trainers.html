@@ -428,8 +428,8 @@
     <span class="n">BatchSubSampler</span><span class="p">,</span>
     <span class="n">ClearCudaCache</span><span class="p">,</span>
     <span class="n">CountFramesLog</span><span class="p">,</span>
-    <span class="n">LogReward</span><span class="p">,</span>
-    <span class="n">Recorder</span><span class="p">,</span>
+    <span class="n">LogScalar</span><span class="p">,</span>
+    <span class="n">LogValidationReward</span><span class="p">,</span>
     <span class="n">ReplayBufferTrainer</span><span class="p">,</span>
     <span class="n">RewardNormalizer</span><span class="p">,</span>
     <span class="n">SelectKeys</span><span class="p">,</span>
@@ -662,7 +662,7 @@
 
     <span class="k">if</span> <span class="n">recorder</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># create recorder object</span>
-        <span class="n">recorder_obj</span> <span class="o">=</span> <span class="n">Recorder</span><span class="p">(</span>
+        <span class="n">recorder_obj</span> <span class="o">=</span> <span class="n">LogValidationReward</span><span class="p">(</span>
             <span class="n">record_frames</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">record_frames</span><span class="p">,</span>
             <span class="n">frame_skip</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">frame_skip</span><span class="p">,</span>
             <span class="n">policy_exploration</span><span class="o">=</span><span class="n">policy_exploration</span><span class="p">,</span>
@@ -678,7 +678,7 @@
         <span class="c1"># call recorder - could be removed</span>
         <span class="n">recorder_obj</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
         <span class="c1"># create explorative recorder - could be optional</span>
-        <span class="n">recorder_obj_explore</span> <span class="o">=</span> <span class="n">Recorder</span><span class="p">(</span>
+        <span class="n">recorder_obj_explore</span> <span class="o">=</span> <span class="n">LogValidationReward</span><span class="p">(</span>
             <span class="n">record_frames</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">record_frames</span><span class="p">,</span>
             <span class="n">frame_skip</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">frame_skip</span><span class="p">,</span>
             <span class="n">policy_exploration</span><span class="o">=</span><span class="n">policy_exploration</span><span class="p">,</span>
@@ -700,7 +700,7 @@
         <span class="s2">&quot;post_steps&quot;</span><span class="p">,</span> <span class="n">UpdateWeights</span><span class="p">(</span><span class="n">collector</span><span class="p">,</span> <span class="n">update_weights_interval</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="p">)</span>
 
-    <span class="n">trainer</span><span class="o">.</span><span class="n">register_op</span><span class="p">(</span><span class="s2">&quot;pre_steps_log&quot;</span><span class="p">,</span> <span class="n">LogReward</span><span class="p">())</span>
+    <span class="n">trainer</span><span class="o">.</span><span class="n">register_op</span><span class="p">(</span><span class="s2">&quot;pre_steps_log&quot;</span><span class="p">,</span> <span class="n">LogScalar</span><span class="p">())</span>
     <span class="n">trainer</span><span class="o">.</span><span class="n">register_op</span><span class="p">(</span><span class="s2">&quot;pre_steps_log&quot;</span><span class="p">,</span> <span class="n">CountFramesLog</span><span class="p">(</span><span class="n">frame_skip</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">frame_skip</span><span class="p">))</span>
 
     <span class="k">return</span> <span class="n">trainer</span></div>
