@@ -794,7 +794,7 @@ Here's an example of how you can use AOTInductor to export your policy, inspired
 `AOTI documentation <https://pytorch.org/docs/main/torch.compiler_aot_inductor.html>`_:
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 336-357
+.. GENERATED FROM PYTHON SOURCE LINES 336-355
 
 .. code-block:: Python
 
@@ -808,8 +808,6 @@ Here's an example of how you can use AOTInductor to export your policy, inspired
         with torch.no_grad():
             pkg_path = aoti_compile_and_package(
                 exported_policy,
-                args=(),
-                kwargs={"pixels": pixels},
                 # Specify the generated shared library path
                 package_path=path,
             )
@@ -826,14 +824,18 @@ Here's an example of how you can use AOTInductor to export your policy, inspired
 .. code-block:: pytb
 
     Traceback (most recent call last):
-      File "/pytorch/rl/docs/source/reference/generated/tutorials/export.py", line 344, in <module>
-        pkg_path = aoti_compile_and_package(
-    TypeError: aoti_compile_and_package() got an unexpected keyword argument 'args'
+      File "/pytorch/rl/docs/source/reference/generated/tutorials/export.py", line 351, in <module>
+        compiled_module = aoti_load_package(pkg_path)
+      File "/pytorch/rl/env/lib/python3.10/site-packages/torch/_inductor/__init__.py", line 232, in aoti_load_package
+        return load_package(path)
+      File "/pytorch/rl/env/lib/python3.10/site-packages/torch/_inductor/package/package.py", line 248, in load_package
+        loader = torch._C._aoti.AOTIModelPackageLoader(path, model_name)  # type: ignore[call-arg]
+    RuntimeError: Error in dlopen: /lib64/libstdc++.so.6: version `GLIBCXX_3.4.29' not found (required by /tmp/0LVUZc/data/aotinductor/model/c2goiimtlhacd6ise5h6hqtlpa6cjtoayyrkq7qhptacnvclfjth.so)
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 358-387
+.. GENERATED FROM PYTHON SOURCE LINES 356-385
 
 Exporting TorchRL models with ONNX
 ----------------------------------
@@ -865,7 +867,7 @@ a good example of what we can achieve with ONNX.
 
 Let us see what this API looks like:
 
-.. GENERATED FROM PYTHON SOURCE LINES 388-409
+.. GENERATED FROM PYTHON SOURCE LINES 386-407
 
 .. code-block:: Python
 
@@ -891,12 +893,12 @@ Let us see what this API looks like:
     plt.title("Screen rendering of Pong game.")
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 410-412
+.. GENERATED FROM PYTHON SOURCE LINES 408-410
 
 Exporting to ONNX is quite similar the Export/AOTI above:
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 412-420
+.. GENERATED FROM PYTHON SOURCE LINES 410-418
 
 .. code-block:: Python
 
@@ -909,11 +911,11 @@ Exporting to ONNX is quite similar the Export/AOTI above:
         onnx_policy_export = torch.onnx.dynamo_export(policy_transform, pixels=pixels)
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 421-422
+.. GENERATED FROM PYTHON SOURCE LINES 419-420
 
 We can now save the program on disk and load it:
 
-.. GENERATED FROM PYTHON SOURCE LINES 422-433
+.. GENERATED FROM PYTHON SOURCE LINES 420-431
 
 .. code-block:: Python
 
@@ -929,7 +931,7 @@ We can now save the program on disk and load it:
     onnx_policy = ort_session.run(None, onnxruntime_input)
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 434-439
+.. GENERATED FROM PYTHON SOURCE LINES 432-437
 
 Running a rollout with ONNX
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -937,7 +939,7 @@ Running a rollout with ONNX
 We now have an ONNX model that runs our policy. Let's compare it to the original TorchRL instance: because it is
 more lightweight, the ONNX version should be faster than the TorchRL one.
 
-.. GENERATED FROM PYTHON SOURCE LINES 439-461
+.. GENERATED FROM PYTHON SOURCE LINES 437-459
 
 .. code-block:: Python
 
@@ -964,7 +966,7 @@ more lightweight, the ONNX version should be faster than the TorchRL one.
     print(timeit.print())
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 462-488
+.. GENERATED FROM PYTHON SOURCE LINES 460-486
 
 Note that ONNX also offers the possibility of optimizing models directly, but this is beyond the scope of this
 tutorial.
@@ -996,9 +998,9 @@ Further reading and learning steps:
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 40.506 seconds)
+   **Total running time of the script:** (0 minutes 57.427 seconds)
 
-**Estimated memory usage:**  4657 MB
+**Estimated memory usage:**  4729 MB
 
 
 .. _sphx_glr_download_tutorials_export.py:

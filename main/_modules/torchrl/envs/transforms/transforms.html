@@ -268,7 +268,7 @@
           <div class="pytorch-left-menu-search">
             
     <div class="version">
-      <a href="../../../../../versions.html"><span style="font-size:110%">main (0.6.1) &#x25BC</span></a>
+      <a href="../../../../../versions.html"><span style="font-size:110%">main (0.6.1+2511c04) &#x25BC</span></a>
     </div>
     
 
@@ -4724,6 +4724,217 @@
             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">(in_keys=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">in_keys</span><span class="si">}</span><span class="s2">, out_key&quot;</span>
             <span class="sa">f</span><span class="s2">&quot;=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">out_keys</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">)&quot;</span>
         <span class="p">)</span></div>
+
+
+<span class="k">class</span> <span class="nc">Stack</span><span class="p">(</span><span class="n">Transform</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Stacks tensors and tensordicts.</span>
+
+<span class="sd">    Concatenates a sequence of tensors or tensordicts along a new dimension.</span>
+<span class="sd">    The tensordicts or tensors under ``in_keys`` must all have the same shapes.</span>
+
+<span class="sd">    This transform only stacks the inputs into one output key. Stacking multiple</span>
+<span class="sd">    groups of input keys into different output keys requires multiple</span>
+<span class="sd">    transforms.</span>
+
+<span class="sd">    This transform can be useful for environments that have multiple agents with</span>
+<span class="sd">    identical specs under different keys. The specs and tensordicts for the</span>
+<span class="sd">    agents can be stacked together under a shared key, in order to run MARL</span>
+<span class="sd">    algorithms that expect the tensors for observations, rewards, etc. to</span>
+<span class="sd">    contain batched data for all the agents.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        in_keys (sequence of NestedKey): keys to be stacked.</span>
+<span class="sd">        out_key (NestedKey): key of the resulting stacked entry.</span>
+<span class="sd">        in_key_inv (NestedKey, optional): key to unstack during :meth:`~.inv`</span>
+<span class="sd">            calls. Default is ``None``.</span>
+<span class="sd">        out_keys_inv (sequence of NestedKey, optional): keys of the resulting</span>
+<span class="sd">            unstacked entries after :meth:`~.inv` calls. Default is ``None``.</span>
+<span class="sd">        dim (int, optional): dimension to insert. Default is ``-1``.</span>
+<span class="sd">        allow_positive_dim (bool, optional): if ``True``, positive dimensions</span>
+<span class="sd">            are accepted.  Defaults to ``False``, ie. non-negative dimensions are</span>
+<span class="sd">            not permitted.</span>
+
+<span class="sd">    Keyword Args:</span>
+<span class="sd">        del_keys (bool, optional): if ``True``, the input values will be deleted</span>
+<span class="sd">            after stacking. Default is ``True``.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; import torch</span>
+<span class="sd">        &gt;&gt;&gt; from tensordict import TensorDict</span>
+<span class="sd">        &gt;&gt;&gt; from torchrl.envs import Stack</span>
+<span class="sd">        &gt;&gt;&gt; td = TensorDict({&quot;key1&quot;: torch.zeros(3), &quot;key2&quot;: torch.ones(3)}, [])</span>
+<span class="sd">        &gt;&gt;&gt; td</span>
+<span class="sd">        TensorDict(</span>
+<span class="sd">            fields={</span>
+<span class="sd">                key1: Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float32, is_shared=False),</span>
+<span class="sd">                key2: Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float32, is_shared=False)},</span>
+<span class="sd">            batch_size=torch.Size([]),</span>
+<span class="sd">            device=None,</span>
+<span class="sd">            is_shared=False)</span>
+<span class="sd">        &gt;&gt;&gt; transform = Stack(in_keys=[&quot;key1&quot;, &quot;key2&quot;], out_key=&quot;out&quot;, dim=-2)</span>
+<span class="sd">        &gt;&gt;&gt; transform(td)</span>
+<span class="sd">        TensorDict(</span>
+<span class="sd">            fields={</span>
+<span class="sd">                out: Tensor(shape=torch.Size([2, 3]), device=cpu, dtype=torch.float32, is_shared=False)},</span>
+<span class="sd">            batch_size=torch.Size([]),</span>
+<span class="sd">            device=None,</span>
+<span class="sd">            is_shared=False)</span>
+<span class="sd">        &gt;&gt;&gt; td[&quot;out&quot;]</span>
+<span class="sd">        tensor([[0., 0., 0.],</span>
+<span class="sd">                [1., 1., 1.]])</span>
+
+<span class="sd">        &gt;&gt;&gt; agent_0 = TensorDict({&quot;obs&quot;: torch.rand(4, 5), &quot;reward&quot;: torch.zeros(1)})</span>
+<span class="sd">        &gt;&gt;&gt; agent_1 = TensorDict({&quot;obs&quot;: torch.rand(4, 5), &quot;reward&quot;: torch.zeros(1)})</span>
+<span class="sd">        &gt;&gt;&gt; td = TensorDict({&quot;agent_0&quot;: agent_0, &quot;agent_1&quot;: agent_1})</span>
+<span class="sd">        &gt;&gt;&gt; transform = Stack(in_keys=[&quot;agent_0&quot;, &quot;agent_1&quot;], out_key=&quot;agents&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; transform(td)</span>
+<span class="sd">        TensorDict(</span>
+<span class="sd">            fields={</span>
+<span class="sd">                agents: TensorDict(</span>
+<span class="sd">                    fields={</span>
+<span class="sd">                        obs: Tensor(shape=torch.Size([2, 4, 5]), device=cpu, dtype=torch.float32, is_shared=False),</span>
+<span class="sd">                        reward: Tensor(shape=torch.Size([2, 1]), device=cpu, dtype=torch.float32, is_shared=False)},</span>
+<span class="sd">                    batch_size=torch.Size([2]),</span>
+<span class="sd">                    device=None,</span>
+<span class="sd">                    is_shared=False)},</span>
+<span class="sd">            batch_size=torch.Size([]),</span>
+<span class="sd">            device=None,</span>
+<span class="sd">            is_shared=False)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">invertible</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">in_keys</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">NestedKey</span><span class="p">],</span>
+        <span class="n">out_key</span><span class="p">:</span> <span class="n">NestedKey</span><span class="p">,</span>
+        <span class="n">in_key_inv</span><span class="p">:</span> <span class="n">NestedKey</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">out_keys_inv</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">NestedKey</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">dim</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">allow_positive_dim</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">del_keys</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">allow_positive_dim</span> <span class="ow">and</span> <span class="n">dim</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;dim should be negative to accommodate for envs of different &quot;</span>
+                <span class="s2">&quot;batch_sizes. If you need dim to be positive, set &quot;</span>
+                <span class="s2">&quot;allow_positive_dim=True.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">in_key_inv</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">out_keys_inv</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;out_keys_inv was specified, but in_key_inv was not&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">in_key_inv</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">out_keys_inv</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;in_key_inv was specified, but out_keys_inv was not&quot;</span><span class="p">)</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">Stack</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">in_keys</span><span class="o">=</span><span class="n">in_keys</span><span class="p">,</span>
+            <span class="n">out_keys</span><span class="o">=</span><span class="p">[</span><span class="n">out_key</span><span class="p">],</span>
+            <span class="n">in_keys_inv</span><span class="o">=</span><span class="kc">None</span> <span class="k">if</span> <span class="n">in_key_inv</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">[</span><span class="n">in_key_inv</span><span class="p">],</span>
+            <span class="n">out_keys_inv</span><span class="o">=</span><span class="n">out_keys_inv</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">in_key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_keys</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">in_key</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">out_keys</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">k1</span> <span class="o">==</span> <span class="n">k2</span> <span class="k">for</span> <span class="n">k1</span><span class="p">,</span> <span class="n">k2</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">in_key</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_keys</span><span class="p">[</span><span class="mi">0</span><span class="p">])):</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">: out_key cannot be in in_keys&quot;</span><span class="p">)</span>
+        <span class="n">parent_keys</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_keys</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+                <span class="k">for</span> <span class="n">parent_level</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">key</span><span class="p">)):</span>
+                    <span class="n">parent_key</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">key</span><span class="p">[:</span><span class="o">-</span><span class="n">parent_level</span><span class="p">])</span>
+                    <span class="k">if</span> <span class="n">parent_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">parent_keys</span><span class="p">:</span>
+                        <span class="n">parent_keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">parent_key</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_maybe_del_parent_keys</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">parent_keys</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="nb">len</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">=</span> <span class="n">dim</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_del_keys</span> <span class="o">=</span> <span class="n">del_keys</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_keys_to_exclude</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">_call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">in_key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_keys</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">in_key</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">missing_tolerance</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">: &#39;</span><span class="si">{</span><span class="n">in_key</span><span class="si">}</span><span class="s2">&#39; not found in tensordict </span><span class="si">{</span><span class="n">tensordict</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+
+        <span class="n">out_tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">)</span>
+        <span class="n">tensordict</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">out_keys</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">out_tensor</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_del_keys</span><span class="p">:</span>
+            <span class="n">tensordict</span><span class="o">.</span><span class="n">exclude</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">in_keys</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">parent_key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_maybe_del_parent_keys</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tensordict</span><span class="p">[</span><span class="n">parent_key</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">tensordict</span><span class="o">.</span><span class="n">exclude</span><span class="p">(</span><span class="n">parent_key</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tensordict</span>
+
+    <span class="n">forward</span> <span class="o">=</span> <span class="n">_call</span>
+
+    <span class="k">def</span> <span class="nf">_inv_call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">in_keys_inv</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">tensordict</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_keys_inv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="n">include_nested</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">tensordict</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">unbind</span><span class="p">(</span><span class="n">tensordict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">in_keys_inv</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">dim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">value</span><span class="p">,</span> <span class="n">out_key_inv</span> <span class="ow">in</span> <span class="n">_zip_strict</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_keys_inv</span><span class="p">):</span>
+            <span class="n">tensordict</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">out_key_inv</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">exclude</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">in_keys_inv</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">_reset</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">,</span> <span class="n">tensordict_reset</span><span class="p">:</span> <span class="n">TensorDictBase</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">_set_missing_tolerance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
+            <span class="n">tensordict_reset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call</span><span class="p">(</span><span class="n">tensordict_reset</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tensordict_reset</span>
+
+    <span class="k">def</span> <span class="nf">_transform_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spec</span><span class="p">:</span> <span class="n">TensorSpec</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorSpec</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">Composite</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">: Only specs of type Composite can be transformed&quot;</span><span class="p">)</span>
+
+        <span class="n">spec_keys</span> <span class="o">=</span> <span class="n">spec</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="n">include_nested</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">keys_to_stack</span> <span class="o">=</span> <span class="p">[</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">spec_keys</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_keys</span><span class="p">]</span>
+        <span class="n">specs_to_stack</span> <span class="o">=</span> <span class="p">[</span><span class="n">spec</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys_to_stack</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">specs_to_stack</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">spec</span>
+
+        <span class="n">stacked_specs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">specs_to_stack</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">)</span>
+        <span class="n">spec</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">out_keys</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">stacked_specs</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_del_keys</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys_to_stack</span><span class="p">:</span>
+                <span class="k">del</span> <span class="n">spec</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">parent_key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_maybe_del_parent_keys</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">spec</span><span class="p">[</span><span class="n">parent_key</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">del</span> <span class="n">spec</span><span class="p">[</span><span class="n">parent_key</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">spec</span>
+
+    <span class="k">def</span> <span class="nf">transform_input_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_spec</span><span class="p">:</span> <span class="n">TensorSpec</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorSpec</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_transform_spec</span><span class="p">(</span><span class="n">input_spec</span><span class="p">[</span><span class="s2">&quot;full_state_spec&quot;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_transform_spec</span><span class="p">(</span><span class="n">input_spec</span><span class="p">[</span><span class="s2">&quot;full_action_spec&quot;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">input_spec</span>
+
+    <span class="k">def</span> <span class="nf">transform_observation_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observation_spec</span><span class="p">:</span> <span class="n">TensorSpec</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorSpec</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transform_spec</span><span class="p">(</span><span class="n">observation_spec</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">transform_reward_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reward_spec</span><span class="p">:</span> <span class="n">TensorSpec</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorSpec</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transform_spec</span><span class="p">(</span><span class="n">reward_spec</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">transform_done_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">done_spec</span><span class="p">:</span> <span class="n">TensorSpec</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorSpec</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transform_spec</span><span class="p">(</span><span class="n">done_spec</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">(&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;in_keys=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">in_keys</span><span class="si">}</span><span class="s2">, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;out_key=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">out_keys</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;dim=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;)&quot;</span>
+        <span class="p">)</span>
 
 
 <div class="viewcode-block" id="DiscreteActionProjection"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.DiscreteActionProjection.html#torchrl.envs.transforms.DiscreteActionProjection">[docs]</a><span class="k">class</span> <span class="nc">DiscreteActionProjection</span><span class="p">(</span><span class="n">Transform</span><span class="p">):</span>
