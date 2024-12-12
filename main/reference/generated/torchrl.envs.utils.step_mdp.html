@@ -271,7 +271,7 @@
           <div class="pytorch-left-menu-search">
             
     <div class="version">
-      <a href="../../../versions.html"><span style="font-size:110%">main (0.6.1+4bc40a8) &#x25BC</span></a>
+      <a href="../../../versions.html"><span style="font-size:110%">main (0.6.1+6c7d233) &#x25BC</span></a>
     </div>
     
 
@@ -416,44 +416,48 @@
 <span class="sig-prename descclassname"><span class="pre">torchrl.envs.utils.</span></span><span class="sig-name descname"><span class="pre">step_mdp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensordict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TensorDictBase</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">next_tensordict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">TensorDictBase</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_reward</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_done</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_action</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reward_keys</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">NestedKey</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">NestedKey</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'reward'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">done_keys</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">NestedKey</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">NestedKey</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'done'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">action_keys</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">NestedKey</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">NestedKey</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'action'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">TensorDictBase</span></span></span><a class="reference internal" href="../../_modules/torchrl/envs/utils.html#step_mdp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.envs.utils.step_mdp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a new tensordict that reflects a step in time of the input tensordict.</p>
 <p>Given a tensordict retrieved after a step, returns the <code class="xref py py-obj docutils literal notranslate"><span class="pre">&quot;next&quot;</span></code> indexed-tensordict.
-The arguments allow for a precise control over what should be kept and what
+The arguments allow for precise control over what should be kept and what
 should be copied from the <code class="docutils literal notranslate"><span class="pre">&quot;next&quot;</span></code> entry. The default behavior is:
-move the observation entries, reward and done states to the root, exclude
-the current action and keep all extra keys (non-action, non-done, non-reward).</p>
+move the observation entries, reward, and done states to the root, exclude
+the current action, and keep all extra keys (non-action, non-done, non-reward).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>tensordict</strong> (<em>TensorDictBase</em>) – tensordict with keys to be renamed</p></li>
-<li><p><strong>next_tensordict</strong> (<em>TensorDictBase</em><em>, </em><em>optional</em>) – destination tensordict</p></li>
-<li><p><strong>keep_other</strong> (<em>bool</em><em>, </em><em>optional</em>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code>, all keys that do not start with <code class="xref py py-obj docutils literal notranslate"><span class="pre">'next_'</span></code> will be kept.
+<li><p><strong>tensordict</strong> (<em>TensorDictBase</em>) – The tensordict with keys to be renamed.</p></li>
+<li><p><strong>next_tensordict</strong> (<em>TensorDictBase</em><em>, </em><em>optional</em>) – The destination tensordict. If <cite>None</cite>, a new tensordict is created.</p></li>
+<li><p><strong>keep_other</strong> (<em>bool</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, all keys that do not start with <code class="xref py py-obj docutils literal notranslate"><span class="pre">'next_'</span></code> will be kept.
 Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
-<li><p><strong>exclude_reward</strong> (<em>bool</em><em>, </em><em>optional</em>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code>, the <code class="xref py py-obj docutils literal notranslate"><span class="pre">&quot;reward&quot;</span></code> key will be discarded
+<li><p><strong>exclude_reward</strong> (<em>bool</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, the <code class="xref py py-obj docutils literal notranslate"><span class="pre">&quot;reward&quot;</span></code> key will be discarded
 from the resulting tensordict. If <code class="docutils literal notranslate"><span class="pre">False</span></code>, it will be copied (and replaced)
-from the <code class="docutils literal notranslate"><span class="pre">&quot;next&quot;</span></code> entry (if present).
-Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
-<li><p><strong>exclude_done</strong> (<em>bool</em><em>, </em><em>optional</em>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code>, the <code class="xref py py-obj docutils literal notranslate"><span class="pre">&quot;done&quot;</span></code> key will be discarded
+from the <code class="docutils literal notranslate"><span class="pre">&quot;next&quot;</span></code> entry (if present). Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>exclude_done</strong> (<em>bool</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, the <code class="xref py py-obj docutils literal notranslate"><span class="pre">&quot;done&quot;</span></code> key will be discarded
 from the resulting tensordict. If <code class="docutils literal notranslate"><span class="pre">False</span></code>, it will be copied (and replaced)
-from the <code class="docutils literal notranslate"><span class="pre">&quot;next&quot;</span></code> entry (if present).
-Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
-<li><p><strong>exclude_action</strong> (<em>bool</em><em>, </em><em>optional</em>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code>, the <code class="xref py py-obj docutils literal notranslate"><span class="pre">&quot;action&quot;</span></code> key will
+from the <code class="docutils literal notranslate"><span class="pre">&quot;next&quot;</span></code> entry (if present). Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>exclude_action</strong> (<em>bool</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, the <code class="xref py py-obj docutils literal notranslate"><span class="pre">&quot;action&quot;</span></code> key will
 be discarded from the resulting tensordict. If <code class="docutils literal notranslate"><span class="pre">False</span></code>, it will
 be kept in the root tensordict (since it should not be present in
-the <code class="docutils literal notranslate"><span class="pre">&quot;next&quot;</span></code> entry).
-Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
-<li><p><strong>reward_keys</strong> (<em>NestedKey</em><em> or </em><em>list of NestedKey</em><em>, </em><em>optional</em>) – the keys where the reward is written. Defaults
+the <code class="docutils literal notranslate"><span class="pre">&quot;next&quot;</span></code> entry). Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>reward_keys</strong> (<em>NestedKey</em><em> or </em><em>list of NestedKey</em><em>, </em><em>optional</em>) – The keys where the reward is written. Defaults
 to “reward”.</p></li>
-<li><p><strong>done_keys</strong> (<em>NestedKey</em><em> or </em><em>list of NestedKey</em><em>, </em><em>optional</em>) – the keys where the done is written. Defaults
+<li><p><strong>done_keys</strong> (<em>NestedKey</em><em> or </em><em>list of NestedKey</em><em>, </em><em>optional</em>) – The keys where the done is written. Defaults
 to “done”.</p></li>
-<li><p><strong>action_keys</strong> (<em>NestedKey</em><em> or </em><em>list of NestedKey</em><em>, </em><em>optional</em>) – the keys where the action is written. Defaults
+<li><p><strong>action_keys</strong> (<em>NestedKey</em><em> or </em><em>list of NestedKey</em><em>, </em><em>optional</em>) – The keys where the action is written. Defaults
 to “action”.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A new tensordict (or next_tensordict) containing the tensors of the t+1 step.</p>
+<dd class="field-even"><p>A new tensordict (or <cite>next_tensordict</cite> if provided) containing the tensors of the t+1 step.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>TensorDictBase</p>
 </dd>
 </dl>
-<p>Examples:
-This funtion allows for this kind of loop to be used:</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-meth docutils literal notranslate"><span class="pre">EnvBase.step_mdp()</span></code> is the class-based version of this free function. It will attempt to cache the
+key values to reduce the overhead of making a step in the MDP.</p>
+</div>
+<p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">tensordict</span> <span class="kn">import</span> <span class="n">TensorDict</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">torch</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">td</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="p">({</span>

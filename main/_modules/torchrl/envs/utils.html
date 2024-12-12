@@ -268,7 +268,7 @@
           <div class="pytorch-left-menu-search">
             
     <div class="version">
-      <a href="../../../../versions.html"><span style="font-size:110%">main (0.6.1+4bc40a8) &#x25BC</span></a>
+      <a href="../../../../versions.html"><span style="font-size:110%">main (0.6.1+6c7d233) &#x25BC</span></a>
     </div>
     
 
@@ -417,7 +417,7 @@
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
 
 <span class="kn">import</span> <span class="nn">torch</span>
 
@@ -742,48 +742,47 @@
     <span class="n">exclude_reward</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">exclude_done</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">exclude_action</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="n">reward_keys</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">NestedKey</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">NestedKey</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;reward&quot;</span><span class="p">,</span>
-    <span class="n">done_keys</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">NestedKey</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">NestedKey</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;done&quot;</span><span class="p">,</span>
-    <span class="n">action_keys</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">NestedKey</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">NestedKey</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;action&quot;</span><span class="p">,</span>
+    <span class="n">reward_keys</span><span class="p">:</span> <span class="n">NestedKey</span> <span class="o">|</span> <span class="n">List</span><span class="p">[</span><span class="n">NestedKey</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;reward&quot;</span><span class="p">,</span>
+    <span class="n">done_keys</span><span class="p">:</span> <span class="n">NestedKey</span> <span class="o">|</span> <span class="n">List</span><span class="p">[</span><span class="n">NestedKey</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;done&quot;</span><span class="p">,</span>
+    <span class="n">action_keys</span><span class="p">:</span> <span class="n">NestedKey</span> <span class="o">|</span> <span class="n">List</span><span class="p">[</span><span class="n">NestedKey</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;action&quot;</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates a new tensordict that reflects a step in time of the input tensordict.</span>
 
 <span class="sd">    Given a tensordict retrieved after a step, returns the :obj:`&quot;next&quot;` indexed-tensordict.</span>
-<span class="sd">    The arguments allow for a precise control over what should be kept and what</span>
+<span class="sd">    The arguments allow for precise control over what should be kept and what</span>
 <span class="sd">    should be copied from the ``&quot;next&quot;`` entry. The default behavior is:</span>
-<span class="sd">    move the observation entries, reward and done states to the root, exclude</span>
-<span class="sd">    the current action and keep all extra keys (non-action, non-done, non-reward).</span>
+<span class="sd">    move the observation entries, reward, and done states to the root, exclude</span>
+<span class="sd">    the current action, and keep all extra keys (non-action, non-done, non-reward).</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        tensordict (TensorDictBase): tensordict with keys to be renamed</span>
-<span class="sd">        next_tensordict (TensorDictBase, optional): destination tensordict</span>
-<span class="sd">        keep_other (bool, optional): if ``True``, all keys that do not start with :obj:`&#39;next_&#39;` will be kept.</span>
+<span class="sd">        tensordict (TensorDictBase): The tensordict with keys to be renamed.</span>
+<span class="sd">        next_tensordict (TensorDictBase, optional): The destination tensordict. If `None`, a new tensordict is created.</span>
+<span class="sd">        keep_other (bool, optional): If ``True``, all keys that do not start with :obj:`&#39;next_&#39;` will be kept.</span>
 <span class="sd">            Default is ``True``.</span>
-<span class="sd">        exclude_reward (bool, optional): if ``True``, the :obj:`&quot;reward&quot;` key will be discarded</span>
+<span class="sd">        exclude_reward (bool, optional): If ``True``, the :obj:`&quot;reward&quot;` key will be discarded</span>
 <span class="sd">            from the resulting tensordict. If ``False``, it will be copied (and replaced)</span>
-<span class="sd">            from the ``&quot;next&quot;`` entry (if present).</span>
-<span class="sd">            Default is ``True``.</span>
-<span class="sd">        exclude_done (bool, optional): if ``True``, the :obj:`&quot;done&quot;` key will be discarded</span>
+<span class="sd">            from the ``&quot;next&quot;`` entry (if present). Default is ``True``.</span>
+<span class="sd">        exclude_done (bool, optional): If ``True``, the :obj:`&quot;done&quot;` key will be discarded</span>
 <span class="sd">            from the resulting tensordict. If ``False``, it will be copied (and replaced)</span>
-<span class="sd">            from the ``&quot;next&quot;`` entry (if present).</span>
-<span class="sd">            Default is ``False``.</span>
-<span class="sd">        exclude_action (bool, optional): if ``True``, the :obj:`&quot;action&quot;` key will</span>
+<span class="sd">            from the ``&quot;next&quot;`` entry (if present). Default is ``False``.</span>
+<span class="sd">        exclude_action (bool, optional): If ``True``, the :obj:`&quot;action&quot;` key will</span>
 <span class="sd">            be discarded from the resulting tensordict. If ``False``, it will</span>
 <span class="sd">            be kept in the root tensordict (since it should not be present in</span>
-<span class="sd">            the ``&quot;next&quot;`` entry).</span>
-<span class="sd">            Default is ``True``.</span>
-<span class="sd">        reward_keys (NestedKey or list of NestedKey, optional): the keys where the reward is written. Defaults</span>
+<span class="sd">            the ``&quot;next&quot;`` entry). Default is ``True``.</span>
+<span class="sd">        reward_keys (NestedKey or list of NestedKey, optional): The keys where the reward is written. Defaults</span>
 <span class="sd">            to &quot;reward&quot;.</span>
-<span class="sd">        done_keys (NestedKey or list of NestedKey, optional): the keys where the done is written. Defaults</span>
+<span class="sd">        done_keys (NestedKey or list of NestedKey, optional): The keys where the done is written. Defaults</span>
 <span class="sd">            to &quot;done&quot;.</span>
-<span class="sd">        action_keys (NestedKey or list of NestedKey, optional): the keys where the action is written. Defaults</span>
+<span class="sd">        action_keys (NestedKey or list of NestedKey, optional): The keys where the action is written. Defaults</span>
 <span class="sd">            to &quot;action&quot;.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">         A new tensordict (or next_tensordict) containing the tensors of the t+1 step.</span>
+<span class="sd">        TensorDictBase: A new tensordict (or `next_tensordict` if provided) containing the tensors of the t+1 step.</span>
+
+<span class="sd">    .. seealso:: :meth:`EnvBase.step_mdp` is the class-based version of this free function. It will attempt to cache the</span>
+<span class="sd">        key values to reduce the overhead of making a step in the MDP.</span>
 
 <span class="sd">    Examples:</span>
-<span class="sd">    This funtion allows for this kind of loop to be used:</span>
 <span class="sd">        &gt;&gt;&gt; from tensordict import TensorDict</span>
 <span class="sd">        &gt;&gt;&gt; import torch</span>
 <span class="sd">        &gt;&gt;&gt; td = TensorDict({</span>
@@ -1187,8 +1186,8 @@
 
     <span class="k">if</span> <span class="n">_has_dynamic_specs</span><span class="p">(</span><span class="n">env</span><span class="o">.</span><span class="n">specs</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">real</span><span class="p">,</span> <span class="n">fake</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
-            <span class="n">real_tensordict</span><span class="o">.</span><span class="n">filter_non_tensor_data</span><span class="p">()</span><span class="o">.</span><span class="n">unbind</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span>
-            <span class="n">fake_tensordict</span><span class="o">.</span><span class="n">filter_non_tensor_data</span><span class="p">()</span><span class="o">.</span><span class="n">unbind</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span>
+            <span class="n">real_tensordict_select</span><span class="o">.</span><span class="n">filter_non_tensor_data</span><span class="p">()</span><span class="o">.</span><span class="n">unbind</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span>
+            <span class="n">fake_tensordict_select</span><span class="o">.</span><span class="n">filter_non_tensor_data</span><span class="p">()</span><span class="o">.</span><span class="n">unbind</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span>
         <span class="p">):</span>
             <span class="n">fake</span> <span class="o">=</span> <span class="n">fake</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">expand_as</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="n">real</span><span class="p">)</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">real</span><span class="p">)</span> <span class="o">!=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">fake</span><span class="p">))</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>

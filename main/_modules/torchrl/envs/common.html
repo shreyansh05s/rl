@@ -268,7 +268,7 @@
           <div class="pytorch-left-menu-search">
             
     <div class="version">
-      <a href="../../../../versions.html"><span style="font-size:110%">main (0.6.1+4bc40a8) &#x25BC</span></a>
+      <a href="../../../../versions.html"><span style="font-size:110%">main (0.6.1+6c7d233) &#x25BC</span></a>
     </div>
     
 
@@ -963,6 +963,25 @@
         <span class="k">return</span> <span class="n">check_env_specs_func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="n">check_env_specs</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">check_env_specs_func</span><span class="o">.</span><span class="vm">__doc__</span>
+
+<div class="viewcode-block" id="EnvBase.cardinality"><a class="viewcode-back" href="../../../reference/generated/torchrl.envs.EnvBase.html#torchrl.envs.EnvBase.cardinality">[docs]</a>    <span class="k">def</span> <span class="nf">cardinality</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The cardinality of the action space.</span>
+
+<span class="sd">        By default, this is just a wrapper around :meth:`env.action_space.cardinality &lt;~torchrl.data.TensorSpec.cardinality&gt;`.</span>
+
+<span class="sd">        This class is useful when the action spec is variable:</span>
+
+<span class="sd">        - The number of actions can be undefined, e.g., ``Categorical(n=-1)``;</span>
+<span class="sd">        - The action cardinality may depend on the action mask;</span>
+<span class="sd">        - The shape can be dynamic, as in ``Unbound(shape=(-1))``.</span>
+
+<span class="sd">        In these cases, the :meth:`~.cardinality` should be overwritten,</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            tensordict (TensorDictBase, optional): a tensordict containing the data required to compute the cardinality.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">full_action_spec</span><span class="o">.</span><span class="n">cardinality</span><span class="p">()</span></div>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">_inplace_update</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">_batch_locked</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
