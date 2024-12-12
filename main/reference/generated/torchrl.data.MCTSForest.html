@@ -271,7 +271,7 @@
           <div class="pytorch-left-menu-search">
             
     <div class="version">
-      <a href="../../../versions.html"><span style="font-size:110%">main (0.6.1+19dfefc) &#x25BC</span></a>
+      <a href="../../../versions.html"><span style="font-size:110%">main (0.6.1+57dc25a) &#x25BC</span></a>
     </div>
     
 
@@ -413,8 +413,12 @@
 <h1>MCTSForest<a class="headerlink" href="#mctsforest" title="Permalink to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="torchrl.data.MCTSForest">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">torchrl.data.</span></span><span class="sig-name descname"><span class="pre">MCTSForest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_map</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="torchrl.data.TensorDictMap.html#torchrl.data.TensorDictMap" title="torchrl.data.map.tdstorage.TensorDictMap"><span class="pre">TensorDictMap</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_map</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="torchrl.data.TensorDictMap.html#torchrl.data.TensorDictMap" title="torchrl.data.map.tdstorage.TensorDictMap"><span class="pre">TensorDictMap</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">done_keys</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">NestedKey</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reward_keys</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">NestedKey</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observation_keys</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">NestedKey</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">action_keys</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">NestedKey</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">consolidated</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/torchrl/data/map/tree.html#MCTSForest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.data.MCTSForest" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">torchrl.data.</span></span><span class="sig-name descname"><span class="pre">MCTSForest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_map</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="torchrl.data.TensorDictMap.html#torchrl.data.TensorDictMap" title="torchrl.data.map.tdstorage.TensorDictMap"><span class="pre">TensorDictMap</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_map</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="torchrl.data.TensorDictMap.html#torchrl.data.TensorDictMap" title="torchrl.data.map.tdstorage.TensorDictMap"><span class="pre">TensorDictMap</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">done_keys</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">NestedKey</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reward_keys</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">NestedKey</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observation_keys</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">NestedKey</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">action_keys</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">NestedKey</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">excluded_keys</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">NestedKey</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">consolidated</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/torchrl/data/map/tree.html#MCTSForest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.data.MCTSForest" title="Permalink to this definition">¶</a></dt>
 <dd><p>A collection of MCTS trees.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This class is currently under active development. Expect frequent API changes.</p>
+</div>
 <p>The class is aimed at storing rollouts in a storage, and produce trees based on a given root
 in that dataset.</p>
 <dl class="field-list simple">
@@ -422,20 +426,33 @@ in that dataset.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data_map</strong> (<a class="reference internal" href="torchrl.data.TensorDictMap.html#torchrl.data.TensorDictMap" title="torchrl.data.TensorDictMap"><em>TensorDictMap</em></a><em>, </em><em>optional</em>) – the storage to use to store the data
 (observation, reward, states etc). If not provided, it is lazily
-initialized using <code class="xref py py-meth docutils literal notranslate"><span class="pre">from_tensordict_pair()</span></code>.</p></li>
-<li><p><strong>node_map</strong> (<a class="reference internal" href="torchrl.data.TensorDictMap.html#torchrl.data.TensorDictMap" title="torchrl.data.TensorDictMap"><em>TensorDictMap</em></a><em>, </em><em>optional</em>) – TODO</p></li>
-<li><p><strong>done_keys</strong> (<em>list of NestedKey</em>) – the done keys of the environment. If not provided,
+initialized using <code class="xref py py-meth docutils literal notranslate"><span class="pre">from_tensordict_pair()</span></code>
+using the list of <a class="reference internal" href="#torchrl.data.MCTSForest.observation_keys" title="torchrl.data.MCTSForest.observation_keys"><code class="xref py py-attr docutils literal notranslate"><span class="pre">observation_keys</span></code></a> and <a class="reference internal" href="#torchrl.data.MCTSForest.action_keys" title="torchrl.data.MCTSForest.action_keys"><code class="xref py py-attr docutils literal notranslate"><span class="pre">action_keys</span></code></a> as <code class="docutils literal notranslate"><span class="pre">in_keys</span></code>.</p></li>
+<li><p><strong>node_map</strong> (<a class="reference internal" href="torchrl.data.TensorDictMap.html#torchrl.data.TensorDictMap" title="torchrl.data.TensorDictMap"><em>TensorDictMap</em></a><em>, </em><em>optional</em>) – a map from the observation space to the index space.
+Internally, the node map is used to gather all possible branches coming out of
+a given node. For example, if an observation has two associated actions and outcomes
+in the data map, then the <code class="xref py py-attr docutils literal notranslate"><span class="pre">node_map</span></code> will return a data structure containing the
+two indices in the <code class="xref py py-attr docutils literal notranslate"><span class="pre">data_map</span></code> that correspond to these two outcomes.
+If not provided, it is lazily initialized using
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">from_tensordict_pair()</span></code> using the list of
+<a class="reference internal" href="#torchrl.data.MCTSForest.observation_keys" title="torchrl.data.MCTSForest.observation_keys"><code class="xref py py-attr docutils literal notranslate"><span class="pre">observation_keys</span></code></a> as <code class="docutils literal notranslate"><span class="pre">in_keys</span></code> and the <a class="reference internal" href="torchrl.data.QueryModule.html#torchrl.data.QueryModule" title="torchrl.data.QueryModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueryModule</span></code></a> as
+<code class="docutils literal notranslate"><span class="pre">out_keys</span></code>.</p></li>
+<li><p><strong>max_size</strong> (<em>int</em><em>, </em><em>optional</em>) – the size of the maps.
+If not provided, defaults to <code class="docutils literal notranslate"><span class="pre">data_map.max_size</span></code> if this can be found, then
+<code class="docutils literal notranslate"><span class="pre">node_map.max_size</span></code>. If none of these are provided, defaults to <cite>1000</cite>.</p></li>
+<li><p><strong>done_keys</strong> (<em>list of NestedKey</em><em>, </em><em>optional</em>) – the done keys of the environment. If not provided,
 defaults to <code class="docutils literal notranslate"><span class="pre">(&quot;done&quot;,</span> <span class="pre">&quot;terminated&quot;,</span> <span class="pre">&quot;truncated&quot;)</span></code>.
 The <a class="reference internal" href="#torchrl.data.MCTSForest.get_keys_from_env" title="torchrl.data.MCTSForest.get_keys_from_env"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_keys_from_env()</span></code></a> can be used to automatically determine the keys.</p></li>
-<li><p><strong>action_keys</strong> (<em>list of NestedKey</em>) – the action keys of the environment. If not provided,
+<li><p><strong>action_keys</strong> (<em>list of NestedKey</em><em>, </em><em>optional</em>) – the action keys of the environment. If not provided,
 defaults to <code class="docutils literal notranslate"><span class="pre">(&quot;action&quot;,)</span></code>.
 The <a class="reference internal" href="#torchrl.data.MCTSForest.get_keys_from_env" title="torchrl.data.MCTSForest.get_keys_from_env"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_keys_from_env()</span></code></a> can be used to automatically determine the keys.</p></li>
-<li><p><strong>reward_keys</strong> (<em>list of NestedKey</em>) – the reward keys of the environment. If not provided,
+<li><p><strong>reward_keys</strong> (<em>list of NestedKey</em><em>, </em><em>optional</em>) – the reward keys of the environment. If not provided,
 defaults to <code class="docutils literal notranslate"><span class="pre">(&quot;reward&quot;,)</span></code>.
 The <a class="reference internal" href="#torchrl.data.MCTSForest.get_keys_from_env" title="torchrl.data.MCTSForest.get_keys_from_env"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_keys_from_env()</span></code></a> can be used to automatically determine the keys.</p></li>
-<li><p><strong>observation_keys</strong> (<em>list of NestedKey</em>) – the observation keys of the environment. If not provided,
+<li><p><strong>observation_keys</strong> (<em>list of NestedKey</em><em>, </em><em>optional</em>) – the observation keys of the environment. If not provided,
 defaults to <code class="docutils literal notranslate"><span class="pre">(&quot;observation&quot;,)</span></code>.
 The <a class="reference internal" href="#torchrl.data.MCTSForest.get_keys_from_env" title="torchrl.data.MCTSForest.get_keys_from_env"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_keys_from_env()</span></code></a> can be used to automatically determine the keys.</p></li>
+<li><p><strong>excluded_keys</strong> (<em>list of NestedKey</em><em>, </em><em>optional</em>) – a list of keys to exclude from the data storage.</p></li>
 <li><p><strong>consolidated</strong> (<em>bool</em><em>, </em><em>optional</em>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code>, the data_map storage will be consolidated on disk.
 Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
 </ul>
@@ -527,11 +544,64 @@ Defaults to <code class="docutils literal notranslate"><span class="pre">False</
 <span class="go">True</span>
 </pre></div>
 </div>
+<dl class="py property">
+<dt class="sig sig-object py" id="torchrl.data.MCTSForest.action_keys">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">action_keys</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">NestedKey</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#torchrl.data.MCTSForest.action_keys" title="Permalink to this definition">¶</a></dt>
+<dd><p>Action Keys.</p>
+<p>Returns the keys used to retrieve actions from the environment’s input.
+The default action key is “action”.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A list of strings or tuples representing the action keys.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="torchrl.data.MCTSForest.done_keys">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">done_keys</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">NestedKey</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#torchrl.data.MCTSForest.done_keys" title="Permalink to this definition">¶</a></dt>
+<dd><p>Done Keys.</p>
+<p>Returns the keys used to indicate that an episode has ended.
+The default done keys are “done”, “terminated”, and “truncated”. These keys can be
+used in the environment’s output to signal the end of an episode.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A list of strings representing the done keys.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="torchrl.data.MCTSForest.get_keys_from_env">
 <span class="sig-name descname"><span class="pre">get_keys_from_env</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="torchrl.envs.EnvBase.html#torchrl.envs.EnvBase" title="torchrl.envs.common.EnvBase"><span class="pre">EnvBase</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/torchrl/data/map/tree.html#MCTSForest.get_keys_from_env"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.data.MCTSForest.get_keys_from_env" title="Permalink to this definition">¶</a></dt>
 <dd><p>Writes missing done, action and reward keys to the Forest given an environment.</p>
 <p>Existing keys are not overwritten.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="torchrl.data.MCTSForest.observation_keys">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">observation_keys</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">NestedKey</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#torchrl.data.MCTSForest.observation_keys" title="Permalink to this definition">¶</a></dt>
+<dd><p>Observation Keys.</p>
+<p>Returns the keys used to retrieve observations from the environment’s output.
+The default observation key is “observation”.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A list of strings or tuples representing the observation keys.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="torchrl.data.MCTSForest.reward_keys">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">reward_keys</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">NestedKey</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#torchrl.data.MCTSForest.reward_keys" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reward Keys.</p>
+<p>Returns the keys used to retrieve rewards from the environment’s output.
+The default reward key is “reward”.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A list of strings or tuples representing the reward keys.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>

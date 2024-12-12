@@ -268,7 +268,7 @@
           <div class="pytorch-left-menu-search">
             
     <div class="version">
-      <a href="../../../../../versions.html"><span style="font-size:110%">main (0.6.1+19dfefc) &#x25BC</span></a>
+      <a href="../../../../../versions.html"><span style="font-size:110%">main (0.6.1+57dc25a) &#x25BC</span></a>
     </div>
     
 
@@ -478,7 +478,8 @@
 <div class="viewcode-block" id="SipHash"><a class="viewcode-back" href="../../../../reference/generated/torchrl.data.SipHash.html#torchrl.data.SipHash">[docs]</a><span class="k">class</span> <span class="nc">SipHash</span><span class="p">(</span><span class="n">Module</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A Module to Compute SipHash values for given tensors.</span>
 
-<span class="sd">    A hash function module based on SipHash implementation in python.</span>
+<span class="sd">    A hash function module based on SipHash implementation in python. Input tensors should have shape ``[batch_size, num_features]``</span>
+<span class="sd">    and the output shape will be ``[batch_size]``.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        as_tensor (bool, optional): if ``True``, the bytes will be turned into integers</span>

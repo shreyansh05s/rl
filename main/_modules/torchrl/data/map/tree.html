@@ -268,7 +268,7 @@
           <div class="pytorch-left-menu-search">
             
     <div class="version">
-      <a href="../../../../../versions.html"><span style="font-size:110%">main (0.6.1+19dfefc) &#x25BC</span></a>
+      <a href="../../../../../versions.html"><span style="font-size:110%">main (0.6.1+57dc25a) &#x25BC</span></a>
     </div>
     
 
@@ -407,6 +407,7 @@
 <span class="c1"># LICENSE file in the root directory of this source tree.</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
+<span class="kn">import</span> <span class="nn">weakref</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">deque</span>
 
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Tuple</span>
@@ -418,10 +419,13 @@
     <span class="n">TensorClass</span><span class="p">,</span>
     <span class="n">TensorDict</span><span class="p">,</span>
     <span class="n">TensorDictBase</span><span class="p">,</span>
+    <span class="n">unravel_key</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">torchrl.data.map.tdstorage</span> <span class="kn">import</span> <span class="n">TensorDictMap</span>
 <span class="kn">from</span> <span class="nn">torchrl.data.map.utils</span> <span class="kn">import</span> <span class="n">_plot_plotly_box</span><span class="p">,</span> <span class="n">_plot_plotly_tree</span>
 <span class="kn">from</span> <span class="nn">torchrl.data.replay_buffers.storages</span> <span class="kn">import</span> <span class="n">ListStorage</span>
+<span class="kn">from</span> <span class="nn">torchrl.data.tensor_specs</span> <span class="kn">import</span> <span class="n">Composite</span>
+
 <span class="kn">from</span> <span class="nn">torchrl.envs.common</span> <span class="kn">import</span> <span class="n">EnvBase</span>
 
 
@@ -472,7 +476,9 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">wins</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="kc">None</span>
+
     <span class="n">index</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="c1"># The hash is None if the node has more than one action associated</span>
     <span class="nb">hash</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
@@ -481,11 +487,248 @@
     <span class="c1"># rollout following the observation encoded in node, in a TorchRL (TED) format</span>
     <span class="n">rollout</span><span class="p">:</span> <span class="n">TensorDict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="c1"># The data specifying the node</span>
-    <span class="n">node</span><span class="p">:</span> <span class="n">TensorDict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="c1"># The data specifying the node (typically an observation or a set of observations)</span>
+    <span class="n">node_data</span><span class="p">:</span> <span class="n">TensorDict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="c1"># Stack of subtrees. A subtree is produced when an action is taken.</span>
     <span class="n">subtree</span><span class="p">:</span> <span class="s2">&quot;Tree&quot;</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1"># weakrefs to the parent(s) of the node</span>
+    <span class="n">_parent</span><span class="p">:</span> <span class="n">weakref</span><span class="o">.</span><span class="n">ref</span> <span class="o">|</span> <span class="n">List</span><span class="p">[</span><span class="n">weakref</span><span class="o">.</span><span class="n">ref</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1"># Specs: contains information such as action or observation keys and spaces.</span>
+    <span class="c1">#  If present, they should be structured like env specs are:</span>
+    <span class="c1">#  Composite(input_spec=Composite(full_state_spec=..., full_action_spec=...),</span>
+    <span class="c1">#            output_spec=Composite(full_observation_spec=..., full_reward_spec=..., full_done_spec=...))</span>
+    <span class="c1">#  where every leaf component is optional.</span>
+    <span class="n">specs</span><span class="p">:</span> <span class="n">Composite</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="Tree.make_node"><a class="viewcode-back" href="../../../../reference/generated/torchrl.data.Tree.html#torchrl.data.Tree.make_node">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">make_node</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">data</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">device</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">batch_size</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Size</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">specs</span><span class="p">:</span> <span class="n">Composite</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tree</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a new node given some data.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s2">&quot;next&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">rollout</span> <span class="o">=</span> <span class="n">data</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">rollout</span><span class="o">.</span><span class="n">ndim</span><span class="p">:</span>
+                <span class="n">rollout</span> <span class="o">=</span> <span class="n">rollout</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">subtree</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="o">.</span><span class="n">lazy_stack</span><span class="p">([</span><span class="bp">cls</span><span class="o">.</span><span class="n">make_node</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;next&quot;</span><span class="p">][</span><span class="o">...</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">])])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">rollout</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">subtree</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">device</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">device</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">device</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
+            <span class="n">count</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(()),</span>
+            <span class="n">wins</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(()),</span>
+            <span class="n">node</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">exclude</span><span class="p">(</span><span class="s2">&quot;action&quot;</span><span class="p">,</span> <span class="s2">&quot;next&quot;</span><span class="p">),</span>
+            <span class="n">rollout</span><span class="o">=</span><span class="n">rollout</span><span class="p">,</span>
+            <span class="n">subtree</span><span class="o">=</span><span class="n">subtree</span><span class="p">,</span>
+            <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
+            <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+    <span class="c1"># Specs</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">full_observation_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The observation spec of the tree.</span>
+
+<span class="sd">        This is an alias for `Tree.specs[&#39;output_spec&#39;, &#39;full_observation_spec&#39;]`.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">specs</span><span class="p">[</span><span class="s2">&quot;output_spec&quot;</span><span class="p">,</span> <span class="s2">&quot;full_observation_spec&quot;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">full_reward_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The reward spec of the tree.</span>
+
+<span class="sd">        This is an alias for `Tree.specs[&#39;output_spec&#39;, &#39;full_reward_spec&#39;]`.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">specs</span><span class="p">[</span><span class="s2">&quot;output_spec&quot;</span><span class="p">,</span> <span class="s2">&quot;full_reward_spec&quot;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">full_done_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The done spec of the tree.</span>
+
+<span class="sd">        This is an alias for `Tree.specs[&#39;output_spec&#39;, &#39;full_done_spec&#39;]`.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">specs</span><span class="p">[</span><span class="s2">&quot;output_spec&quot;</span><span class="p">,</span> <span class="s2">&quot;full_done_spec&quot;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">full_state_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The state spec of the tree.</span>
+
+<span class="sd">        This is an alias for `Tree.specs[&#39;input_spec&#39;, &#39;full_state_spec&#39;]`.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">specs</span><span class="p">[</span><span class="s2">&quot;input_spec&quot;</span><span class="p">,</span> <span class="s2">&quot;full_state_spec&quot;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">full_action_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The action spec of the tree.</span>
+
+<span class="sd">        This is an alias for `Tree.specs[&#39;input_spec&#39;, &#39;full_action_spec&#39;]`.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">specs</span><span class="p">[</span><span class="s2">&quot;input_spec&quot;</span><span class="p">,</span> <span class="s2">&quot;full_action_spec&quot;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">selected_actions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">|</span> <span class="n">TensorDictBase</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a tensor containing all the selected actions branching out from this node.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">subtree</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">subtree</span><span class="o">.</span><span class="n">rollout</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">][</span><span class="s2">&quot;action&quot;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">prev_action</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">|</span> <span class="n">TensorDictBase</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The action undertaken just before this node&#39;s observation was generated.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            a tensor, tensordict or None if the node has no parent.</span>
+
+<span class="sd">        .. seealso:: This will be equal to :class:`~torchrl.data.Tree.branching_action` whenever the rollout data contains a single step.</span>
+
+<span class="sd">        .. seealso:: :class:`All actions associated with a given node (or observation) in the tree &lt;~torchrl.data.Tree.selected_action&gt;`.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rollout</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rollout</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s2">&quot;action&quot;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">branching_action</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">|</span> <span class="n">TensorDictBase</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the action that branched out to this particular node.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            a tensor, tensordict or None if the node has no parent.</span>
+
+<span class="sd">        .. seealso:: This will be equal to :class:`~torchrl.data.Tree.prev_action` whenever the rollout data contains a single step.</span>
+
+<span class="sd">        .. seealso:: :class:`All actions associated with a given node (or observation) in the tree &lt;~torchrl.data.Tree.selected_action&gt;`.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rollout</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rollout</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">][</span><span class="s2">&quot;action&quot;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">node_observation</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">|</span> <span class="n">TensorDictBase</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the observation associated with this particular node.</span>
+
+<span class="sd">        This is the observation (or bag of observations) that defines the node before a branching occurs.</span>
+<span class="sd">        If the node contains a :attr:`~.rollout` attribute, the node observation is typically identical to the</span>
+<span class="sd">        observation resulting from the last action undertaken, i.e., ``node.rollout[..., -1][&quot;next&quot;, &quot;observation&quot;]``.</span>
+
+<span class="sd">        If more than one observation key is associated with the tree specs, a :class:`~tensordict.TensorDict` instance</span>
+<span class="sd">        is returned instead.</span>
+
+<span class="sd">        For a more consistent representation, see :attr:`~.node_observations`.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># TODO: implement specs</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_data</span><span class="p">[</span><span class="s2">&quot;observation&quot;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">node_observations</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">|</span> <span class="n">TensorDictBase</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the observations associated with this particular node in a TensorDict format.</span>
+
+<span class="sd">        This is the observation (or bag of observations) that defines the node before a branching occurs.</span>
+<span class="sd">        If the node contains a :attr:`~.rollout` attribute, the node observation is typically identical to the</span>
+<span class="sd">        observation resulting from the last action undertaken, i.e., ``node.rollout[..., -1][&quot;next&quot;, &quot;observation&quot;]``.</span>
+
+<span class="sd">        If more than one observation key is associated with the tree specs, a :class:`~tensordict.TensorDict` instance</span>
+<span class="sd">        is returned instead.</span>
+
+<span class="sd">        For a more consistent representation, see :attr:`~.node_observations`.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># TODO: implement specs</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_data</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;observation&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">visits</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span> <span class="o">|</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the number of visits associated with this particular node.</span>
+
+<span class="sd">        This is an alias for the :attr:`~.count` attribute.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span>
+
+    <span class="nd">@visits</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">visits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">=</span> <span class="n">count</span>
+
+    <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;subtree&quot;</span> <span class="ow">and</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">wr</span> <span class="o">=</span> <span class="n">weakref</span><span class="o">.</span><span class="n">ref</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tensordict</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">_parent</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">value</span><span class="o">.</span><span class="n">_parent</span> <span class="o">=</span> <span class="n">wr</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">_parent</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="n">value</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">wr</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">value</span><span class="o">.</span><span class="n">_parent</span> <span class="o">=</span> <span class="p">[</span><span class="n">value</span><span class="o">.</span><span class="n">_parent</span><span class="p">,</span> <span class="n">wr</span><span class="p">]</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">parent</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tree</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The parent of the node.</span>
+
+<span class="sd">        If the node has a parent and this object is still present in the python workspace, it will be returned by this</span>
+<span class="sd">        property.</span>
+
+<span class="sd">        For re-branching trees, this property may return a stack of trees where every index of the stack corresponds to</span>
+<span class="sd">        a different parent.</span>
+
+<span class="sd">        .. note:: the ``parent`` attribute will match in content but not in identity: the tensorclass object is recustructed</span>
+<span class="sd">            using the same tensors (i.e., tensors that point to the same memory locations).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A ``Tree`` containing the parent data or ``None`` if the parent data is out of scope or the node is the root.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">parent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span>
+        <span class="k">if</span> <span class="n">parent</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Check that all parents match</span>
+            <span class="n">queue</span> <span class="o">=</span> <span class="p">[</span><span class="n">parent</span><span class="p">]</span>
+
+            <span class="k">def</span> <span class="nf">maybe_flatten_list</span><span class="p">(</span><span class="n">maybe_nested_list</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">maybe_nested_list</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">maybe_nested_list</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                            <span class="n">queue</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="k">yield</span> <span class="n">p</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">yield</span> <span class="n">maybe_nested_list</span><span class="p">()</span>
+
+            <span class="n">parent_result</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">queue</span><span class="p">):</span>
+                <span class="n">local_result</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">maybe_flatten_list</span><span class="p">(</span><span class="n">queue</span><span class="o">.</span><span class="n">pop</span><span class="p">()):</span>
+                    <span class="k">if</span> <span class="n">local_result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">local_result</span> <span class="o">=</span> <span class="n">r</span>
+                    <span class="k">elif</span> <span class="n">r</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">r</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">local_result</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">local_result</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                            <span class="n">local_result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">local_result</span> <span class="o">=</span> <span class="p">[</span><span class="n">local_result</span><span class="p">,</span> <span class="n">r</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">local_result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="c1"># replicate logic at macro level</span>
+                <span class="k">if</span> <span class="n">parent_result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">parent_result</span> <span class="o">=</span> <span class="n">local_result</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">local_result</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                        <span class="n">local_result</span> <span class="o">=</span> <span class="p">[</span>
+                            <span class="n">r</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">local_result</span> <span class="k">if</span> <span class="n">r</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">parent_result</span>
+                        <span class="p">]</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">local_result</span> <span class="o">=</span> <span class="p">[</span><span class="n">local_result</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">parent_result</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                        <span class="n">parent_result</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">local_result</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">parent_result</span> <span class="o">=</span> <span class="p">[</span><span class="n">parent_result</span><span class="p">,</span> <span class="o">*</span><span class="n">local_result</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">parent_result</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">TensorDict</span><span class="o">.</span><span class="n">lazy_stack</span><span class="p">(</span>
+                    <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_from_tensordict</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">parent_result</span><span class="p">]</span>
+                <span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_from_tensordict</span><span class="p">(</span><span class="n">parent_result</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">num_children</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
@@ -496,9 +739,19 @@
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">subtree</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">subtree</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="mi">0</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">is_terminal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns True if the the tree has no children nodes.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">subtree</span> <span class="ow">is</span> <span class="kc">None</span>
+    <span class="k">def</span> <span class="nf">is_terminal</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns True if the tree has no children nodes.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rollout</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rollout</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s2">&quot;next&quot;</span><span class="p">,</span> <span class="s2">&quot;done&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="c1"># If there is no rollout, there is no preceding data - either this is a root or it&#39;s a floating node.</span>
+        <span class="c1"># In either case, we assume that the node is not terminal.</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+<div class="viewcode-block" id="Tree.fully_expanded"><a class="viewcode-back" href="../../../../reference/generated/torchrl.data.Tree.html#torchrl.data.Tree.fully_expanded">[docs]</a>    <span class="k">def</span> <span class="nf">fully_expanded</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">env</span><span class="p">:</span> <span class="n">EnvBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns True if the number of children is equal to the environment cardinality.&quot;&quot;&quot;</span>
+        <span class="n">cardinality</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">cardinality</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">node_data</span><span class="p">)</span>
+        <span class="n">num_actions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_children</span>
+        <span class="k">return</span> <span class="n">cardinality</span> <span class="o">==</span> <span class="n">num_actions</span></div>
 
 <div class="viewcode-block" id="Tree.get_vertex_by_id"><a class="viewcode-back" href="../../../../reference/generated/torchrl.data.Tree.html#torchrl.data.Tree.get_vertex_by_id">[docs]</a>    <span class="k">def</span> <span class="nf">get_vertex_by_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tree</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Goes through the tree and returns the node corresponding the given id.&quot;&quot;&quot;</span>
@@ -566,9 +819,6 @@
             <span class="k">if</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">memo</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">use_path</span><span class="p">:</span>
                 <span class="k">continue</span>
             <span class="n">memo</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
-            <span class="n">r</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">rollout</span>
-            <span class="k">if</span> <span class="n">r</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">r</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="s2">&quot;next&quot;</span><span class="p">,</span> <span class="s2">&quot;observation&quot;</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">use_path</span><span class="p">:</span>
                 <span class="n">result</span><span class="p">[</span><span class="n">cur_path</span><span class="p">]</span> <span class="o">=</span> <span class="n">tree</span>
             <span class="k">elif</span> <span class="n">use_id</span><span class="p">:</span>
@@ -608,7 +858,15 @@
             <span class="p">}</span>
         <span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">edges</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
+<div class="viewcode-block" id="Tree.edges"><a class="viewcode-back" href="../../../../reference/generated/torchrl.data.Tree.html#torchrl.data.Tree.edges">[docs]</a>    <span class="k">def</span> <span class="nf">edges</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieves a list of edges in the tree.</span>
+
+<span class="sd">        Each edge is represented as a tuple of two node IDs: the parent node ID and the child node ID.</span>
+<span class="sd">        The tree is traversed using Breadth-First Search (BFS) to ensure all edges are visited.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A list of tuples, where each tuple contains a parent node ID and a child node ID.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">q</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span>
         <span class="n">parent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_id</span>
@@ -621,25 +879,65 @@
                 <span class="n">node_id</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">node_id</span>
                 <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">parent</span><span class="p">,</span> <span class="n">node_id</span><span class="p">))</span>
                 <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">node</span><span class="p">,</span> <span class="n">node_id</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">result</span>
+        <span class="k">return</span> <span class="n">result</span></div>
 
-    <span class="k">def</span> <span class="nf">valid_paths</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Tree.valid_paths"><a class="viewcode-back" href="../../../../reference/generated/torchrl.data.Tree.html#torchrl.data.Tree.valid_paths">[docs]</a>    <span class="k">def</span> <span class="nf">valid_paths</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generates all valid paths in the tree.</span>
+
+<span class="sd">        A valid path is a sequence of child indices that starts at the root node and ends at a leaf node.</span>
+<span class="sd">        Each path is represented as a tuple of integers, where each integer corresponds to the index of a child node.</span>
+
+<span class="sd">        Yields:</span>
+<span class="sd">            tuple: A valid path in the tree.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Initialize a queue with the current tree node and an empty path</span>
         <span class="n">q</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span>
         <span class="n">cur_path</span> <span class="o">=</span> <span class="p">()</span>
         <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="bp">self</span><span class="p">,</span> <span class="n">cur_path</span><span class="p">))</span>
+        <span class="c1"># Perform BFS traversal of the tree</span>
         <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">q</span><span class="p">):</span>
+            <span class="c1"># Dequeue the next tree node and its current path</span>
             <span class="n">tree</span><span class="p">,</span> <span class="n">cur_path</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+            <span class="c1"># Get the number of child nodes</span>
             <span class="n">n</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">tree</span><span class="o">.</span><span class="n">num_children</span><span class="p">)</span>
+            <span class="c1"># If this is a leaf node, yield the current path</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">n</span><span class="p">:</span>
                 <span class="k">yield</span> <span class="n">cur_path</span>
+            <span class="c1"># Iterate over the child nodes</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
                 <span class="n">cur_path_tree</span> <span class="o">=</span> <span class="n">cur_path</span> <span class="o">+</span> <span class="p">(</span><span class="n">i</span><span class="p">,)</span>
-                <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">tree</span><span class="o">.</span><span class="n">subtree</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">cur_path_tree</span><span class="p">))</span>
+                <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">tree</span><span class="o">.</span><span class="n">subtree</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">cur_path_tree</span><span class="p">))</span></div>
 
-    <span class="k">def</span> <span class="nf">max_length</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_paths</span><span class="p">()))</span>
+<div class="viewcode-block" id="Tree.max_length"><a class="viewcode-back" href="../../../../reference/generated/torchrl.data.Tree.html#torchrl.data.Tree.max_length">[docs]</a>    <span class="k">def</span> <span class="nf">max_length</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the maximum length of all valid paths in the tree.</span>
 
-    <span class="k">def</span> <span class="nf">rollout_from_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="sd">        The length of a path is defined as the number of nodes in the path.</span>
+<span class="sd">        If the tree is empty, returns 0.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int: The maximum length of all valid paths in the tree.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">lengths</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_paths</span><span class="p">())</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">lengths</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">lengths</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">lengths</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="o">*</span><span class="n">lengths</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Tree.rollout_from_path"><a class="viewcode-back" href="../../../../reference/generated/torchrl.data.Tree.html#torchrl.data.Tree.rollout_from_path">[docs]</a>    <span class="k">def</span> <span class="nf">rollout_from_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieves the rollout data along a given path in the tree.</span>
+
+<span class="sd">        The rollout data is concatenated along the last dimension (dim=-1) for each node in the path.</span>
+<span class="sd">        If no rollout data is found along the path, returns ``None``.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            path: A tuple of integers representing the path in the tree.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The concatenated rollout data along the path, or None if no data is found.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rollout</span>
         <span class="n">tree</span> <span class="o">=</span> <span class="bp">self</span>
         <span class="n">rollouts</span> <span class="o">=</span> <span class="p">[]</span>
@@ -651,7 +949,7 @@
             <span class="k">if</span> <span class="n">r</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">rollouts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">rollouts</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">rollouts</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">rollouts</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span></div>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_label</span><span class="p">(</span><span class="n">info</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">tree</span><span class="p">:</span> <span class="s2">&quot;Tree&quot;</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -670,13 +968,24 @@
             <span class="n">labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
         <span class="k">return</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span>
+<div class="viewcode-block" id="Tree.plot"><a class="viewcode-back" href="../../../../reference/generated/torchrl.data.Tree.html#torchrl.data.Tree.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">Tree</span><span class="p">,</span>
         <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;plotly&quot;</span><span class="p">,</span>
         <span class="n">figure</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;tree&quot;</span><span class="p">,</span>
         <span class="n">info</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">make_labels</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">make_labels</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Plots a visualization of the tree using the specified backend and figure type.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            backend: The plotting backend to use. Currently only supports &#39;plotly&#39;.</span>
+<span class="sd">            figure: The type of figure to plot. Can be either &#39;tree&#39; or &#39;box&#39;.</span>
+<span class="sd">            info: A list of additional information to include in the plot (not currently used).</span>
+<span class="sd">            make_labels: An optional function to generate custom labels for the plot.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            NotImplementedError: If an unsupported backend or figure type is specified.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;plotly&quot;</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">figure</span> <span class="o">==</span> <span class="s2">&quot;box&quot;</span><span class="p">:</span>
                 <span class="n">_plot_plotly_box</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -687,12 +996,14 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">pass</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Unkown plotting backend </span><span class="si">{</span><span class="n">backend</span><span class="si">}</span><span class="s2"> with figure </span><span class="si">{</span><span class="n">figure</span><span class="si">}</span><span class="s2">.&quot;</span>
-        <span class="p">)</span></div>
+            <span class="sa">f</span><span class="s2">&quot;Unknown plotting backend </span><span class="si">{</span><span class="n">backend</span><span class="si">}</span><span class="s2"> with figure </span><span class="si">{</span><span class="n">figure</span><span class="si">}</span><span class="s2">.&quot;</span>
+        <span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="MCTSForest"><a class="viewcode-back" href="../../../../reference/generated/torchrl.data.MCTSForest.html#torchrl.data.MCTSForest">[docs]</a><span class="k">class</span> <span class="nc">MCTSForest</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A collection of MCTS trees.</span>
+
+<span class="sd">    .. warning:: This class is currently under active development. Expect frequent API changes.</span>
 
 <span class="sd">    The class is aimed at storing rollouts in a storage, and produce trees based on a given root</span>
 <span class="sd">    in that dataset.</span>
@@ -700,20 +1011,33 @@
 <span class="sd">    Keyword Args:</span>
 <span class="sd">        data_map (TensorDictMap, optional): the storage to use to store the data</span>
 <span class="sd">            (observation, reward, states etc). If not provided, it is lazily</span>
-<span class="sd">            initialized using :meth:`~torchrl.data.map.tdstorage.TensorDictMap.from_tensordict_pair`.</span>
-<span class="sd">        node_map (TensorDictMap, optional): TODO</span>
-<span class="sd">        done_keys (list of NestedKey): the done keys of the environment. If not provided,</span>
+<span class="sd">            initialized using :meth:`~torchrl.data.map.tdstorage.TensorDictMap.from_tensordict_pair`</span>
+<span class="sd">            using the list of :attr:`observation_keys` and :attr:`action_keys` as ``in_keys``.</span>
+<span class="sd">        node_map (TensorDictMap, optional): a map from the observation space to the index space.</span>
+<span class="sd">            Internally, the node map is used to gather all possible branches coming out of</span>
+<span class="sd">            a given node. For example, if an observation has two associated actions and outcomes</span>
+<span class="sd">            in the data map, then the :attr:`node_map` will return a data structure containing the</span>
+<span class="sd">            two indices in the :attr:`data_map` that correspond to these two outcomes.</span>
+<span class="sd">            If not provided, it is lazily initialized using</span>
+<span class="sd">            :meth:`~torchrl.data.map.tdstorage.TensorDictMap.from_tensordict_pair` using the list of</span>
+<span class="sd">            :attr:`observation_keys` as ``in_keys`` and the :class:`~torchrl.data.QueryModule` as</span>
+<span class="sd">            ``out_keys``.</span>
+<span class="sd">        max_size (int, optional): the size of the maps.</span>
+<span class="sd">            If not provided, defaults to ``data_map.max_size`` if this can be found, then</span>
+<span class="sd">            ``node_map.max_size``. If none of these are provided, defaults to `1000`.</span>
+<span class="sd">        done_keys (list of NestedKey, optional): the done keys of the environment. If not provided,</span>
 <span class="sd">            defaults to ``(&quot;done&quot;, &quot;terminated&quot;, &quot;truncated&quot;)``.</span>
 <span class="sd">            The :meth:`~.get_keys_from_env` can be used to automatically determine the keys.</span>
-<span class="sd">        action_keys (list of NestedKey): the action keys of the environment. If not provided,</span>
+<span class="sd">        action_keys (list of NestedKey, optional): the action keys of the environment. If not provided,</span>
 <span class="sd">            defaults to ``(&quot;action&quot;,)``.</span>
 <span class="sd">            The :meth:`~.get_keys_from_env` can be used to automatically determine the keys.</span>
-<span class="sd">        reward_keys (list of NestedKey): the reward keys of the environment. If not provided,</span>
+<span class="sd">        reward_keys (list of NestedKey, optional): the reward keys of the environment. If not provided,</span>
 <span class="sd">            defaults to ``(&quot;reward&quot;,)``.</span>
 <span class="sd">            The :meth:`~.get_keys_from_env` can be used to automatically determine the keys.</span>
-<span class="sd">        observation_keys (list of NestedKey): the observation keys of the environment. If not provided,</span>
+<span class="sd">        observation_keys (list of NestedKey, optional): the observation keys of the environment. If not provided,</span>
 <span class="sd">            defaults to ``(&quot;observation&quot;,)``.</span>
 <span class="sd">            The :meth:`~.get_keys_from_env` can be used to automatically determine the keys.</span>
+<span class="sd">        excluded_keys (list of NestedKey, optional): a list of keys to exclude from the data storage.</span>
 <span class="sd">        consolidated (bool, optional): if ``True``, the data_map storage will be consolidated on disk.</span>
 <span class="sd">            Defaults to ``False``.</span>
 
@@ -808,10 +1132,12 @@
         <span class="o">*</span><span class="p">,</span>
         <span class="n">data_map</span><span class="p">:</span> <span class="n">TensorDictMap</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">node_map</span><span class="p">:</span> <span class="n">TensorDictMap</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">max_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">done_keys</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">NestedKey</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">reward_keys</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">NestedKey</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">observation_keys</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">NestedKey</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">action_keys</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">NestedKey</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">excluded_keys</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">NestedKey</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">consolidated</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
 
@@ -819,55 +1145,125 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">node_map</span> <span class="o">=</span> <span class="n">node_map</span>
 
+        <span class="k">if</span> <span class="n">max_size</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">data_map</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">max_size</span> <span class="o">=</span> <span class="n">data_map</span><span class="o">.</span><span class="n">max_size</span>
+                <span class="k">if</span> <span class="n">max_size</span> <span class="o">!=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">node_map</span><span class="p">,</span> <span class="s2">&quot;max_size&quot;</span><span class="p">,</span> <span class="n">max_size</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Conflicting max_size: got data_map.max_size=</span><span class="si">{</span><span class="n">data_map</span><span class="o">.</span><span class="n">max_size</span><span class="si">}</span><span class="s2"> and node_map.max_size=</span><span class="si">{</span><span class="n">node_map</span><span class="o">.</span><span class="n">max_size</span><span class="si">}</span><span class="s2">.&quot;</span>
+                    <span class="p">)</span>
+            <span class="k">elif</span> <span class="n">node_map</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">max_size</span> <span class="o">=</span> <span class="n">node_map</span><span class="o">.</span><span class="n">max_size</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">max_size</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">elif</span> <span class="n">data_map</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">max_size</span> <span class="o">!=</span> <span class="nb">getattr</span><span class="p">(</span>
+            <span class="n">data_map</span><span class="p">,</span> <span class="s2">&quot;max_size&quot;</span><span class="p">,</span> <span class="n">max_size</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Conflicting max_size: got data_map.max_size=</span><span class="si">{</span><span class="n">data_map</span><span class="o">.</span><span class="n">max_size</span><span class="si">}</span><span class="s2"> and max_size=</span><span class="si">{</span><span class="n">max_size</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">node_map</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">max_size</span> <span class="o">!=</span> <span class="nb">getattr</span><span class="p">(</span>
+            <span class="n">node_map</span><span class="p">,</span> <span class="s2">&quot;max_size&quot;</span><span class="p">,</span> <span class="n">max_size</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Conflicting max_size: got node_map.max_size=</span><span class="si">{</span><span class="n">node_map</span><span class="o">.</span><span class="n">max_size</span><span class="si">}</span><span class="s2"> and max_size=</span><span class="si">{</span><span class="n">max_size</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_size</span> <span class="o">=</span> <span class="n">max_size</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">done_keys</span> <span class="o">=</span> <span class="n">done_keys</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">action_keys</span> <span class="o">=</span> <span class="n">action_keys</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reward_keys</span> <span class="o">=</span> <span class="n">reward_keys</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">observation_keys</span> <span class="o">=</span> <span class="n">observation_keys</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">excluded_keys</span> <span class="o">=</span> <span class="n">excluded_keys</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">consolidated</span> <span class="o">=</span> <span class="n">consolidated</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">done_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">done_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">NestedKey</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Done Keys.</span>
+
+<span class="sd">        Returns the keys used to indicate that an episode has ended.</span>
+<span class="sd">        The default done keys are &quot;done&quot;, &quot;terminated&quot;, and &quot;truncated&quot;. These keys can be</span>
+<span class="sd">        used in the environment&#39;s output to signal the end of an episode.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A list of strings representing the done keys.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">done_keys</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_done_keys&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">done_keys</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_done_keys</span> <span class="o">=</span> <span class="n">done_keys</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;done&quot;</span><span class="p">,</span> <span class="s2">&quot;terminated&quot;</span><span class="p">,</span> <span class="s2">&quot;truncated&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_done_keys</span> <span class="o">=</span> <span class="n">done_keys</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;done&quot;</span><span class="p">,</span> <span class="s2">&quot;terminated&quot;</span><span class="p">,</span> <span class="s2">&quot;truncated&quot;</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">done_keys</span>
 
     <span class="nd">@done_keys</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">done_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_done_keys</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_done_keys</span> <span class="o">=</span> <span class="n">_make_list_of_nestedkeys</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;done_keys&quot;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">reward_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">reward_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">NestedKey</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reward Keys.</span>
+
+<span class="sd">        Returns the keys used to retrieve rewards from the environment&#39;s output.</span>
+<span class="sd">        The default reward key is &quot;reward&quot;.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A list of strings or tuples representing the reward keys.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">reward_keys</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_reward_keys&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">reward_keys</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_reward_keys</span> <span class="o">=</span> <span class="n">reward_keys</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;reward&quot;</span><span class="p">,)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_reward_keys</span> <span class="o">=</span> <span class="n">reward_keys</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;reward&quot;</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">reward_keys</span>
 
     <span class="nd">@reward_keys</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">reward_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_reward_keys</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reward_keys</span> <span class="o">=</span> <span class="n">_make_list_of_nestedkeys</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;reward_keys&quot;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">action_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">action_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">NestedKey</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Action Keys.</span>
+
+<span class="sd">        Returns the keys used to retrieve actions from the environment&#39;s input.</span>
+<span class="sd">        The default action key is &quot;action&quot;.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A list of strings or tuples representing the action keys.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">action_keys</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_action_keys&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">action_keys</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_action_keys</span> <span class="o">=</span> <span class="n">action_keys</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;action&quot;</span><span class="p">,)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_action_keys</span> <span class="o">=</span> <span class="n">action_keys</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;action&quot;</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">action_keys</span>
 
     <span class="nd">@action_keys</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">action_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_action_keys</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_action_keys</span> <span class="o">=</span> <span class="n">_make_list_of_nestedkeys</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;action_keys&quot;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">observation_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">observation_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">NestedKey</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Observation Keys.</span>
+
+<span class="sd">        Returns the keys used to retrieve observations from the environment&#39;s output.</span>
+<span class="sd">        The default observation key is &quot;observation&quot;.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A list of strings or tuples representing the observation keys.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">observation_keys</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_observation_keys&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">observation_keys</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_observation_keys</span> <span class="o">=</span> <span class="n">observation_keys</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;observation&quot;</span><span class="p">,)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_observation_keys</span> <span class="o">=</span> <span class="n">observation_keys</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;observation&quot;</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">observation_keys</span>
 
     <span class="nd">@observation_keys</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">observation_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_observation_keys</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_observation_keys</span> <span class="o">=</span> <span class="n">_make_list_of_nestedkeys</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;observation_keys&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">excluded_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">NestedKey</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_excluded_keys</span>
+
+    <span class="nd">@excluded_keys</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">excluded_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_excluded_keys</span> <span class="o">=</span> <span class="n">_make_list_of_nestedkeys</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;excluded_keys&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="MCTSForest.get_keys_from_env"><a class="viewcode-back" href="../../../../reference/generated/torchrl.data.MCTSForest.html#torchrl.data.MCTSForest.get_keys_from_env">[docs]</a>    <span class="k">def</span> <span class="nf">get_keys_from_env</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">env</span><span class="p">:</span> <span class="n">EnvBase</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Writes missing done, action and reward keys to the Forest given an environment.</span>
@@ -885,8 +1281,21 @@
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">_write_fn_stack</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">new</span><span class="p">,</span> <span class="n">old</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="c1"># This function updates the old values by adding the new ones</span>
+        <span class="c1"># if and only if the new ones are not there.</span>
+        <span class="c1"># If the old value is not provided, we assume there are none and the</span>
+        <span class="c1"># `new` is just prepared.</span>
+        <span class="c1"># This involves unsqueezing the last dim (since we&#39;ll be stacking tensors</span>
+        <span class="c1"># and calling unique).</span>
+        <span class="c1"># The update involves calling cat along the last dim + unique</span>
+        <span class="c1"># which will keep only the new values that were unknown to</span>
+        <span class="c1"># the storage.</span>
+        <span class="c1"># We use this method to track all the indices that are associated with</span>
+        <span class="c1"># an observation. Every time a new index is obtained, it is stacked alongside</span>
+        <span class="c1"># the others.</span>
         <span class="k">if</span> <span class="n">old</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">result</span> <span class="o">=</span> <span class="n">new</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">filter_empty</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="c1"># we unsqueeze the values to stack them along dim -1</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">new</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">filter_empty</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
             <span class="n">result</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
                 <span class="s2">&quot;count&quot;</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">int</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">result</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
             <span class="p">)</span>
@@ -896,28 +1305,44 @@
                 <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;count&quot;</span><span class="p">:</span>
                     <span class="k">return</span> <span class="n">x</span>
                 <span class="k">if</span> <span class="n">y</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&lt;</span> <span class="n">x</span><span class="o">.</span><span class="n">ndim</span><span class="p">:</span>
-                    <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-                <span class="n">result</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="nb">sorted</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                    <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+                <span class="c1"># Breaks on mps</span>
+                <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;mps&quot;</span><span class="p">:</span>
+                    <span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span>
+                    <span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="nb">sorted</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                    <span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s2">&quot;mps&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="nb">sorted</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
                 <span class="k">return</span> <span class="n">result</span>
 
             <span class="n">result</span> <span class="o">=</span> <span class="n">old</span><span class="o">.</span><span class="n">named_apply</span><span class="p">(</span><span class="n">cat</span><span class="p">,</span> <span class="n">new</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
             <span class="n">result</span><span class="o">.</span><span class="n">set_</span><span class="p">(</span><span class="s2">&quot;count&quot;</span><span class="p">,</span> <span class="n">old</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;count&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">result</span>
 
-    <span class="k">def</span> <span class="nf">_make_storage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">dest</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_make_data_map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">dest</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
+            <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;max_size&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_size</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">data_map</span> <span class="o">=</span> <span class="n">TensorDictMap</span><span class="o">.</span><span class="n">from_tensordict_pair</span><span class="p">(</span>
                 <span class="n">source</span><span class="p">,</span>
                 <span class="n">dest</span><span class="p">,</span>
                 <span class="n">in_keys</span><span class="o">=</span><span class="p">[</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">observation_keys</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">action_keys</span><span class="p">],</span>
                 <span class="n">consolidated</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">consolidated</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
             <span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_size</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">max_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_map</span><span class="o">.</span><span class="n">max_size</span>
         <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
                 <span class="s2">&quot;A KeyError occurred during data map creation. This could be due to the wrong setting of a key in the MCTSForest constructor. Scroll up for more info.&quot;</span>
             <span class="p">)</span> <span class="kn">from</span> <span class="nn">err</span>
 
-    <span class="k">def</span> <span class="nf">_make_storage_branches</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">dest</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_make_node_map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">dest</span><span class="p">):</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;max_size&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_size</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">node_map</span> <span class="o">=</span> <span class="n">TensorDictMap</span><span class="o">.</span><span class="n">from_tensordict_pair</span><span class="p">(</span>
             <span class="n">source</span><span class="p">,</span>
             <span class="n">dest</span><span class="p">,</span>
@@ -931,26 +1356,59 @@
             <span class="n">storage_constructor</span><span class="o">=</span><span class="n">ListStorage</span><span class="p">,</span>
             <span class="n">collate_fn</span><span class="o">=</span><span class="n">TensorDict</span><span class="o">.</span><span class="n">lazy_stack</span><span class="p">,</span>
             <span class="n">write_fn</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_write_fn_stack</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
         <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_size</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">max_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_map</span><span class="o">.</span><span class="n">max_size</span>
 
-    <span class="k">def</span> <span class="nf">extend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rollout</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">extend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rollout</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">return_node</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
         <span class="n">source</span><span class="p">,</span> <span class="n">dest</span> <span class="o">=</span> <span class="p">(</span>
             <span class="n">rollout</span><span class="o">.</span><span class="n">exclude</span><span class="p">(</span><span class="s2">&quot;next&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
             <span class="n">rollout</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;next&quot;</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">action_keys</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
         <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">excluded_keys</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">dest</span> <span class="o">=</span> <span class="n">dest</span><span class="o">.</span><span class="n">exclude</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">excluded_keys</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">dest</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;next&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">exclude</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">excluded_keys</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_map</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_make_storage</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">dest</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_data_map</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">dest</span><span class="p">)</span>
 
         <span class="c1"># We need to set the action somewhere to keep track of what action lead to what child</span>
         <span class="c1"># # Set the action in the &#39;next&#39;</span>
         <span class="c1"># dest[1:] = source[:-1].exclude(*self.done_keys)</span>
 
+        <span class="c1"># Add (&#39;observation&#39;, &#39;action&#39;) -&gt; (&#39;next, observation&#39;)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data_map</span><span class="p">[</span><span class="n">source</span><span class="p">]</span> <span class="o">=</span> <span class="n">dest</span>
         <span class="n">value</span> <span class="o">=</span> <span class="n">source</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_map</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_make_storage_branches</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">dest</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_node_map</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">dest</span><span class="p">)</span>
+        <span class="c1"># map (&#39;observation&#39;,) -&gt; (&#39;indices&#39;,)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">node_map</span><span class="p">[</span><span class="n">source</span><span class="p">]</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="o">.</span><span class="n">lazy_stack</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">unbind</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">return_node</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_tree</span><span class="p">(</span><span class="n">rollout</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">return_node</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="n">source</span><span class="p">,</span> <span class="n">dest</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">step</span><span class="o">.</span><span class="n">exclude</span><span class="p">(</span><span class="s2">&quot;next&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+            <span class="n">step</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;next&quot;</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">action_keys</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_map</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_data_map</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">dest</span><span class="p">)</span>
+
+        <span class="c1"># We need to set the action somewhere to keep track of what action lead to what child</span>
+        <span class="c1"># # Set the action in the &#39;next&#39;</span>
+        <span class="c1"># dest[1:] = source[:-1].exclude(*self.done_keys)</span>
+
+        <span class="c1"># Add (&#39;observation&#39;, &#39;action&#39;) -&gt; (&#39;next, observation&#39;)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_map</span><span class="p">[</span><span class="n">source</span><span class="p">]</span> <span class="o">=</span> <span class="n">dest</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">source</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_map</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_node_map</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">dest</span><span class="p">)</span>
+        <span class="c1"># map (&#39;observation&#39;,) -&gt; (&#39;indices&#39;,)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">node_map</span><span class="p">[</span><span class="n">source</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">if</span> <span class="n">return_node</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_tree</span><span class="p">(</span><span class="n">step</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">get_child</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_map</span><span class="p">[</span><span class="n">root</span><span class="p">]</span>
@@ -976,6 +1434,8 @@
         <span class="k">while</span> <span class="n">index</span><span class="o">.</span><span class="n">numel</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">index</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
             <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_map</span><span class="o">.</span><span class="n">storage</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+
+            <span class="c1"># Rebuild rollout step</span>
             <span class="n">steps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">merge_tensordicts</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="n">callback_exist</span><span class="o">=</span><span class="k">lambda</span> <span class="o">*</span><span class="n">x</span><span class="p">:</span> <span class="kc">None</span><span class="p">))</span>
             <span class="n">d</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s2">&quot;next&quot;</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_map</span><span class="p">:</span>
@@ -985,6 +1445,15 @@
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">compact</span><span class="p">:</span>
                     <span class="k">break</span>
             <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># If the root is provided and not gathered from the storage, it could be that its</span>
+                <span class="c1"># device doesn&#39;t match the data_map storage device.</span>
+                <span class="n">root</span> <span class="o">=</span> <span class="n">steps</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s2">&quot;next&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">node_map</span><span class="o">.</span><span class="n">in_keys</span><span class="p">)</span>
+                <span class="n">device</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_map</span><span class="o">.</span><span class="n">storage</span><span class="p">,</span> <span class="s2">&quot;device&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">root</span><span class="o">.</span><span class="n">device</span> <span class="o">!=</span> <span class="n">device</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">device</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">root</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_map</span><span class="o">.</span><span class="n">storage</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">root</span><span class="o">.</span><span class="n">clear_device_</span><span class="p">()</span>
                 <span class="n">index</span> <span class="o">=</span> <span class="kc">None</span>
                 <span class="k">break</span>
         <span class="n">rollout</span> <span class="o">=</span> <span class="kc">None</span>
@@ -995,10 +1464,12 @@
         <span class="k">return</span> <span class="p">(</span>
             <span class="n">Tree</span><span class="p">(</span>
                 <span class="n">rollout</span><span class="o">=</span><span class="n">rollout</span><span class="p">,</span>
-                <span class="n">count</span><span class="o">=</span><span class="n">node_meta</span><span class="p">[</span><span class="s2">&quot;count&quot;</span><span class="p">],</span>
-                <span class="n">node</span><span class="o">=</span><span class="n">root</span><span class="p">,</span>
+                <span class="n">count</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">((),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">int32</span><span class="p">),</span>
+                <span class="n">wins</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(()),</span>
+                <span class="n">node_data</span><span class="o">=</span><span class="n">root</span><span class="p">,</span>
                 <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span>
                 <span class="nb">hash</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="c1"># We do this to avoid raising an exception as rollout and subtree must be provided together</span>
                 <span class="n">subtree</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
             <span class="p">),</span>
             <span class="n">index</span><span class="p">,</span>
@@ -1021,7 +1492,7 @@
     <span class="p">):</span>
         <span class="n">q</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span>
         <span class="n">memo</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="n">tree</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="nb">hash</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_local_tree</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">)</span>
+        <span class="n">tree</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="nb">hash</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_local_tree</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span> <span class="n">compact</span><span class="o">=</span><span class="n">compact</span><span class="p">)</span>
         <span class="n">tree</span><span class="o">.</span><span class="n">node_id</span> <span class="o">=</span> <span class="mi">0</span>
 
         <span class="n">result</span> <span class="o">=</span> <span class="n">tree</span>
@@ -1029,7 +1500,6 @@
         <span class="n">counter</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="k">if</span> <span class="n">indices</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">tree</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="nb">hash</span><span class="p">,</span> <span class="n">depth</span><span class="p">))</span>
-        <span class="k">del</span> <span class="n">tree</span><span class="p">,</span> <span class="n">indices</span>
 
         <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">q</span><span class="p">):</span>
             <span class="n">tree</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="nb">hash</span><span class="p">,</span> <span class="n">depth</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
@@ -1041,12 +1511,29 @@
                 <span class="n">subtree</span><span class="p">,</span> <span class="n">subtree_indices</span><span class="p">,</span> <span class="n">subtree_hash</span> <span class="o">=</span> <span class="n">memo</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="p">(</span><span class="kc">None</span><span class="p">,)</span> <span class="o">*</span> <span class="mi">3</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">subtree</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">subtree</span><span class="p">,</span> <span class="n">subtree_indices</span><span class="p">,</span> <span class="n">subtree_hash</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_local_tree</span><span class="p">(</span>
-                        <span class="n">tree</span><span class="o">.</span><span class="n">node</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">i</span><span class="p">,</span> <span class="n">compact</span><span class="o">=</span><span class="n">compact</span>
+                        <span class="n">tree</span><span class="o">.</span><span class="n">node_data</span><span class="p">,</span>
+                        <span class="n">index</span><span class="o">=</span><span class="n">i</span><span class="p">,</span>
+                        <span class="n">compact</span><span class="o">=</span><span class="n">compact</span><span class="p">,</span>
                     <span class="p">)</span>
                     <span class="n">subtree</span><span class="o">.</span><span class="n">node_id</span> <span class="o">=</span> <span class="n">counter</span>
                     <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
                     <span class="n">subtree</span><span class="o">.</span><span class="n">hash</span> <span class="o">=</span> <span class="n">h</span>
                     <span class="n">memo</span><span class="p">[</span><span class="n">h</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">subtree</span><span class="p">,</span> <span class="n">subtree_indices</span><span class="p">,</span> <span class="n">subtree_hash</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># We just need to save the two (or more) rollouts</span>
+                    <span class="n">subtree_bis</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_local_tree</span><span class="p">(</span>
+                        <span class="n">tree</span><span class="o">.</span><span class="n">node_data</span><span class="p">,</span>
+                        <span class="n">index</span><span class="o">=</span><span class="n">i</span><span class="p">,</span>
+                        <span class="n">compact</span><span class="o">=</span><span class="n">compact</span><span class="p">,</span>
+                    <span class="p">)</span>
+                    <span class="k">if</span> <span class="n">subtree</span><span class="o">.</span><span class="n">rollout</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="n">subtree_bis</span><span class="o">.</span><span class="n">rollout</span><span class="o">.</span><span class="n">ndim</span><span class="p">:</span>
+                        <span class="n">subtree</span><span class="o">.</span><span class="n">rollout</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span>
+                            <span class="p">[</span><span class="n">subtree</span><span class="o">.</span><span class="n">rollout</span><span class="p">,</span> <span class="n">subtree_bis</span><span class="o">.</span><span class="n">rollout</span><span class="p">]</span>
+                        <span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">subtree</span><span class="o">.</span><span class="n">rollout</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span>
+                            <span class="p">[</span><span class="o">*</span><span class="n">subtree</span><span class="o">.</span><span class="n">rollout</span><span class="p">,</span> <span class="n">subtree_bis</span><span class="o">.</span><span class="n">rollout</span><span class="p">]</span>
+                        <span class="p">)</span>
 
                 <span class="n">subtrees</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">subtree</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">extend</span> <span class="ow">and</span> <span class="n">subtree_indices</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -1071,6 +1558,18 @@
 
     <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_map</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">_make_list_of_nestedkeys</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">attr</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">NestedKey</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="n">obj</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">obj</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">obj</span><span class="p">]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">attr</span><span class="si">}</span><span class="s2"> must be a list of NestedKeys or a NestedKey, got </span><span class="si">{</span><span class="n">obj</span><span class="si">}</span><span class="s2">.&quot;</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">unravel_key</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">]</span>
 </pre></div>
 
              </article>
