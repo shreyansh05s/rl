@@ -268,7 +268,7 @@
           <div class="pytorch-left-menu-search">
             
     <div class="version">
-      <a href="../../../../versions.html"><span style="font-size:110%">main (0.6.1+57dc25a) &#x25BC</span></a>
+      <a href="../../../../versions.html"><span style="font-size:110%">main (0.6.1+4bc40a8) &#x25BC</span></a>
     </div>
     
 
@@ -417,8 +417,14 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
-<span class="kn">from</span> <span class="nn">tensordict</span> <span class="kn">import</span> <span class="n">LazyStackedTensorDict</span><span class="p">,</span> <span class="n">TensorDictBase</span><span class="p">,</span> <span class="n">unravel_key</span>
-<span class="kn">from</span> <span class="nn">tensordict.utils</span> <span class="kn">import</span> <span class="n">NestedKey</span>
+<span class="kn">from</span> <span class="nn">tensordict</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">is_tensor_collection</span><span class="p">,</span>
+    <span class="n">LazyStackedTensorDict</span><span class="p">,</span>
+    <span class="n">TensorDictBase</span><span class="p">,</span>
+    <span class="n">unravel_key</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">tensordict.base</span> <span class="kn">import</span> <span class="n">_is_leaf_nontensor</span>
+<span class="kn">from</span> <span class="nn">tensordict.utils</span> <span class="kn">import</span> <span class="n">is_non_tensor</span><span class="p">,</span> <span class="n">NestedKey</span>
 <span class="kn">from</span> <span class="nn">torchrl._utils</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">_ends_with</span><span class="p">,</span>
     <span class="n">_make_ordinal_device</span><span class="p">,</span>
@@ -428,7 +434,13 @@
     <span class="n">seed_generator</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="kn">from</span> <span class="nn">torchrl.data.tensor_specs</span> <span class="kn">import</span> <span class="n">Categorical</span><span class="p">,</span> <span class="n">Composite</span><span class="p">,</span> <span class="n">TensorSpec</span><span class="p">,</span> <span class="n">Unbounded</span>
+<span class="kn">from</span> <span class="nn">torchrl.data.tensor_specs</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Categorical</span><span class="p">,</span>
+    <span class="n">Composite</span><span class="p">,</span>
+    <span class="n">NonTensor</span><span class="p">,</span>
+    <span class="n">TensorSpec</span><span class="p">,</span>
+    <span class="n">Unbounded</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">torchrl.data.utils</span> <span class="kn">import</span> <span class="n">DEVICE_TYPING</span>
 <span class="kn">from</span> <span class="nn">torchrl.envs.utils</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">_make_compatible_policy</span><span class="p">,</span>
@@ -833,7 +845,6 @@
         <span class="n">done_key</span><span class="p">:</span> <span class="n">NestedKey</span> <span class="o">|</span> <span class="n">List</span><span class="p">[</span><span class="n">NestedKey</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">observation_key</span><span class="p">:</span> <span class="n">NestedKey</span> <span class="o">|</span> <span class="n">List</span><span class="p">[</span><span class="n">NestedKey</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;observation&quot;</span><span class="p">,</span>
         <span class="n">reward_key</span><span class="p">:</span> <span class="n">NestedKey</span> <span class="o">|</span> <span class="n">List</span><span class="p">[</span><span class="n">NestedKey</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;reward&quot;</span><span class="p">,</span>
-        <span class="n">batch_size</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Size</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Automatically sets the specifications (specs) of the environment based on a random rollout using a given policy.</span>
 
@@ -887,6 +898,7 @@
             <span class="n">tensordict2</span><span class="p">,</span>
             <span class="n">named</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="n">nested_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">is_leaf</span><span class="o">=</span><span class="n">_is_leaf_nontensor</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">input_spec</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">(</span><span class="n">input_spec_stack</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_locked</span> <span class="ow">and</span> <span class="n">batch_size</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">:</span>
@@ -904,6 +916,7 @@
             <span class="n">nexts_1</span><span class="p">,</span>
             <span class="n">named</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="n">nested_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">is_leaf</span><span class="o">=</span><span class="n">_is_leaf_nontensor</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="n">output_spec</span> <span class="o">=</span> <span class="n">Composite</span><span class="p">(</span><span class="n">output_spec_stack</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">)</span>
@@ -926,7 +939,8 @@
         <span class="n">full_observation_spec</span> <span class="o">=</span> <span class="n">output_spec</span><span class="o">.</span><span class="n">separates</span><span class="p">(</span><span class="o">*</span><span class="n">observation_key</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">output_spec</span><span class="o">.</span><span class="n">is_empty</span><span class="p">(</span><span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Keys </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">output_spec</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span><span class="w"> </span><span class="kc">True</span><span class="p">))</span><span class="si">}</span><span class="s2"> are unaccounted for.&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Keys </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">output_spec</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span><span class="w"> </span><span class="kc">True</span><span class="p">))</span><span class="si">}</span><span class="s2"> are unaccounted for. &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Make sure you have passed all the leaf names to the auto_specs_ method.&quot;</span>
             <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">full_action_spec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -944,6 +958,8 @@
 
     <span class="nd">@wraps</span><span class="p">(</span><span class="n">check_env_specs_func</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">check_env_specs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">return_contiguous</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;return_contiguous&quot;</span><span class="p">,</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_dynamic_specs</span><span class="p">)</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;return_contiguous&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">return_contiguous</span>
         <span class="k">return</span> <span class="n">check_env_specs_func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="n">check_env_specs</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">check_env_specs_func</span><span class="o">.</span><span class="vm">__doc__</span>
@@ -3402,6 +3418,52 @@
         <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s2">&quot;_done_keys&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
+<div class="viewcode-block" id="EnvBase.step_mdp"><a class="viewcode-back" href="../../../reference/generated/torchrl.envs.EnvBase.html#torchrl.envs.EnvBase.step_mdp">[docs]</a>    <span class="k">def</span> <span class="nf">step_mdp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">next_tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Advances the environment state by one step using the provided `next_tensordict`.</span>
+
+<span class="sd">        This method updates the environment&#39;s state by transitioning from the current</span>
+<span class="sd">        state to the next, as defined by the `next_tensordict`. The resulting tensordict</span>
+<span class="sd">        includes updated observations and any other relevant state information, with</span>
+<span class="sd">        keys managed according to the environment&#39;s specifications.</span>
+
+<span class="sd">        Internally, this method utilizes a precomputed :class:`~torchrl.envs.utils._StepMDP` instance to efficiently</span>
+<span class="sd">        handle the transition of state, observation, action, reward, and done keys. The</span>
+<span class="sd">        :class:`~torchrl.envs.utils._StepMDP` class optimizes the process by precomputing the keys to include and</span>
+<span class="sd">        exclude, reducing runtime overhead during repeated calls. The :class:`~torchrl.envs.utils._StepMDP` instance</span>
+<span class="sd">        is created with `exclude_action=False`, meaning that action keys are retained in</span>
+<span class="sd">        the root tensordict.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            next_tensordict (TensorDictBase): A tensordict containing the state of the</span>
+<span class="sd">                environment at the next time step. This tensordict should include keys</span>
+<span class="sd">                for observations, actions, rewards, and done flags, as defined by the</span>
+<span class="sd">                environment&#39;s specifications.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            TensorDictBase: A new tensordict representing the environment state after</span>
+<span class="sd">            advancing by one step.</span>
+
+<span class="sd">        .. note:: The method ensures that the environment&#39;s key specifications are validated</span>
+<span class="sd">              against the provided `next_tensordict`, issuing warnings if discrepancies</span>
+<span class="sd">              are found.</span>
+
+<span class="sd">        .. note:: This method is designed to work efficiently with environments that have</span>
+<span class="sd">              consistent key specifications, leveraging the `_StepMDP` class to minimize</span>
+<span class="sd">              overhead.</span>
+
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; from torchrl.envs import GymEnv</span>
+<span class="sd">            &gt;&gt;&gt; env = GymEnv(&quot;Pendulum-1&quot;)</span>
+<span class="sd">            &gt;&gt;&gt; data = env.reset()</span>
+<span class="sd">            &gt;&gt;&gt; for i in range(10):</span>
+<span class="sd">            ...     # compute action</span>
+<span class="sd">            ...     env.rand_action(data)</span>
+<span class="sd">            ...     # Perform action</span>
+<span class="sd">            ...     next_data = env.step(reset_data)</span>
+<span class="sd">            ...     data = env.step_mdp(next_data)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step_mdp</span><span class="p">(</span><span class="n">next_tensordict</span><span class="p">)</span></div>
+
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">_step_mdp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">step_func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_step_mdp_value&quot;</span><span class="p">)</span>
@@ -3609,7 +3671,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simple_done</span><span class="p">:</span>
             <span class="n">done</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">_get_str</span><span class="p">(</span><span class="s2">&quot;done&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
-            <span class="n">any_done</span> <span class="o">=</span> <span class="n">done</span><span class="o">.</span><span class="n">any</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">done</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">any_done</span> <span class="o">=</span> <span class="n">done</span><span class="o">.</span><span class="n">any</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">any_done</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="k">if</span> <span class="n">any_done</span><span class="p">:</span>
                 <span class="n">tensordict</span><span class="o">.</span><span class="n">_set_str</span><span class="p">(</span>
                     <span class="s2">&quot;_reset&quot;</span><span class="p">,</span>
@@ -3975,6 +4040,12 @@
 
 
 <span class="k">def</span> <span class="nf">_tensor_to_spec</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">leaf</span><span class="p">,</span> <span class="n">leaf_compare</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">stack</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">leaf</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="ow">or</span> <span class="n">is_tensor_collection</span><span class="p">(</span><span class="n">leaf</span><span class="p">)):</span>
+        <span class="n">stack</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">NonTensor</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">())</span>
+        <span class="k">return</span>
+    <span class="k">elif</span> <span class="n">is_non_tensor</span><span class="p">(</span><span class="n">leaf</span><span class="p">):</span>
+        <span class="n">stack</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">NonTensor</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="n">leaf</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="k">return</span>
     <span class="n">shape</span> <span class="o">=</span> <span class="n">leaf</span><span class="o">.</span><span class="n">shape</span>
     <span class="k">if</span> <span class="n">leaf_compare</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">shape_compare</span> <span class="o">=</span> <span class="n">leaf_compare</span><span class="o">.</span><span class="n">shape</span>
