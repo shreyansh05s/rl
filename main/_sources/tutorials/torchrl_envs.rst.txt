@@ -715,7 +715,7 @@ argument that allows the user to quickly ask for image-based environments:
  .. code-block:: none
 
 
-    <matplotlib.image.AxesImage object at 0x7f01fe9f8a90>
+    <matplotlib.image.AxesImage object at 0x7f3f4cef2d10>
 
 
 
@@ -1518,7 +1518,7 @@ to access this attribute. Here's an example:
  .. code-block:: none
 
 
-    'bar_5614d5b4-b72b-11ef-9e34-0242ac110002'
+    'bar_2df2d5fe-b8c0-11ef-8715-0242ac110002'
 
 
 
@@ -1568,7 +1568,7 @@ to access this attribute. Here's an example:
  .. code-block:: none
 
 
-    <torchrl.envs.batched_envs._dispatch_caller_parallel object at 0x7f01fe942bf0>
+    <torchrl.envs.batched_envs._dispatch_caller_parallel object at 0x7f3f50d187f0>
 
 
 
@@ -1588,7 +1588,7 @@ to access this attribute. Here's an example:
  .. code-block:: none
 
 
-    ['bar_5ace4720-b72b-11ef-b5e0-0242ac110002', 'bar_5ad4852c-b72b-11ef-afb3-0242ac110002', 'bar_5ad3201a-b72b-11ef-ab49-0242ac110002']
+    ['bar_328955b6-b8c0-11ef-bb2f-0242ac110002', 'bar_32895278-b8c0-11ef-b3d8-0242ac110002', 'bar_328b90ba-b8c0-11ef-b0a0-0242ac110002']
 
 
 
@@ -1805,8 +1805,8 @@ In regular setting, using VecNorm is quite easy:
 
  .. code-block:: none
 
-    mean: : tensor([ 0.0223, -0.2067,  0.0057])
-    std: : tensor([1.0928, 1.1089, 1.0781])
+    mean: : tensor([-0.1414,  0.3850,  0.1627])
+    std: : tensor([1.0496, 1.0897, 1.1698])
 
 
 
@@ -1888,8 +1888,8 @@ once created:
         batch_size=torch.Size([3, 5]),
         device=None,
         is_shared=False)
-    mean: : tensor([ 0.4251,  0.3039, -1.5004])
-    std: : tensor([4.2791, 1.3239, 6.6570])
+    mean: : tensor([-0.0939,  0.1884, -0.1332])
+    std: : tensor([1.1057, 1.1455, 1.2261])
 
 
 
@@ -1930,9 +1930,9 @@ This small difference will usually be absored throughout training.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (3 minutes 45.275 seconds)
+   **Total running time of the script:** (3 minutes 36.610 seconds)
 
-**Estimated memory usage:**  321 MB
+**Estimated memory usage:**  320 MB
 
 
 .. _sphx_glr_download_tutorials_torchrl_envs.py:
