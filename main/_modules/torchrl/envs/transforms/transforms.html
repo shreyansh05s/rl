@@ -268,7 +268,7 @@
           <div class="pytorch-left-menu-search">
             
     <div class="version">
-      <a href="../../../../../versions.html"><span style="font-size:110%">main (0.6.1+17983d4) &#x25BC</span></a>
+      <a href="../../../../../versions.html"><span style="font-size:110%">main (0.6.1+9ee1ae7) &#x25BC</span></a>
     </div>
     
 
@@ -3228,9 +3228,9 @@
 <div class="viewcode-block" id="CatFrames"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.CatFrames.html#torchrl.envs.transforms.CatFrames">[docs]</a><span class="k">class</span> <span class="nc">CatFrames</span><span class="p">(</span><span class="n">ObservationTransform</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Concatenates successive observation frames into a single tensor.</span>
 
-<span class="sd">    This can, for instance, account for movement/velocity of the observed</span>
-<span class="sd">    feature. Proposed in &quot;Playing Atari with Deep Reinforcement Learning&quot; (</span>
-<span class="sd">    https://arxiv.org/pdf/1312.5602.pdf).</span>
+<span class="sd">    This transform is useful for creating a sense of movement or velocity in the observed features.</span>
+<span class="sd">    It can also be used with models that require access to past observations such as transformers and the like.</span>
+<span class="sd">    It was first proposed in &quot;Playing Atari with Deep Reinforcement Learning&quot; (https://arxiv.org/pdf/1312.5602.pdf).</span>
 
 <span class="sd">    When used within a transformed environment,</span>
 <span class="sd">    :class:`CatFrames` is a stateful class, and it can be reset to its native state by</span>
@@ -3318,6 +3318,14 @@
 <span class="sd">        such as those found in MARL settings, are currently not supported.</span>
 <span class="sd">        If this feature is needed, please raise an issue on TorchRL repo.</span>
 
+<span class="sd">    .. note:: Storing stacks of frames in the replay buffer can significantly increase memory consumption (by N times).</span>
+<span class="sd">        To mitigate this, you can store trajectories directly in the replay buffer and apply :class:`CatFrames` at sampling time.</span>
+<span class="sd">        This approach involves sampling slices of the stored trajectories and then applying the frame stacking transform.</span>
+<span class="sd">        For convenience, :class:`CatFrames` provides a :meth:`~.make_rb_transform_and_sampler` method that creates:</span>
+
+<span class="sd">        - A modified version of the transform suitable for use in replay buffers</span>
+<span class="sd">        - A corresponding :class:`SliceSampler` to use with the buffer</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">inplace</span> <span class="o">=</span> <span class="kc">False</span>
@@ -3366,6 +3374,75 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">as_inverse</span> <span class="o">=</span> <span class="n">as_inverse</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reset_key</span> <span class="o">=</span> <span class="n">reset_key</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">done_key</span> <span class="o">=</span> <span class="n">done_key</span>
+
+<div class="viewcode-block" id="CatFrames.make_rb_transform_and_sampler"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.transforms.CatFrames.html#torchrl.envs.transforms.CatFrames.make_rb_transform_and_sampler">[docs]</a>    <span class="k">def</span> <span class="nf">make_rb_transform_and_sampler</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">**</span><span class="n">sampler_kwargs</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Transform</span><span class="p">,</span> <span class="s2">&quot;torchrl.data.replay_buffers.SliceSampler&quot;</span><span class="p">]:</span>  <span class="c1"># noqa: F821</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a transform and sampler to be used with a replay buffer when storing frame-stacked data.</span>
+
+<span class="sd">        This method helps reduce redundancy in stored data by avoiding the need to</span>
+<span class="sd">        store the entire stack of frames in the buffer. Instead, it creates a</span>
+<span class="sd">        transform that stacks frames on-the-fly during sampling, and a sampler that</span>
+<span class="sd">        ensures the correct sequence length is maintained.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            batch_size (int): The batch size to use for the sampler.</span>
+<span class="sd">            **sampler_kwargs: Additional keyword arguments to pass to the</span>
+<span class="sd">                :class:`~torchrl.data.replay_buffers.SliceSampler` constructor.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A tuple containing:</span>
+<span class="sd">                - transform (Transform): A transform that stacks frames on-the-fly during sampling.</span>
+<span class="sd">                - sampler (SliceSampler): A sampler that ensures the correct sequence length is maintained.</span>
+
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; env = TransformedEnv(...)</span>
+<span class="sd">            &gt;&gt;&gt; catframes = CatFrames(N=4, ...)</span>
+<span class="sd">            &gt;&gt;&gt; transform, sampler = catframes.make_rb_transform_and_sampler(batch_size=32)</span>
+<span class="sd">            &gt;&gt;&gt; rb = ReplayBuffer(..., sampler=sampler, transform=transform)</span>
+
+<span class="sd">        .. note:: When working with images, it&#39;s recommended to use distinct ``in_keys`` and ``out_keys`` in the preceding</span>
+<span class="sd">            :class:`~torchrl.envs.ToTensorImage` transform. This ensures that the tensors stored in the buffer are separate</span>
+<span class="sd">            from their processed counterparts, which we don&#39;t want to store.</span>
+<span class="sd">            For non-image data, consider inserting a :class:`~torchrl.envs.RenameTransform` before :class:`CatFrames` to create</span>
+<span class="sd">            a copy of the data that will be stored in the buffer.</span>
+
+<span class="sd">        .. note:: When adding the transform to the replay buffer, one should pay attention to also pass the transforms</span>
+<span class="sd">            that precede CatFrames, such as :class:`~torchrl.envs.ToTensorImage` or :class:`~torchrl.envs.UnsqueezeTransform`</span>
+<span class="sd">            in such a way that the :class:`~torchrl.envs.CatFrames` transforms sees data formatted as it was during data</span>
+<span class="sd">            collection.</span>
+
+<span class="sd">        .. note:: For a more complete example, refer to torchrl&#39;s github repo `examples` folder:</span>
+<span class="sd">            https://github.com/pytorch/rl/tree/main/examples/replay-buffers/catframes-in-buffer.py</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">torchrl.data.replay_buffers</span> <span class="kn">import</span> <span class="n">SliceSampler</span>
+
+        <span class="n">in_keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_keys</span>
+        <span class="n">in_keys</span> <span class="o">=</span> <span class="n">in_keys</span> <span class="o">+</span> <span class="p">[</span><span class="n">unravel_key</span><span class="p">((</span><span class="s2">&quot;next&quot;</span><span class="p">,</span> <span class="n">key</span><span class="p">))</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">in_keys</span><span class="p">]</span>
+        <span class="n">out_keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_keys</span>
+        <span class="n">out_keys</span> <span class="o">=</span> <span class="n">out_keys</span> <span class="o">+</span> <span class="p">[</span><span class="n">unravel_key</span><span class="p">((</span><span class="s2">&quot;next&quot;</span><span class="p">,</span> <span class="n">key</span><span class="p">))</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">out_keys</span><span class="p">]</span>
+        <span class="n">catframes</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)(</span>
+            <span class="n">N</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">,</span>
+            <span class="n">in_keys</span><span class="o">=</span><span class="n">in_keys</span><span class="p">,</span>
+            <span class="n">out_keys</span><span class="o">=</span><span class="n">out_keys</span><span class="p">,</span>
+            <span class="n">dim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">,</span>
+            <span class="n">padding</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">padding</span><span class="p">,</span>
+            <span class="n">padding_value</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">padding_value</span><span class="p">,</span>
+            <span class="n">as_inverse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">reset_key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">reset_key</span><span class="p">,</span>
+            <span class="n">done_key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">done_key</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">sampler</span> <span class="o">=</span> <span class="n">SliceSampler</span><span class="p">(</span><span class="n">slice_len</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">,</span> <span class="o">**</span><span class="n">sampler_kwargs</span><span class="p">)</span>
+        <span class="n">sampler</span><span class="o">.</span><span class="n">_batch_size_multiplier</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span>
+        <span class="n">transform</span> <span class="o">=</span> <span class="n">Compose</span><span class="p">(</span>
+            <span class="k">lambda</span> <span class="n">td</span><span class="p">:</span> <span class="n">td</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">),</span>
+            <span class="n">catframes</span><span class="p">,</span>
+            <span class="k">lambda</span> <span class="n">td</span><span class="p">:</span> <span class="n">td</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+            <span class="c1"># We only store &quot;pixels&quot; to the replay buffer to save memory</span>
+            <span class="n">ExcludeTransform</span><span class="p">(</span><span class="o">*</span><span class="n">out_keys</span><span class="p">,</span> <span class="n">inverse</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">transform</span><span class="p">,</span> <span class="n">sampler</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">done_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

@@ -271,7 +271,7 @@
           <div class="pytorch-left-menu-search">
             
     <div class="version">
-      <a href="../../../versions.html"><span style="font-size:110%">main (0.6.1+17983d4) &#x25BC</span></a>
+      <a href="../../../versions.html"><span style="font-size:110%">main (0.6.1+9ee1ae7) &#x25BC</span></a>
     </div>
     
 
@@ -415,9 +415,9 @@
 <dt class="sig sig-object py" id="torchrl.envs.transforms.CatFrames">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">torchrl.envs.transforms.</span></span><span class="sig-name descname"><span class="pre">CatFrames</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_keys</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">NestedKey</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_keys</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">NestedKey</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">padding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'same'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">padding_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_inverse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reset_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">NestedKey</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">done_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">NestedKey</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/torchrl/envs/transforms/transforms.html#CatFrames"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.envs.transforms.CatFrames" title="Permalink to this definition">¶</a></dt>
 <dd><p>Concatenates successive observation frames into a single tensor.</p>
-<p>This can, for instance, account for movement/velocity of the observed
-feature. Proposed in “Playing Atari with Deep Reinforcement Learning” (
-<a class="reference external" href="https://arxiv.org/pdf/1312.5602.pdf">https://arxiv.org/pdf/1312.5602.pdf</a>).</p>
+<p>This transform is useful for creating a sense of movement or velocity in the observed features.
+It can also be used with models that require access to past observations such as transformers and the like.
+It was first proposed in “Playing Atari with Deep Reinforcement Learning” (<a class="reference external" href="https://arxiv.org/pdf/1312.5602.pdf">https://arxiv.org/pdf/1312.5602.pdf</a>).</p>
 <p>When used within a transformed environment,
 <a class="reference internal" href="#torchrl.envs.transforms.CatFrames" title="torchrl.envs.transforms.CatFrames"><code class="xref py py-class docutils literal notranslate"><span class="pre">CatFrames</span></code></a> is a stateful class, and it can be reset to its native state by
 calling the <a class="reference internal" href="torchrl._utils.implement_for.html#torchrl._utils.implement_for.reset" title="torchrl._utils.implement_for.reset"><code class="xref py py-meth docutils literal notranslate"><span class="pre">reset()</span></code></a> method. This method accepts tensordicts with a
@@ -510,10 +510,77 @@ signal at the root. Nested <code class="docutils literal notranslate"><span clas
 such as those found in MARL settings, are currently not supported.
 If this feature is needed, please raise an issue on TorchRL repo.</p>
 </div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Storing stacks of frames in the replay buffer can significantly increase memory consumption (by N times).
+To mitigate this, you can store trajectories directly in the replay buffer and apply <a class="reference internal" href="#torchrl.envs.transforms.CatFrames" title="torchrl.envs.transforms.CatFrames"><code class="xref py py-class docutils literal notranslate"><span class="pre">CatFrames</span></code></a> at sampling time.
+This approach involves sampling slices of the stored trajectories and then applying the frame stacking transform.
+For convenience, <a class="reference internal" href="#torchrl.envs.transforms.CatFrames" title="torchrl.envs.transforms.CatFrames"><code class="xref py py-class docutils literal notranslate"><span class="pre">CatFrames</span></code></a> provides a <a class="reference internal" href="#torchrl.envs.transforms.CatFrames.make_rb_transform_and_sampler" title="torchrl.envs.transforms.CatFrames.make_rb_transform_and_sampler"><code class="xref py py-meth docutils literal notranslate"><span class="pre">make_rb_transform_and_sampler()</span></code></a> method that creates:</p>
+<ul class="simple">
+<li><p>A modified version of the transform suitable for use in replay buffers</p></li>
+<li><p>A corresponding <code class="xref py py-class docutils literal notranslate"><span class="pre">SliceSampler</span></code> to use with the buffer</p></li>
+</ul>
+</div>
 <dl class="py method">
 <dt class="sig sig-object py" id="torchrl.envs.transforms.CatFrames.forward">
 <span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensordict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TensorDictBase</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">TensorDictBase</span></span></span><a class="reference internal" href="../../_modules/torchrl/envs/transforms/transforms.html#CatFrames.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.envs.transforms.CatFrames.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reads the input tensordict, and for the selected keys, applies the transform.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="torchrl.envs.transforms.CatFrames.make_rb_transform_and_sampler">
+<span class="sig-name descname"><span class="pre">make_rb_transform_and_sampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">sampler_kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="torchrl.envs.transforms.Transform.html#torchrl.envs.transforms.Transform" title="torchrl.envs.transforms.Transform"><span class="pre">Transform</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'torchrl.data.replay_buffers.SliceSampler'</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/torchrl/envs/transforms/transforms.html#CatFrames.make_rb_transform_and_sampler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.envs.transforms.CatFrames.make_rb_transform_and_sampler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a transform and sampler to be used with a replay buffer when storing frame-stacked data.</p>
+<p>This method helps reduce redundancy in stored data by avoiding the need to
+store the entire stack of frames in the buffer. Instead, it creates a
+transform that stacks frames on-the-fly during sampling, and a sampler that
+ensures the correct sequence length is maintained.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>batch_size</strong> (<em>int</em>) – The batch size to use for the sampler.</p></li>
+<li><p><strong>**sampler_kwargs</strong> – Additional keyword arguments to pass to the
+<a class="reference internal" href="torchrl.data.replay_buffers.SliceSampler.html#torchrl.data.replay_buffers.SliceSampler" title="torchrl.data.replay_buffers.SliceSampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">SliceSampler</span></code></a> constructor.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p>transform (Transform): A transform that stacks frames on-the-fly during sampling.</p></li>
+<li><p>sampler (SliceSampler): A sampler that ensures the correct sequence length is maintained.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A tuple containing</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">env</span> <span class="o">=</span> <span class="n">TransformedEnv</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">catframes</span> <span class="o">=</span> <span class="n">CatFrames</span><span class="p">(</span><span class="n">N</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">transform</span><span class="p">,</span> <span class="n">sampler</span> <span class="o">=</span> <span class="n">catframes</span><span class="o">.</span><span class="n">make_rb_transform_and_sampler</span><span class="p">(</span><span class="n">batch_size</span><span class="o">=</span><span class="mi">32</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rb</span> <span class="o">=</span> <span class="n">ReplayBuffer</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">sampler</span><span class="o">=</span><span class="n">sampler</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">transform</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When working with images, it’s recommended to use distinct <code class="docutils literal notranslate"><span class="pre">in_keys</span></code> and <code class="docutils literal notranslate"><span class="pre">out_keys</span></code> in the preceding
+<code class="xref py py-class docutils literal notranslate"><span class="pre">ToTensorImage</span></code> transform. This ensures that the tensors stored in the buffer are separate
+from their processed counterparts, which we don’t want to store.
+For non-image data, consider inserting a <code class="xref py py-class docutils literal notranslate"><span class="pre">RenameTransform</span></code> before <a class="reference internal" href="#torchrl.envs.transforms.CatFrames" title="torchrl.envs.transforms.CatFrames"><code class="xref py py-class docutils literal notranslate"><span class="pre">CatFrames</span></code></a> to create
+a copy of the data that will be stored in the buffer.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When adding the transform to the replay buffer, one should pay attention to also pass the transforms
+that precede CatFrames, such as <code class="xref py py-class docutils literal notranslate"><span class="pre">ToTensorImage</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">UnsqueezeTransform</span></code>
+in such a way that the <code class="xref py py-class docutils literal notranslate"><span class="pre">CatFrames</span></code> transforms sees data formatted as it was during data
+collection.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For a more complete example, refer to torchrl’s github repo <cite>examples</cite> folder:
+<a class="reference external" href="https://github.com/pytorch/rl/tree/main/examples/replay-buffers/catframes-in-buffer.py">https://github.com/pytorch/rl/tree/main/examples/replay-buffers/catframes-in-buffer.py</a></p>
+</div>
 </dd></dl>
 
 <dl class="py method">

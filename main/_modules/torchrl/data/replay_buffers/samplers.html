@@ -268,7 +268,7 @@
           <div class="pytorch-left-menu-search">
             
     <div class="version">
-      <a href="../../../../../versions.html"><span style="font-size:110%">main (0.6.1+17983d4) &#x25BC</span></a>
+      <a href="../../../../../versions.html"><span style="font-size:110%">main (0.6.1+9ee1ae7) &#x25BC</span></a>
     </div>
     
 
@@ -1371,6 +1371,9 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="c1"># We use this whenever we need to sample N times too many transitions to then select only a 1/N fraction of them</span>
+    <span class="n">_batch_size_multiplier</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="mi">1</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
@@ -1698,6 +1701,8 @@
         <span class="k">return</span> <span class="n">seq_length</span><span class="p">,</span> <span class="n">num_slices</span>
 
     <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">storage</span><span class="p">:</span> <span class="n">Storage</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_size_multiplier</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">batch_size</span> <span class="o">=</span> <span class="n">batch_size</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_size_multiplier</span>
         <span class="c1"># pick up as many trajs as we need</span>
         <span class="n">start_idx</span><span class="p">,</span> <span class="n">stop_idx</span><span class="p">,</span> <span class="n">lengths</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_stop_and_length</span><span class="p">(</span><span class="n">storage</span><span class="p">)</span>
         <span class="c1"># we have to make sure that the number of dims of the storage</span>
@@ -2150,6 +2155,8 @@
     <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">storage</span><span class="p">:</span> <span class="n">Storage</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="nb">dict</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_size_multiplier</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">batch_size</span> <span class="o">=</span> <span class="n">batch_size</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_size_multiplier</span>
         <span class="n">start_idx</span><span class="p">,</span> <span class="n">stop_idx</span><span class="p">,</span> <span class="n">lengths</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_stop_and_length</span><span class="p">(</span><span class="n">storage</span><span class="p">)</span>
         <span class="c1"># we have to make sure that the number of dims of the storage</span>
         <span class="c1"># is the same as the stop/start signals since we will</span>
