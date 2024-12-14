@@ -527,22 +527,7 @@ specs. If no error is raised, we can be confident that the specs are properly de
 
 
 
-.. rst-class:: sphx-glr-script-out
 
-.. code-block:: pytb
-
-    Traceback (most recent call last):
-      File "/pytorch/rl/docs/source/reference/generated/tutorials/coding_ppo.py", line 335, in <module>
-        check_env_specs(env)
-      File "/pytorch/rl/torchrl/envs/utils.py", line 831, in check_env_specs
-        if not spec.contains(td):
-      File "/pytorch/rl/torchrl/data/tensor_specs.py", line 845, in contains
-        return self.is_in(item)
-      File "/pytorch/rl/torchrl/data/tensor_specs.py", line 4716, in is_in
-        if not item.is_in(val_item):
-      File "/pytorch/rl/torchrl/data/tensor_specs.py", line 2291, in is_in
-        raise RuntimeError
-    RuntimeError
 
 
 
@@ -571,6 +556,40 @@ that matches this trajectory length:
     rollout = env.rollout(3)
     print("rollout of three steps:", rollout)
     print("Shape of the rollout TensorDict:", rollout.batch_size)
+
+
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ .. code-block:: none
+
+    rollout of three steps: TensorDict(
+        fields={
+            action: Tensor(shape=torch.Size([3, 1]), device=cpu, dtype=torch.float32, is_shared=False),
+            done: Tensor(shape=torch.Size([3, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+            next: TensorDict(
+                fields={
+                    done: Tensor(shape=torch.Size([3, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+                    observation: Tensor(shape=torch.Size([3, 11]), device=cpu, dtype=torch.float32, is_shared=False),
+                    reward: Tensor(shape=torch.Size([3, 1]), device=cpu, dtype=torch.float32, is_shared=False),
+                    step_count: Tensor(shape=torch.Size([3, 1]), device=cpu, dtype=torch.int64, is_shared=False),
+                    terminated: Tensor(shape=torch.Size([3, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+                    truncated: Tensor(shape=torch.Size([3, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
+                batch_size=torch.Size([3]),
+                device=cpu,
+                is_shared=False),
+            observation: Tensor(shape=torch.Size([3, 11]), device=cpu, dtype=torch.float32, is_shared=False),
+            step_count: Tensor(shape=torch.Size([3, 1]), device=cpu, dtype=torch.int64, is_shared=False),
+            terminated: Tensor(shape=torch.Size([3, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+            truncated: Tensor(shape=torch.Size([3, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
+        batch_size=torch.Size([3]),
+        device=cpu,
+        is_shared=False)
+    Shape of the rollout TensorDict: torch.Size([3])
+
+
 
 
 .. GENERATED FROM PYTHON SOURCE LINES 357-390
@@ -626,6 +645,12 @@ We design the policy in three steps:
     )
 
 
+
+
+
+
+
+
 .. GENERATED FROM PYTHON SOURCE LINES 403-408
 
 To enable the policy to "talk" with the environment through the ``tensordict``
@@ -641,6 +666,12 @@ outputs in-place at the registered ``out_keys``.
     policy_module = TensorDictModule(
         actor_net, in_keys=["observation"], out_keys=["loc", "scale"]
     )
+
+
+
+
+
+
 
 
 .. GENERATED FROM PYTHON SOURCE LINES 413-428
@@ -679,6 +710,12 @@ what ``in_key`` string should be used for every keyword argument that is to be u
     )
 
 
+
+
+
+
+
+
 .. GENERATED FROM PYTHON SOURCE LINES 442-453
 
 Value network
@@ -713,6 +750,12 @@ parameters.
     )
 
 
+
+
+
+
+
+
 .. GENERATED FROM PYTHON SOURCE LINES 469-474
 
 let's try our policy and value modules. As we said earlier, the usage of
@@ -727,6 +770,42 @@ and where to write it:
 
     print("Running policy:", policy_module(env.reset()))
     print("Running value:", value_module(env.reset()))
+
+
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ .. code-block:: none
+
+    Running policy: TensorDict(
+        fields={
+            action: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, is_shared=False),
+            done: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+            loc: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, is_shared=False),
+            observation: Tensor(shape=torch.Size([11]), device=cpu, dtype=torch.float32, is_shared=False),
+            sample_log_prob: Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, is_shared=False),
+            scale: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, is_shared=False),
+            step_count: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.int64, is_shared=False),
+            terminated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+            truncated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False)},
+        batch_size=torch.Size([]),
+        device=cpu,
+        is_shared=False)
+    Running value: TensorDict(
+        fields={
+            done: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+            observation: Tensor(shape=torch.Size([11]), device=cpu, dtype=torch.float32, is_shared=False),
+            state_value: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, is_shared=False),
+            step_count: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.int64, is_shared=False),
+            terminated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+            truncated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False)},
+        batch_size=torch.Size([]),
+        device=cpu,
+        is_shared=False)
+
+
 
 
 .. GENERATED FROM PYTHON SOURCE LINES 478-508
@@ -776,6 +855,12 @@ that are 100% oblivious to the actual specificities of the rollout content.
     )
 
 
+
+
+
+
+
+
 .. GENERATED FROM PYTHON SOURCE LINES 518-536
 
 Replay buffer
@@ -806,6 +891,12 @@ make it easy for us to build the inner training loop in a reproducible way.
         storage=LazyTensorStorage(max_size=frames_per_batch),
         sampler=SamplerWithoutReplacement(),
     )
+
+
+
+
+
+
 
 
 .. GENERATED FROM PYTHON SOURCE LINES 543-564
@@ -856,6 +947,12 @@ return the policy and value losses.
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
         optim, total_frames // frames_per_batch, 0.0
     )
+
+
+
+
+
+
 
 
 .. GENERATED FROM PYTHON SOURCE LINES 586-604
@@ -954,6 +1051,17 @@ The steps include:
         scheduler.step()
 
 
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ .. code-block:: none
+
+      0%|          | 0/10000 [00:00<?, ?it/s]     10%|█         | 1000/10000 [00:02<00:25, 350.27it/s]    eval cumulative reward:  82.2757 (init:  82.2757), eval step-count: 8, average reward= 9.0850 (init= 9.0850), step count (max): 11, lr policy:  0.0003:  10%|█         | 1000/10000 [00:02<00:25, 350.27it/s]    eval cumulative reward:  82.2757 (init:  82.2757), eval step-count: 8, average reward= 9.0850 (init= 9.0850), step count (max): 11, lr policy:  0.0003:  20%|██        | 2000/10000 [00:05<00:22, 349.35it/s]    eval cumulative reward:  82.2757 (init:  82.2757), eval step-count: 8, average reward= 9.1178 (init= 9.0850), step count (max): 14, lr policy:  0.0003:  20%|██        | 2000/10000 [00:05<00:22, 349.35it/s]    eval cumulative reward:  82.2757 (init:  82.2757), eval step-count: 8, average reward= 9.1178 (init= 9.0850), step count (max): 14, lr policy:  0.0003:  30%|███       | 3000/10000 [00:08<00:19, 352.57it/s]    eval cumulative reward:  82.2757 (init:  82.2757), eval step-count: 8, average reward= 9.1478 (init= 9.0850), step count (max): 18, lr policy:  0.0003:  30%|███       | 3000/10000 [00:08<00:19, 352.57it/s]    eval cumulative reward:  82.2757 (init:  82.2757), eval step-count: 8, average reward= 9.1478 (init= 9.0850), step count (max): 18, lr policy:  0.0003:  40%|████      | 4000/10000 [00:11<00:16, 353.36it/s]    eval cumulative reward:  82.2757 (init:  82.2757), eval step-count: 8, average reward= 9.1795 (init= 9.0850), step count (max): 17, lr policy:  0.0002:  40%|████      | 4000/10000 [00:11<00:16, 353.36it/s]    eval cumulative reward:  82.2757 (init:  82.2757), eval step-count: 8, average reward= 9.1795 (init= 9.0850), step count (max): 17, lr policy:  0.0002:  50%|█████     | 5000/10000 [00:14<00:14, 356.56it/s]    eval cumulative reward:  82.2757 (init:  82.2757), eval step-count: 8, average reward= 9.2209 (init= 9.0850), step count (max): 29, lr policy:  0.0002:  50%|█████     | 5000/10000 [00:14<00:14, 356.56it/s]    eval cumulative reward:  82.2757 (init:  82.2757), eval step-count: 8, average reward= 9.2209 (init= 9.0850), step count (max): 29, lr policy:  0.0002:  60%|██████    | 6000/10000 [00:16<00:11, 358.53it/s]    eval cumulative reward:  82.2757 (init:  82.2757), eval step-count: 8, average reward= 9.2231 (init= 9.0850), step count (max): 35, lr policy:  0.0001:  60%|██████    | 6000/10000 [00:16<00:11, 358.53it/s]    eval cumulative reward:  82.2757 (init:  82.2757), eval step-count: 8, average reward= 9.2231 (init= 9.0850), step count (max): 35, lr policy:  0.0001:  70%|███████   | 7000/10000 [00:19<00:08, 360.00it/s]    eval cumulative reward:  82.2757 (init:  82.2757), eval step-count: 8, average reward= 9.2309 (init= 9.0850), step count (max): 26, lr policy:  0.0001:  70%|███████   | 7000/10000 [00:19<00:08, 360.00it/s]    eval cumulative reward:  82.2757 (init:  82.2757), eval step-count: 8, average reward= 9.2309 (init= 9.0850), step count (max): 26, lr policy:  0.0001:  80%|████████  | 8000/10000 [00:22<00:05, 359.42it/s]    eval cumulative reward:  82.2757 (init:  82.2757), eval step-count: 8, average reward= 9.2424 (init= 9.0850), step count (max): 36, lr policy:  0.0001:  80%|████████  | 8000/10000 [00:22<00:05, 359.42it/s]    eval cumulative reward:  82.2757 (init:  82.2757), eval step-count: 8, average reward= 9.2424 (init= 9.0850), step count (max): 36, lr policy:  0.0001:  90%|█████████ | 9000/10000 [00:25<00:02, 358.09it/s]    eval cumulative reward:  82.2757 (init:  82.2757), eval step-count: 8, average reward= 9.2472 (init= 9.0850), step count (max): 38, lr policy:  0.0000:  90%|█████████ | 9000/10000 [00:25<00:02, 358.09it/s]    eval cumulative reward:  82.2757 (init:  82.2757), eval step-count: 8, average reward= 9.2472 (init= 9.0850), step count (max): 38, lr policy:  0.0000: 100%|██████████| 10000/10000 [00:27<00:00, 359.67it/s]    eval cumulative reward:  82.2757 (init:  82.2757), eval step-count: 8, average reward= 9.2536 (init= 9.0850), step count (max): 40, lr policy:  0.0000: 100%|██████████| 10000/10000 [00:27<00:00, 359.67it/s]
+
+
+
 .. GENERATED FROM PYTHON SOURCE LINES 675-682
 
 Results
@@ -984,6 +1092,17 @@ trajectory is truncated.
     plt.show()
 
 
+
+
+.. image-sg:: /tutorials/images/sphx_glr_coding_ppo_001.png
+   :alt: training rewards (average), Max step count (training), Return (test), Max step count (test)
+   :srcset: /tutorials/images/sphx_glr_coding_ppo_001.png
+   :class: sphx-glr-single-img
+
+
+
+
+
 .. GENERATED FROM PYTHON SOURCE LINES 698-718
 
 Conclusion and next steps
@@ -1010,9 +1129,9 @@ If you want to experiment with this tutorial a bit more, you can apply the follo
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 33.605 seconds)
+   **Total running time of the script:** (1 minutes 35.826 seconds)
 
-**Estimated memory usage:**  3042 MB
+**Estimated memory usage:**  322 MB
 
 
 .. _sphx_glr_download_tutorials_coding_ppo.py:

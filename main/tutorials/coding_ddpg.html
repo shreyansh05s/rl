@@ -271,7 +271,7 @@
           <div class="pytorch-left-menu-search">
             
     <div class="version">
-      <a href="../../versions.html"><span style="font-size:110%">main (0.6.1+9e2d214) &#x25BC</span></a>
+      <a href="../../versions.html"><span style="font-size:110%">main (0.6.1+bb6f87a) &#x25BC</span></a>
     </div>
     
 
@@ -1215,40 +1215,6 @@ environments run in parallel in each collector.</p>
 <span class="p">)</span>
 </pre></div>
 </div>
-<div class="sphx-glr-script-out highlight-pytb notranslate"><div class="highlight"><pre><span></span><span class="gt">Traceback (most recent call last):</span>
-  File <span class="nb">&quot;/pytorch/rl/docs/source/reference/generated/tutorials/coding_ddpg.py&quot;</span>, line <span class="m">868</span>, in <span class="n">&lt;module&gt;</span>
-<span class="w">    </span><span class="n">collector</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/data.html#torch.utils.data.IterableDataset" title="torch.utils.data.IterableDataset" class="sphx-glr-backref-module-torch-utils-data sphx-glr-backref-type-py-class"><span class="n">SyncDataCollector</span></a><span class="p">(</span>
-  File <span class="nb">&quot;/pytorch/rl/torchrl/collectors/collectors.py&quot;</span>, line <span class="m">754</span>, in <span class="n">__init__</span>
-<span class="w">    </span><span class="bp">self</span><span class="o">.</span><span class="n">_make_final_rollout</span><span class="p">()</span>
-  File <span class="nb">&quot;/pytorch/rl/torchrl/collectors/collectors.py&quot;</span>, line <span class="m">850</span>, in <span class="n">_make_final_rollout</span>
-<span class="w">    </span><span class="n">policy_output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">policy</span><span class="p">(</span><span class="n">policy_input</span><span class="p">)</span>
-  File <span class="nb">&quot;/pytorch/rl/env/lib/python3.10/site-packages/torch/nn/modules/module.py&quot;</span>, line <span class="m">1739</span>, in <span class="n">_wrapped_call_impl</span>
-<span class="w">    </span><span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_impl</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-  File <span class="nb">&quot;/pytorch/rl/env/lib/python3.10/site-packages/torch/nn/modules/module.py&quot;</span>, line <span class="m">1750</span>, in <span class="n">_call_impl</span>
-<span class="w">    </span><span class="k">return</span> <span class="n">forward_call</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-  File <span class="nb">&quot;/pytorch/rl/env/lib/python3.10/site-packages/tensordict/nn/common.py&quot;</span>, line <span class="m">316</span>, in <span class="n">wrapper</span>
-<span class="w">    </span><span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="n">_self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-  File <span class="nb">&quot;/pytorch/rl/env/lib/python3.10/site-packages/tensordict/nn/utils.py&quot;</span>, line <span class="m">358</span>, in <span class="n">wrapper</span>
-<span class="w">    </span><span class="n">result</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="n">_self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-  File <span class="nb">&quot;/pytorch/rl/env/lib/python3.10/site-packages/tensordict/nn/sequence.py&quot;</span>, line <span class="m">485</span>, in <span class="n">forward</span>
-<span class="w">    </span><span class="n">tensordict_exec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run_module</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">tensordict_exec</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-  File <span class="nb">&quot;/pytorch/rl/env/lib/python3.10/site-packages/tensordict/nn/sequence.py&quot;</span>, line <span class="m">460</span>, in <span class="n">_run_module</span>
-<span class="w">    </span><span class="n">tensordict</span> <span class="o">=</span> <span class="n">module</span><span class="p">(</span><span class="n">tensordict</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-  File <span class="nb">&quot;/pytorch/rl/env/lib/python3.10/site-packages/torch/nn/modules/module.py&quot;</span>, line <span class="m">1739</span>, in <span class="n">_wrapped_call_impl</span>
-<span class="w">    </span><span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_impl</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-  File <span class="nb">&quot;/pytorch/rl/env/lib/python3.10/site-packages/torch/nn/modules/module.py&quot;</span>, line <span class="m">1845</span>, in <span class="n">_call_impl</span>
-<span class="w">    </span><span class="k">return</span> <span class="n">inner</span><span class="p">()</span>
-  File <span class="nb">&quot;/pytorch/rl/env/lib/python3.10/site-packages/torch/nn/modules/module.py&quot;</span>, line <span class="m">1806</span>, in <span class="n">inner</span>
-<span class="w">    </span><span class="n">hook_result</span> <span class="o">=</span> <span class="n">hook</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
-  File <span class="nb">&quot;/pytorch/rl/torchrl/modules/tensordict_module/common.py&quot;</span>, line <span class="m">105</span>, in <span class="n">_forward_hook_safe_action</span>
-<span class="w">    </span><span class="k">raise</span> <span class="n">err</span>
-  File <span class="nb">&quot;/pytorch/rl/torchrl/modules/tensordict_module/common.py&quot;</span>, line <span class="m">85</span>, in <span class="n">_forward_hook_safe_action</span>
-<span class="w">    </span><span class="k">if</span> <span class="ow">not</span> <span class="n">_spec</span><span class="o">.</span><span class="n">is_in</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
-  File <span class="nb">&quot;/pytorch/rl/torchrl/data/tensor_specs.py&quot;</span>, line <span class="m">2291</span>, in <span class="n">is_in</span>
-<span class="w">    </span><span class="k">raise</span> <span class="ne">RuntimeError</span>
-<span class="gr">RuntimeError</span>
-</pre></div>
-</div>
 </section>
 <section id="evaluator-building-your-recorder-object">
 <h2>Evaluator: building your recorder object<a class="headerlink" href="#evaluator-building-your-recorder-object" title="Permalink to this heading">¶</a></h2>
@@ -1305,7 +1271,7 @@ and writing strategies. It is also possible to
 store tensors on physical memory using a memory-mapped array. The following
 function takes care of creating the replay buffer with the desired
 hyperparameters:</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">torchrl.envs</span> <span class="kn">import</span> <span class="n">RandomCropTensorDict</span>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">torchrl.envs</span> <span class="kn">import</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">RandomCropTensorDict</span></a>
 
 
 <span class="k">def</span> <span class="nf">make_replay_buffer</span><span class="p">(</span><span class="n">buffer_size</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">random_crop_len</span><span class="p">,</span> <span class="n">prefetch</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">prb</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -1326,7 +1292,7 @@ hyperparameters:</p>
         <span class="n">sampler</span><span class="o">=</span><span class="n">sampler</span><span class="p">,</span>
         <span class="n">pin_memory</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">prefetch</span><span class="o">=</span><span class="n">prefetch</span><span class="p">,</span>
-        <span class="n">transform</span><span class="o">=</span><span class="n">RandomCropTensorDict</span><span class="p">(</span><span class="n">random_crop_len</span><span class="p">,</span> <span class="n">sample_dim</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+        <span class="n">transform</span><span class="o">=</span><a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">RandomCropTensorDict</span></a><span class="p">(</span><span class="n">random_crop_len</span><span class="p">,</span> <span class="n">sample_dim</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
     <span class="p">)</span>
     <span class="k">return</span> <span class="n">replay_buffer</span>
 </pre></div>
@@ -1440,10 +1406,10 @@ training loop.</p>
 <p>Finally, we will use the Adam optimizer for the policy and value network:</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">optim</span>
 
-<span class="n">optimizer_actor</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.optim.Adam.html#torch.optim.Adam" title="torch.optim.Adam" class="sphx-glr-backref-module-torch-optim sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span></a><span class="p">(</span>
+<a href="https://pytorch.org/docs/stable/generated/torch.optim.Adam.html#torch.optim.Adam" title="torch.optim.Adam" class="sphx-glr-backref-module-torch-optim sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">optimizer_actor</span></a> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.optim.Adam.html#torch.optim.Adam" title="torch.optim.Adam" class="sphx-glr-backref-module-torch-optim sphx-glr-backref-type-py-class"><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span></a><span class="p">(</span>
     <span class="n">loss_module</span><span class="o">.</span><span class="n">actor_network_params</span><span class="o">.</span><span class="n">values</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">weight_decay</span><span class="o">=</span><span class="mf">0.0</span>
 <span class="p">)</span>
-<span class="n">optimizer_value</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.optim.Adam.html#torch.optim.Adam" title="torch.optim.Adam" class="sphx-glr-backref-module-torch-optim sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span></a><span class="p">(</span>
+<a href="https://pytorch.org/docs/stable/generated/torch.optim.Adam.html#torch.optim.Adam" title="torch.optim.Adam" class="sphx-glr-backref-module-torch-optim sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">optimizer_value</span></a> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.optim.Adam.html#torch.optim.Adam" title="torch.optim.Adam" class="sphx-glr-backref-module-torch-optim sphx-glr-backref-type-py-class"><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span></a><span class="p">(</span>
     <span class="n">loss_module</span><span class="o">.</span><span class="n">value_network_params</span><span class="o">.</span><span class="n">values</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span> <span class="n">weight_decay</span><span class="o">=</span><span class="mf">1e-2</span>
 <span class="p">)</span>
 <span class="n">total_collection_steps</span> <span class="o">=</span> <span class="n">total_frames</span> <span class="o">//</span> <span class="n">frames_per_batch</span>
@@ -1488,20 +1454,20 @@ modules we need.</p>
 
             <span class="c1"># optimize</span>
             <span class="n">loss_dict</span><span class="p">[</span><span class="s2">&quot;loss_actor&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
-            <span class="n">gn1</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.utils.clip_grad_norm_.html#torch.nn.utils.clip_grad_norm_" title="torch.nn.utils.clip_grad_norm_" class="sphx-glr-backref-module-torch-nn-utils sphx-glr-backref-type-py-function"><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">clip_grad_norm_</span></a><span class="p">(</span>
+            <a href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="torch.Tensor" class="sphx-glr-backref-module-torch sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">gn1</span></a> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.utils.clip_grad_norm_.html#torch.nn.utils.clip_grad_norm_" title="torch.nn.utils.clip_grad_norm_" class="sphx-glr-backref-module-torch-nn-utils sphx-glr-backref-type-py-function"><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">clip_grad_norm_</span></a><span class="p">(</span>
                 <span class="n">loss_module</span><span class="o">.</span><span class="n">actor_network_params</span><span class="o">.</span><span class="n">values</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span> <span class="mf">10.0</span>
             <span class="p">)</span>
-            <span class="n">optimizer_actor</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
-            <span class="n">optimizer_actor</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+            <a href="https://pytorch.org/docs/stable/generated/torch.optim.Adam.html#torch.optim.Adam.step" title="torch.optim.Adam.step" class="sphx-glr-backref-module-torch-optim sphx-glr-backref-type-py-method"><span class="n">optimizer_actor</span><span class="o">.</span><span class="n">step</span></a><span class="p">()</span>
+            <a href="https://pytorch.org/docs/stable/generated/torch.optim.Adam.html#torch.optim.Adam.zero_grad" title="torch.optim.Adam.zero_grad" class="sphx-glr-backref-module-torch-optim sphx-glr-backref-type-py-method"><span class="n">optimizer_actor</span><span class="o">.</span><span class="n">zero_grad</span></a><span class="p">()</span>
 
             <span class="n">loss_dict</span><span class="p">[</span><span class="s2">&quot;loss_value&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
-            <span class="n">gn2</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.utils.clip_grad_norm_.html#torch.nn.utils.clip_grad_norm_" title="torch.nn.utils.clip_grad_norm_" class="sphx-glr-backref-module-torch-nn-utils sphx-glr-backref-type-py-function"><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">clip_grad_norm_</span></a><span class="p">(</span>
+            <a href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="torch.Tensor" class="sphx-glr-backref-module-torch sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">gn2</span></a> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.utils.clip_grad_norm_.html#torch.nn.utils.clip_grad_norm_" title="torch.nn.utils.clip_grad_norm_" class="sphx-glr-backref-module-torch-nn-utils sphx-glr-backref-type-py-function"><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">clip_grad_norm_</span></a><span class="p">(</span>
                 <span class="n">loss_module</span><span class="o">.</span><span class="n">value_network_params</span><span class="o">.</span><span class="n">values</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span> <span class="mf">10.0</span>
             <span class="p">)</span>
-            <span class="n">optimizer_value</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
-            <span class="n">optimizer_value</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+            <a href="https://pytorch.org/docs/stable/generated/torch.optim.Adam.html#torch.optim.Adam.step" title="torch.optim.Adam.step" class="sphx-glr-backref-module-torch-optim sphx-glr-backref-type-py-method"><span class="n">optimizer_value</span><span class="o">.</span><span class="n">step</span></a><span class="p">()</span>
+            <a href="https://pytorch.org/docs/stable/generated/torch.optim.Adam.html#torch.optim.Adam.zero_grad" title="torch.optim.Adam.zero_grad" class="sphx-glr-backref-module-torch-optim sphx-glr-backref-type-py-method"><span class="n">optimizer_value</span><span class="o">.</span><span class="n">zero_grad</span></a><span class="p">()</span>
 
-            <span class="n">gn</span> <span class="o">=</span> <span class="p">(</span><span class="n">gn1</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">gn2</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="mf">0.5</span>
+            <a href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="torch.Tensor" class="sphx-glr-backref-module-torch sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">gn</span></a> <span class="o">=</span> <span class="p">(</span><a href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="torch.Tensor" class="sphx-glr-backref-module-torch sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">gn1</span></a><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <a href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="torch.Tensor" class="sphx-glr-backref-module-torch sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">gn2</span></a><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="mf">0.5</span>
 
             <span class="c1"># update priority</span>
             <span class="k">if</span> <span class="n">prb</span><span class="p">:</span>
@@ -1528,7 +1494,7 @@ modules we need.</p>
             <span class="sa">f</span><span class="s2">&quot;reward: </span><span class="si">{</span><span class="n">rewards</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2"> 4.2f</span><span class="si">}</span><span class="s2"> (r0 = </span><span class="si">{</span><span class="n">r0</span><span class="si">:</span><span class="s2"> 4.2f</span><span class="si">}</span><span class="s2">), &quot;</span>
             <span class="sa">f</span><span class="s2">&quot;reward eval: reward: </span><span class="si">{</span><span class="n">rewards_eval</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2"> 4.2f</span><span class="si">}</span><span class="s2">, &quot;</span>
             <span class="sa">f</span><span class="s2">&quot;reward normalized=</span><span class="si">{</span><span class="n">rn</span><span class="w"> </span><span class="si">:</span><span class="s2">4.2f</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">rs</span><span class="w"> </span><span class="si">:</span><span class="s2">4.2f</span><span class="si">}</span><span class="s2">, &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;grad norm=</span><span class="si">{</span><span class="n">gn</span><span class="si">:</span><span class="s2"> 4.2f</span><span class="si">}</span><span class="s2">, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;grad norm=</span><span class="si">{</span><a href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="torch.Tensor" class="sphx-glr-backref-module-torch sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">gn</span></a><span class="si">:</span><span class="s2"> 4.2f</span><span class="si">}</span><span class="s2">, &quot;</span>
             <span class="sa">f</span><span class="s2">&quot;loss_value=</span><span class="si">{</span><span class="n">loss_value</span><span class="si">:</span><span class="s2"> 4.2f</span><span class="si">}</span><span class="s2">, &quot;</span>
             <span class="sa">f</span><span class="s2">&quot;loss_actor=</span><span class="si">{</span><span class="n">loss_actor</span><span class="si">:</span><span class="s2"> 4.2f</span><span class="si">}</span><span class="s2">, &quot;</span>
             <span class="sa">f</span><span class="s2">&quot;target value: </span><span class="si">{</span><span class="n">target_value</span><span class="si">:</span><span class="s2"> 4.2f</span><span class="si">}</span><span class="s2">&quot;</span>
@@ -1539,6 +1505,29 @@ modules we need.</p>
 
 <span class="n">collector</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
 <span class="k">del</span> <span class="n">collector</span>
+</pre></div>
+</div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>  0%|          | 0/10000 [00:00&lt;?, ?it/s]
+  8%|▊         | 800/10000 [00:00&lt;00:03, 2566.37it/s]
+ 16%|█▌        | 1600/10000 [00:02&lt;00:13, 622.23it/s]
+ 24%|██▍       | 2400/10000 [00:02&lt;00:08, 937.88it/s]
+ 32%|███▏      | 3200/10000 [00:02&lt;00:05, 1237.88it/s]
+ 40%|████      | 4000/10000 [00:03&lt;00:03, 1508.14it/s]
+ 48%|████▊     | 4800/10000 [00:03&lt;00:02, 1758.77it/s]
+ 56%|█████▌    | 5600/10000 [00:03&lt;00:02, 1968.87it/s]
+reward: -3.26 (r0 = -2.10), reward eval: reward: -0.00, reward normalized=-2.64/5.79, grad norm= 146.12, loss_value= 202.43, loss_actor= 15.36, target value: -18.68:  56%|█████▌    | 5600/10000 [00:06&lt;00:02, 1968.87it/s]
+reward: -3.26 (r0 = -2.10), reward eval: reward: -0.00, reward normalized=-2.64/5.79, grad norm= 146.12, loss_value= 202.43, loss_actor= 15.36, target value: -18.68:  64%|██████▍   | 6400/10000 [00:06&lt;00:05, 705.84it/s]
+reward: -1.09 (r0 = -2.10), reward eval: reward: -0.00, reward normalized=-2.06/5.37, grad norm= 61.32, loss_value= 164.56, loss_actor= 12.05, target value: -13.40:  64%|██████▍   | 6400/10000 [00:08&lt;00:05, 705.84it/s]
+reward: -1.09 (r0 = -2.10), reward eval: reward: -0.00, reward normalized=-2.06/5.37, grad norm= 61.32, loss_value= 164.56, loss_actor= 12.05, target value: -13.40:  72%|███████▏  | 7200/10000 [00:09&lt;00:05, 493.61it/s]
+reward: -5.17 (r0 = -2.10), reward eval: reward: -0.00, reward normalized=-2.95/5.77, grad norm= 213.79, loss_value= 290.89, loss_actor= 14.58, target value: -19.15:  72%|███████▏  | 7200/10000 [00:11&lt;00:05, 493.61it/s]
+reward: -5.17 (r0 = -2.10), reward eval: reward: -0.00, reward normalized=-2.95/5.77, grad norm= 213.79, loss_value= 290.89, loss_actor= 14.58, target value: -19.15:  80%|████████  | 8000/10000 [00:12&lt;00:04, 407.01it/s]
+reward: -4.64 (r0 = -2.10), reward eval: reward: -0.00, reward normalized=-2.33/5.42, grad norm= 90.36, loss_value= 210.63, loss_actor= 14.36, target value: -15.97:  80%|████████  | 8000/10000 [00:14&lt;00:04, 407.01it/s]
+reward: -4.64 (r0 = -2.10), reward eval: reward: -0.00, reward normalized=-2.33/5.42, grad norm= 90.36, loss_value= 210.63, loss_actor= 14.36, target value: -15.97:  88%|████████▊ | 8800/10000 [00:14&lt;00:03, 362.43it/s]
+reward: -5.31 (r0 = -2.10), reward eval: reward: -5.93, reward normalized=-3.70/4.79, grad norm= 86.13, loss_value= 187.68, loss_actor= 22.60, target value: -25.11:  88%|████████▊ | 8800/10000 [00:18&lt;00:03, 362.43it/s]
+reward: -5.31 (r0 = -2.10), reward eval: reward: -5.93, reward normalized=-3.70/4.79, grad norm= 86.13, loss_value= 187.68, loss_actor= 22.60, target value: -25.11:  96%|█████████▌| 9600/10000 [00:19&lt;00:01, 280.24it/s]
+reward: -4.99 (r0 = -2.10), reward eval: reward: -5.93, reward normalized=-3.62/4.91, grad norm= 55.31, loss_value= 195.86, loss_actor= 25.23, target value: -24.13:  96%|█████████▌| 9600/10000 [00:21&lt;00:01, 280.24it/s]
+reward: -4.99 (r0 = -2.10), reward eval: reward: -5.93, reward normalized=-3.62/4.91, grad norm= 55.31, loss_value= 195.86, loss_actor= 25.23, target value: -24.13: : 10400it [00:22, 261.58it/s]
+reward: -4.99 (r0 = -2.10), reward eval: reward: -5.93, reward normalized=-2.99/4.49, grad norm= 118.50, loss_value= 144.33, loss_actor= 25.14, target value: -21.74: : 10400it [00:23, 261.58it/s]
 </pre></div>
 </div>
 </section>
@@ -1562,7 +1551,7 @@ use a greater value for <code class="docutils literal notranslate"><span class="
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
 </div>
-</section>
+<img src="../_images/sphx_glr_coding_ddpg_001.png" srcset="../_images/sphx_glr_coding_ddpg_001.png" alt="coding ddpg" class = "sphx-glr-single-img"/></section>
 <section id="conclusion">
 <h2>Conclusion<a class="headerlink" href="#conclusion" title="Permalink to this heading">¶</a></h2>
 <p>In this tutorial, we have learned how to code a loss module in TorchRL given
@@ -1582,8 +1571,8 @@ loss component;</p></li>
 <li><p>Using <cite>&#64;dispatch</cite> (see <a class="reference external" href="https://github.com/pytorch/rl/pull/1230">[Feature] Distpatch IQL loss module</a>.)</p></li>
 <li><p>Allowing flexible TensorDict keys.</p></li>
 </ul>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (1 minutes 36.282 seconds)</p>
-<p><strong>Estimated memory usage:</strong>  3325 MB</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (2 minutes 1.517 seconds)</p>
+<p><strong>Estimated memory usage:</strong>  324 MB</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-tutorials-coding-ddpg-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/7ef773e36507adbc389133424f663224/coding_ddpg.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">coding_ddpg.ipynb</span></code></a></p>
