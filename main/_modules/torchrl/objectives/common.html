@@ -268,7 +268,7 @@
           <div class="pytorch-left-menu-search">
             
     <div class="version">
-      <a href="../../../../versions.html"><span style="font-size:110%">main (0.6.1+e3c3047) &#x25BC</span></a>
+      <a href="../../../../versions.html"><span style="font-size:110%">main (0.6.1+7d7cd95) &#x25BC</span></a>
     </div>
     
 
@@ -450,10 +450,15 @@
 <span class="k">def</span> <span class="nf">_forward_wrapper</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
     <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">new_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="k">with</span> <span class="n">set_exploration_type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">deterministic_sampling_mode</span><span class="p">),</span> <span class="n">set_recurrent_mode</span><span class="p">(</span>
-            <span class="kc">True</span>
-        <span class="p">):</span>
+        <span class="n">em</span> <span class="o">=</span> <span class="n">set_exploration_type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">deterministic_sampling_mode</span><span class="p">)</span>
+        <span class="n">em</span><span class="o">.</span><span class="fm">__enter__</span><span class="p">()</span>
+        <span class="n">rm</span> <span class="o">=</span> <span class="n">set_recurrent_mode</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">rm</span><span class="o">.</span><span class="fm">__enter__</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">em</span><span class="o">.</span><span class="fm">__exit__</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">rm</span><span class="o">.</span><span class="fm">__exit__</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">new_forward</span>
 

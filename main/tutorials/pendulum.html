@@ -271,7 +271,7 @@
           <div class="pytorch-left-menu-search">
             
     <div class="version">
-      <a href="../../versions.html"><span style="font-size:110%">main (0.6.1+e3c3047) &#x25BC</span></a>
+      <a href="../../versions.html"><span style="font-size:110%">main (0.6.1+7d7cd95) &#x25BC</span></a>
     </div>
     
 
@@ -912,95 +912,15 @@ Let us try it out:</p>
 <div class="sphx-glr-script-out highlight-pytb notranslate"><div class="highlight"><pre><span></span><span class="gt">Traceback (most recent call last):</span>
   File <span class="nb">&quot;/pytorch/rl/docs/source/reference/generated/tutorials/pendulum.py&quot;</span>, line <span class="m">564</span>, in <span class="n">&lt;module&gt;</span>
 <span class="w">    </span><span class="n">check_env_specs</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
-  File <span class="nb">&quot;/pytorch/rl/torchrl/envs/utils.py&quot;</span>, line <span class="m">832</span>, in <span class="n">check_env_specs</span>
-<span class="w">    </span><span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span>
-<span class="gr">AssertionError</span>: <span class="n">spec check failed at root for spec state=Composite(</span>
-<span class="x">    th: BoundedContinuous(</span>
-<span class="x">        shape=torch.Size([]),</span>
-<span class="x">        space=ContinuousBox(</span>
-<span class="x">            low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True),</span>
-<span class="x">            high=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True)),</span>
-<span class="x">        device=cpu,</span>
-<span class="x">        dtype=torch.float32,</span>
-<span class="x">        domain=continuous),</span>
-<span class="x">    thdot: BoundedContinuous(</span>
-<span class="x">        shape=torch.Size([]),</span>
-<span class="x">        space=ContinuousBox(</span>
-<span class="x">            low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True),</span>
-<span class="x">            high=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True)),</span>
-<span class="x">        device=cpu,</span>
-<span class="x">        dtype=torch.float32,</span>
-<span class="x">        domain=continuous),</span>
-<span class="x">    params: Composite(</span>
-<span class="x">        max_speed: UnboundedDiscrete(</span>
-<span class="x">            shape=torch.Size([]),</span>
-<span class="x">            space=ContinuousBox(</span>
-<span class="x">                low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.int64, contiguous=True),</span>
-<span class="x">                high=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.int64, contiguous=True)),</span>
-<span class="x">            device=cpu,</span>
-<span class="x">            dtype=torch.int64,</span>
-<span class="x">            domain=discrete),</span>
-<span class="x">        max_torque: UnboundedContinuous(</span>
-<span class="x">            shape=torch.Size([]),</span>
-<span class="x">            space=ContinuousBox(</span>
-<span class="x">                low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True),</span>
-<span class="x">                high=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True)),</span>
-<span class="x">            device=cpu,</span>
-<span class="x">            dtype=torch.float32,</span>
-<span class="x">            domain=continuous),</span>
-<span class="x">        dt: UnboundedContinuous(</span>
-<span class="x">            shape=torch.Size([]),</span>
-<span class="x">            space=ContinuousBox(</span>
-<span class="x">                low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True),</span>
-<span class="x">                high=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True)),</span>
-<span class="x">            device=cpu,</span>
-<span class="x">            dtype=torch.float32,</span>
-<span class="x">            domain=continuous),</span>
-<span class="x">        g: UnboundedContinuous(</span>
-<span class="x">            shape=torch.Size([]),</span>
-<span class="x">            space=ContinuousBox(</span>
-<span class="x">                low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True),</span>
-<span class="x">                high=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True)),</span>
-<span class="x">            device=cpu,</span>
-<span class="x">            dtype=torch.float32,</span>
-<span class="x">            domain=continuous),</span>
-<span class="x">        m: UnboundedContinuous(</span>
-<span class="x">            shape=torch.Size([]),</span>
-<span class="x">            space=ContinuousBox(</span>
-<span class="x">                low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True),</span>
-<span class="x">                high=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True)),</span>
-<span class="x">            device=cpu,</span>
-<span class="x">            dtype=torch.float32,</span>
-<span class="x">            domain=continuous),</span>
-<span class="x">        l: UnboundedContinuous(</span>
-<span class="x">            shape=torch.Size([]),</span>
-<span class="x">            space=ContinuousBox(</span>
-<span class="x">                low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True),</span>
-<span class="x">                high=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True)),</span>
-<span class="x">            device=cpu,</span>
-<span class="x">            dtype=torch.float32,</span>
-<span class="x">            domain=continuous),</span>
-<span class="x">        device=cpu,</span>
-<span class="x">        shape=torch.Size([])),</span>
-<span class="x">    device=cpu,</span>
-<span class="x">    shape=torch.Size([])) and data TensorDict(</span>
-<span class="x">    fields={</span>
-<span class="x">        params: TensorDict(</span>
-<span class="x">            fields={</span>
-<span class="x">                dt: Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, is_shared=False),</span>
-<span class="x">                g: Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, is_shared=False),</span>
-<span class="x">                l: Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, is_shared=False),</span>
-<span class="x">                m: Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, is_shared=False),</span>
-<span class="x">                max_speed: Tensor(shape=torch.Size([]), device=cpu, dtype=torch.int64, is_shared=False),</span>
-<span class="x">                max_torque: Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, is_shared=False)},</span>
-<span class="x">            batch_size=torch.Size([]),</span>
-<span class="x">            device=None,</span>
-<span class="x">            is_shared=False),</span>
-<span class="x">        th: Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, is_shared=False),</span>
-<span class="x">        thdot: Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, is_shared=False)},</span>
-<span class="x">    batch_size=torch.Size([]),</span>
-<span class="x">    device=None,</span>
-<span class="x">    is_shared=False).</span>
+  File <span class="nb">&quot;/pytorch/rl/torchrl/envs/utils.py&quot;</span>, line <span class="m">831</span>, in <span class="n">check_env_specs</span>
+<span class="w">    </span><span class="k">if</span> <span class="ow">not</span> <span class="n">spec</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">td</span><span class="p">):</span>
+  File <span class="nb">&quot;/pytorch/rl/torchrl/data/tensor_specs.py&quot;</span>, line <span class="m">845</span>, in <span class="n">contains</span>
+<span class="w">    </span><span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_in</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+  File <span class="nb">&quot;/pytorch/rl/torchrl/data/tensor_specs.py&quot;</span>, line <span class="m">4716</span>, in <span class="n">is_in</span>
+<span class="w">    </span><span class="k">if</span> <span class="ow">not</span> <span class="n">item</span><span class="o">.</span><span class="n">is_in</span><span class="p">(</span><span class="n">val_item</span><span class="p">):</span>
+  File <span class="nb">&quot;/pytorch/rl/torchrl/data/tensor_specs.py&quot;</span>, line <span class="m">2291</span>, in <span class="n">is_in</span>
+<span class="w">    </span><span class="k">raise</span> <span class="ne">RuntimeError</span>
+<span class="gr">RuntimeError</span>
 </pre></div>
 </div>
 <p>We can have a look at our specs to have a visual representation of the environment
@@ -1346,8 +1266,8 @@ We saw how these methods and classes interact with the
 to write custom transformations;</p></li>
 <li><p>How to train a policy on a fully differentiable simulator.</p></li>
 </ul>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 20.408 seconds)</p>
-<p><strong>Estimated memory usage:</strong>  4212 MB</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 21.033 seconds)</p>
+<p><strong>Estimated memory usage:</strong>  5076 MB</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-tutorials-pendulum-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/36eee5b78ddb0e674d19a3401b49da68/pendulum.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">pendulum.ipynb</span></code></a></p>
