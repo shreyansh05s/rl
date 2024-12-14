@@ -271,7 +271,7 @@
           <div class="pytorch-left-menu-search">
             
     <div class="version">
-      <a href="../../versions.html"><span style="font-size:110%">main (0.6.1+7d7cd95) &#x25BC</span></a>
+      <a href="../../versions.html"><span style="font-size:110%">main (0.6.1+01a421e) &#x25BC</span></a>
     </div>
     
 
@@ -524,15 +524,17 @@ uniformly distributed) numbers in that space:</p>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;projected action: </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">env</span><span class="o">.</span><span class="n">action_spec</span><span class="o">.</span><span class="n">project</span><span class="p">(</span><a href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="torch.Tensor" class="sphx-glr-backref-module-torch sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">action</span></a><span class="p">))</span>
 </pre></div>
 </div>
-<div class="sphx-glr-script-out highlight-pytb notranslate"><div class="highlight"><pre><span></span><span class="gt">Traceback (most recent call last):</span>
-  File <span class="nb">&quot;/pytorch/rl/docs/source/reference/generated/tutorials/torchrl_envs.py&quot;</span>, line <span class="m">100</span>, in <span class="n">&lt;module&gt;</span>
-<span class="w">    </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;action is in bounds?</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">bool</span><span class="p">(</span><span class="n">env</span><span class="o">.</span><span class="n">action_spec</span><span class="o">.</span><span class="n">is_in</span><span class="p">(</span><a href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="torch.Tensor" class="sphx-glr-backref-module-torch sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">action</span></a><span class="p">)))</span>
-  File <span class="nb">&quot;/pytorch/rl/torchrl/data/tensor_specs.py&quot;</span>, line <span class="m">2291</span>, in <span class="n">is_in</span>
-<span class="w">    </span><span class="k">raise</span> <span class="ne">RuntimeError</span>
-<span class="gr">RuntimeError</span>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>action is in bounds?
+ False
+projected action:
+ tensor([2.])
 </pre></div>
 </div>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;random action: </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">env</span><span class="o">.</span><span class="n">action_spec</span><span class="o">.</span><span class="n">rand</span><span class="p">())</span>
+</pre></div>
+</div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>random action:
+ tensor([-0.0048])
 </pre></div>
 </div>
 <p>Out of these specs, the <code class="docutils literal notranslate"><span class="pre">done_spec</span></code> deserves a special attention. In TorchRL,
@@ -544,6 +546,29 @@ the task). In general, a <code class="docutils literal notranslate"><span class=
 is <code class="docutils literal notranslate"><span class="pre">False</span></code> is caused by a <code class="docutils literal notranslate"><span class="pre">&quot;truncated&quot;</span></code> signal. Gym environments account for
 these three signals:</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">env</span><span class="o">.</span><span class="n">done_spec</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Composite(
+    done: Categorical(
+        shape=torch.Size([1]),
+        space=CategoricalBox(n=2),
+        device=cpu,
+        dtype=torch.bool,
+        domain=discrete),
+    terminated: Categorical(
+        shape=torch.Size([1]),
+        space=CategoricalBox(n=2),
+        device=cpu,
+        dtype=torch.bool,
+        domain=discrete),
+    truncated: Categorical(
+        shape=torch.Size([1]),
+        space=CategoricalBox(n=2),
+        device=cpu,
+        dtype=torch.bool,
+        domain=discrete),
+    device=None,
+    shape=torch.Size([]))
 </pre></div>
 </div>
 <p>Envs are also packed with an <code class="docutils literal notranslate"><span class="pre">env.state_spec</span></code> attribute of type
@@ -566,6 +591,17 @@ and (3) <code class="docutils literal notranslate"><span class="pre">step</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;reset data&quot;</span><span class="p">,</span> <span class="n">reset_data</span><span class="p">)</span>
 </pre></div>
 </div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>reset data TensorDict(
+    fields={
+        done: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+        observation: Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float32, is_shared=False),
+        terminated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+        truncated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False)},
+    batch_size=torch.Size([]),
+    device=None,
+    is_shared=False)
+</pre></div>
+</div>
 <p>We can now execute a step in the environment. Since we don’t have a policy,
 we can just generate a random action:</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">policy</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">TensorDictModule</span></a><span class="p">(</span><span class="n">env</span><span class="o">.</span><span class="n">action_spec</span><span class="o">.</span><span class="n">rand</span><span class="p">,</span> <span class="n">in_keys</span><span class="o">=</span><span class="p">[],</span> <span class="n">out_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;action&quot;</span><span class="p">])</span>
@@ -583,9 +619,49 @@ we can just generate a random action:</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">tensordict_out</span>
 </pre></div>
 </div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>TensorDict(
+    fields={
+        action: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, is_shared=False),
+        done: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+        next: TensorDict(
+            fields={
+                done: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+                observation: Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float32, is_shared=False),
+                reward: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, is_shared=False),
+                terminated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+                truncated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False)},
+            batch_size=torch.Size([]),
+            device=None,
+            is_shared=False),
+        observation: Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float32, is_shared=False),
+        terminated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+        truncated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False)},
+    batch_size=torch.Size([]),
+    device=None,
+    is_shared=False)
+</pre></div>
+</div>
 <p>What we just did (a random step using <code class="docutils literal notranslate"><span class="pre">action_spec.rand()</span></code>) can also be
 done via the simple shortcut.</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">env</span><span class="o">.</span><span class="n">rand_step</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>TensorDict(
+    fields={
+        action: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, is_shared=False),
+        next: TensorDict(
+            fields={
+                done: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+                observation: Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float32, is_shared=False),
+                reward: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, is_shared=False),
+                terminated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+                truncated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False)},
+            batch_size=torch.Size([]),
+            device=None,
+            is_shared=False)},
+    batch_size=torch.Size([]),
+    device=None,
+    is_shared=False)
 </pre></div>
 </div>
 <p>The new key <code class="docutils literal notranslate"><span class="pre">(&quot;next&quot;,</span> <span class="pre">&quot;observation&quot;)</span></code> (as all keys under the <code class="docutils literal notranslate"><span class="pre">&quot;next&quot;</span></code>
@@ -607,6 +683,19 @@ it returns a new tensordict updated such that <em>t &lt; -t’</em>:</p>
 <span class="p">)</span>
 </pre></div>
 </div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>TensorDict(
+    fields={
+        done: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+        observation: Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float32, is_shared=False),
+        some other key: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, is_shared=False),
+        terminated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+        truncated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False)},
+    batch_size=torch.Size([]),
+    device=None,
+    is_shared=False)
+tensor(True)
+</pre></div>
+</div>
 <p>We can observe that <code class="docutils literal notranslate"><span class="pre">step_mdp</span></code> has removed all the time-dependent
 key-value pairs, but not <code class="docutils literal notranslate"><span class="pre">&quot;some</span> <span class="pre">other</span> <span class="pre">key&quot;</span></code>. Also, the new
 observation matches the previous one.</p>
@@ -614,6 +703,17 @@ observation matches the previous one.</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="p">()</span>
 <span class="k">assert</span> <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="ow">is</span> <span class="n">data</span>
 <span class="n">data</span>
+</pre></div>
+</div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>TensorDict(
+    fields={
+        done: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+        observation: Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float32, is_shared=False),
+        terminated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+        truncated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False)},
+    batch_size=torch.Size([]),
+    device=None,
+    is_shared=False)
 </pre></div>
 </div>
 </section>
@@ -625,6 +725,28 @@ easily for a given number of steps:</p>
 <span class="nb">print</span><span class="p">(</span><span class="n">tensordict_rollout</span><span class="p">)</span>
 </pre></div>
 </div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>TensorDict(
+    fields={
+        action: Tensor(shape=torch.Size([20, 1]), device=cpu, dtype=torch.float32, is_shared=False),
+        done: Tensor(shape=torch.Size([20, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+        next: TensorDict(
+            fields={
+                done: Tensor(shape=torch.Size([20, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+                observation: Tensor(shape=torch.Size([20, 3]), device=cpu, dtype=torch.float32, is_shared=False),
+                reward: Tensor(shape=torch.Size([20, 1]), device=cpu, dtype=torch.float32, is_shared=False),
+                terminated: Tensor(shape=torch.Size([20, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+                truncated: Tensor(shape=torch.Size([20, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
+            batch_size=torch.Size([20]),
+            device=None,
+            is_shared=False),
+        observation: Tensor(shape=torch.Size([20, 3]), device=cpu, dtype=torch.float32, is_shared=False),
+        terminated: Tensor(shape=torch.Size([20, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+        truncated: Tensor(shape=torch.Size([20, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
+    batch_size=torch.Size([20]),
+    device=None,
+    is_shared=False)
+</pre></div>
+</div>
 <p>The resulting tensordict has a <code class="docutils literal notranslate"><span class="pre">batch_size</span></code> of <code class="docutils literal notranslate"><span class="pre">[20]</span></code>, which is the
 length of the trajectory. We can check that the observation match their
 next value:</p>
@@ -632,6 +754,9 @@ next value:</p>
     <span class="n">tensordict_rollout</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;observation&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]</span>
     <span class="o">==</span> <span class="n">tensordict_rollout</span><span class="o">.</span><span class="n">get</span><span class="p">((</span><span class="s2">&quot;next&quot;</span><span class="p">,</span> <span class="s2">&quot;observation&quot;</span><span class="p">))[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 <span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>tensor(True)
 </pre></div>
 </div>
 </section>
@@ -645,6 +770,17 @@ sequence, but the rewards will be summed over the number of frames.</p>
 and return the result of the truncated chain.</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">env</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">GymEnv</span></a><span class="p">(</span><span class="s2">&quot;Pendulum-v1&quot;</span><span class="p">,</span> <span class="n">frame_skip</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
 <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>TensorDict(
+    fields={
+        done: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+        observation: Tensor(shape=torch.Size([3]), device=cpu, dtype=torch.float32, is_shared=False),
+        terminated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+        truncated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False)},
+    batch_size=torch.Size([]),
+    device=None,
+    is_shared=False)
 </pre></div>
 </div>
 </section>
@@ -663,8 +799,22 @@ argument that allows the user to quickly ask for image-based environments:</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;pixels&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">numpy</span><span class="p">())</span>
 </pre></div>
 </div>
+<img src="../_images/sphx_glr_torchrl_envs_001.png" srcset="../_images/sphx_glr_torchrl_envs_001.png" alt="torchrl envs" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.image.AxesImage object at 0x7f705a989810&gt;
+</pre></div>
+</div>
 <p>Let’s have a look at what the tensordict contains:</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">data</span>
+</pre></div>
+</div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>TensorDict(
+    fields={
+        done: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+        pixels: Tensor(shape=torch.Size([500, 500, 3]), device=cpu, dtype=torch.uint8, is_shared=False),
+        terminated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+        truncated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False)},
+    batch_size=torch.Size([]),
+    device=None,
+    is_shared=False)
 </pre></div>
 </div>
 <p>We still have a <code class="docutils literal notranslate"><span class="pre">&quot;state&quot;</span></code> that describes what <code class="docutils literal notranslate"><span class="pre">&quot;observation&quot;</span></code> used to
@@ -686,6 +836,18 @@ gym environment step method).</p>
 <span class="n">env</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </pre></div>
 </div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>from pixels:  True
+data:  TensorDict(
+    fields={
+        done: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+        pixels: Tensor(shape=torch.Size([210, 160, 3]), device=cpu, dtype=torch.uint8, is_shared=False),
+        terminated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+        truncated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False)},
+    batch_size=torch.Size([]),
+    device=None,
+    is_shared=False)
+</pre></div>
+</div>
 </section>
 </section>
 <section id="deepmind-control-environments">
@@ -700,23 +862,49 @@ The <code class="docutils literal notranslate"><span class="pre">available_envs<
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
 </pre></div>
 </div>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">torchrl.envs.libs.dm_control</span> <span class="kn">import</span> <span class="n">DMControlEnv</span>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">torchrl.envs.libs.dm_control</span> <span class="kn">import</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">DMControlEnv</span></a>
 
-<span class="n">DMControlEnv</span><span class="o">.</span><span class="n">available_envs</span>
+<a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">DMControlEnv</span></a><span class="o">.</span><span class="n">available_envs</span>
 </pre></div>
 </div>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">env</span> <span class="o">=</span> <span class="n">DMControlEnv</span><span class="p">(</span><span class="s2">&quot;acrobot&quot;</span><span class="p">,</span> <span class="s2">&quot;swingup&quot;</span><span class="p">)</span>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>[(&#39;acrobot&#39;, [&#39;swingup&#39;, &#39;swingup_sparse&#39;]), (&#39;ball_in_cup&#39;, [&#39;catch&#39;]), (&#39;cartpole&#39;, [&#39;balance&#39;, &#39;balance_sparse&#39;, &#39;swingup&#39;, &#39;swingup_sparse&#39;, &#39;three_poles&#39;, &#39;two_poles&#39;]), (&#39;cheetah&#39;, [&#39;run&#39;]), (&#39;finger&#39;, [&#39;spin&#39;, &#39;turn_easy&#39;, &#39;turn_hard&#39;]), (&#39;fish&#39;, [&#39;upright&#39;, &#39;swim&#39;]), (&#39;hopper&#39;, [&#39;stand&#39;, &#39;hop&#39;]), (&#39;humanoid&#39;, [&#39;stand&#39;, &#39;walk&#39;, &#39;run&#39;, &#39;run_pure_state&#39;]), (&#39;manipulator&#39;, [&#39;bring_ball&#39;, &#39;bring_peg&#39;, &#39;insert_ball&#39;, &#39;insert_peg&#39;]), (&#39;pendulum&#39;, [&#39;swingup&#39;]), (&#39;point_mass&#39;, [&#39;easy&#39;, &#39;hard&#39;]), (&#39;reacher&#39;, [&#39;easy&#39;, &#39;hard&#39;]), (&#39;swimmer&#39;, [&#39;swimmer6&#39;, &#39;swimmer15&#39;]), (&#39;walker&#39;, [&#39;stand&#39;, &#39;walk&#39;, &#39;run&#39;]), (&#39;dog&#39;, [&#39;fetch&#39;, &#39;run&#39;, &#39;stand&#39;, &#39;trot&#39;, &#39;walk&#39;]), (&#39;humanoid_CMU&#39;, [&#39;run&#39;, &#39;stand&#39;, &#39;walk&#39;]), (&#39;lqr&#39;, [&#39;lqr_2_1&#39;, &#39;lqr_6_2&#39;]), (&#39;quadruped&#39;, [&#39;escape&#39;, &#39;fetch&#39;, &#39;run&#39;, &#39;walk&#39;]), (&#39;stacker&#39;, [&#39;stack_2&#39;, &#39;stack_4&#39;])]
+</pre></div>
+</div>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">env</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">DMControlEnv</span></a><span class="p">(</span><span class="s2">&quot;acrobot&quot;</span><span class="p">,</span> <span class="s2">&quot;swingup&quot;</span><span class="p">)</span>
 <span class="n">data</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;result of reset: &quot;</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
 <span class="n">env</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </pre></div>
 </div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>result of reset:  TensorDict(
+    fields={
+        done: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+        orientations: Tensor(shape=torch.Size([4]), device=cpu, dtype=torch.float64, is_shared=False),
+        terminated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+        truncated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+        velocity: Tensor(shape=torch.Size([2]), device=cpu, dtype=torch.float64, is_shared=False)},
+    batch_size=torch.Size([]),
+    device=None,
+    is_shared=False)
+</pre></div>
+</div>
 <p>Of course we can also use pixel-based environments:</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">env</span> <span class="o">=</span> <span class="n">DMControlEnv</span><span class="p">(</span><span class="s2">&quot;acrobot&quot;</span><span class="p">,</span> <span class="s2">&quot;swingup&quot;</span><span class="p">,</span> <span class="n">from_pixels</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">pixels_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">env</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">DMControlEnv</span></a><span class="p">(</span><span class="s2">&quot;acrobot&quot;</span><span class="p">,</span> <span class="s2">&quot;swingup&quot;</span><span class="p">,</span> <span class="n">from_pixels</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">pixels_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">data</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;result of reset: &quot;</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;pixels&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">numpy</span><span class="p">())</span>
 <span class="n">env</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<img src="../_images/sphx_glr_torchrl_envs_002.png" srcset="../_images/sphx_glr_torchrl_envs_002.png" alt="torchrl envs" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>result of reset:  TensorDict(
+    fields={
+        done: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+        pixels: Tensor(shape=torch.Size([240, 320, 3]), device=cpu, dtype=torch.uint8, is_shared=False),
+        terminated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+        truncated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False)},
+    batch_size=torch.Size([]),
+    device=None,
+    is_shared=False)
 </pre></div>
 </div>
 </section>
@@ -743,30 +931,72 @@ done in other pytorch domain libraries (e.g. <code class="docutils literal notra
 approach is also similar to the way distributions are transformed in
 <code class="docutils literal notranslate"><span class="pre">torch.distribution</span></code>, where a <code class="docutils literal notranslate"><span class="pre">TransformedDistribution</span></code> object is
 built around a <code class="docutils literal notranslate"><span class="pre">base_dist</span></code> distribution and (a sequence of) <code class="docutils literal notranslate"><span class="pre">transforms</span></code>.</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">torchrl.envs.transforms</span> <span class="kn">import</span> <span class="n">ToTensorImage</span><span class="p">,</span> <span class="n">TransformedEnv</span>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">torchrl.envs.transforms</span> <span class="kn">import</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">ToTensorImage</span></a><span class="p">,</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">TransformedEnv</span></a>
 
 <span class="c1"># ToTensorImage transforms a numpy-like image into a tensor one,</span>
-<span class="n">env</span> <span class="o">=</span> <span class="n">DMControlEnv</span><span class="p">(</span><span class="s2">&quot;acrobot&quot;</span><span class="p">,</span> <span class="s2">&quot;swingup&quot;</span><span class="p">,</span> <span class="n">from_pixels</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">pixels_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">env</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">DMControlEnv</span></a><span class="p">(</span><span class="s2">&quot;acrobot&quot;</span><span class="p">,</span> <span class="s2">&quot;swingup&quot;</span><span class="p">,</span> <span class="n">from_pixels</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">pixels_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;reset before transform: &quot;</span><span class="p">,</span> <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">())</span>
 
-<span class="n">env</span> <span class="o">=</span> <span class="n">TransformedEnv</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">ToTensorImage</span><span class="p">())</span>
+<span class="n">env</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">TransformedEnv</span></a><span class="p">(</span><span class="n">env</span><span class="p">,</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">ToTensorImage</span></a><span class="p">())</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;reset after transform: &quot;</span><span class="p">,</span> <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">())</span>
 <span class="n">env</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </pre></div>
 </div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>reset before transform:  TensorDict(
+    fields={
+        done: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+        pixels: Tensor(shape=torch.Size([240, 320, 3]), device=cpu, dtype=torch.uint8, is_shared=False),
+        terminated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+        truncated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False)},
+    batch_size=torch.Size([]),
+    device=None,
+    is_shared=False)
+reset after transform:  TensorDict(
+    fields={
+        done: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+        pixels: Tensor(shape=torch.Size([3, 240, 320]), device=cpu, dtype=torch.float32, is_shared=False),
+        terminated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+        truncated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False)},
+    batch_size=torch.Size([]),
+    device=None,
+    is_shared=False)
+</pre></div>
+</div>
 <p>To compose transforms, simply use the <code class="docutils literal notranslate"><span class="pre">Compose</span></code> class:</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">torchrl.envs.transforms</span> <span class="kn">import</span> <span class="n">Compose</span><span class="p">,</span> <span class="n">Resize</span>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">torchrl.envs.transforms</span> <span class="kn">import</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">Compose</span></a><span class="p">,</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">Resize</span></a>
 
-<span class="n">env</span> <span class="o">=</span> <span class="n">DMControlEnv</span><span class="p">(</span><span class="s2">&quot;acrobot&quot;</span><span class="p">,</span> <span class="s2">&quot;swingup&quot;</span><span class="p">,</span> <span class="n">from_pixels</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">pixels_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">env</span> <span class="o">=</span> <span class="n">TransformedEnv</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">Compose</span><span class="p">(</span><span class="n">ToTensorImage</span><span class="p">(),</span> <span class="n">Resize</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">32</span><span class="p">)))</span>
+<span class="n">env</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">DMControlEnv</span></a><span class="p">(</span><span class="s2">&quot;acrobot&quot;</span><span class="p">,</span> <span class="s2">&quot;swingup&quot;</span><span class="p">,</span> <span class="n">from_pixels</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">pixels_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">env</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">TransformedEnv</span></a><span class="p">(</span><span class="n">env</span><span class="p">,</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">Compose</span></a><span class="p">(</span><a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">ToTensorImage</span></a><span class="p">(),</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">Resize</span></a><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">32</span><span class="p">)))</span>
 <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
 </pre></div>
 </div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>TensorDict(
+    fields={
+        done: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+        pixels: Tensor(shape=torch.Size([3, 32, 32]), device=cpu, dtype=torch.float32, is_shared=False),
+        terminated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+        truncated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False)},
+    batch_size=torch.Size([]),
+    device=None,
+    is_shared=False)
+</pre></div>
+</div>
 <p>Transforms can also be added one at a time:</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">torchrl.envs.transforms</span> <span class="kn">import</span> <span class="n">GrayScale</span>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">torchrl.envs.transforms</span> <span class="kn">import</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">GrayScale</span></a>
 
-<span class="n">env</span><span class="o">.</span><span class="n">append_transform</span><span class="p">(</span><span class="n">GrayScale</span><span class="p">())</span>
+<span class="n">env</span><span class="o">.</span><span class="n">append_transform</span><span class="p">(</span><a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">GrayScale</span></a><span class="p">())</span>
 <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>TensorDict(
+    fields={
+        done: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+        pixels: Tensor(shape=torch.Size([1, 32, 32]), device=cpu, dtype=torch.float32, is_shared=False),
+        terminated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+        truncated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False)},
+    batch_size=torch.Size([]),
+    device=None,
+    is_shared=False)
 </pre></div>
 </div>
 <p>As expected, the metadata get updated too:</p>
@@ -774,17 +1004,62 @@ built around a <code class="docutils literal notranslate"><span class="pre">base
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;current obs spec: &quot;</span><span class="p">,</span> <span class="n">env</span><span class="o">.</span><span class="n">observation_spec</span><span class="p">)</span>
 </pre></div>
 </div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>original obs spec:  Composite(
+    pixels: UnboundedDiscrete(
+        shape=torch.Size([240, 320, 3]),
+        space=ContinuousBox(
+            low=Tensor(shape=torch.Size([240, 320, 3]), device=cpu, dtype=torch.uint8, contiguous=True),
+            high=Tensor(shape=torch.Size([240, 320, 3]), device=cpu, dtype=torch.uint8, contiguous=True)),
+        device=cpu,
+        dtype=torch.uint8,
+        domain=discrete),
+    device=None,
+    shape=torch.Size([]))
+current obs spec:  Composite(
+    pixels: UnboundedContinuous(
+        shape=torch.Size([1, 32, 32]),
+        space=ContinuousBox(
+            low=Tensor(shape=torch.Size([1, 32, 32]), device=cpu, dtype=torch.float32, contiguous=True),
+            high=Tensor(shape=torch.Size([1, 32, 32]), device=cpu, dtype=torch.float32, contiguous=True)),
+        device=cpu,
+        dtype=torch.float32,
+        domain=continuous),
+    device=None,
+    shape=torch.Size([]))
+</pre></div>
+</div>
 <p>We can also concatenate tensors if needed:</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">torchrl.envs.transforms</span> <span class="kn">import</span> <span class="n">CatTensors</span>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">torchrl.envs.transforms</span> <span class="kn">import</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">CatTensors</span></a>
 
-<span class="n">env</span> <span class="o">=</span> <span class="n">DMControlEnv</span><span class="p">(</span><span class="s2">&quot;acrobot&quot;</span><span class="p">,</span> <span class="s2">&quot;swingup&quot;</span><span class="p">)</span>
+<span class="n">env</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">DMControlEnv</span></a><span class="p">(</span><span class="s2">&quot;acrobot&quot;</span><span class="p">,</span> <span class="s2">&quot;swingup&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;keys before concat: &quot;</span><span class="p">,</span> <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">())</span>
 
-<span class="n">env</span> <span class="o">=</span> <span class="n">TransformedEnv</span><span class="p">(</span>
+<span class="n">env</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">TransformedEnv</span></a><span class="p">(</span>
     <span class="n">env</span><span class="p">,</span>
-    <span class="n">CatTensors</span><span class="p">(</span><span class="n">in_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;orientations&quot;</span><span class="p">,</span> <span class="s2">&quot;velocity&quot;</span><span class="p">],</span> <span class="n">out_key</span><span class="o">=</span><span class="s2">&quot;observation&quot;</span><span class="p">),</span>
+    <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">CatTensors</span></a><span class="p">(</span><span class="n">in_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;orientations&quot;</span><span class="p">,</span> <span class="s2">&quot;velocity&quot;</span><span class="p">],</span> <span class="n">out_key</span><span class="o">=</span><span class="s2">&quot;observation&quot;</span><span class="p">),</span>
 <span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;keys after concat: &quot;</span><span class="p">,</span> <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">())</span>
+</pre></div>
+</div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>keys before concat:  TensorDict(
+    fields={
+        done: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+        orientations: Tensor(shape=torch.Size([4]), device=cpu, dtype=torch.float64, is_shared=False),
+        terminated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+        truncated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+        velocity: Tensor(shape=torch.Size([2]), device=cpu, dtype=torch.float64, is_shared=False)},
+    batch_size=torch.Size([]),
+    device=None,
+    is_shared=False)
+keys after concat:  TensorDict(
+    fields={
+        done: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+        observation: Tensor(shape=torch.Size([6]), device=cpu, dtype=torch.float64, is_shared=False),
+        terminated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+        truncated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False)},
+    batch_size=torch.Size([]),
+    device=None,
+    is_shared=False)
 </pre></div>
 </div>
 <p>This feature makes it easy to mofidy the sets of transforms applied to an
@@ -804,16 +1079,34 @@ will consist in a <code class="docutils literal notranslate"><span class="pre">T
 the <code class="docutils literal notranslate"><span class="pre">NoopResetEnv</span></code> case, which when reset executes the following steps:
 resets the parent environment before executing a certain number of steps
 at random in that environment.</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">env</span> <span class="o">=</span> <span class="n">DMControlEnv</span><span class="p">(</span><span class="s2">&quot;acrobot&quot;</span><span class="p">,</span> <span class="s2">&quot;swingup&quot;</span><span class="p">)</span>
-<span class="n">env</span> <span class="o">=</span> <span class="n">TransformedEnv</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">env</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">DMControlEnv</span></a><span class="p">(</span><span class="s2">&quot;acrobot&quot;</span><span class="p">,</span> <span class="s2">&quot;swingup&quot;</span><span class="p">)</span>
+<span class="n">env</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">TransformedEnv</span></a><span class="p">(</span><span class="n">env</span><span class="p">)</span>
 <span class="n">env</span><span class="o">.</span><span class="n">append_transform</span><span class="p">(</span>
-    <span class="n">CatTensors</span><span class="p">(</span><span class="n">in_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;orientations&quot;</span><span class="p">,</span> <span class="s2">&quot;velocity&quot;</span><span class="p">],</span> <span class="n">out_key</span><span class="o">=</span><span class="s2">&quot;observation&quot;</span><span class="p">)</span>
+    <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">CatTensors</span></a><span class="p">(</span><span class="n">in_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;orientations&quot;</span><span class="p">,</span> <span class="s2">&quot;velocity&quot;</span><span class="p">],</span> <span class="n">out_key</span><span class="o">=</span><span class="s2">&quot;observation&quot;</span><span class="p">)</span>
 <span class="p">)</span>
-<span class="n">env</span><span class="o">.</span><span class="n">append_transform</span><span class="p">(</span><span class="n">GrayScale</span><span class="p">())</span>
+<span class="n">env</span><span class="o">.</span><span class="n">append_transform</span><span class="p">(</span><a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">GrayScale</span></a><span class="p">())</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;env: </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">env</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;GrayScale transform parent env: </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">env</span><span class="o">.</span><span class="n">transform</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;CatTensors transform parent env: </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">env</span><span class="o">.</span><span class="n">transform</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>env:
+ TransformedEnv(
+    env=DMControlEnv(env=acrobot, task=swingup, batch_size=torch.Size([])),
+    transform=Compose(
+            CatTensors(in_keys=[&#39;orientations&#39;, &#39;velocity&#39;], out_key=observation),
+            GrayScale(keys=[&#39;pixels&#39;])))
+GrayScale transform parent env:
+ TransformedEnv(
+    env=DMControlEnv(env=acrobot, task=swingup, batch_size=torch.Size([])),
+    transform=Compose(
+            CatTensors(in_keys=[&#39;orientations&#39;, &#39;velocity&#39;], out_key=observation)))
+CatTensors transform parent env:
+ TransformedEnv(
+    env=DMControlEnv(env=acrobot, task=swingup, batch_size=torch.Size([])),
+    transform=Compose(
+    ))
 </pre></div>
 </div>
 </section>
@@ -830,16 +1123,16 @@ to be and on which device the output data will be. Casting from and to that
 device is the responsibility of the torchrl environment class. The big
 advantage of storing data on GPU is (1) speedup of transforms as mentioned
 above and (2) sharing data amongst workers in multiprocessing settings.</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">torchrl.envs.transforms</span> <span class="kn">import</span> <span class="n">CatTensors</span><span class="p">,</span> <span class="n">GrayScale</span><span class="p">,</span> <span class="n">TransformedEnv</span>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">torchrl.envs.transforms</span> <span class="kn">import</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">CatTensors</span></a><span class="p">,</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">GrayScale</span></a><span class="p">,</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">TransformedEnv</span></a>
 
-<span class="n">env</span> <span class="o">=</span> <span class="n">DMControlEnv</span><span class="p">(</span><span class="s2">&quot;acrobot&quot;</span><span class="p">,</span> <span class="s2">&quot;swingup&quot;</span><span class="p">)</span>
-<span class="n">env</span> <span class="o">=</span> <span class="n">TransformedEnv</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
+<span class="n">env</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">DMControlEnv</span></a><span class="p">(</span><span class="s2">&quot;acrobot&quot;</span><span class="p">,</span> <span class="s2">&quot;swingup&quot;</span><span class="p">)</span>
+<span class="n">env</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">TransformedEnv</span></a><span class="p">(</span><span class="n">env</span><span class="p">)</span>
 <span class="n">env</span><span class="o">.</span><span class="n">append_transform</span><span class="p">(</span>
-    <span class="n">CatTensors</span><span class="p">(</span><span class="n">in_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;orientations&quot;</span><span class="p">,</span> <span class="s2">&quot;velocity&quot;</span><span class="p">],</span> <span class="n">out_key</span><span class="o">=</span><span class="s2">&quot;observation&quot;</span><span class="p">)</span>
+    <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">CatTensors</span></a><span class="p">(</span><span class="n">in_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;orientations&quot;</span><span class="p">,</span> <span class="s2">&quot;velocity&quot;</span><span class="p">],</span> <span class="n">out_key</span><span class="o">=</span><span class="s2">&quot;observation&quot;</span><span class="p">)</span>
 <span class="p">)</span>
 
 <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">has_cuda</span> <span class="ow">and</span> <a href="https://pytorch.org/docs/stable/generated/torch.cuda.device_count.html#torch.cuda.device_count" title="torch.cuda.device_count" class="sphx-glr-backref-module-torch-cuda sphx-glr-backref-type-py-function"><span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">device_count</span></a><span class="p">():</span>
-    <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module.to" title="torch.nn.Module.to" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-method"><span class="n">env</span><span class="o">.</span><span class="n">to</span></a><span class="p">(</span><span class="s2">&quot;cuda:0&quot;</span><span class="p">)</span>
+    <span class="n">env</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s2">&quot;cuda:0&quot;</span><span class="p">)</span>
     <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -851,15 +1144,15 @@ that the various environment read and return tensors of similar shapes and
 dtypes (but one could design masking functions to make this possible in case
 those tensors differ in shapes). Creating such environments is quite easy.
 Let us look at the simplest case:</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">torchrl.envs</span> <span class="kn">import</span> <span class="n">ParallelEnv</span>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">torchrl.envs</span> <span class="kn">import</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">ParallelEnv</span></a>
 
 
 <span class="k">def</span> <span class="nf">env_make</span><span class="p">():</span>
     <span class="k">return</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">GymEnv</span></a><span class="p">(</span><span class="s2">&quot;Pendulum-v1&quot;</span><span class="p">)</span>
 
 
-<span class="n">parallel_env</span> <span class="o">=</span> <span class="n">ParallelEnv</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">env_make</span><span class="p">)</span>  <span class="c1"># -&gt; creates 3 envs in parallel</span>
-<span class="n">parallel_env</span> <span class="o">=</span> <span class="n">ParallelEnv</span><span class="p">(</span>
+<span class="n">parallel_env</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">ParallelEnv</span></a><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">env_make</span><span class="p">)</span>  <span class="c1"># -&gt; creates 3 envs in parallel</span>
+<span class="n">parallel_env</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">ParallelEnv</span></a><span class="p">(</span>
     <span class="mi">3</span><span class="p">,</span> <span class="p">[</span><span class="n">env_make</span><span class="p">,</span> <span class="n">env_make</span><span class="p">,</span> <span class="n">env_make</span><span class="p">]</span>
 <span class="p">)</span>  <span class="c1"># similar to the previous command</span>
 </pre></div>
@@ -875,10 +1168,43 @@ or simply by calling <code class="docutils literal notranslate"><span class="pre
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">parallel_env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
 </pre></div>
 </div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>TensorDict(
+    fields={
+        done: Tensor(shape=torch.Size([3, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+        observation: Tensor(shape=torch.Size([3, 3]), device=cpu, dtype=torch.float32, is_shared=False),
+        terminated: Tensor(shape=torch.Size([3, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+        truncated: Tensor(shape=torch.Size([3, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
+    batch_size=torch.Size([3]),
+    device=None,
+    is_shared=False)
+</pre></div>
+</div>
 <p>One can check that the parallel environment has the right batch size.
 Conventionally, the first part of the <code class="docutils literal notranslate"><span class="pre">batch_size</span></code> indicates the batch,
 the second the time frame. Let’s check that with the <code class="docutils literal notranslate"><span class="pre">rollout</span></code> method:</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">parallel_env</span><span class="o">.</span><span class="n">rollout</span><span class="p">(</span><span class="n">max_steps</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>TensorDict(
+    fields={
+        action: Tensor(shape=torch.Size([3, 20, 1]), device=cpu, dtype=torch.float32, is_shared=False),
+        done: Tensor(shape=torch.Size([3, 20, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+        next: TensorDict(
+            fields={
+                done: Tensor(shape=torch.Size([3, 20, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+                observation: Tensor(shape=torch.Size([3, 20, 3]), device=cpu, dtype=torch.float32, is_shared=False),
+                reward: Tensor(shape=torch.Size([3, 20, 1]), device=cpu, dtype=torch.float32, is_shared=False),
+                terminated: Tensor(shape=torch.Size([3, 20, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+                truncated: Tensor(shape=torch.Size([3, 20, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
+            batch_size=torch.Size([3, 20]),
+            device=None,
+            is_shared=False),
+        observation: Tensor(shape=torch.Size([3, 20, 3]), device=cpu, dtype=torch.float32, is_shared=False),
+        terminated: Tensor(shape=torch.Size([3, 20, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+        truncated: Tensor(shape=torch.Size([3, 20, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
+    batch_size=torch.Size([3, 20]),
+    device=None,
+    is_shared=False)
 </pre></div>
 </div>
 <section id="closing-parallel-environments">
@@ -908,6 +1234,9 @@ instance and we want each of the sub-sub-environments to have a different seed.<
 <span class="k">del</span> <span class="n">parallel_env</span>
 </pre></div>
 </div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>3288080526
+</pre></div>
+</div>
 </section>
 <section id="accessing-environment-attributes">
 <h3>Accessing environment attributes<a class="headerlink" href="#accessing-environment-attributes" title="Permalink to this heading">¶</a></h3>
@@ -934,7 +1263,10 @@ to access this attribute. Here’s an example:</p>
 <span class="n">env</span><span class="o">.</span><span class="n">foo</span>
 </pre></div>
 </div>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">parallel_env</span> <span class="o">=</span> <span class="n">ParallelEnv</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">env_make</span><span class="p">)</span>  <span class="c1"># -&gt; creates 3 envs in parallel</span>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>&#39;bar_1b3724fe-b9b2-11ef-a0cc-0242ac110002&#39;
+</pre></div>
+</div>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">parallel_env</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">ParallelEnv</span></a><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">env_make</span><span class="p">)</span>  <span class="c1"># -&gt; creates 3 envs in parallel</span>
 
 <span class="c1"># env has not been started --&gt; error:</span>
 <span class="k">try</span><span class="p">:</span>
@@ -944,18 +1276,30 @@ to access this attribute. Here’s an example:</p>
     <span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>  <span class="c1"># make sure we don&#39;t get ahead of ourselves</span>
 </pre></div>
 </div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Aargh what did I do!
+</pre></div>
+</div>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">parallel_env</span><span class="o">.</span><span class="n">is_closed</span><span class="p">:</span>
     <span class="n">parallel_env</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 <span class="n">foo_list</span> <span class="o">=</span> <span class="n">parallel_env</span><span class="o">.</span><span class="n">foo</span>
 <span class="n">foo_list</span>  <span class="c1"># needs to be instantiated, for instance using list</span>
 </pre></div>
 </div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;torchrl.envs.batched_envs._dispatch_caller_parallel object at 0x7f7112bb7ee0&gt;
+</pre></div>
+</div>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="nb">list</span><span class="p">(</span><span class="n">foo_list</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>[&#39;bar_1fcd68c0-b9b2-11ef-b845-0242ac110002&#39;, &#39;bar_1fd05120-b9b2-11ef-805d-0242ac110002&#39;, &#39;bar_1fce512c-b9b2-11ef-893d-0242ac110002&#39;]
 </pre></div>
 </div>
 <p>Similarly, methods can also be accessed:</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">something</span> <span class="o">=</span> <span class="n">parallel_env</span><span class="o">.</span><span class="n">get_something</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">something</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>[1, 1, 1]
 </pre></div>
 </div>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">parallel_env</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
@@ -967,18 +1311,18 @@ to access this attribute. Here’s an example:</p>
 <h3>kwargs for parallel environments<a class="headerlink" href="#kwargs-for-parallel-environments" title="Permalink to this heading">¶</a></h3>
 <p>One may want to provide kwargs to the various environments. This can achieved
 either at construction time or afterwards:</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">torchrl.envs</span> <span class="kn">import</span> <span class="n">ParallelEnv</span>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">torchrl.envs</span> <span class="kn">import</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">ParallelEnv</span></a>
 
 
 <span class="k">def</span> <span class="nf">env_make</span><span class="p">(</span><span class="n">env_name</span><span class="p">):</span>
-    <span class="n">env</span> <span class="o">=</span> <span class="n">TransformedEnv</span><span class="p">(</span>
+    <span class="n">env</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">TransformedEnv</span></a><span class="p">(</span>
         <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">GymEnv</span></a><span class="p">(</span><span class="n">env_name</span><span class="p">,</span> <span class="n">from_pixels</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">pixels_only</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
-        <span class="n">Compose</span><span class="p">(</span><span class="n">ToTensorImage</span><span class="p">(),</span> <span class="n">Resize</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">)),</span>
+        <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">Compose</span></a><span class="p">(</span><a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">ToTensorImage</span></a><span class="p">(),</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">Resize</span></a><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">)),</span>
     <span class="p">)</span>
     <span class="k">return</span> <span class="n">env</span>
 
 
-<span class="n">parallel_env</span> <span class="o">=</span> <span class="n">ParallelEnv</span><span class="p">(</span>
+<span class="n">parallel_env</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">ParallelEnv</span></a><span class="p">(</span>
     <span class="mi">2</span><span class="p">,</span>
     <span class="p">[</span><span class="n">env_make</span><span class="p">,</span> <span class="n">env_make</span><span class="p">],</span>
     <span class="n">create_env_kwargs</span><span class="o">=</span><span class="p">[{</span><span class="s2">&quot;env_name&quot;</span><span class="p">:</span> <span class="s2">&quot;ALE/AirRaid-v5&quot;</span><span class="p">},</span> <span class="p">{</span><span class="s2">&quot;env_name&quot;</span><span class="p">:</span> <span class="s2">&quot;ALE/Pong-v5&quot;</span><span class="p">}],</span>
@@ -996,7 +1340,7 @@ either at construction time or afterwards:</p>
 <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
 </pre></div>
 </div>
-</section>
+<img src="../_images/sphx_glr_torchrl_envs_003.png" srcset="../_images/sphx_glr_torchrl_envs_003.png" alt="torchrl envs" class = "sphx-glr-single-img"/></section>
 </section>
 <section id="transforming-parallel-environments">
 <h2>Transforming parallel environments<a class="headerlink" href="#transforming-parallel-environments" title="Permalink to this heading">¶</a></h2>
@@ -1006,29 +1350,29 @@ One can therefore think carefully about the transform design to leverage the
 device capabilities (e.g. transforms on cuda devices) and vectorizing
 operations on the main process if possible.</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">torchrl.envs</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">Compose</span><span class="p">,</span>
-    <span class="n">GrayScale</span><span class="p">,</span>
-    <span class="n">ParallelEnv</span><span class="p">,</span>
-    <span class="n">Resize</span><span class="p">,</span>
-    <span class="n">ToTensorImage</span><span class="p">,</span>
-    <span class="n">TransformedEnv</span><span class="p">,</span>
+    <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">Compose</span></a><span class="p">,</span>
+    <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">GrayScale</span></a><span class="p">,</span>
+    <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">ParallelEnv</span></a><span class="p">,</span>
+    <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">Resize</span></a><span class="p">,</span>
+    <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">ToTensorImage</span></a><span class="p">,</span>
+    <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">TransformedEnv</span></a><span class="p">,</span>
 <span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">env_make</span><span class="p">(</span><span class="n">env_name</span><span class="p">):</span>
-    <span class="n">env</span> <span class="o">=</span> <span class="n">TransformedEnv</span><span class="p">(</span>
+    <span class="n">env</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">TransformedEnv</span></a><span class="p">(</span>
         <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">GymEnv</span></a><span class="p">(</span><span class="n">env_name</span><span class="p">,</span> <span class="n">from_pixels</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">pixels_only</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
-        <span class="n">Compose</span><span class="p">(</span><span class="n">ToTensorImage</span><span class="p">(),</span> <span class="n">Resize</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">)),</span>
+        <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">Compose</span></a><span class="p">(</span><a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">ToTensorImage</span></a><span class="p">(),</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">Resize</span></a><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">)),</span>
     <span class="p">)</span>  <span class="c1"># transforms on remote processes</span>
     <span class="k">return</span> <span class="n">env</span>
 
 
-<span class="n">parallel_env</span> <span class="o">=</span> <span class="n">ParallelEnv</span><span class="p">(</span>
+<span class="n">parallel_env</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">ParallelEnv</span></a><span class="p">(</span>
     <span class="mi">2</span><span class="p">,</span>
     <span class="p">[</span><span class="n">env_make</span><span class="p">,</span> <span class="n">env_make</span><span class="p">],</span>
     <span class="n">create_env_kwargs</span><span class="o">=</span><span class="p">[{</span><span class="s2">&quot;env_name&quot;</span><span class="p">:</span> <span class="s2">&quot;ALE/AirRaid-v5&quot;</span><span class="p">},</span> <span class="p">{</span><span class="s2">&quot;env_name&quot;</span><span class="p">:</span> <span class="s2">&quot;ALE/Pong-v5&quot;</span><span class="p">}],</span>
 <span class="p">)</span>
-<span class="n">parallel_env</span> <span class="o">=</span> <span class="n">TransformedEnv</span><span class="p">(</span><span class="n">parallel_env</span><span class="p">,</span> <span class="n">GrayScale</span><span class="p">())</span>  <span class="c1"># transforms on main process</span>
+<span class="n">parallel_env</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">TransformedEnv</span></a><span class="p">(</span><span class="n">parallel_env</span><span class="p">,</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">GrayScale</span></a><span class="p">())</span>  <span class="c1"># transforms on main process</span>
 <span class="n">data</span> <span class="o">=</span> <span class="n">parallel_env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;grayscale data: &quot;</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
@@ -1039,6 +1383,17 @@ operations on the main process if possible.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;pixels&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">permute</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">numpy</span><span class="p">())</span>
 <span class="n">parallel_env</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 <span class="k">del</span> <span class="n">parallel_env</span>
+</pre></div>
+</div>
+<img src="../_images/sphx_glr_torchrl_envs_004.png" srcset="../_images/sphx_glr_torchrl_envs_004.png" alt="torchrl envs" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>grayscale data:  TensorDict(
+    fields={
+        done: Tensor(shape=torch.Size([2, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+        pixels: Tensor(shape=torch.Size([2, 1, 64, 64]), device=cpu, dtype=torch.float32, is_shared=False),
+        terminated: Tensor(shape=torch.Size([2, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+        truncated: Tensor(shape=torch.Size([2, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
+    batch_size=torch.Size([2]),
+    device=None,
+    is_shared=False)
 </pre></div>
 </div>
 </section>
@@ -1061,13 +1416,17 @@ would therefore advice users to rely on this feature with caution and compare
 it with data normalizing given a fixed version of the normalizing constants.</p>
 <p>In regular setting, using VecNorm is quite easy:</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">torchrl.envs.libs.gym</span> <span class="kn">import</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">GymEnv</span></a>
-<span class="kn">from</span> <span class="nn">torchrl.envs.transforms</span> <span class="kn">import</span> <span class="n">TransformedEnv</span><span class="p">,</span> <span class="n">VecNorm</span>
+<span class="kn">from</span> <span class="nn">torchrl.envs.transforms</span> <span class="kn">import</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">TransformedEnv</span></a><span class="p">,</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">VecNorm</span></a>
 
-<span class="n">env</span> <span class="o">=</span> <span class="n">TransformedEnv</span><span class="p">(</span><a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">GymEnv</span></a><span class="p">(</span><span class="s2">&quot;Pendulum-v1&quot;</span><span class="p">),</span> <span class="n">VecNorm</span><span class="p">())</span>
+<span class="n">env</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">TransformedEnv</span></a><span class="p">(</span><a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">GymEnv</span></a><span class="p">(</span><span class="s2">&quot;Pendulum-v1&quot;</span><span class="p">),</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">VecNorm</span></a><span class="p">())</span>
 <span class="n">data</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">rollout</span><span class="p">(</span><span class="n">max_steps</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;mean: :&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;observation&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>  <span class="c1"># Approx 0</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;std: :&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;observation&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>  <span class="c1"># Approx 1</span>
+</pre></div>
+</div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>mean: : tensor([ 0.0227, -0.2326, -0.0394])
+std: : tensor([1.1689, 1.1551, 1.1941])
 </pre></div>
 </div>
 <p>In <strong>parallel envs</strong> things are slightly more complicated, as we need to
@@ -1076,12 +1435,12 @@ share the running statistics amongst the processes. We created a class
 method, retrieving tensordicts to share amongst processes in the environment
 class, and pointing each process to the right common, shared data
 once created:</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">torchrl.envs</span> <span class="kn">import</span> <span class="n">EnvCreator</span><span class="p">,</span> <span class="n">ParallelEnv</span>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">torchrl.envs</span> <span class="kn">import</span> <span class="n">EnvCreator</span><span class="p">,</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">ParallelEnv</span></a>
 <span class="kn">from</span> <span class="nn">torchrl.envs.libs.gym</span> <span class="kn">import</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">GymEnv</span></a>
-<span class="kn">from</span> <span class="nn">torchrl.envs.transforms</span> <span class="kn">import</span> <span class="n">TransformedEnv</span><span class="p">,</span> <span class="n">VecNorm</span>
+<span class="kn">from</span> <span class="nn">torchrl.envs.transforms</span> <span class="kn">import</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">TransformedEnv</span></a><span class="p">,</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">VecNorm</span></a>
 
-<span class="n">make_env</span> <span class="o">=</span> <span class="n">EnvCreator</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">TransformedEnv</span><span class="p">(</span><a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">GymEnv</span></a><span class="p">(</span><span class="s2">&quot;CartPole-v1&quot;</span><span class="p">),</span> <span class="n">VecNorm</span><span class="p">(</span><span class="n">decay</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)))</span>
-<span class="n">env</span> <span class="o">=</span> <span class="n">ParallelEnv</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">make_env</span><span class="p">)</span>
+<span class="n">make_env</span> <span class="o">=</span> <span class="n">EnvCreator</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">TransformedEnv</span></a><span class="p">(</span><a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">GymEnv</span></a><span class="p">(</span><span class="s2">&quot;CartPole-v1&quot;</span><span class="p">),</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">VecNorm</span></a><span class="p">(</span><span class="n">decay</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)))</span>
+<span class="n">env</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="torch.nn.Module" class="sphx-glr-backref-module-torch-nn sphx-glr-backref-type-py-class"><span class="n">ParallelEnv</span></a><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">make_env</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;env state dict:&quot;</span><span class="p">)</span>
 <span class="n">sd</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="p">(</span><span class="n">make_env</span><span class="o">.</span><span class="n">state_dict</span><span class="p">())</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">sd</span><span class="p">)</span>
@@ -1093,6 +1452,47 @@ once created:</p>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;data: &quot;</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;mean: :&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;observation&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>  <span class="c1"># Approx 0</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;std: :&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;observation&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>  <span class="c1"># Approx 1</span>
+</pre></div>
+</div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>env state dict:
+TensorDict(
+    fields={
+        _extra_state: TensorDict(
+            fields={
+                observation_count: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, is_shared=False),
+                observation_ssq: Tensor(shape=torch.Size([4]), device=cpu, dtype=torch.float32, is_shared=False),
+                observation_sum: Tensor(shape=torch.Size([4]), device=cpu, dtype=torch.float32, is_shared=False),
+                reward_count: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, is_shared=False),
+                reward_ssq: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, is_shared=False),
+                reward_sum: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, is_shared=False)},
+            batch_size=torch.Size([]),
+            device=None,
+            is_shared=False)},
+    batch_size=torch.Size([]),
+    device=None,
+    is_shared=False)
+data:  TensorDict(
+    fields={
+        action: Tensor(shape=torch.Size([3, 5, 2]), device=cpu, dtype=torch.int64, is_shared=False),
+        done: Tensor(shape=torch.Size([3, 5, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+        next: TensorDict(
+            fields={
+                done: Tensor(shape=torch.Size([3, 5, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+                observation: Tensor(shape=torch.Size([3, 5, 4]), device=cpu, dtype=torch.float32, is_shared=False),
+                reward: Tensor(shape=torch.Size([3, 5, 1]), device=cpu, dtype=torch.float32, is_shared=False),
+                terminated: Tensor(shape=torch.Size([3, 5, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+                truncated: Tensor(shape=torch.Size([3, 5, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
+            batch_size=torch.Size([3, 5]),
+            device=None,
+            is_shared=False),
+        observation: Tensor(shape=torch.Size([3, 5, 4]), device=cpu, dtype=torch.float32, is_shared=False),
+        terminated: Tensor(shape=torch.Size([3, 5, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+        truncated: Tensor(shape=torch.Size([3, 5, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
+    batch_size=torch.Size([3, 5]),
+    device=None,
+    is_shared=False)
+mean: : tensor([-0.1349,  0.3951, -0.3666])
+std: : tensor([1.3506, 1.2579, 2.3980])
 </pre></div>
 </div>
 <p>The count is slightly higher than the number of steps (since we
@@ -1109,8 +1509,11 @@ This small difference will usually be absored throughout training.</p>
 <span class="k">del</span> <span class="n">env</span>
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 17.009 seconds)</p>
-<p><strong>Estimated memory usage:</strong>  4739 MB</p>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>update counts:  tensor([18.])
+</pre></div>
+</div>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (3 minutes 38.348 seconds)</p>
+<p><strong>Estimated memory usage:</strong>  445 MB</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-tutorials-torchrl-envs-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/3cb02b3346194d0f8cfea19dd5243c89/torchrl_envs.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">torchrl_envs.ipynb</span></code></a></p>
