@@ -271,7 +271,7 @@
           <div class="pytorch-left-menu-search">
             
     <div class="version">
-      <a href="../../versions.html"><span style="font-size:110%">main (0.6.1+01a421e) &#x25BC</span></a>
+      <a href="../../versions.html"><span style="font-size:110%">main (0.6.1+fbfe104) &#x25BC</span></a>
     </div>
     
 
@@ -850,6 +850,22 @@ specs. If no error is raised, we can be confident that the specs are properly de
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">check_env_specs</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
 </pre></div>
 </div>
+<div class="sphx-glr-script-out highlight-pytb notranslate"><div class="highlight"><pre><span></span><span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;/pytorch/rl/docs/source/reference/generated/tutorials/multiagent_competitive_ddpg.py&quot;</span>, line <span class="m">358</span>, in <span class="n">&lt;module&gt;</span>
+<span class="w">    </span><span class="n">check_env_specs</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
+  File <span class="nb">&quot;/pytorch/rl/torchrl/envs/utils.py&quot;</span>, line <span class="m">831</span>, in <span class="n">check_env_specs</span>
+<span class="w">    </span><span class="k">if</span> <span class="ow">not</span> <span class="n">spec</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">td</span><span class="p">):</span>
+  File <span class="nb">&quot;/pytorch/rl/torchrl/data/tensor_specs.py&quot;</span>, line <span class="m">845</span>, in <span class="n">contains</span>
+<span class="w">    </span><span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_in</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+  File <span class="nb">&quot;/pytorch/rl/torchrl/data/tensor_specs.py&quot;</span>, line <span class="m">4716</span>, in <span class="n">is_in</span>
+<span class="w">    </span><span class="k">if</span> <span class="ow">not</span> <span class="n">item</span><span class="o">.</span><span class="n">is_in</span><span class="p">(</span><span class="n">val_item</span><span class="p">):</span>
+  File <span class="nb">&quot;/pytorch/rl/torchrl/data/tensor_specs.py&quot;</span>, line <span class="m">4716</span>, in <span class="n">is_in</span>
+<span class="w">    </span><span class="k">if</span> <span class="ow">not</span> <span class="n">item</span><span class="o">.</span><span class="n">is_in</span><span class="p">(</span><span class="n">val_item</span><span class="p">):</span>
+  File <span class="nb">&quot;/pytorch/rl/torchrl/data/tensor_specs.py&quot;</span>, line <span class="m">2291</span>, in <span class="n">is_in</span>
+<span class="w">    </span><span class="k">raise</span> <span class="ne">RuntimeError</span>
+<span class="gr">RuntimeError</span>
+</pre></div>
+</div>
 </section>
 <section id="rollout">
 <h3>Rollout<a class="headerlink" href="#rollout" title="Permalink to this heading">¶</a></h3>
@@ -861,55 +877,6 @@ domain.</p>
 <span class="n">rollout</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">rollout</span><span class="p">(</span><span class="n">n_rollout_steps</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;rollout of </span><span class="si">{</span><span class="n">n_rollout_steps</span><span class="si">}</span><span class="s2"> steps:&quot;</span><span class="p">,</span> <span class="n">rollout</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Shape of the rollout TensorDict:&quot;</span><span class="p">,</span> <span class="n">rollout</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>rollout of 5 steps: TensorDict(
-    fields={
-        adversary: TensorDict(
-            fields={
-                action: Tensor(shape=torch.Size([10, 5, 2, 2]), device=cpu, dtype=torch.float32, is_shared=False),
-                episode_reward: Tensor(shape=torch.Size([10, 5, 2, 1]), device=cpu, dtype=torch.float32, is_shared=False),
-                observation: Tensor(shape=torch.Size([10, 5, 2, 14]), device=cpu, dtype=torch.float32, is_shared=False)},
-            batch_size=torch.Size([10, 5, 2]),
-            device=cpu,
-            is_shared=False),
-        agent: TensorDict(
-            fields={
-                action: Tensor(shape=torch.Size([10, 5, 1, 2]), device=cpu, dtype=torch.float32, is_shared=False),
-                episode_reward: Tensor(shape=torch.Size([10, 5, 1, 1]), device=cpu, dtype=torch.float32, is_shared=False),
-                observation: Tensor(shape=torch.Size([10, 5, 1, 12]), device=cpu, dtype=torch.float32, is_shared=False)},
-            batch_size=torch.Size([10, 5, 1]),
-            device=cpu,
-            is_shared=False),
-        done: Tensor(shape=torch.Size([10, 5, 1]), device=cpu, dtype=torch.bool, is_shared=False),
-        next: TensorDict(
-            fields={
-                adversary: TensorDict(
-                    fields={
-                        episode_reward: Tensor(shape=torch.Size([10, 5, 2, 1]), device=cpu, dtype=torch.float32, is_shared=False),
-                        observation: Tensor(shape=torch.Size([10, 5, 2, 14]), device=cpu, dtype=torch.float32, is_shared=False),
-                        reward: Tensor(shape=torch.Size([10, 5, 2, 1]), device=cpu, dtype=torch.float32, is_shared=False)},
-                    batch_size=torch.Size([10, 5, 2]),
-                    device=cpu,
-                    is_shared=False),
-                agent: TensorDict(
-                    fields={
-                        episode_reward: Tensor(shape=torch.Size([10, 5, 1, 1]), device=cpu, dtype=torch.float32, is_shared=False),
-                        observation: Tensor(shape=torch.Size([10, 5, 1, 12]), device=cpu, dtype=torch.float32, is_shared=False),
-                        reward: Tensor(shape=torch.Size([10, 5, 1, 1]), device=cpu, dtype=torch.float32, is_shared=False)},
-                    batch_size=torch.Size([10, 5, 1]),
-                    device=cpu,
-                    is_shared=False),
-                done: Tensor(shape=torch.Size([10, 5, 1]), device=cpu, dtype=torch.bool, is_shared=False),
-                terminated: Tensor(shape=torch.Size([10, 5, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
-            batch_size=torch.Size([10, 5]),
-            device=cpu,
-            is_shared=False),
-        terminated: Tensor(shape=torch.Size([10, 5, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
-    batch_size=torch.Size([10, 5]),
-    device=cpu,
-    is_shared=False)
-Shape of the rollout TensorDict: torch.Size([10, 5])
 </pre></div>
 </div>
 <p>We can see that our rollout has <code class="docutils literal notranslate"><span class="pre">batch_size</span></code> of <code class="docutils literal notranslate"><span class="pre">(n_rollout_steps)</span></code>.
@@ -1126,62 +1093,6 @@ components as in single-agent learning. Isn’t this fantastic?</strong></p>
     <span class="p">)</span>
 </pre></div>
 </div>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Running value and policy for group &#39;adversary&#39;: TensorDict(
-    fields={
-        adversary: TensorDict(
-            fields={
-                action: Tensor(shape=torch.Size([10, 2, 2]), device=cpu, dtype=torch.float32, is_shared=False),
-                episode_reward: Tensor(shape=torch.Size([10, 2, 1]), device=cpu, dtype=torch.float32, is_shared=False),
-                obs_action: Tensor(shape=torch.Size([10, 2, 16]), device=cpu, dtype=torch.float32, is_shared=False),
-                observation: Tensor(shape=torch.Size([10, 2, 14]), device=cpu, dtype=torch.float32, is_shared=False),
-                param: Tensor(shape=torch.Size([10, 2, 2]), device=cpu, dtype=torch.float32, is_shared=False),
-                state_action_value: Tensor(shape=torch.Size([10, 2, 1]), device=cpu, dtype=torch.float32, is_shared=False)},
-            batch_size=torch.Size([10, 2]),
-            device=cpu,
-            is_shared=False),
-        agent: TensorDict(
-            fields={
-                episode_reward: Tensor(shape=torch.Size([10, 1, 1]), device=cpu, dtype=torch.float32, is_shared=False),
-                observation: Tensor(shape=torch.Size([10, 1, 12]), device=cpu, dtype=torch.float32, is_shared=False)},
-            batch_size=torch.Size([10, 1]),
-            device=cpu,
-            is_shared=False),
-        done: Tensor(shape=torch.Size([10, 1]), device=cpu, dtype=torch.bool, is_shared=False),
-        terminated: Tensor(shape=torch.Size([10, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
-    batch_size=torch.Size([10]),
-    device=cpu,
-    is_shared=False)
-Running value and policy for group &#39;agent&#39;: TensorDict(
-    fields={
-        adversary: TensorDict(
-            fields={
-                action: Tensor(shape=torch.Size([10, 2, 2]), device=cpu, dtype=torch.float32, is_shared=False),
-                episode_reward: Tensor(shape=torch.Size([10, 2, 1]), device=cpu, dtype=torch.float32, is_shared=False),
-                obs_action: Tensor(shape=torch.Size([10, 2, 16]), device=cpu, dtype=torch.float32, is_shared=False),
-                observation: Tensor(shape=torch.Size([10, 2, 14]), device=cpu, dtype=torch.float32, is_shared=False),
-                param: Tensor(shape=torch.Size([10, 2, 2]), device=cpu, dtype=torch.float32, is_shared=False),
-                state_action_value: Tensor(shape=torch.Size([10, 2, 1]), device=cpu, dtype=torch.float32, is_shared=False)},
-            batch_size=torch.Size([10, 2]),
-            device=cpu,
-            is_shared=False),
-        agent: TensorDict(
-            fields={
-                action: Tensor(shape=torch.Size([10, 1, 2]), device=cpu, dtype=torch.float32, is_shared=False),
-                episode_reward: Tensor(shape=torch.Size([10, 1, 1]), device=cpu, dtype=torch.float32, is_shared=False),
-                obs_action: Tensor(shape=torch.Size([10, 1, 14]), device=cpu, dtype=torch.float32, is_shared=False),
-                observation: Tensor(shape=torch.Size([10, 1, 12]), device=cpu, dtype=torch.float32, is_shared=False),
-                param: Tensor(shape=torch.Size([10, 1, 2]), device=cpu, dtype=torch.float32, is_shared=False),
-                state_action_value: Tensor(shape=torch.Size([10, 1, 1]), device=cpu, dtype=torch.float32, is_shared=False)},
-            batch_size=torch.Size([10, 1]),
-            device=cpu,
-            is_shared=False),
-        done: Tensor(shape=torch.Size([10, 1]), device=cpu, dtype=torch.bool, is_shared=False),
-        terminated: Tensor(shape=torch.Size([10, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
-    batch_size=torch.Size([10]),
-    device=cpu,
-    is_shared=False)
-</pre></div>
-</div>
 </section>
 <section id="data-collector">
 <h2>Data collector<a class="headerlink" href="#data-collector" title="Permalink to this heading">¶</a></h2>
@@ -1257,19 +1168,19 @@ goes with it.</p>
     <span class="n">losses</span><span class="p">[</span><span class="n">group</span><span class="p">]</span> <span class="o">=</span> <span class="n">loss_module</span>
 
 <span class="n">target_updaters</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="n">group</span><span class="p">:</span> <span class="n">SoftUpdate</span><span class="p">(</span><a href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="torch.Tensor" class="sphx-glr-backref-module-torch sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">loss</span></a><span class="p">,</span> <span class="n">tau</span><span class="o">=</span><span class="n">polyak_tau</span><span class="p">)</span> <span class="k">for</span> <span class="n">group</span><span class="p">,</span> <a href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="torch.Tensor" class="sphx-glr-backref-module-torch sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">loss</span></a> <span class="ow">in</span> <span class="n">losses</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+    <span class="n">group</span><span class="p">:</span> <span class="n">SoftUpdate</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="n">tau</span><span class="o">=</span><span class="n">polyak_tau</span><span class="p">)</span> <span class="k">for</span> <span class="n">group</span><span class="p">,</span> <span class="n">loss</span> <span class="ow">in</span> <span class="n">losses</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
 <span class="p">}</span>
 
 <span class="n">optimisers</span> <span class="o">=</span> <span class="p">{</span>
     <span class="n">group</span><span class="p">:</span> <span class="p">{</span>
         <span class="s2">&quot;loss_actor&quot;</span><span class="p">:</span> <a href="https://pytorch.org/docs/stable/generated/torch.optim.Adam.html#torch.optim.Adam" title="torch.optim.Adam" class="sphx-glr-backref-module-torch-optim sphx-glr-backref-type-py-class"><span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span></a><span class="p">(</span>
-            <a href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="torch.Tensor" class="sphx-glr-backref-module-torch sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">loss</span><span class="o">.</span><span class="n">actor_network_params</span><span class="o">.</span><span class="n">flatten_keys</span></a><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="n">lr</span>
+            <span class="n">loss</span><span class="o">.</span><span class="n">actor_network_params</span><span class="o">.</span><span class="n">flatten_keys</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="n">lr</span>
         <span class="p">),</span>
         <span class="s2">&quot;loss_value&quot;</span><span class="p">:</span> <a href="https://pytorch.org/docs/stable/generated/torch.optim.Adam.html#torch.optim.Adam" title="torch.optim.Adam" class="sphx-glr-backref-module-torch-optim sphx-glr-backref-type-py-class"><span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span></a><span class="p">(</span>
-            <a href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="torch.Tensor" class="sphx-glr-backref-module-torch sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">loss</span><span class="o">.</span><span class="n">value_network_params</span><span class="o">.</span><span class="n">flatten_keys</span></a><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="n">lr</span>
+            <span class="n">loss</span><span class="o">.</span><span class="n">value_network_params</span><span class="o">.</span><span class="n">flatten_keys</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="n">lr</span>
         <span class="p">),</span>
     <span class="p">}</span>
-    <span class="k">for</span> <span class="n">group</span><span class="p">,</span> <a href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="torch.Tensor" class="sphx-glr-backref-module-torch sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">loss</span></a> <span class="ow">in</span> <span class="n">losses</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">group</span><span class="p">,</span> <span class="n">loss</span> <span class="ow">in</span> <span class="n">losses</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -1370,17 +1281,17 @@ The steps include:</p>
             <span class="n">loss_vals</span> <span class="o">=</span> <span class="n">losses</span><span class="p">[</span><span class="n">group</span><span class="p">](</span><span class="n">subdata</span><span class="p">)</span>
 
             <span class="k">for</span> <span class="n">loss_name</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;loss_actor&quot;</span><span class="p">,</span> <span class="s2">&quot;loss_value&quot;</span><span class="p">]:</span>
-                <a href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="torch.Tensor" class="sphx-glr-backref-module-torch sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">loss</span></a> <span class="o">=</span> <span class="n">loss_vals</span><span class="p">[</span><span class="n">loss_name</span><span class="p">]</span>
-                <a href="https://pytorch.org/docs/stable/generated/torch.optim.Adam.html#torch.optim.Adam" title="torch.optim.Adam" class="sphx-glr-backref-module-torch-optim sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">optimiser</span></a> <span class="o">=</span> <span class="n">optimisers</span><span class="p">[</span><span class="n">group</span><span class="p">][</span><span class="n">loss_name</span><span class="p">]</span>
+                <span class="n">loss</span> <span class="o">=</span> <span class="n">loss_vals</span><span class="p">[</span><span class="n">loss_name</span><span class="p">]</span>
+                <span class="n">optimiser</span> <span class="o">=</span> <span class="n">optimisers</span><span class="p">[</span><span class="n">group</span><span class="p">][</span><span class="n">loss_name</span><span class="p">]</span>
 
-                <a href="https://pytorch.org/docs/stable/generated/torch.Tensor.backward.html#torch.Tensor.backward" title="torch.Tensor.backward" class="sphx-glr-backref-module-torch sphx-glr-backref-type-py-method"><span class="n">loss</span><span class="o">.</span><span class="n">backward</span></a><span class="p">()</span>
+                <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
 
                 <span class="c1"># Optional</span>
-                <span class="n">params</span> <span class="o">=</span> <a href="https://pytorch.org/docs/stable/generated/torch.optim.Adam.html#torch.optim.Adam" title="torch.optim.Adam" class="sphx-glr-backref-module-torch-optim sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">optimiser</span></a><span class="o">.</span><span class="n">param_groups</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;params&quot;</span><span class="p">]</span>
+                <span class="n">params</span> <span class="o">=</span> <span class="n">optimiser</span><span class="o">.</span><span class="n">param_groups</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;params&quot;</span><span class="p">]</span>
                 <a href="https://pytorch.org/docs/stable/generated/torch.nn.utils.clip_grad_norm_.html#torch.nn.utils.clip_grad_norm_" title="torch.nn.utils.clip_grad_norm_" class="sphx-glr-backref-module-torch-nn-utils sphx-glr-backref-type-py-function"><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">clip_grad_norm_</span></a><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">max_grad_norm</span><span class="p">)</span>
 
-                <a href="https://pytorch.org/docs/stable/generated/torch.optim.Adam.html#torch.optim.Adam.step" title="torch.optim.Adam.step" class="sphx-glr-backref-module-torch-optim sphx-glr-backref-type-py-method"><span class="n">optimiser</span><span class="o">.</span><span class="n">step</span></a><span class="p">()</span>
-                <a href="https://pytorch.org/docs/stable/generated/torch.optim.Adam.html#torch.optim.Adam.zero_grad" title="torch.optim.Adam.zero_grad" class="sphx-glr-backref-module-torch-optim sphx-glr-backref-type-py-method"><span class="n">optimiser</span><span class="o">.</span><span class="n">zero_grad</span></a><span class="p">()</span>
+                <span class="n">optimiser</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+                <span class="n">optimiser</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
 
             <span class="c1"># Soft-update the target network</span>
             <span class="n">target_updaters</span><span class="p">[</span><span class="n">group</span><span class="p">]</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
@@ -1415,19 +1326,6 @@ The steps include:</p>
     <span class="n">pbar</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>episode_reward_mean_adversary = 0, episode_reward_mean_agent = 0:   0%|          | 0/10 [00:00&lt;?, ?it/s]
-episode_reward_mean_adversary = 1.0, episode_reward_mean_agent = -1.0:  10%|█         | 1/10 [00:03&lt;00:28,  3.14s/it]
-episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  20%|██        | 2/10 [00:06&lt;00:26,  3.26s/it]
-episode_reward_mean_adversary = 1.0, episode_reward_mean_agent = -1.0:  30%|███       | 3/10 [00:09&lt;00:23,  3.32s/it]
-episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  40%|████      | 4/10 [00:13&lt;00:20,  3.34s/it]
-episode_reward_mean_adversary = 2.0, episode_reward_mean_agent = -2.0:  50%|█████     | 5/10 [00:16&lt;00:16,  3.34s/it]
-episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  60%|██████    | 6/10 [00:19&lt;00:13,  3.33s/it]
-episode_reward_mean_adversary = 2.0, episode_reward_mean_agent = -2.0:  70%|███████   | 7/10 [00:22&lt;00:09,  3.02s/it]
-episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  80%|████████  | 8/10 [00:24&lt;00:05,  2.83s/it]
-episode_reward_mean_adversary = 0.0, episode_reward_mean_agent = 0.0:  90%|█████████ | 9/10 [00:27&lt;00:02,  2.70s/it]
-episode_reward_mean_adversary = 1.0, episode_reward_mean_agent = -1.0: 100%|██████████| 10/10 [00:29&lt;00:00,  2.58s/it]
-</pre></div>
-</div>
 </section>
 <section id="results">
 <h2>Results<a class="headerlink" href="#results" title="Permalink to this heading">¶</a></h2>
@@ -1449,7 +1347,7 @@ proceed with the rest of the screen.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<img src="../_images/sphx_glr_multiagent_competitive_ddpg_001.png" srcset="../_images/sphx_glr_multiagent_competitive_ddpg_001.png" alt="multiagent competitive ddpg" class = "sphx-glr-single-img"/></section>
+</section>
 <section id="render">
 <h2>Render<a class="headerlink" href="#render" title="Permalink to this heading">¶</a></h2>
 <p><em>Rendering instruction are for VMAS</em>, aka when running with <code class="docutils literal notranslate"><span class="pre">use_vmas=True</span></code>.</p>
@@ -1511,8 +1409,8 @@ Here are a few videos of some possible scenarios you can try in VMAS.</p>
 <p><span class="caption-text">Scenarios available in <a class="reference external" href="https://github.com/proroklab/VectorizedMultiAgentSimulator">VMAS</a></span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (1 minutes 35.449 seconds)</p>
-<p><strong>Estimated memory usage:</strong>  323 MB</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 28.194 seconds)</p>
+<p><strong>Estimated memory usage:</strong>  3465 MB</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-tutorials-multiagent-competitive-ddpg-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/f3b53654a2b96b82010dd96f73ff5151/multiagent_competitive_ddpg.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">multiagent_competitive_ddpg.ipynb</span></code></a></p>

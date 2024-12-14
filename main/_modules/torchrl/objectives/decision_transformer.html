@@ -268,7 +268,7 @@
           <div class="pytorch-left-menu-search">
             
     <div class="version">
-      <a href="../../../../versions.html"><span style="font-size:110%">main (0.6.1+01a421e) &#x25BC</span></a>
+      <a href="../../../../versions.html"><span style="font-size:110%">main (0.6.1+fbfe104) &#x25BC</span></a>
     </div>
     
 
@@ -617,7 +617,7 @@
     <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">:</span> <span class="n">TensorDictBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDictBase</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the loss for the Online Decision Transformer.&quot;&quot;&quot;</span>
         <span class="c1"># extract action targets</span>
-        <span class="n">tensordict</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">clone</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">tensordict</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">target_actions</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tensor_keys</span><span class="o">.</span><span class="n">action_target</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">target_actions</span><span class="o">.</span><span class="n">requires_grad</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;target action cannot be part of a graph.&quot;</span><span class="p">)</span>

@@ -268,7 +268,7 @@
           <div class="pytorch-left-menu-search">
             
     <div class="version">
-      <a href="../../../../../versions.html"><span style="font-size:110%">main (0.6.1+01a421e) &#x25BC</span></a>
+      <a href="../../../../../versions.html"><span style="font-size:110%">main (0.6.1+fbfe104) &#x25BC</span></a>
     </div>
     
 
@@ -410,6 +410,7 @@
 <span class="kn">import</span> <span class="nn">dataclasses</span>
 
 <span class="kn">import</span> <span class="nn">importlib</span>
+<span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">nullcontext</span>
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
 
@@ -495,9 +496,6 @@
         <span class="n">config</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="n">DTConfig</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">device</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
-        <span class="k">if</span> <span class="n">device</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="n">device</span><span class="p">):</span>
-                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">state_dim</span><span class="p">,</span> <span class="n">action_dim</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">_has_transformers</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
@@ -520,28 +518,29 @@
 
         <span class="nb">super</span><span class="p">(</span><span class="n">DecisionTransformer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
-        <span class="n">gpt_config</span> <span class="o">=</span> <span class="n">transformers</span><span class="o">.</span><span class="n">GPT2Config</span><span class="p">(</span>
-            <span class="n">n_embd</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;n_embd&quot;</span><span class="p">],</span>
-            <span class="n">n_layer</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;n_layer&quot;</span><span class="p">],</span>
-            <span class="n">n_head</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;n_head&quot;</span><span class="p">],</span>
-            <span class="n">n_inner</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;n_inner&quot;</span><span class="p">],</span>
-            <span class="n">activation_function</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;activation&quot;</span><span class="p">],</span>
-            <span class="n">n_positions</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;n_positions&quot;</span><span class="p">],</span>
-            <span class="n">resid_pdrop</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;resid_pdrop&quot;</span><span class="p">],</span>
-            <span class="n">attn_pdrop</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;attn_pdrop&quot;</span><span class="p">],</span>
-            <span class="n">vocab_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">state_dim</span> <span class="o">=</span> <span class="n">state_dim</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">action_dim</span> <span class="o">=</span> <span class="n">action_dim</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">hidden_size</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;n_embd&quot;</span><span class="p">]</span>
+        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="n">device</span><span class="p">)</span> <span class="k">if</span> <span class="n">device</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">nullcontext</span><span class="p">():</span>
+            <span class="n">gpt_config</span> <span class="o">=</span> <span class="n">transformers</span><span class="o">.</span><span class="n">GPT2Config</span><span class="p">(</span>
+                <span class="n">n_embd</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;n_embd&quot;</span><span class="p">],</span>
+                <span class="n">n_layer</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;n_layer&quot;</span><span class="p">],</span>
+                <span class="n">n_head</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;n_head&quot;</span><span class="p">],</span>
+                <span class="n">n_inner</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;n_inner&quot;</span><span class="p">],</span>
+                <span class="n">activation_function</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;activation&quot;</span><span class="p">],</span>
+                <span class="n">n_positions</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;n_positions&quot;</span><span class="p">],</span>
+                <span class="n">resid_pdrop</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;resid_pdrop&quot;</span><span class="p">],</span>
+                <span class="n">attn_pdrop</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;attn_pdrop&quot;</span><span class="p">],</span>
+                <span class="n">vocab_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">state_dim</span> <span class="o">=</span> <span class="n">state_dim</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">action_dim</span> <span class="o">=</span> <span class="n">action_dim</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">hidden_size</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;n_embd&quot;</span><span class="p">]</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">transformer</span> <span class="o">=</span> <span class="n">GPT2Model</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">gpt_config</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">transformer</span> <span class="o">=</span> <span class="n">GPT2Model</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">gpt_config</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">embed_return</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden_size</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">embed_state</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state_dim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden_size</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">embed_action</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">action_dim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden_size</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">embed_return</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden_size</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">embed_state</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state_dim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden_size</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">embed_action</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">action_dim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden_size</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">embed_ln</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">LayerNorm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hidden_size</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">embed_ln</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">LayerNorm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hidden_size</span><span class="p">)</span>
 
 <div class="viewcode-block" id="DecisionTransformer.forward"><a class="viewcode-back" href="../../../../reference/generated/torchrl.modules.DecisionTransformer.html#torchrl.modules.DecisionTransformer.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -565,13 +564,9 @@
 
         <span class="c1"># this makes the sequence look like (R_1, s_1, a_1, R_2, s_2, a_2, ...)</span>
         <span class="c1"># which works nice in an autoregressive sense since states predict actions</span>
-        <span class="n">stacked_inputs</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span>
-                <span class="p">(</span><span class="n">returns_embeddings</span><span class="p">,</span> <span class="n">state_embeddings</span><span class="p">,</span> <span class="n">action_embeddings</span><span class="p">),</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">3</span>
-            <span class="p">)</span>
-            <span class="o">.</span><span class="n">permute</span><span class="p">(</span><span class="o">*</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">batch_size</span><span class="p">)),</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-            <span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">*</span><span class="n">batch_size</span><span class="p">,</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">seq_length</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden_size</span><span class="p">)</span>
-        <span class="p">)</span>
+        <span class="n">stacked_inputs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">returns_embeddings</span><span class="p">,</span> <span class="n">state_embeddings</span><span class="p">,</span> <span class="n">action_embeddings</span><span class="p">),</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">2</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">*</span><span class="n">batch_size</span><span class="p">,</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">seq_length</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden_size</span><span class="p">)</span>
         <span class="n">stacked_inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">embed_ln</span><span class="p">(</span><span class="n">stacked_inputs</span><span class="p">)</span>
 
         <span class="c1"># we feed in the input embeddings (not word indices as in NLP) to the model</span>
@@ -582,12 +577,10 @@
 
         <span class="c1"># reshape x so that the second dimension corresponds to the original</span>
         <span class="c1"># returns (0), states (1), or actions (2); i.e. x[:,1,t] is the token for s_t</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">*</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">seq_length</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden_size</span><span class="p">)</span><span class="o">.</span><span class="n">permute</span><span class="p">(</span>
-            <span class="o">*</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">batch_size</span><span class="p">)),</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span>
-        <span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">*</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">seq_length</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden_size</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">batch_size_orig</span> <span class="ow">is</span> <span class="n">batch_size</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">x</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>  <span class="c1"># only state tokens</span>
-        <span class="k">return</span> <span class="n">x</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">*</span><span class="n">batch_size_orig</span><span class="p">,</span> <span class="o">*</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:])</span></div></div>
+        <span class="k">return</span> <span class="n">x</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">*</span><span class="n">batch_size_orig</span><span class="p">,</span> <span class="o">*</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:])</span></div></div>
 </pre></div>
 
              </article>
