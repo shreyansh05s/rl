@@ -659,16 +659,35 @@ Let us try it out:
 
 
 
+
+
+
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 567-570
+
+We can have a look at our specs to have a visual representation of the environment
+signature:
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 570-575
+
+.. code-block:: Python
+
+
+    print("observation_spec:", env.observation_spec)
+    print("state_spec:", env.state_spec)
+    print("reward_spec:", env.reward_spec)
+
+
+
+
+
 .. rst-class:: sphx-glr-script-out
 
-.. code-block:: pytb
+ .. code-block:: none
 
-    Traceback (most recent call last):
-      File "/pytorch/rl/docs/source/reference/generated/tutorials/pendulum.py", line 564, in <module>
-        check_env_specs(env)
-      File "/pytorch/rl/torchrl/envs/utils.py", line 832, in check_env_specs
-        raise AssertionError(
-    AssertionError: spec check failed at root for spec state=Composite(
+    observation_spec: Composite(
         th: BoundedContinuous(
             shape=torch.Size([]),
             space=ContinuousBox(
@@ -737,42 +756,87 @@ Let us try it out:
             device=cpu,
             shape=torch.Size([])),
         device=cpu,
-        shape=torch.Size([])) and data TensorDict(
-        fields={
-            params: TensorDict(
-                fields={
-                    dt: Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, is_shared=False),
-                    g: Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, is_shared=False),
-                    l: Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, is_shared=False),
-                    m: Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, is_shared=False),
-                    max_speed: Tensor(shape=torch.Size([]), device=cpu, dtype=torch.int64, is_shared=False),
-                    max_torque: Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, is_shared=False)},
-                batch_size=torch.Size([]),
-                device=None,
-                is_shared=False),
-            th: Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, is_shared=False),
-            thdot: Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, is_shared=False)},
-        batch_size=torch.Size([]),
-        device=None,
-        is_shared=False).
+        shape=torch.Size([]))
+    state_spec: Composite(
+        th: BoundedContinuous(
+            shape=torch.Size([]),
+            space=ContinuousBox(
+                low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True),
+                high=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True)),
+            device=cpu,
+            dtype=torch.float32,
+            domain=continuous),
+        thdot: BoundedContinuous(
+            shape=torch.Size([]),
+            space=ContinuousBox(
+                low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True),
+                high=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True)),
+            device=cpu,
+            dtype=torch.float32,
+            domain=continuous),
+        params: Composite(
+            max_speed: UnboundedDiscrete(
+                shape=torch.Size([]),
+                space=ContinuousBox(
+                    low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.int64, contiguous=True),
+                    high=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.int64, contiguous=True)),
+                device=cpu,
+                dtype=torch.int64,
+                domain=discrete),
+            max_torque: UnboundedContinuous(
+                shape=torch.Size([]),
+                space=ContinuousBox(
+                    low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True),
+                    high=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True)),
+                device=cpu,
+                dtype=torch.float32,
+                domain=continuous),
+            dt: UnboundedContinuous(
+                shape=torch.Size([]),
+                space=ContinuousBox(
+                    low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True),
+                    high=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True)),
+                device=cpu,
+                dtype=torch.float32,
+                domain=continuous),
+            g: UnboundedContinuous(
+                shape=torch.Size([]),
+                space=ContinuousBox(
+                    low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True),
+                    high=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True)),
+                device=cpu,
+                dtype=torch.float32,
+                domain=continuous),
+            m: UnboundedContinuous(
+                shape=torch.Size([]),
+                space=ContinuousBox(
+                    low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True),
+                    high=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True)),
+                device=cpu,
+                dtype=torch.float32,
+                domain=continuous),
+            l: UnboundedContinuous(
+                shape=torch.Size([]),
+                space=ContinuousBox(
+                    low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True),
+                    high=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True)),
+                device=cpu,
+                dtype=torch.float32,
+                domain=continuous),
+            device=cpu,
+            shape=torch.Size([])),
+        device=cpu,
+        shape=torch.Size([]))
+    reward_spec: UnboundedContinuous(
+        shape=torch.Size([1]),
+        space=ContinuousBox(
+            low=Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, contiguous=True),
+            high=Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, contiguous=True)),
+        device=cpu,
+        dtype=torch.float32,
+        domain=continuous)
 
 
-
-
-.. GENERATED FROM PYTHON SOURCE LINES 567-570
-
-We can have a look at our specs to have a visual representation of the environment
-signature:
-
-
-.. GENERATED FROM PYTHON SOURCE LINES 570-575
-
-.. code-block:: Python
-
-
-    print("observation_spec:", env.observation_spec)
-    print("state_spec:", env.state_spec)
-    print("reward_spec:", env.reward_spec)
 
 
 .. GENERATED FROM PYTHON SOURCE LINES 576-578
@@ -787,6 +851,37 @@ matches what is expected.
 
     td = env.reset()
     print("reset tensordict", td)
+
+
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ .. code-block:: none
+
+    reset tensordict TensorDict(
+        fields={
+            done: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+            params: TensorDict(
+                fields={
+                    dt: Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, is_shared=False),
+                    g: Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, is_shared=False),
+                    l: Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, is_shared=False),
+                    m: Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, is_shared=False),
+                    max_speed: Tensor(shape=torch.Size([]), device=cpu, dtype=torch.int64, is_shared=False),
+                    max_torque: Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, is_shared=False)},
+                batch_size=torch.Size([]),
+                device=None,
+                is_shared=False),
+            terminated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+            th: Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, is_shared=False),
+            thdot: Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, is_shared=False)},
+        batch_size=torch.Size([]),
+        device=None,
+        is_shared=False)
+
+
 
 
 .. GENERATED FROM PYTHON SOURCE LINES 583-589
@@ -804,6 +899,59 @@ perfectly too.
 
     td = env.rand_step(td)
     print("random step tensordict", td)
+
+
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ .. code-block:: none
+
+    random step tensordict TensorDict(
+        fields={
+            action: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, is_shared=False),
+            done: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+            next: TensorDict(
+                fields={
+                    done: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+                    params: TensorDict(
+                        fields={
+                            dt: Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, is_shared=False),
+                            g: Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, is_shared=False),
+                            l: Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, is_shared=False),
+                            m: Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, is_shared=False),
+                            max_speed: Tensor(shape=torch.Size([]), device=cpu, dtype=torch.int64, is_shared=False),
+                            max_torque: Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, is_shared=False)},
+                        batch_size=torch.Size([]),
+                        device=None,
+                        is_shared=False),
+                    reward: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, is_shared=False),
+                    terminated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+                    th: Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, is_shared=False),
+                    thdot: Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, is_shared=False)},
+                batch_size=torch.Size([]),
+                device=None,
+                is_shared=False),
+            params: TensorDict(
+                fields={
+                    dt: Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, is_shared=False),
+                    g: Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, is_shared=False),
+                    l: Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, is_shared=False),
+                    m: Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, is_shared=False),
+                    max_speed: Tensor(shape=torch.Size([]), device=cpu, dtype=torch.int64, is_shared=False),
+                    max_torque: Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, is_shared=False)},
+                batch_size=torch.Size([]),
+                device=None,
+                is_shared=False),
+            terminated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+            th: Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, is_shared=False),
+            thdot: Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, is_shared=False)},
+        batch_size=torch.Size([]),
+        device=None,
+        is_shared=False)
+
+
 
 
 .. GENERATED FROM PYTHON SOURCE LINES 593-608
@@ -837,6 +985,12 @@ original shape once they are passed as input in the next iteration.
             in_keys_inv=["th", "thdot"],
         ),
     )
+
+
+
+
+
+
 
 
 .. GENERATED FROM PYTHON SOURCE LINES 619-678
@@ -961,6 +1115,23 @@ a policy than the raw angle value:
     env.append_transform(t_cos)
 
 
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ .. code-block:: none
+
+
+    TransformedEnv(
+        env=PendulumEnv(),
+        transform=Compose(
+                UnsqueezeTransform(dim=-1, in_keys=['th', 'thdot'], out_keys=['th', 'thdot'], in_keys_inv=['th', 'thdot'], out_keys_inv=['th', 'thdot']),
+                SinTransform(keys=['th']),
+                CosTransform(keys=['th'])))
+
+
+
 .. GENERATED FROM PYTHON SOURCE LINES 734-737
 
 Concatenates the observations onto an "observation" entry.
@@ -977,6 +1148,24 @@ iteration.
     env.append_transform(cat_transform)
 
 
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ .. code-block:: none
+
+
+    TransformedEnv(
+        env=PendulumEnv(),
+        transform=Compose(
+                UnsqueezeTransform(dim=-1, in_keys=['th', 'thdot'], out_keys=['th', 'thdot'], in_keys_inv=['th', 'thdot'], out_keys_inv=['th', 'thdot']),
+                SinTransform(keys=['th']),
+                CosTransform(keys=['th']),
+                CatTensors(in_keys=['cos', 'sin', 'thdot'], out_key=observation)))
+
+
+
 .. GENERATED FROM PYTHON SOURCE LINES 743-744
 
 Once more, let us check that our environment specs match what is received:
@@ -986,6 +1175,107 @@ Once more, let us check that our environment specs match what is received:
 .. code-block:: Python
 
     check_env_specs(env)
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+.. code-block:: pytb
+
+    Traceback (most recent call last):
+      File "/pytorch/rl/docs/source/reference/generated/tutorials/pendulum.py", line 744, in <module>
+        check_env_specs(env)
+      File "/pytorch/rl/torchrl/envs/utils.py", line 832, in check_env_specs
+        raise AssertionError(
+    AssertionError: spec check failed at root for spec state=Composite(
+        th: BoundedContinuous(
+            shape=torch.Size([]),
+            space=ContinuousBox(
+                low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True),
+                high=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True)),
+            device=cpu,
+            dtype=torch.float32,
+            domain=continuous),
+        thdot: BoundedContinuous(
+            shape=torch.Size([]),
+            space=ContinuousBox(
+                low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True),
+                high=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True)),
+            device=cpu,
+            dtype=torch.float32,
+            domain=continuous),
+        params: Composite(
+            max_speed: UnboundedDiscrete(
+                shape=torch.Size([]),
+                space=ContinuousBox(
+                    low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.int64, contiguous=True),
+                    high=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.int64, contiguous=True)),
+                device=cpu,
+                dtype=torch.int64,
+                domain=discrete),
+            max_torque: UnboundedContinuous(
+                shape=torch.Size([]),
+                space=ContinuousBox(
+                    low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True),
+                    high=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True)),
+                device=cpu,
+                dtype=torch.float32,
+                domain=continuous),
+            dt: UnboundedContinuous(
+                shape=torch.Size([]),
+                space=ContinuousBox(
+                    low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True),
+                    high=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True)),
+                device=cpu,
+                dtype=torch.float32,
+                domain=continuous),
+            g: UnboundedContinuous(
+                shape=torch.Size([]),
+                space=ContinuousBox(
+                    low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True),
+                    high=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True)),
+                device=cpu,
+                dtype=torch.float32,
+                domain=continuous),
+            m: UnboundedContinuous(
+                shape=torch.Size([]),
+                space=ContinuousBox(
+                    low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True),
+                    high=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True)),
+                device=cpu,
+                dtype=torch.float32,
+                domain=continuous),
+            l: UnboundedContinuous(
+                shape=torch.Size([]),
+                space=ContinuousBox(
+                    low=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True),
+                    high=Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, contiguous=True)),
+                device=cpu,
+                dtype=torch.float32,
+                domain=continuous),
+            device=cpu,
+            shape=torch.Size([])),
+        device=cpu,
+        shape=torch.Size([])) and data TensorDict(
+        fields={
+            params: TensorDict(
+                fields={
+                    dt: Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, is_shared=False),
+                    g: Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, is_shared=False),
+                    l: Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, is_shared=False),
+                    m: Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, is_shared=False),
+                    max_speed: Tensor(shape=torch.Size([]), device=cpu, dtype=torch.int64, is_shared=False),
+                    max_torque: Tensor(shape=torch.Size([]), device=cpu, dtype=torch.float32, is_shared=False)},
+                batch_size=torch.Size([]),
+                device=None,
+                is_shared=False),
+            th: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, is_shared=False),
+            thdot: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, is_shared=False)},
+        batch_size=torch.Size([]),
+        device=None,
+        is_shared=False).
+
+
 
 
 .. GENERATED FROM PYTHON SOURCE LINES 747-764
@@ -1225,9 +1515,9 @@ scratch. We touched the subjects of:
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 20.669 seconds)
+   **Total running time of the script:** (0 minutes 56.910 seconds)
 
-**Estimated memory usage:**  4897 MB
+**Estimated memory usage:**  3347 MB
 
 
 .. _sphx_glr_download_tutorials_pendulum.py:
