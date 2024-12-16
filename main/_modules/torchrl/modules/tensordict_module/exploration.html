@@ -268,7 +268,7 @@
           <div class="pytorch-left-menu-search">
             
     <div class="version">
-      <a href="../../../../../versions.html"><span style="font-size:110%">main (0.6.1+87a59fb) &#x25BC</span></a>
+      <a href="../../../../../versions.html"><span style="font-size:110%">main (0.6.1+1b7eda1) &#x25BC</span></a>
     </div>
     
 
@@ -800,7 +800,7 @@
 <span class="sd">            default: &quot;action&quot;</span>
 <span class="sd">        safe (bool): if ``True``, actions that are out of bounds given the action specs will be projected in the space</span>
 <span class="sd">            given the :obj:`TensorSpec.project` heuristic.</span>
-<span class="sd">            default: True</span>
+<span class="sd">            default: False</span>
 <span class="sd">        device (torch.device, optional): the device where the buffers have to be stored.</span>
 
 <span class="sd">    .. note::</span>
@@ -823,7 +823,8 @@
         <span class="n">std</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">action_key</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">NestedKey</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;action&quot;</span><span class="p">,</span>
-        <span class="n">safe</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="c1"># safe is already implemented because we project in the noise addition</span>
+        <span class="n">safe</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">device</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sigma_init</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
