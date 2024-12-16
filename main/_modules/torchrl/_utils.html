@@ -268,7 +268,7 @@
           <div class="pytorch-left-menu-search">
             
     <div class="version">
-      <a href="../../../versions.html"><span style="font-size:110%">main (0.6.1+2cfc2ab) &#x25BC</span></a>
+      <a href="../../../versions.html"><span style="font-size:110%">main (0.6.1+f5a187d) &#x25BC</span></a>
     </div>
     
 
@@ -1257,7 +1257,7 @@
 
 
 <span class="nd">@wraps</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">compile</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">compile_with_warmup</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">warmup</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">compile_with_warmup</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">warmup</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Compile a model with warm-up.</span>
 
 <span class="sd">    This function wraps :func:`~torch.compile` to add a warm-up phase. During the warm-up phase,</span>
@@ -1266,7 +1266,7 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        *args: Arguments to be passed to `torch.compile`.</span>
-<span class="sd">        warmup (int): Number of calls to the model before compiling it.</span>
+<span class="sd">        warmup (int): Number of calls to the model before compiling it. Defaults to 1.</span>
 <span class="sd">        **kwargs: Keyword arguments to be passed to `torch.compile`.</span>
 
 <span class="sd">    Returns:</span>
@@ -1291,7 +1291,7 @@
     <span class="k">if</span> <span class="n">model</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="k">lambda</span> <span class="n">model</span><span class="p">:</span> <span class="n">compile_with_warmup</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">warmup</span><span class="o">=</span><span class="n">warmup</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">count</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
         <span class="n">compiled_model</span> <span class="o">=</span> <span class="n">model</span>
 
         <span class="nd">@wraps</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
