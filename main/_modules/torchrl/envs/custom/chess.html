@@ -268,7 +268,7 @@
           <div class="pytorch-left-menu-search">
             
     <div class="version">
-      <a href="../../../../../versions.html"><span style="font-size:110%">main (0.6.1+91064bc) &#x25BC</span></a>
+      <a href="../../../../../versions.html"><span style="font-size:110%">main (0.6.1+1fc9577) &#x25BC</span></a>
     </div>
     
 
@@ -530,10 +530,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_action_space</span><span class="p">(</span><span class="n">tensordict</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">rand_action</span><span class="p">(</span><span class="n">tensordict</span><span class="p">)</span></div>
 
+    <span class="k">def</span> <span class="nf">_is_done</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">board</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">board</span><span class="o">.</span><span class="n">is_game_over</span><span class="p">()</span> <span class="o">|</span> <span class="n">board</span><span class="o">.</span><span class="n">is_fifty_moves</span><span class="p">()</span>
+
     <span class="k">def</span> <span class="nf">_reset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">fen</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">tensordict</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">fen</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_fen</span><span class="p">(</span><span class="n">tensordict</span><span class="p">)</span>
+            <span class="n">fen</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_fen</span><span class="p">(</span><span class="n">tensordict</span><span class="p">)</span><span class="o">.</span><span class="n">data</span>
             <span class="n">dest</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">empty</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">dest</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="p">()</span>
@@ -542,7 +545,11 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">board</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
             <span class="n">fen</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">board</span><span class="o">.</span><span class="n">fen</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">board</span><span class="o">.</span><span class="n">set_fen</span><span class="p">(</span><span class="n">fen</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">board</span><span class="o">.</span><span class="n">set_fen</span><span class="p">(</span><span class="n">fen</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_done</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">board</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;Cannot reset to a fen that is a gameover state.&quot;</span> <span class="sa">f</span><span class="s2">&quot; fen: </span><span class="si">{</span><span class="n">fen</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
 
         <span class="n">hashing</span> <span class="o">=</span> <span class="nb">hash</span><span class="p">(</span><span class="n">fen</span><span class="p">)</span>
 
@@ -565,6 +572,38 @@
                 <span class="n">fen</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_hash_table</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">hashing</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
         <span class="k">return</span> <span class="n">fen</span>
 
+<div class="viewcode-block" id="ChessEnv.get_legal_moves"><a class="viewcode-back" href="../../../../reference/generated/torchrl.envs.ChessEnv.html#torchrl.envs.ChessEnv.get_legal_moves">[docs]</a>    <span class="k">def</span> <span class="nf">get_legal_moves</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uci</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;List the legal moves in a position.</span>
+
+<span class="sd">        To choose one of the actions, the &quot;action&quot; key can be set to the index</span>
+<span class="sd">        of the move in this list.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            tensordict (TensorDict, optional): Tensordict containing the fen</span>
+<span class="sd">                string of a position. Required if not stateful. If stateful,</span>
+<span class="sd">                this argument is ignored and the current state of the env is</span>
+<span class="sd">                used instead.</span>
+
+<span class="sd">            uci (bool, optional): If ``False``, moves are given in SAN format.</span>
+<span class="sd">                If ``True``, moves are given in UCI format. Default is</span>
+<span class="sd">                ``False``.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">board</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">board</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">stateful</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">tensordict</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;tensordict must be given since this env is not stateful&quot;</span>
+                <span class="p">)</span>
+            <span class="n">fen</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_fen</span><span class="p">(</span><span class="n">tensordict</span><span class="p">)</span><span class="o">.</span><span class="n">data</span>
+            <span class="n">board</span><span class="o">.</span><span class="n">set_fen</span><span class="p">(</span><span class="n">fen</span><span class="p">)</span>
+        <span class="n">moves</span> <span class="o">=</span> <span class="n">board</span><span class="o">.</span><span class="n">legal_moves</span>
+
+        <span class="k">if</span> <span class="n">uci</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">board</span><span class="o">.</span><span class="n">uci</span><span class="p">(</span><span class="n">move</span><span class="p">)</span> <span class="k">for</span> <span class="n">move</span> <span class="ow">in</span> <span class="n">moves</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">board</span><span class="o">.</span><span class="n">san</span><span class="p">(</span><span class="n">move</span><span class="p">)</span> <span class="k">for</span> <span class="n">move</span> <span class="ow">in</span> <span class="n">moves</span><span class="p">]</span></div>
+
     <span class="k">def</span> <span class="nf">_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">):</span>
         <span class="c1"># action</span>
         <span class="n">action</span> <span class="o">=</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;action&quot;</span><span class="p">)</span>
@@ -572,9 +611,8 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">stateful</span><span class="p">:</span>
             <span class="n">fen</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_fen</span><span class="p">(</span><span class="n">tensordict</span><span class="p">)</span><span class="o">.</span><span class="n">data</span>
             <span class="n">board</span><span class="o">.</span><span class="n">set_fen</span><span class="p">(</span><span class="n">fen</span><span class="p">)</span>
-        <span class="n">action</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">board</span><span class="o">.</span><span class="n">legal_moves</span><span class="p">)[</span><span class="n">action</span><span class="p">])</span>
-        <span class="c1"># assert chess.Move.from_uci(action) in board.legal_moves</span>
-        <span class="n">board</span><span class="o">.</span><span class="n">push_san</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+        <span class="n">action</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">board</span><span class="o">.</span><span class="n">legal_moves</span><span class="p">)[</span><span class="n">action</span><span class="p">]</span>
+        <span class="n">board</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_action_space</span><span class="p">()</span>
 
         <span class="c1"># Collect data</span>
@@ -584,10 +622,15 @@
         <span class="n">dest</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;fen&quot;</span><span class="p">,</span> <span class="n">fen</span><span class="p">)</span>
         <span class="n">dest</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;hashing&quot;</span><span class="p">,</span> <span class="n">hashing</span><span class="p">)</span>
 
-        <span class="n">done</span> <span class="o">=</span> <span class="n">board</span><span class="o">.</span><span class="n">is_checkmate</span><span class="p">()</span>
         <span class="n">turn</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">board</span><span class="o">.</span><span class="n">turn</span><span class="p">)</span>
-        <span class="n">reward</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="n">done</span><span class="p">])</span><span class="o">.</span><span class="n">int</span><span class="p">()</span> <span class="o">*</span> <span class="p">(</span><span class="n">turn</span><span class="o">.</span><span class="n">int</span><span class="p">()</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="n">done</span> <span class="o">=</span> <span class="n">done</span> <span class="o">|</span> <span class="n">board</span><span class="o">.</span><span class="n">is_stalemate</span><span class="p">()</span> <span class="o">|</span> <span class="n">board</span><span class="o">.</span><span class="n">is_game_over</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">board</span><span class="o">.</span><span class="n">is_checkmate</span><span class="p">():</span>
+            <span class="c1"># turn flips after every move, even if the game is over</span>
+            <span class="n">winner</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">turn</span>
+            <span class="n">reward_val</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">winner</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">lib</span><span class="o">.</span><span class="n">WHITE</span> <span class="k">else</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">reward_val</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">reward</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="n">reward_val</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+        <span class="n">done</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_done</span><span class="p">(</span><span class="n">board</span><span class="p">)</span>
         <span class="n">dest</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;reward&quot;</span><span class="p">,</span> <span class="n">reward</span><span class="p">)</span>
         <span class="n">dest</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;turn&quot;</span><span class="p">,</span> <span class="n">turn</span><span class="p">)</span>
         <span class="n">dest</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;done&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">done</span><span class="p">])</span>

@@ -268,7 +268,7 @@
           <div class="pytorch-left-menu-search">
             
     <div class="version">
-      <a href="../../../../versions.html"><span style="font-size:110%">main (0.6.1+91064bc) &#x25BC</span></a>
+      <a href="../../../../versions.html"><span style="font-size:110%">main (0.6.1+1fc9577) &#x25BC</span></a>
     </div>
     
 
@@ -421,9 +421,9 @@
 <span class="kn">from</span> <span class="nn">torch.utils._contextlib</span> <span class="kn">import</span> <span class="n">_DecoratorContextManager</span>
 
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">torch.compiler</span> <span class="kn">import</span> <span class="n">is_dynamo_compiling</span>
+    <span class="kn">from</span> <span class="nn">torch.compiler</span> <span class="kn">import</span> <span class="n">is_compiling</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>  <span class="c1"># torch 2.0</span>
-    <span class="kn">from</span> <span class="nn">torch._dynamo</span> <span class="kn">import</span> <span class="n">is_compiling</span> <span class="k">as</span> <span class="n">is_dynamo_compiling</span>
+    <span class="kn">from</span> <span class="nn">torch._dynamo</span> <span class="kn">import</span> <span class="n">is_compiling</span>
 
 
 <span class="n">_dispatch_tdnn_modules</span> <span class="o">=</span> <span class="n">_ContextManager</span><span class="p">(</span>
@@ -703,7 +703,7 @@
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="n">wrapper</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="ow">and</span> <span class="n">is_dynamo_compiling</span><span class="p">():</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="ow">and</span> <span class="n">is_compiling</span><span class="p">():</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;skip_existing is not compatible with TorchDynamo.&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">prev</span> <span class="o">=</span> <span class="n">_skip_existing</span><span class="o">.</span><span class="n">get_mode</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -741,7 +741,7 @@
 
         <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
         <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">_self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">skip_existing</span><span class="p">()</span> <span class="ow">and</span> <span class="n">is_dynamo_compiling</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">skip_existing</span><span class="p">()</span> <span class="ow">and</span> <span class="n">is_compiling</span><span class="p">():</span>
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
                     <span class="s2">&quot;skip_existing is not compatible with torch.compile.&quot;</span>
                 <span class="p">)</span>
@@ -754,7 +754,7 @@
                 <span class="ow">and</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">key</span> <span class="ow">in</span> <span class="n">out_keys</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">in_keys</span><span class="p">)</span>
             <span class="p">):</span>
                 <span class="k">return</span> <span class="n">tensordict</span>
-            <span class="k">if</span> <span class="n">is_dynamo_compiling</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">is_compiling</span><span class="p">():</span>
                 <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="n">_self</span><span class="p">,</span> <span class="n">tensordict</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">prev</span> <span class="o">=</span> <span class="n">_skip_existing</span><span class="o">.</span><span class="n">get_mode</span><span class="p">()</span>
             <span class="k">try</span><span class="p">:</span>

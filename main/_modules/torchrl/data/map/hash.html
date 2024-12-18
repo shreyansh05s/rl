@@ -268,7 +268,7 @@
           <div class="pytorch-left-menu-search">
             
     <div class="version">
-      <a href="../../../../../versions.html"><span style="font-size:110%">main (0.6.1+91064bc) &#x25BC</span></a>
+      <a href="../../../../../versions.html"><span style="font-size:110%">main (0.6.1+1fc9577) &#x25BC</span></a>
     </div>
     
 
@@ -514,7 +514,7 @@
             <span class="n">hash_value</span> <span class="o">=</span> <span class="n">x_i</span><span class="o">.</span><span class="n">tobytes</span><span class="p">()</span>
             <span class="n">hash_values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">hash_value</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">as_tensor</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">hash_value</span>
+            <span class="k">return</span> <span class="n">hash_values</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="nb">hash</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">hash_values</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">result</span></div></div>
 

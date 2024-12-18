@@ -271,7 +271,7 @@
           <div class="pytorch-left-menu-search">
             
     <div class="version">
-      <a href="../../../versions.html"><span style="font-size:110%">main (0.6.1+91064bc) &#x25BC</span></a>
+      <a href="../../../versions.html"><span style="font-size:110%">main (0.6.1+1fc9577) &#x25BC</span></a>
     </div>
     
 
@@ -1262,6 +1262,27 @@ their serialized pickled form changes.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="torchrl.envs.ChessEnv.get_legal_moves">
+<span class="sig-name descname"><span class="pre">get_legal_moves</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensordict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uci</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/torchrl/envs/custom/chess.html#ChessEnv.get_legal_moves"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchrl.envs.ChessEnv.get_legal_moves" title="Permalink to this definition">¶</a></dt>
+<dd><p>List the legal moves in a position.</p>
+<p>To choose one of the actions, the “action” key can be set to the index
+of the move in this list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tensordict</strong> (<em>TensorDict</em><em>, </em><em>optional</em>) – Tensordict containing the fen
+string of a position. Required if not stateful. If stateful,
+this argument is ignored and the current state of the env is
+used instead.</p></li>
+<li><p><strong>uci</strong> (<em>bool</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">False</span></code>, moves are given in SAN format.
+If <code class="docutils literal notranslate"><span class="pre">True</span></code>, moves are given in UCI format. Default is
+<code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
