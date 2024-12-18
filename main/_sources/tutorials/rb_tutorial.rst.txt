@@ -215,7 +215,7 @@ change the ``collate_fn`` since the default expects numerical data):
 
  .. code-block:: none
 
-    ['a', 'a', 0]
+    [0, 'b', 'b']
 
 
 
@@ -339,14 +339,14 @@ Let us sample from the buffer, and print the data:
  .. code-block:: none
 
     samples tensor([[ 8,  9, 10, 11],
-            [ 0,  1,  2,  3],
-            [ 0,  1,  2,  3],
-            [ 0,  1,  2,  3],
-            [ 8,  9, 10, 11]]) tensor([[10, 11, 12, 13, 14],
-            [ 0,  1,  2,  3,  4],
-            [ 0,  1,  2,  3,  4],
-            [ 0,  1,  2,  3,  4],
-            [10, 11, 12, 13, 14]])
+            [ 4,  5,  6,  7],
+            [ 4,  5,  6,  7],
+            [ 8,  9, 10, 11],
+            [ 4,  5,  6,  7]]) tensor([[10, 11, 12, 13, 14],
+            [ 5,  6,  7,  8,  9],
+            [ 5,  6,  7,  8,  9],
+            [10, 11, 12, 13, 14],
+            [ 5,  6,  7,  8,  9]])
 
 
 
@@ -376,16 +376,16 @@ A :class:`~torchrl.data.LazyMemmapStorage` is created in the same manner:
  .. code-block:: none
 
     The buffer has 3 elements
-    samples: a= tensor([[ 0,  1,  2,  3],
-            [ 8,  9, 10, 11],
+    samples: a= tensor([[ 4,  5,  6,  7],
+            [ 0,  1,  2,  3],
             [ 4,  5,  6,  7],
             [ 0,  1,  2,  3],
-            [ 4,  5,  6,  7]]) 
-    ('b', 'c'): tensor([[ 0,  1,  2,  3,  4],
-            [10, 11, 12, 13, 14],
+            [ 8,  9, 10, 11]]) 
+    ('b', 'c'): tensor([[ 5,  6,  7,  8,  9],
+            [ 0,  1,  2,  3,  4],
             [ 5,  6,  7,  8,  9],
             [ 0,  1,  2,  3,  4],
-            [ 5,  6,  7,  8,  9]])
+            [10, 11, 12, 13, 14]])
 
 
 
@@ -419,8 +419,8 @@ We can also customize the storage location on disk:
  .. code-block:: none
 
     The buffer has 3 elements
-    the 'a' tensor is stored in /pytorch/rl/docs/source/reference/generated/tutorials/<TemporaryDirectory '/tmp/tmp6l7u3a3r'>/a.memmap
-    the ('b', 'c') tensor is stored in /pytorch/rl/docs/source/reference/generated/tutorials/<TemporaryDirectory '/tmp/tmp6l7u3a3r'>/b/c.memmap
+    the 'a' tensor is stored in /pytorch/rl/docs/source/reference/generated/tutorials/<TemporaryDirectory '/tmp/tmpeiutvrq7'>/a.memmap
+    the ('b', 'c') tensor is stored in /pytorch/rl/docs/source/reference/generated/tutorials/<TemporaryDirectory '/tmp/tmpeiutvrq7'>/b/c.memmap
 
 
 
@@ -511,7 +511,7 @@ Let us have a look at these indices:
 
  .. code-block:: none
 
-    tensor([0, 0, 2, 0, 2, 2, 1, 1, 0, 1, 0, 1])
+    tensor([2, 0, 2, 2, 0, 0, 1, 0, 0, 0, 2, 2])
 
 
 
@@ -1206,7 +1206,7 @@ higher indices should occur more frequently:
  .. code-block:: none
 
 
-    (array([149.,  62., 121.,  54., 149.,  64., 119.,  72., 120., 114.]), array([ 0. ,  1.5,  3. ,  4.5,  6. ,  7.5,  9. , 10.5, 12. , 13.5, 15. ]), <BarContainer object of 10 artists>)
+    (array([111.,  62., 116.,  64., 134.,  68., 143.,  64., 133., 129.]), array([ 0. ,  1.5,  3. ,  4.5,  6. ,  7.5,  9. , 10.5, 12. , 13.5, 15. ]), <BarContainer object of 10 artists>)
 
 
 
@@ -1262,7 +1262,7 @@ Now, higher indices should occur less frequently:
  .. code-block:: none
 
 
-    (array([201., 110., 180.,  88., 151.,  49., 110.,  42.,  69.,  24.]), array([ 0. ,  1.5,  3. ,  4.5,  6. ,  7.5,  9. , 10.5, 12. , 13.5, 15. ]), <BarContainer object of 10 artists>)
+    (array([204., 105., 157.,  85., 152.,  68., 116.,  47.,  61.,  29.]), array([ 0. ,  1.5,  3. ,  4.5,  6. ,  7.5,  9. , 10.5, 12. , 13.5, 15. ]), <BarContainer object of 10 artists>)
 
 
 
@@ -1322,7 +1322,22 @@ transformations can be recycled in the replay buffer:
 
 
 
+.. rst-class:: sphx-glr-script-out
 
+.. code-block:: pytb
+
+    Traceback (most recent call last):
+      File "/pytorch/rl/docs/source/reference/generated/tutorials/rb_tutorial.py", line 665, in <module>
+        Resize(in_keys=["pixels_trsf"], w=64, h=64),
+      File "/pytorch/rl/torchrl/envs/transforms/transforms.py", line 1867, in __init__
+        from torchvision.transforms.functional import InterpolationMode
+      File "/pytorch/rl/env/lib/python3.10/site-packages/torchvision/__init__.py", line 10, in <module>
+        from torchvision import _meta_registrations, datasets, io, models, ops, transforms, utils  # usort:skip
+      File "/pytorch/rl/env/lib/python3.10/site-packages/torchvision/_meta_registrations.py", line 26, in <module>
+        def meta_roi_align(input, rois, spatial_scale, pooled_height, pooled_width, sampling_ratio, aligned):
+      File "/pytorch/rl/env/lib/python3.10/site-packages/torchvision/_meta_registrations.py", line 18, in wrapper
+        if torchvision.extension._has_ops():
+    AttributeError: partially initialized module 'torchvision' has no attribute 'extension' (most likely due to a circular import)
 
 
 
@@ -1337,39 +1352,6 @@ let us have a look at a rollout:
 
 
     print(env.rollout(3))
-
-
-
-
-
-
-.. rst-class:: sphx-glr-script-out
-
- .. code-block:: none
-
-    TensorDict(
-        fields={
-            action: Tensor(shape=torch.Size([3, 2]), device=cpu, dtype=torch.int64, is_shared=False),
-            done: Tensor(shape=torch.Size([3, 1]), device=cpu, dtype=torch.bool, is_shared=False),
-            next: TensorDict(
-                fields={
-                    done: Tensor(shape=torch.Size([3, 1]), device=cpu, dtype=torch.bool, is_shared=False),
-                    pixels: Tensor(shape=torch.Size([3, 400, 600, 3]), device=cpu, dtype=torch.uint8, is_shared=False),
-                    pixels_trsf: Tensor(shape=torch.Size([3, 1, 64, 64]), device=cpu, dtype=torch.float32, is_shared=False),
-                    reward: Tensor(shape=torch.Size([3, 1]), device=cpu, dtype=torch.float32, is_shared=False),
-                    terminated: Tensor(shape=torch.Size([3, 1]), device=cpu, dtype=torch.bool, is_shared=False),
-                    truncated: Tensor(shape=torch.Size([3, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
-                batch_size=torch.Size([3]),
-                device=None,
-                is_shared=False),
-            pixels: Tensor(shape=torch.Size([3, 400, 600, 3]), device=cpu, dtype=torch.uint8, is_shared=False),
-            pixels_trsf: Tensor(shape=torch.Size([3, 1, 64, 64]), device=cpu, dtype=torch.float32, is_shared=False),
-            terminated: Tensor(shape=torch.Size([3, 1]), device=cpu, dtype=torch.bool, is_shared=False),
-            truncated: Tensor(shape=torch.Size([3, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
-        batch_size=torch.Size([3]),
-        device=None,
-        is_shared=False)
-
 
 
 
@@ -1398,12 +1380,6 @@ we want to see appearing:
 
 
 
-
-
-
-
-
-
 .. GENERATED FROM PYTHON SOURCE LINES 695-697
 
 Let us have a look at a batch of data, and control that the
@@ -1418,37 +1394,6 @@ Let us have a look at a batch of data, and control that the
     for data in collector:
         print(data)
         break
-
-
-
-
-
-
-.. rst-class:: sphx-glr-script-out
-
- .. code-block:: none
-
-    TensorDict(
-        fields={
-            action: Tensor(shape=torch.Size([10, 2]), device=cpu, dtype=torch.int64, is_shared=False),
-            done: Tensor(shape=torch.Size([10, 1]), device=cpu, dtype=torch.bool, is_shared=False),
-            next: TensorDict(
-                fields={
-                    done: Tensor(shape=torch.Size([10, 1]), device=cpu, dtype=torch.bool, is_shared=False),
-                    pixels: Tensor(shape=torch.Size([10, 400, 600, 3]), device=cpu, dtype=torch.uint8, is_shared=False),
-                    reward: Tensor(shape=torch.Size([10, 1]), device=cpu, dtype=torch.float32, is_shared=False),
-                    terminated: Tensor(shape=torch.Size([10, 1]), device=cpu, dtype=torch.bool, is_shared=False),
-                    truncated: Tensor(shape=torch.Size([10, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
-                batch_size=torch.Size([10]),
-                device=None,
-                is_shared=False),
-            pixels: Tensor(shape=torch.Size([10, 400, 600, 3]), device=cpu, dtype=torch.uint8, is_shared=False),
-            terminated: Tensor(shape=torch.Size([10, 1]), device=cpu, dtype=torch.bool, is_shared=False),
-            truncated: Tensor(shape=torch.Size([10, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
-        batch_size=torch.Size([10]),
-        device=None,
-        is_shared=False)
-
 
 
 
@@ -1483,18 +1428,6 @@ it. We manually add these keys to the transform:
 
 
 
-
-
-
-.. rst-class:: sphx-glr-script-out
-
- .. code-block:: none
-
-
-    tensor([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
-
-
-
 .. GENERATED FROM PYTHON SOURCE LINES 729-731
 
 We can check that a ``sample`` method sees the transformed images reappear:
@@ -1505,40 +1438,6 @@ We can check that a ``sample`` method sees the transformed images reappear:
 .. code-block:: Python
 
     print(rb.sample())
-
-
-
-
-
-
-.. rst-class:: sphx-glr-script-out
-
- .. code-block:: none
-
-    TensorDict(
-        fields={
-            action: Tensor(shape=torch.Size([16, 2]), device=cpu, dtype=torch.int64, is_shared=False),
-            done: Tensor(shape=torch.Size([16, 1]), device=cpu, dtype=torch.bool, is_shared=False),
-            index: Tensor(shape=torch.Size([16]), device=cpu, dtype=torch.int64, is_shared=False),
-            next: TensorDict(
-                fields={
-                    done: Tensor(shape=torch.Size([16, 1]), device=cpu, dtype=torch.bool, is_shared=False),
-                    pixels: Tensor(shape=torch.Size([16, 400, 600, 3]), device=cpu, dtype=torch.uint8, is_shared=False),
-                    pixels_trsf: Tensor(shape=torch.Size([16, 1, 64, 64]), device=cpu, dtype=torch.float32, is_shared=False),
-                    reward: Tensor(shape=torch.Size([16, 1]), device=cpu, dtype=torch.float32, is_shared=False),
-                    terminated: Tensor(shape=torch.Size([16, 1]), device=cpu, dtype=torch.bool, is_shared=False),
-                    truncated: Tensor(shape=torch.Size([16, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
-                batch_size=torch.Size([16]),
-                device=cpu,
-                is_shared=False),
-            pixels: Tensor(shape=torch.Size([16, 400, 600, 3]), device=cpu, dtype=torch.uint8, is_shared=False),
-            pixels_trsf: Tensor(shape=torch.Size([16, 1, 64, 64]), device=cpu, dtype=torch.float32, is_shared=False),
-            terminated: Tensor(shape=torch.Size([16, 1]), device=cpu, dtype=torch.bool, is_shared=False),
-            truncated: Tensor(shape=torch.Size([16, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
-        batch_size=torch.Size([16]),
-        device=cpu,
-        is_shared=False)
-
 
 
 
@@ -1562,12 +1461,6 @@ during training and inference. We solve this problem by executing the
 
 
     from torchrl.envs import CatFrames, UnsqueezeTransform
-
-
-
-
-
-
 
 
 .. GENERATED FROM PYTHON SOURCE LINES 750-752
@@ -1600,45 +1493,6 @@ observations:
         break
 
 
-
-
-
-.. rst-class:: sphx-glr-script-out
-
- .. code-block:: none
-
-    TensorDict(
-        fields={
-            action: Tensor(shape=torch.Size([10, 2]), device=cpu, dtype=torch.int64, is_shared=False),
-            collector: TensorDict(
-                fields={
-                    traj_ids: Tensor(shape=torch.Size([10]), device=cpu, dtype=torch.int64, is_shared=False)},
-                batch_size=torch.Size([10]),
-                device=None,
-                is_shared=False),
-            done: Tensor(shape=torch.Size([10, 1]), device=cpu, dtype=torch.bool, is_shared=False),
-            next: TensorDict(
-                fields={
-                    done: Tensor(shape=torch.Size([10, 1]), device=cpu, dtype=torch.bool, is_shared=False),
-                    pixels: Tensor(shape=torch.Size([10, 400, 600, 3]), device=cpu, dtype=torch.uint8, is_shared=False),
-                    pixels_trsf: Tensor(shape=torch.Size([10, 4, 1, 64, 64]), device=cpu, dtype=torch.float32, is_shared=False),
-                    reward: Tensor(shape=torch.Size([10, 1]), device=cpu, dtype=torch.float32, is_shared=False),
-                    terminated: Tensor(shape=torch.Size([10, 1]), device=cpu, dtype=torch.bool, is_shared=False),
-                    truncated: Tensor(shape=torch.Size([10, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
-                batch_size=torch.Size([10]),
-                device=None,
-                is_shared=False),
-            pixels: Tensor(shape=torch.Size([10, 400, 600, 3]), device=cpu, dtype=torch.uint8, is_shared=False),
-            pixels_trsf: Tensor(shape=torch.Size([10, 4, 1, 64, 64]), device=cpu, dtype=torch.float32, is_shared=False),
-            terminated: Tensor(shape=torch.Size([10, 1]), device=cpu, dtype=torch.bool, is_shared=False),
-            truncated: Tensor(shape=torch.Size([10, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
-        batch_size=torch.Size([10]),
-        device=None,
-        is_shared=False)
-
-
-
-
 .. GENERATED FROM PYTHON SOURCE LINES 773-776
 
 The buffer transform looks pretty much like the environment one, but with
@@ -1665,18 +1519,6 @@ extra ``("next", ...)`` keys like before:
 
 
 
-
-
-
-.. rst-class:: sphx-glr-script-out
-
- .. code-block:: none
-
-
-    0
-
-
-
 .. GENERATED FROM PYTHON SOURCE LINES 792-796
 
 Let us sample one batch from the buffer. The shape of the transformed
@@ -1693,46 +1535,6 @@ the end:
 
 
 
-
-
-
-.. rst-class:: sphx-glr-script-out
-
- .. code-block:: none
-
-    TensorDict(
-        fields={
-            action: Tensor(shape=torch.Size([1, 10, 2]), device=cpu, dtype=torch.int64, is_shared=False),
-            collector: TensorDict(
-                fields={
-                    traj_ids: Tensor(shape=torch.Size([1, 10]), device=cpu, dtype=torch.int64, is_shared=False)},
-                batch_size=torch.Size([1, 10]),
-                device=cpu,
-                is_shared=False),
-            done: Tensor(shape=torch.Size([1, 10, 1]), device=cpu, dtype=torch.bool, is_shared=False),
-            index: Tensor(shape=torch.Size([1, 10]), device=cpu, dtype=torch.int64, is_shared=False),
-            next: TensorDict(
-                fields={
-                    done: Tensor(shape=torch.Size([1, 10, 1]), device=cpu, dtype=torch.bool, is_shared=False),
-                    pixels: Tensor(shape=torch.Size([1, 10, 400, 600, 3]), device=cpu, dtype=torch.uint8, is_shared=False),
-                    pixels_trsf: Tensor(shape=torch.Size([1, 10, 4, 1, 64, 64]), device=cpu, dtype=torch.float32, is_shared=False),
-                    reward: Tensor(shape=torch.Size([1, 10, 1]), device=cpu, dtype=torch.float32, is_shared=False),
-                    terminated: Tensor(shape=torch.Size([1, 10, 1]), device=cpu, dtype=torch.bool, is_shared=False),
-                    truncated: Tensor(shape=torch.Size([1, 10, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
-                batch_size=torch.Size([1, 10]),
-                device=cpu,
-                is_shared=False),
-            pixels: Tensor(shape=torch.Size([1, 10, 400, 600, 3]), device=cpu, dtype=torch.uint8, is_shared=False),
-            pixels_trsf: Tensor(shape=torch.Size([1, 10, 4, 1, 64, 64]), device=cpu, dtype=torch.float32, is_shared=False),
-            terminated: Tensor(shape=torch.Size([1, 10, 1]), device=cpu, dtype=torch.bool, is_shared=False),
-            truncated: Tensor(shape=torch.Size([1, 10, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
-        batch_size=torch.Size([1, 10]),
-        device=cpu,
-        is_shared=False)
-
-
-
-
 .. GENERATED FROM PYTHON SOURCE LINES 801-803
 
 After a bit of processing (excluding non-used keys etc), we see that the
@@ -1744,12 +1546,6 @@ data generated online and offline match!
 
 
     assert (data.exclude("collector") == s.squeeze(0).exclude("index", "collector")).all()
-
-
-
-
-
-
 
 
 .. GENERATED FROM PYTHON SOURCE LINES 807-827
@@ -1809,19 +1605,6 @@ We mark the steps as well.
     print("steps are successive", sample["steps"])
 
 
-
-
-
-.. rst-class:: sphx-glr-script-out
-
- .. code-block:: none
-
-    episode are grouped tensor([1, 1, 1, 1, 4, 4, 3, 3], dtype=torch.int32)
-    steps are successive tensor([1, 2, 0, 1, 1, 2, 0, 1])
-
-
-
-
 .. GENERATED FROM PYTHON SOURCE LINES 857-880
 
 Conclusion
@@ -1851,9 +1634,9 @@ Next steps
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (3 minutes 5.108 seconds)
+   **Total running time of the script:** (2 minutes 14.429 seconds)
 
-**Estimated memory usage:**  471 MB
+**Estimated memory usage:**  1306 MB
 
 
 .. _sphx_glr_download_tutorials_rb_tutorial.py:
