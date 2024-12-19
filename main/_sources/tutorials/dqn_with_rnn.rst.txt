@@ -195,22 +195,7 @@ Two transforms are important for the purpose of this tutorial:
 
 
 
-.. rst-class:: sphx-glr-script-out
 
-.. code-block:: pytb
-
-    Traceback (most recent call last):
-      File "/pytorch/rl/docs/source/reference/generated/tutorials/dqn_with_rnn.py", line 170, in <module>
-        Resize(84, 84),
-      File "/pytorch/rl/torchrl/envs/transforms/transforms.py", line 1867, in __init__
-        from torchvision.transforms.functional import InterpolationMode
-      File "/pytorch/rl/env/lib/python3.10/site-packages/torchvision/__init__.py", line 10, in <module>
-        from torchvision import _meta_registrations, datasets, io, models, ops, transforms, utils  # usort:skip
-      File "/pytorch/rl/env/lib/python3.10/site-packages/torchvision/_meta_registrations.py", line 26, in <module>
-        def meta_roi_align(input, rois, spatial_scale, pooled_height, pooled_width, sampling_ratio, aligned):
-      File "/pytorch/rl/env/lib/python3.10/site-packages/torchvision/_meta_registrations.py", line 18, in wrapper
-        if torchvision.extension._has_ops():
-    AttributeError: partially initialized module 'torchvision' has no attribute 'extension' (most likely due to a circular import)
 
 
 
@@ -226,6 +211,12 @@ As always, we need to initialize manually our normalization constants:
 
     env.transform[-1].init_stats(1000, reduce_dim=[0, 1, 2], cat_dim=0, keep_dims=[0])
     td = env.reset()
+
+
+
+
+
+
 
 
 .. GENERATED FROM PYTHON SOURCE LINES 185-200
@@ -263,6 +254,12 @@ can assist us with this:
         out_keys=["embed"],
     )
 
+
+
+
+
+
+
 .. GENERATED FROM PYTHON SOURCE LINES 213-216
 
 we execute the first module on a batch of data to gather the size of the
@@ -274,6 +271,12 @@ output vector:
 .. code-block:: Python
 
     n_cells = feature(env.reset())["embed"].shape[-1]
+
+
+
+
+
+
 
 
 .. GENERATED FROM PYTHON SOURCE LINES 219-241
@@ -315,6 +318,12 @@ values for these attributes to facilitate its construction.
     )
 
 
+
+
+
+
+
+
 .. GENERATED FROM PYTHON SOURCE LINES 251-252
 
 Let us look at the LSTM Module class, specifically its in and out_keys:
@@ -325,6 +334,19 @@ Let us look at the LSTM Module class, specifically its in and out_keys:
 
     print("in_keys", lstm.in_keys)
     print("out_keys", lstm.out_keys)
+
+
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ .. code-block:: none
+
+    in_keys ['embed', 'recurrent_state_h', 'recurrent_state_c', 'is_init']
+    out_keys ['embed', ('next', 'recurrent_state_h'), ('next', 'recurrent_state_c')]
+
+
 
 
 .. GENERATED FROM PYTHON SOURCE LINES 256-269
@@ -350,6 +372,46 @@ exactly that:
     env.append_transform(lstm.make_tensordict_primer())
 
 
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ .. code-block:: none
+
+
+    TransformedEnv(
+        env=GymEnv(env=CartPole-v1, batch_size=torch.Size([]), device=cpu),
+        transform=Compose(
+                ToTensorImage(keys=['pixels']),
+                GrayScale(keys=['pixels']),
+                Resize(w=84, h=84, interpolation=InterpolationMode.BILINEAR, keys=['pixels']),
+                StepCounter(keys=[]),
+                InitTracker(keys=[]),
+                RewardScaling(loc=0.0000, scale=0.1000, keys=['reward']),
+                ObservationNorm(keys=['pixels']),
+                TensorDictPrimer(primers=Composite(
+                    recurrent_state_h: UnboundedContinuous(
+                        shape=torch.Size([1, 128]),
+                        space=ContinuousBox(
+                            low=Tensor(shape=torch.Size([1, 128]), device=cpu, dtype=torch.float32, contiguous=True),
+                            high=Tensor(shape=torch.Size([1, 128]), device=cpu, dtype=torch.float32, contiguous=True)),
+                        device=cpu,
+                        dtype=torch.float32,
+                        domain=continuous),
+                    recurrent_state_c: UnboundedContinuous(
+                        shape=torch.Size([1, 128]),
+                        space=ContinuousBox(
+                            low=Tensor(shape=torch.Size([1, 128]), device=cpu, dtype=torch.float32, contiguous=True),
+                            high=Tensor(shape=torch.Size([1, 128]), device=cpu, dtype=torch.float32, contiguous=True)),
+                        device=cpu,
+                        dtype=torch.float32,
+                        domain=continuous),
+                    device=cpu,
+                    shape=torch.Size([])), default_value={'recurrent_state_h': 0.0, 'recurrent_state_c': 0.0}, random=None)))
+
+
+
 .. GENERATED FROM PYTHON SOURCE LINES 272-274
 
 and that's it! We can print the environment to check that everything looks good now
@@ -360,6 +422,46 @@ that we have added the primer:
 .. code-block:: Python
 
     print(env)
+
+
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ .. code-block:: none
+
+    TransformedEnv(
+        env=GymEnv(env=CartPole-v1, batch_size=torch.Size([]), device=cpu),
+        transform=Compose(
+                ToTensorImage(keys=['pixels']),
+                GrayScale(keys=['pixels']),
+                Resize(w=84, h=84, interpolation=InterpolationMode.BILINEAR, keys=['pixels']),
+                StepCounter(keys=[]),
+                InitTracker(keys=[]),
+                RewardScaling(loc=0.0000, scale=0.1000, keys=['reward']),
+                ObservationNorm(keys=['pixels']),
+                TensorDictPrimer(primers=Composite(
+                    recurrent_state_h: UnboundedContinuous(
+                        shape=torch.Size([1, 128]),
+                        space=ContinuousBox(
+                            low=Tensor(shape=torch.Size([1, 128]), device=cpu, dtype=torch.float32, contiguous=True),
+                            high=Tensor(shape=torch.Size([1, 128]), device=cpu, dtype=torch.float32, contiguous=True)),
+                        device=cpu,
+                        dtype=torch.float32,
+                        domain=continuous),
+                    recurrent_state_c: UnboundedContinuous(
+                        shape=torch.Size([1, 128]),
+                        space=ContinuousBox(
+                            low=Tensor(shape=torch.Size([1, 128]), device=cpu, dtype=torch.float32, contiguous=True),
+                            high=Tensor(shape=torch.Size([1, 128]), device=cpu, dtype=torch.float32, contiguous=True)),
+                        device=cpu,
+                        dtype=torch.float32,
+                        domain=continuous),
+                    device=cpu,
+                    shape=torch.Size([])), default_value={'recurrent_state_h': 0.0, 'recurrent_state_c': 0.0}, random=None)))
+
+
 
 
 .. GENERATED FROM PYTHON SOURCE LINES 277-283
@@ -383,6 +485,12 @@ our policy.
         device=device,
     )
 
+
+
+
+
+
+
 .. GENERATED FROM PYTHON SOURCE LINES 291-292
 
 and fill the bias with zeros:
@@ -394,6 +502,12 @@ and fill the bias with zeros:
 
     mlp[-1].bias.data.fill_(0.0)
     mlp = Mod(mlp, in_keys=["embed"], out_keys=["action_value"])
+
+
+
+
+
+
 
 
 .. GENERATED FROM PYTHON SOURCE LINES 297-308
@@ -417,6 +531,12 @@ Categorical (sometimes called "sparse") encoding or the one-hot version of it.
     qval = QValueModule(action_space=None, spec=env.action_spec)
 
 
+
+
+
+
+
+
 .. GENERATED FROM PYTHON SOURCE LINES 311-320
 
 .. note::
@@ -434,6 +554,12 @@ We can now put things together in a :class:`~tensordict.nn.TensorDictSequential`
 .. code-block:: Python
 
     policy = Seq(feature, lstm, mlp, qval)
+
+
+
+
+
+
 
 
 .. GENERATED FROM PYTHON SOURCE LINES 323-329
@@ -456,6 +582,12 @@ This decay is achieved via a call to :meth:`~torchrl.modules.EGreedyModule.step`
         policy,
         exploration_module,
     )
+
+
+
+
+
+
 
 
 .. GENERATED FROM PYTHON SOURCE LINES 338-355
@@ -485,6 +617,41 @@ initialize them before creating an optimizer and such.
     policy(env.reset())
 
 
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ .. code-block:: none
+
+
+    TensorDict(
+        fields={
+            action: Tensor(shape=torch.Size([2]), device=cpu, dtype=torch.int64, is_shared=False),
+            action_value: Tensor(shape=torch.Size([2]), device=cpu, dtype=torch.float32, is_shared=False),
+            chosen_action_value: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, is_shared=False),
+            done: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+            embed: Tensor(shape=torch.Size([128]), device=cpu, dtype=torch.float32, is_shared=False),
+            is_init: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+            next: TensorDict(
+                fields={
+                    recurrent_state_c: Tensor(shape=torch.Size([1, 128]), device=cpu, dtype=torch.float32, is_shared=False),
+                    recurrent_state_h: Tensor(shape=torch.Size([1, 128]), device=cpu, dtype=torch.float32, is_shared=False)},
+                batch_size=torch.Size([]),
+                device=cpu,
+                is_shared=False),
+            pixels: Tensor(shape=torch.Size([1, 84, 84]), device=cpu, dtype=torch.float32, is_shared=False),
+            recurrent_state_c: Tensor(shape=torch.Size([1, 128]), device=cpu, dtype=torch.float32, is_shared=False),
+            recurrent_state_h: Tensor(shape=torch.Size([1, 128]), device=cpu, dtype=torch.float32, is_shared=False),
+            step_count: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.int64, is_shared=False),
+            terminated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+            truncated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False)},
+        batch_size=torch.Size([]),
+        device=cpu,
+        is_shared=False)
+
+
+
 .. GENERATED FROM PYTHON SOURCE LINES 358-369
 
 DQN Loss
@@ -506,6 +673,12 @@ as a target network.
     loss_fn = DQNLoss(policy, action_space=env.action_spec, delay_value=True)
 
 
+
+
+
+
+
+
 .. GENERATED FROM PYTHON SOURCE LINES 372-376
 
 Since we are using a double DQN, we need to update the target parameters.
@@ -520,6 +693,12 @@ this work.
     updater = SoftUpdate(loss_fn, eps=0.95)
 
     optim = torch.optim.Adam(policy.parameters(), lr=3e-4)
+
+
+
+
+
+
 
 
 .. GENERATED FROM PYTHON SOURCE LINES 381-396
@@ -548,6 +727,12 @@ on disk.
     rb = TensorDictReplayBuffer(
         storage=LazyMemmapStorage(20_000), batch_size=4, prefetch=10
     )
+
+
+
+
+
+
 
 
 .. GENERATED FROM PYTHON SOURCE LINES 402-408
@@ -600,6 +785,56 @@ every 50 data collection, and plot the results after training.
             traj_lens.append(rollout.get(("next", "step_count")).max().item())
 
 
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ .. code-block:: none
+
+      0%|          | 0/200 [00:00<?, ?it/s]Let us print the first batch of data.
+    Pay attention to the key names which will reflect what can be found in this data structure, in particular: the output of the QValueModule (action_values, action and chosen_action_value),the 'is_init' key that will tell us if a step is initial or not, and the recurrent_state keys.
+     TensorDict(
+        fields={
+            action: Tensor(shape=torch.Size([50, 2]), device=cpu, dtype=torch.int64, is_shared=False),
+            action_value: Tensor(shape=torch.Size([50, 2]), device=cpu, dtype=torch.float32, is_shared=False),
+            chosen_action_value: Tensor(shape=torch.Size([50, 1]), device=cpu, dtype=torch.float32, is_shared=False),
+            collector: TensorDict(
+                fields={
+                    traj_ids: Tensor(shape=torch.Size([50]), device=cpu, dtype=torch.int64, is_shared=False)},
+                batch_size=torch.Size([50]),
+                device=None,
+                is_shared=False),
+            done: Tensor(shape=torch.Size([50, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+            embed: Tensor(shape=torch.Size([50, 128]), device=cpu, dtype=torch.float32, is_shared=False),
+            is_init: Tensor(shape=torch.Size([50, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+            next: TensorDict(
+                fields={
+                    done: Tensor(shape=torch.Size([50, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+                    is_init: Tensor(shape=torch.Size([50, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+                    pixels: Tensor(shape=torch.Size([50, 1, 84, 84]), device=cpu, dtype=torch.float32, is_shared=False),
+                    recurrent_state_c: Tensor(shape=torch.Size([50, 1, 128]), device=cpu, dtype=torch.float32, is_shared=False),
+                    recurrent_state_h: Tensor(shape=torch.Size([50, 1, 128]), device=cpu, dtype=torch.float32, is_shared=False),
+                    reward: Tensor(shape=torch.Size([50, 1]), device=cpu, dtype=torch.float32, is_shared=False),
+                    step_count: Tensor(shape=torch.Size([50, 1]), device=cpu, dtype=torch.int64, is_shared=False),
+                    terminated: Tensor(shape=torch.Size([50, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+                    truncated: Tensor(shape=torch.Size([50, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
+                batch_size=torch.Size([50]),
+                device=None,
+                is_shared=False),
+            pixels: Tensor(shape=torch.Size([50, 1, 84, 84]), device=cpu, dtype=torch.float32, is_shared=False),
+            recurrent_state_c: Tensor(shape=torch.Size([50, 1, 128]), device=cpu, dtype=torch.float32, is_shared=False),
+            recurrent_state_h: Tensor(shape=torch.Size([50, 1, 128]), device=cpu, dtype=torch.float32, is_shared=False),
+            step_count: Tensor(shape=torch.Size([50, 1]), device=cpu, dtype=torch.int64, is_shared=False),
+            terminated: Tensor(shape=torch.Size([50, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+            truncated: Tensor(shape=torch.Size([50, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
+        batch_size=torch.Size([50]),
+        device=None,
+        is_shared=False)
+     25%|██▌       | 50/200 [00:00<00:01, 136.60it/s]     25%|██▌       | 50/200 [00:11<00:01, 136.60it/s]    steps: 12, loss_val:  0.0007, action_spread: tensor([46,  4]):  25%|██▌       | 50/200 [00:33<00:01, 136.60it/s]    steps: 12, loss_val:  0.0007, action_spread: tensor([46,  4]):  50%|█████     | 100/200 [00:34<00:40,  2.49it/s]    steps: 12, loss_val:  0.0006, action_spread: tensor([45,  5]):  50%|█████     | 100/200 [01:08<00:40,  2.49it/s]    steps: 12, loss_val:  0.0006, action_spread: tensor([45,  5]):  75%|███████▌  | 150/200 [01:08<00:26,  1.88it/s]    steps: 16, loss_val:  0.0005, action_spread: tensor([12, 38]):  75%|███████▌  | 150/200 [01:42<00:26,  1.88it/s]    steps: 16, loss_val:  0.0005, action_spread: tensor([12, 38]): 100%|██████████| 200/200 [01:42<00:00,  1.69it/s]    steps: 16, loss_val:  0.0004, action_spread: tensor([45,  5]): 100%|██████████| 200/200 [02:16<00:00,  1.69it/s]
+
+
+
 .. GENERATED FROM PYTHON SOURCE LINES 445-447
 
 Let's plot our results:
@@ -615,6 +850,17 @@ Let's plot our results:
         plt.plot(traj_lens)
         plt.xlabel("Test collection")
         plt.title("Test trajectory lengths")
+
+
+
+
+.. image-sg:: /tutorials/images/sphx_glr_dqn_with_rnn_001.png
+   :alt: Test trajectory lengths
+   :srcset: /tutorials/images/sphx_glr_dqn_with_rnn_001.png
+   :class: sphx-glr-single-img
+
+
+
 
 
 .. GENERATED FROM PYTHON SOURCE LINES 455-473
@@ -641,9 +887,9 @@ Further Reading
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 2.810 seconds)
+   **Total running time of the script:** (3 minutes 17.674 seconds)
 
-**Estimated memory usage:**  1028 MB
+**Estimated memory usage:**  2239 MB
 
 
 .. _sphx_glr_download_tutorials_dqn_with_rnn.py:

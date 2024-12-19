@@ -284,26 +284,7 @@ video locally (notice that we are not exploring).
 
 
 
-.. rst-class:: sphx-glr-script-out
 
-.. code-block:: pytb
-
-    Traceback (most recent call last):
-      File "/pytorch/rl/docs/source/reference/generated/tutorials/getting-started-5.py", line 182, in <module>
-        video_recorder.dump()
-      File "/pytorch/rl/torchrl/record/recorder.py", line 253, in dump
-        self.logger.log_video(
-      File "/pytorch/rl/torchrl/record/loggers/csv.py", line 198, in log_video
-        self.experiment.add_video(
-      File "/pytorch/rl/torchrl/record/loggers/csv.py", line 90, in add_video
-        import torchvision
-      File "/pytorch/rl/env/lib/python3.10/site-packages/torchvision/__init__.py", line 10, in <module>
-        from torchvision import _meta_registrations, datasets, io, models, ops, transforms, utils  # usort:skip
-      File "/pytorch/rl/env/lib/python3.10/site-packages/torchvision/_meta_registrations.py", line 26, in <module>
-        def meta_roi_align(input, rois, spatial_scale, pooled_height, pooled_width, sampling_ratio, aligned):
-      File "/pytorch/rl/env/lib/python3.10/site-packages/torchvision/_meta_registrations.py", line 18, in wrapper
-        if torchvision.extension._has_ops():
-    AttributeError: partially initialized module 'torchvision' has no attribute 'extension' (most likely due to a circular import)
 
 
 
@@ -322,9 +303,9 @@ Feel free to share feedback about it on GitHub.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 21.296 seconds)
+   **Total running time of the script:** (0 minutes 24.188 seconds)
 
-**Estimated memory usage:**  963 MB
+**Estimated memory usage:**  318 MB
 
 
 .. _sphx_glr_download_tutorials_getting-started-5.py:

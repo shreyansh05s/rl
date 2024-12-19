@@ -271,7 +271,7 @@
           <div class="pytorch-left-menu-search">
             
     <div class="version">
-      <a href="../../versions.html"><span style="font-size:110%">main (0.6.1+1ce25f1) &#x25BC</span></a>
+      <a href="../../versions.html"><span style="font-size:110%">main (0.6.1+133d709) &#x25BC</span></a>
     </div>
     
 
@@ -594,24 +594,6 @@ video locally (notice that we are not exploring).</p>
 <span class="n">video_recorder</span><span class="o">.</span><span class="n">dump</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="sphx-glr-script-out highlight-pytb notranslate"><div class="highlight"><pre><span></span><span class="gt">Traceback (most recent call last):</span>
-  File <span class="nb">&quot;/pytorch/rl/docs/source/reference/generated/tutorials/getting-started-5.py&quot;</span>, line <span class="m">182</span>, in <span class="n">&lt;module&gt;</span>
-<span class="w">    </span><span class="n">video_recorder</span><span class="o">.</span><span class="n">dump</span><span class="p">()</span>
-  File <span class="nb">&quot;/pytorch/rl/torchrl/record/recorder.py&quot;</span>, line <span class="m">253</span>, in <span class="n">dump</span>
-<span class="w">    </span><span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">log_video</span><span class="p">(</span>
-  File <span class="nb">&quot;/pytorch/rl/torchrl/record/loggers/csv.py&quot;</span>, line <span class="m">198</span>, in <span class="n">log_video</span>
-<span class="w">    </span><span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">add_video</span><span class="p">(</span>
-  File <span class="nb">&quot;/pytorch/rl/torchrl/record/loggers/csv.py&quot;</span>, line <span class="m">90</span>, in <span class="n">add_video</span>
-<span class="w">    </span><span class="kn">import</span> <span class="nn">torchvision</span>
-  File <span class="nb">&quot;/pytorch/rl/env/lib/python3.10/site-packages/torchvision/__init__.py&quot;</span>, line <span class="m">10</span>, in <span class="n">&lt;module&gt;</span>
-<span class="w">    </span><span class="kn">from</span> <span class="nn">torchvision</span> <span class="kn">import</span> <span class="n">_meta_registrations</span><span class="p">,</span> <span class="n">datasets</span><span class="p">,</span> <span class="n">io</span><span class="p">,</span> <span class="n">models</span><span class="p">,</span> <span class="n">ops</span><span class="p">,</span> <span class="n">transforms</span><span class="p">,</span> <span class="n">utils</span>  <span class="c1"># usort:skip</span>
-  File <span class="nb">&quot;/pytorch/rl/env/lib/python3.10/site-packages/torchvision/_meta_registrations.py&quot;</span>, line <span class="m">26</span>, in <span class="n">&lt;module&gt;</span>
-<span class="w">    </span><span class="k">def</span> <span class="nf">meta_roi_align</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">rois</span><span class="p">,</span> <span class="n">spatial_scale</span><span class="p">,</span> <span class="n">pooled_height</span><span class="p">,</span> <span class="n">pooled_width</span><span class="p">,</span> <span class="n">sampling_ratio</span><span class="p">,</span> <span class="n">aligned</span><span class="p">):</span>
-  File <span class="nb">&quot;/pytorch/rl/env/lib/python3.10/site-packages/torchvision/_meta_registrations.py&quot;</span>, line <span class="m">18</span>, in <span class="n">wrapper</span>
-<span class="w">    </span><span class="k">if</span> <span class="n">torchvision</span><span class="o">.</span><span class="n">extension</span><span class="o">.</span><span class="n">_has_ops</span><span class="p">():</span>
-<span class="gr">AttributeError</span>: <span class="n">partially initialized module &#39;torchvision&#39; has no attribute &#39;extension&#39; (most likely due to a circular import)</span>
-</pre></div>
-</div>
 <p>This is what your rendered CartPole video will look like after a full
 training loop:</p>
 <figure class="align-default">
@@ -619,8 +601,8 @@ training loop:</p>
 </figure>
 <p>This concludes our series of “Getting started with TorchRL” tutorials!
 Feel free to share feedback about it on GitHub.</p>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 21.296 seconds)</p>
-<p><strong>Estimated memory usage:</strong>  963 MB</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 24.188 seconds)</p>
+<p><strong>Estimated memory usage:</strong>  318 MB</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-tutorials-getting-started-5-py">
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/d04ba01cba3add54c2b1a3c96ae6320d/getting-started-5.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">getting-started-5.ipynb</span></code></a></p>

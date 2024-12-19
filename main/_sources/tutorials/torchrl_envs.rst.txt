@@ -715,7 +715,7 @@ argument that allows the user to quickly ask for image-based environments:
  .. code-block:: none
 
 
-    <matplotlib.image.AxesImage object at 0x7f78377344c0>
+    <matplotlib.image.AxesImage object at 0x7f0593330a00>
 
 
 
@@ -1019,23 +1019,22 @@ To compose transforms, simply use the ``Compose`` class:
 
 
 
+
+
 .. rst-class:: sphx-glr-script-out
 
-.. code-block:: pytb
+ .. code-block:: none
 
-    Traceback (most recent call last):
-      File "/pytorch/rl/docs/source/reference/generated/tutorials/torchrl_envs.py", line 352, in <module>
-        env = TransformedEnv(env, Compose(ToTensorImage(), Resize(32, 32)))
-      File "/pytorch/rl/torchrl/envs/transforms/transforms.py", line 1867, in __init__
-        from torchvision.transforms.functional import InterpolationMode
-      File "/pytorch/rl/env/lib/python3.10/site-packages/torchvision/__init__.py", line 10, in <module>
-        from torchvision import _meta_registrations, datasets, io, models, ops, transforms, utils  # usort:skip
-      File "/pytorch/rl/env/lib/python3.10/site-packages/torchvision/_meta_registrations.py", line 26, in <module>
-        def meta_roi_align(input, rois, spatial_scale, pooled_height, pooled_width, sampling_ratio, aligned):
-      File "/pytorch/rl/env/lib/python3.10/site-packages/torchvision/_meta_registrations.py", line 18, in wrapper
-        if torchvision.extension._has_ops():
-    AttributeError: partially initialized module 'torchvision' has no attribute 'extension' (most likely due to a circular import)
 
+    TensorDict(
+        fields={
+            done: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+            pixels: Tensor(shape=torch.Size([3, 32, 32]), device=cpu, dtype=torch.float32, is_shared=False),
+            terminated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+            truncated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False)},
+        batch_size=torch.Size([]),
+        device=None,
+        is_shared=False)
 
 
 
@@ -1054,6 +1053,26 @@ Transforms can also be added one at a time:
     env.reset()
 
 
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ .. code-block:: none
+
+
+    TensorDict(
+        fields={
+            done: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+            pixels: Tensor(shape=torch.Size([1, 32, 32]), device=cpu, dtype=torch.float32, is_shared=False),
+            terminated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+            truncated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False)},
+        batch_size=torch.Size([]),
+        device=None,
+        is_shared=False)
+
+
+
 .. GENERATED FROM PYTHON SOURCE LINES 364-365
 
 As expected, the metadata get updated too:
@@ -1065,6 +1084,39 @@ As expected, the metadata get updated too:
 
     print("original obs spec: ", env.base_env.observation_spec)
     print("current obs spec: ", env.observation_spec)
+
+
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ .. code-block:: none
+
+    original obs spec:  Composite(
+        pixels: UnboundedDiscrete(
+            shape=torch.Size([240, 320, 3]),
+            space=ContinuousBox(
+                low=Tensor(shape=torch.Size([240, 320, 3]), device=cpu, dtype=torch.uint8, contiguous=True),
+                high=Tensor(shape=torch.Size([240, 320, 3]), device=cpu, dtype=torch.uint8, contiguous=True)),
+            device=cpu,
+            dtype=torch.uint8,
+            domain=discrete),
+        device=None,
+        shape=torch.Size([]))
+    current obs spec:  Composite(
+        pixels: UnboundedContinuous(
+            shape=torch.Size([1, 32, 32]),
+            space=ContinuousBox(
+                low=Tensor(shape=torch.Size([1, 32, 32]), device=cpu, dtype=torch.float32, contiguous=True),
+                high=Tensor(shape=torch.Size([1, 32, 32]), device=cpu, dtype=torch.float32, contiguous=True)),
+            device=cpu,
+            dtype=torch.float32,
+            domain=continuous),
+        device=None,
+        shape=torch.Size([]))
+
+
 
 
 .. GENERATED FROM PYTHON SOURCE LINES 370-371
@@ -1086,6 +1138,36 @@ We can also concatenate tensors if needed:
         CatTensors(in_keys=["orientations", "velocity"], out_key="observation"),
     )
     print("keys after concat: ", env.reset())
+
+
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ .. code-block:: none
+
+    keys before concat:  TensorDict(
+        fields={
+            done: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+            orientations: Tensor(shape=torch.Size([4]), device=cpu, dtype=torch.float64, is_shared=False),
+            terminated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+            truncated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+            velocity: Tensor(shape=torch.Size([2]), device=cpu, dtype=torch.float64, is_shared=False)},
+        batch_size=torch.Size([]),
+        device=None,
+        is_shared=False)
+    keys after concat:  TensorDict(
+        fields={
+            done: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+            observation: Tensor(shape=torch.Size([6]), device=cpu, dtype=torch.float64, is_shared=False),
+            terminated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False),
+            truncated: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.bool, is_shared=False)},
+        batch_size=torch.Size([]),
+        device=None,
+        is_shared=False)
+
+
 
 
 .. GENERATED FROM PYTHON SOURCE LINES 384-402
@@ -1126,6 +1208,33 @@ at random in that environment.
     print("CatTensors transform parent env: \n", env.transform[0].parent)
 
 
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ .. code-block:: none
+
+    env: 
+     TransformedEnv(
+        env=DMControlEnv(env=acrobot, task=swingup, batch_size=torch.Size([])),
+        transform=Compose(
+                CatTensors(in_keys=['orientations', 'velocity'], out_key=observation),
+                GrayScale(keys=['pixels'])))
+    GrayScale transform parent env: 
+     TransformedEnv(
+        env=DMControlEnv(env=acrobot, task=swingup, batch_size=torch.Size([])),
+        transform=Compose(
+                CatTensors(in_keys=['orientations', 'velocity'], out_key=observation)))
+    CatTensors transform parent env: 
+     TransformedEnv(
+        env=DMControlEnv(env=acrobot, task=swingup, batch_size=torch.Size([])),
+        transform=Compose(
+        ))
+
+
+
+
 .. GENERATED FROM PYTHON SOURCE LINES 415-429
 
 Environment device
@@ -1161,6 +1270,12 @@ above and (2) sharing data amongst workers in multiprocessing settings.
         env.reset()
 
 
+
+
+
+
+
+
 .. GENERATED FROM PYTHON SOURCE LINES 443-450
 
 Running environments in parallel
@@ -1189,6 +1304,12 @@ Let us look at the simplest case:
     )  # similar to the previous command
 
 
+
+
+
+
+
+
 .. GENERATED FROM PYTHON SOURCE LINES 464-473
 
 The ``SerialEnv`` class is similar to the ``ParallelEnv`` except for the
@@ -1209,6 +1330,26 @@ or simply by calling ``step`` (if ``reset`` does not need to be called first).
     parallel_env.reset()
 
 
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ .. code-block:: none
+
+
+    TensorDict(
+        fields={
+            done: Tensor(shape=torch.Size([3, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+            observation: Tensor(shape=torch.Size([3, 3]), device=cpu, dtype=torch.float32, is_shared=False),
+            terminated: Tensor(shape=torch.Size([3, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+            truncated: Tensor(shape=torch.Size([3, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
+        batch_size=torch.Size([3]),
+        device=None,
+        is_shared=False)
+
+
+
 .. GENERATED FROM PYTHON SOURCE LINES 477-480
 
 One can check that the parallel environment has the right batch size.
@@ -1221,6 +1362,37 @@ the second the time frame. Let's check that with the ``rollout`` method:
 
 
     parallel_env.rollout(max_steps=20)
+
+
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ .. code-block:: none
+
+
+    TensorDict(
+        fields={
+            action: Tensor(shape=torch.Size([3, 20, 1]), device=cpu, dtype=torch.float32, is_shared=False),
+            done: Tensor(shape=torch.Size([3, 20, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+            next: TensorDict(
+                fields={
+                    done: Tensor(shape=torch.Size([3, 20, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+                    observation: Tensor(shape=torch.Size([3, 20, 3]), device=cpu, dtype=torch.float32, is_shared=False),
+                    reward: Tensor(shape=torch.Size([3, 20, 1]), device=cpu, dtype=torch.float32, is_shared=False),
+                    terminated: Tensor(shape=torch.Size([3, 20, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+                    truncated: Tensor(shape=torch.Size([3, 20, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
+                batch_size=torch.Size([3, 20]),
+                device=None,
+                is_shared=False),
+            observation: Tensor(shape=torch.Size([3, 20, 3]), device=cpu, dtype=torch.float32, is_shared=False),
+            terminated: Tensor(shape=torch.Size([3, 20, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+            truncated: Tensor(shape=torch.Size([3, 20, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
+        batch_size=torch.Size([3, 20]),
+        device=None,
+        is_shared=False)
+
 
 
 .. GENERATED FROM PYTHON SOURCE LINES 484-491
@@ -1239,6 +1411,12 @@ end of a program, when the environment gets out of scope!)
 
 
     parallel_env.close()
+
+
+
+
+
+
 
 
 .. GENERATED FROM PYTHON SOURCE LINES 495-505
@@ -1265,6 +1443,18 @@ instance and we want each of the sub-sub-environments to have a different seed.
     del parallel_env
 
 
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ .. code-block:: none
+
+    3288080526
+
+
+
+
 .. GENERATED FROM PYTHON SOURCE LINES 512-517
 
 Accessing environment attributes
@@ -1279,6 +1469,12 @@ to access this attribute. Here's an example:
 
 
     from time import sleep
+
+
+
+
+
+
 
 
 .. GENERATED FROM PYTHON SOURCE LINES 521-534
@@ -1299,6 +1495,12 @@ to access this attribute. Here's an example:
     env = env_make()
 
 
+
+
+
+
+
+
 .. GENERATED FROM PYTHON SOURCE LINES 535-539
 
 .. code-block:: Python
@@ -1306,6 +1508,18 @@ to access this attribute. Here's an example:
 
     # Goes through env._env
     env.foo
+
+
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ .. code-block:: none
+
+
+    'bar_987fe6c2-bdf8-11ef-ab64-0242ac110002'
+
 
 
 .. GENERATED FROM PYTHON SOURCE LINES 540-550
@@ -1323,6 +1537,18 @@ to access this attribute. Here's an example:
         sleep(2)  # make sure we don't get ahead of ourselves
 
 
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ .. code-block:: none
+
+    Aargh what did I do!
+
+
+
+
 .. GENERATED FROM PYTHON SOURCE LINES 551-557
 
 .. code-block:: Python
@@ -1334,12 +1560,36 @@ to access this attribute. Here's an example:
     foo_list  # needs to be instantiated, for instance using list
 
 
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ .. code-block:: none
+
+
+    <torchrl.envs.batched_envs._dispatch_caller_parallel object at 0x7f05933005b0>
+
+
+
 .. GENERATED FROM PYTHON SOURCE LINES 558-561
 
 .. code-block:: Python
 
 
     list(foo_list)
+
+
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ .. code-block:: none
+
+
+    ['bar_9d30baac-bdf8-11ef-af55-0242ac110002', 'bar_9d30f940-bdf8-11ef-89eb-0242ac110002', 'bar_9d30be8a-bdf8-11ef-b53c-0242ac110002']
+
 
 
 .. GENERATED FROM PYTHON SOURCE LINES 562-563
@@ -1355,6 +1605,18 @@ Similarly, methods can also be accessed:
     print(something)
 
 
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ .. code-block:: none
+
+    [1, 1, 1]
+
+
+
+
 .. GENERATED FROM PYTHON SOURCE LINES 568-572
 
 .. code-block:: Python
@@ -1362,6 +1624,12 @@ Similarly, methods can also be accessed:
 
     parallel_env.close()
     del parallel_env
+
+
+
+
+
+
 
 
 .. GENERATED FROM PYTHON SOURCE LINES 573-577
@@ -1403,6 +1671,17 @@ either at construction time or afterwards:
     del parallel_env
 
     from matplotlib import pyplot as plt
+
+
+
+
+.. image-sg:: /tutorials/images/sphx_glr_torchrl_envs_003.png
+   :alt: torchrl envs
+   :srcset: /tutorials/images/sphx_glr_torchrl_envs_003.png
+   :class: sphx-glr-single-img
+
+
+
 
 
 .. GENERATED FROM PYTHON SOURCE LINES 609-616
@@ -1456,6 +1735,31 @@ operations on the main process if possible.
     del parallel_env
 
 
+
+
+.. image-sg:: /tutorials/images/sphx_glr_torchrl_envs_004.png
+   :alt: torchrl envs
+   :srcset: /tutorials/images/sphx_glr_torchrl_envs_004.png
+   :class: sphx-glr-single-img
+
+
+.. rst-class:: sphx-glr-script-out
+
+ .. code-block:: none
+
+    grayscale data:  TensorDict(
+        fields={
+            done: Tensor(shape=torch.Size([2, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+            pixels: Tensor(shape=torch.Size([2, 1, 64, 64]), device=cpu, dtype=torch.float32, is_shared=False),
+            terminated: Tensor(shape=torch.Size([2, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+            truncated: Tensor(shape=torch.Size([2, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
+        batch_size=torch.Size([2]),
+        device=None,
+        is_shared=False)
+
+
+
+
 .. GENERATED FROM PYTHON SOURCE LINES 653-673
 
 VecNorm
@@ -1494,6 +1798,19 @@ In regular setting, using VecNorm is quite easy:
     print("std: :", data.get("observation").std(0))  # Approx 1
 
 
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ .. code-block:: none
+
+    mean: : tensor([-0.2914,  0.3673,  0.1119])
+    std: : tensor([0.9540, 1.1099, 1.1261])
+
+
+
+
 .. GENERATED FROM PYTHON SOURCE LINES 684-690
 
 In **parallel envs** things are slightly more complicated, as we need to
@@ -1527,6 +1844,56 @@ once created:
     print("std: :", data.get("observation").view(-1, 3).std(0))  # Approx 1
 
 
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ .. code-block:: none
+
+    env state dict:
+    TensorDict(
+        fields={
+            _extra_state: TensorDict(
+                fields={
+                    observation_count: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, is_shared=False),
+                    observation_ssq: Tensor(shape=torch.Size([4]), device=cpu, dtype=torch.float32, is_shared=False),
+                    observation_sum: Tensor(shape=torch.Size([4]), device=cpu, dtype=torch.float32, is_shared=False),
+                    reward_count: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, is_shared=False),
+                    reward_ssq: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, is_shared=False),
+                    reward_sum: Tensor(shape=torch.Size([1]), device=cpu, dtype=torch.float32, is_shared=False)},
+                batch_size=torch.Size([]),
+                device=None,
+                is_shared=False)},
+        batch_size=torch.Size([]),
+        device=None,
+        is_shared=False)
+    data:  TensorDict(
+        fields={
+            action: Tensor(shape=torch.Size([3, 5, 2]), device=cpu, dtype=torch.int64, is_shared=False),
+            done: Tensor(shape=torch.Size([3, 5, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+            next: TensorDict(
+                fields={
+                    done: Tensor(shape=torch.Size([3, 5, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+                    observation: Tensor(shape=torch.Size([3, 5, 4]), device=cpu, dtype=torch.float32, is_shared=False),
+                    reward: Tensor(shape=torch.Size([3, 5, 1]), device=cpu, dtype=torch.float32, is_shared=False),
+                    terminated: Tensor(shape=torch.Size([3, 5, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+                    truncated: Tensor(shape=torch.Size([3, 5, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
+                batch_size=torch.Size([3, 5]),
+                device=None,
+                is_shared=False),
+            observation: Tensor(shape=torch.Size([3, 5, 4]), device=cpu, dtype=torch.float32, is_shared=False),
+            terminated: Tensor(shape=torch.Size([3, 5, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+            truncated: Tensor(shape=torch.Size([3, 5, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
+        batch_size=torch.Size([3, 5]),
+        device=None,
+        is_shared=False)
+    mean: : tensor([0.0031, 0.5779, 0.2522])
+    std: : tensor([1.2322, 2.0657, 1.3760])
+
+
+
+
 .. GENERATED FROM PYTHON SOURCE LINES 710-715
 
 The count is slightly higher than the number of steps (since we
@@ -1549,11 +1916,23 @@ This small difference will usually be absored throughout training.
     del env
 
 
+
+
+.. rst-class:: sphx-glr-script-out
+
+ .. code-block:: none
+
+    update counts:  tensor([18.])
+
+
+
+
+
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (2 minutes 1.151 seconds)
+   **Total running time of the script:** (3 minutes 40.619 seconds)
 
-**Estimated memory usage:**  1157 MB
+**Estimated memory usage:**  317 MB
 
 
 .. _sphx_glr_download_tutorials_torchrl_envs.py:

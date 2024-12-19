@@ -109,30 +109,14 @@ the corresponding action.
 
 
 
+
+
 .. rst-class:: sphx-glr-script-out
 
-.. code-block:: pytb
+ .. code-block:: none
 
-    Traceback (most recent call last):
-      File "/pytorch/rl/docs/source/reference/generated/tutorials/pretrained_models.py", line 66, in <module>
-        r3m = R3MTransform(
-      File "/pytorch/rl/torchrl/envs/transforms/r3m.py", line 252, in __init__
-        self._init()
-      File "/pytorch/rl/torchrl/envs/transforms/r3m.py", line 294, in _init
-        resize = Resize(size, size, in_keys=in_keys)
-      File "/pytorch/rl/torchrl/envs/transforms/transforms.py", line 1867, in __init__
-        from torchvision.transforms.functional import InterpolationMode
-      File "/pytorch/rl/env/lib/python3.10/site-packages/torchvision/__init__.py", line 10, in <module>
-        from torchvision import _meta_registrations, datasets, io, models, ops, transforms, utils  # usort:skip
-      File "/pytorch/rl/env/lib/python3.10/site-packages/torchvision/_meta_registrations.py", line 164, in <module>
-        def meta_nms(dets, scores, iou_threshold):
-      File "/pytorch/rl/env/lib/python3.10/site-packages/torch/library.py", line 854, in register
-        use_lib._register_fake(op_name, func, _stacklevel=stacklevel + 1)
-      File "/pytorch/rl/env/lib/python3.10/site-packages/torch/library.py", line 198, in _register_fake
-        handle = entry.fake_impl.register(func_to_register, source)
-      File "/pytorch/rl/env/lib/python3.10/site-packages/torch/_library/fake_impl.py", line 31, in register
-        if torch._C._dispatch_has_kernel_for_dispatch_key(self.qualname, "Meta"):
-    RuntimeError: operator torchvision::nms does not exist
+    Downloading: "https://pytorch.s3.amazonaws.com/models/rl/r3m/r3m_50.pt" to /root/.cache/torch/hub/checkpoints/r3m_50.pt
+      0%|          | 0.00/374M [00:00<?, ?B/s]      4%|▍         | 16.5M/374M [00:00<00:03, 113MB/s]      9%|▉         | 32.9M/374M [00:00<00:03, 115MB/s]     13%|█▎        | 49.2M/374M [00:00<00:03, 96.2MB/s]     17%|█▋        | 64.0M/374M [00:00<00:05, 65.0MB/s]     19%|█▉        | 71.4M/374M [00:01<00:04, 64.3MB/s]     22%|██▏       | 82.0M/374M [00:01<00:04, 66.8MB/s]     26%|██▌       | 97.8M/374M [00:01<00:03, 86.6MB/s]     29%|██▊       | 108M/374M [00:01<00:03, 80.7MB/s]      31%|███       | 116M/374M [00:01<00:03, 71.6MB/s]     35%|███▌      | 131M/374M [00:01<00:03, 71.1MB/s]     39%|███▉      | 148M/374M [00:01<00:02, 82.4MB/s]     43%|████▎     | 162M/374M [00:02<00:05, 42.9MB/s]     45%|████▌     | 169M/374M [00:02<00:04, 44.0MB/s]     48%|████▊     | 180M/374M [00:03<00:04, 43.0MB/s]     52%|█████▏    | 195M/374M [00:03<00:03, 52.0MB/s]     54%|█████▍    | 201M/374M [00:03<00:03, 49.3MB/s]     57%|█████▋    | 212M/374M [00:03<00:03, 53.7MB/s]     58%|█████▊    | 218M/374M [00:03<00:03, 48.9MB/s]     61%|██████▏   | 229M/374M [00:04<00:03, 50.2MB/s]     66%|██████▌   | 246M/374M [00:04<00:02, 63.1MB/s]     70%|██████▉   | 262M/374M [00:04<00:02, 55.8MB/s]     71%|███████▏  | 267M/374M [00:04<00:02, 50.4MB/s]     74%|███████▍  | 278M/374M [00:04<00:01, 59.7MB/s]     76%|███████▌  | 284M/374M [00:04<00:01, 56.4MB/s]     78%|███████▊  | 293M/374M [00:05<00:01, 53.9MB/s]     80%|███████▉  | 299M/374M [00:05<00:01, 46.8MB/s]     83%|████████▎ | 311M/374M [00:05<00:01, 57.1MB/s]     87%|████████▋ | 326M/374M [00:05<00:00, 75.4MB/s]     89%|████████▉ | 334M/374M [00:05<00:00, 72.8MB/s]     92%|█████████▏| 344M/374M [00:05<00:00, 63.6MB/s]     96%|█████████▋| 360M/374M [00:06<00:00, 69.6MB/s]    100%|█████████▉| 373M/374M [00:06<00:00, 70.8MB/s]    100%|██████████| 374M/374M [00:06<00:00, 61.5MB/s]
 
 
 
@@ -149,6 +133,18 @@ Let's check the number of parameters of the policy:
     print("number of params:", len(list(policy.parameters())))
 
 
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ .. code-block:: none
+
+    number of params: 4
+
+
+
+
 .. GENERATED FROM PYTHON SOURCE LINES 85-87
 
 We collect a rollout of 32 steps and print its output:
@@ -160,6 +156,37 @@ We collect a rollout of 32 steps and print its output:
 
     rollout = env_transformed.rollout(32, policy)
     print("rollout with transform:", rollout)
+
+
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ .. code-block:: none
+
+    rollout with transform: TensorDict(
+        fields={
+            action: Tensor(shape=torch.Size([32, 8]), device=cpu, dtype=torch.float32, is_shared=False),
+            done: Tensor(shape=torch.Size([32, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+            next: TensorDict(
+                fields={
+                    done: Tensor(shape=torch.Size([32, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+                    r3m_vec: Tensor(shape=torch.Size([32, 2048]), device=cpu, dtype=torch.float32, is_shared=False),
+                    reward: Tensor(shape=torch.Size([32, 1]), device=cpu, dtype=torch.float32, is_shared=False),
+                    terminated: Tensor(shape=torch.Size([32, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+                    truncated: Tensor(shape=torch.Size([32, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
+                batch_size=torch.Size([32]),
+                device=cpu,
+                is_shared=False),
+            r3m_vec: Tensor(shape=torch.Size([32, 2048]), device=cpu, dtype=torch.float32, is_shared=False),
+            terminated: Tensor(shape=torch.Size([32, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+            truncated: Tensor(shape=torch.Size([32, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
+        batch_size=torch.Size([32]),
+        device=cpu,
+        is_shared=False)
+
+
 
 
 .. GENERATED FROM PYTHON SOURCE LINES 91-95
@@ -178,6 +205,18 @@ of the MLP).
     print("number of params after r3m is integrated:", len(list(policy.parameters())))
 
 
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ .. code-block:: none
+
+    number of params after r3m is integrated: 163
+
+
+
+
 .. GENERATED FROM PYTHON SOURCE LINES 100-104
 
 Again, we collect a rollout with R3M. The structure of the output has changed slightly, as now
@@ -191,6 +230,37 @@ result of our policy.
 
     rollout = base_env.rollout(32, policy)
     print("rollout, fine tuning:", rollout)
+
+
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ .. code-block:: none
+
+    rollout, fine tuning: TensorDict(
+        fields={
+            action: Tensor(shape=torch.Size([32, 8]), device=cpu, dtype=torch.float32, is_shared=False),
+            done: Tensor(shape=torch.Size([32, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+            next: TensorDict(
+                fields={
+                    done: Tensor(shape=torch.Size([32, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+                    pixels: Tensor(shape=torch.Size([32, 480, 480, 3]), device=cpu, dtype=torch.uint8, is_shared=False),
+                    reward: Tensor(shape=torch.Size([32, 1]), device=cpu, dtype=torch.float32, is_shared=False),
+                    terminated: Tensor(shape=torch.Size([32, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+                    truncated: Tensor(shape=torch.Size([32, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
+                batch_size=torch.Size([32]),
+                device=cpu,
+                is_shared=False),
+            r3m_vec: Tensor(shape=torch.Size([32, 2048]), device=cpu, dtype=torch.float32, is_shared=False),
+            terminated: Tensor(shape=torch.Size([32, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+            truncated: Tensor(shape=torch.Size([32, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
+        batch_size=torch.Size([32]),
+        device=cpu,
+        is_shared=False)
+
+
 
 
 .. GENERATED FROM PYTHON SOURCE LINES 108-115
@@ -213,6 +283,12 @@ images stored in a replay buffer (e.g. in an offline RL context). First, let's b
     rb = ReplayBuffer(storage=storage, transform=r3m)
 
 
+
+
+
+
+
+
 .. GENERATED FROM PYTHON SOURCE LINES 121-124
 
 We can now collect the data (random rollouts for our purpose) and fill the replay
@@ -230,6 +306,12 @@ buffer with it:
         total += tensordict.numel()
 
 
+
+
+
+
+
+
 .. GENERATED FROM PYTHON SOURCE LINES 131-133
 
 Let's check what our replay buffer storage looks like. It should not contain the "r3m_vec" entry
@@ -240,6 +322,37 @@ since we haven't used it yet:
 .. code-block:: Python
 
     print("stored data:", storage._storage)
+
+
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ .. code-block:: none
+
+    stored data: TensorDict(
+        fields={
+            action: MemoryMappedTensor(shape=torch.Size([1000, 8]), device=cpu, dtype=torch.float32, is_shared=False),
+            done: MemoryMappedTensor(shape=torch.Size([1000, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+            next: TensorDict(
+                fields={
+                    done: MemoryMappedTensor(shape=torch.Size([1000, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+                    pixels: MemoryMappedTensor(shape=torch.Size([1000, 480, 480, 3]), device=cpu, dtype=torch.uint8, is_shared=False),
+                    reward: MemoryMappedTensor(shape=torch.Size([1000, 1]), device=cpu, dtype=torch.float32, is_shared=False),
+                    terminated: MemoryMappedTensor(shape=torch.Size([1000, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+                    truncated: MemoryMappedTensor(shape=torch.Size([1000, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
+                batch_size=torch.Size([1000]),
+                device=cpu,
+                is_shared=False),
+            pixels: MemoryMappedTensor(shape=torch.Size([1000, 480, 480, 3]), device=cpu, dtype=torch.uint8, is_shared=False),
+            terminated: MemoryMappedTensor(shape=torch.Size([1000, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+            truncated: MemoryMappedTensor(shape=torch.Size([1000, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
+        batch_size=torch.Size([1000]),
+        device=cpu,
+        is_shared=False)
+
+
 
 
 .. GENERATED FROM PYTHON SOURCE LINES 136-139
@@ -257,11 +370,42 @@ In this way, we can train an algorithm offline on a dataset made of images:
 
 
 
+
+
+.. rst-class:: sphx-glr-script-out
+
+ .. code-block:: none
+
+    data after sampling: TensorDict(
+        fields={
+            action: Tensor(shape=torch.Size([32, 8]), device=cpu, dtype=torch.float32, is_shared=False),
+            done: Tensor(shape=torch.Size([32, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+            next: TensorDict(
+                fields={
+                    done: Tensor(shape=torch.Size([32, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+                    pixels: Tensor(shape=torch.Size([32, 480, 480, 3]), device=cpu, dtype=torch.uint8, is_shared=False),
+                    reward: Tensor(shape=torch.Size([32, 1]), device=cpu, dtype=torch.float32, is_shared=False),
+                    terminated: Tensor(shape=torch.Size([32, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+                    truncated: Tensor(shape=torch.Size([32, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
+                batch_size=torch.Size([32]),
+                device=cpu,
+                is_shared=False),
+            r3m_vec: Tensor(shape=torch.Size([32, 2048]), device=cpu, dtype=torch.float32, is_shared=False),
+            terminated: Tensor(shape=torch.Size([32, 1]), device=cpu, dtype=torch.bool, is_shared=False),
+            truncated: Tensor(shape=torch.Size([32, 1]), device=cpu, dtype=torch.bool, is_shared=False)},
+        batch_size=torch.Size([32]),
+        device=cpu,
+        is_shared=False)
+
+
+
+
+
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 3.900 seconds)
+   **Total running time of the script:** (1 minutes 36.757 seconds)
 
-**Estimated memory usage:**  951 MB
+**Estimated memory usage:**  4183 MB
 
 
 .. _sphx_glr_download_tutorials_pretrained_models.py:
