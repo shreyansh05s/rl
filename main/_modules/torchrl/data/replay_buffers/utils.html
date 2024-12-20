@@ -268,7 +268,7 @@
           <div class="pytorch-left-menu-search">
             
     <div class="version">
-      <a href="../../../../../versions.html"><span style="font-size:110%">main (0.6.1+133d709) &#x25BC</span></a>
+      <a href="../../../../../versions.html"><span style="font-size:110%">main (0.6.1+ab4250e) &#x25BC</span></a>
     </div>
     
 
@@ -1437,6 +1437,14 @@
 <span class="k">def</span> <span class="nf">tree_iter</span><span class="p">(</span><span class="n">pytree</span><span class="p">):</span>  <span class="c1"># noqa: F811</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A version-compatible wrapper around tree_iter.&quot;&quot;&quot;</span>
     <span class="k">yield from</span> <span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">_pytree</span><span class="o">.</span><span class="n">tree_iter</span><span class="p">(</span><span class="n">pytree</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_auto_device</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">():</span>
+        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cuda:0&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">torch</span><span class="o">.</span><span class="n">mps</span><span class="o">.</span><span class="n">is_available</span><span class="p">():</span>
+        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;mps:0&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
 </pre></div>
 
              </article>

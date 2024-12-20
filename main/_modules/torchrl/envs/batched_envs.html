@@ -268,7 +268,7 @@
           <div class="pytorch-left-menu-search">
             
     <div class="version">
-      <a href="../../../../versions.html"><span style="font-size:110%">main (0.6.1+133d709) &#x25BC</span></a>
+      <a href="../../../../versions.html"><span style="font-size:110%">main (0.6.1+ab4250e) &#x25BC</span></a>
     </div>
     
 
@@ -1133,18 +1133,19 @@
                     <span class="p">)</span>
                 <span class="p">)</span>
             <span class="n">env_output_keys</span> <span class="o">=</span> <span class="n">env_output_keys</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reward_keys</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">done_keys</span><span class="p">)</span>
-            <span class="n">env_obs_keys</span> <span class="o">=</span> <span class="p">[</span>
-                <span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">env_obs_keys</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_non_tensor_keys</span>
-            <span class="p">]</span>
-            <span class="n">env_input_keys</span> <span class="o">=</span> <span class="p">[</span>
-                <span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">env_input_keys</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_non_tensor_keys</span>
-            <span class="p">]</span>
-            <span class="n">env_output_keys</span> <span class="o">=</span> <span class="p">[</span>
-                <span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">env_output_keys</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_non_tensor_keys</span>
-            <span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_env_obs_keys</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">env_obs_keys</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">_sort_keys</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_env_input_keys</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">env_input_keys</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">_sort_keys</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_env_output_keys</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">env_output_keys</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">_sort_keys</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_env_obs_keys</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_env_obs_keys</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_non_tensor_keys</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_env_input_keys</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_env_input_keys</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_non_tensor_keys</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_env_output_keys</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_env_output_keys</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_non_tensor_keys</span>
+        <span class="p">]</span>
 
         <span class="n">reset_keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reset_keys</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_selected_keys</span> <span class="o">=</span> <span class="p">(</span>
@@ -2147,14 +2148,39 @@
             <span class="c1"># We keep track of which keys are present to let the worker know what</span>
             <span class="c1"># should be passed to the env (we don&#39;t want to pass done states for instance)</span>
             <span class="n">next_td_keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">next_td_passthrough</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">))</span>
+            <span class="n">next_shared_tensordict_parent</span> <span class="o">=</span> <span class="n">shared_tensordict_parent</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;next&quot;</span><span class="p">)</span>
+
+            <span class="c1"># We separate keys that are and are not present in the buffer here and not in step_and_maybe_reset.</span>
+            <span class="c1"># The reason we do that is that the policy may write stuff in &#39;next&#39; that is not part of the specs of</span>
+            <span class="c1"># the batched env but part of the specs of a transformed batched env.</span>
+            <span class="c1"># If that is the case, `update_` will fail to find the entries to update.</span>
+            <span class="c1"># What we do instead is keeping the tensors on the side and putting them back after completing _step.</span>
+            <span class="n">keys_to_update</span><span class="p">,</span> <span class="n">keys_to_copy</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span>
+                <span class="o">*</span><span class="p">[</span>
+                    <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">next_shared_tensordict_parent</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+                    <span class="k">else</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">next_td_keys</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+            <span class="n">keys_to_update</span> <span class="o">=</span> <span class="p">[</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys_to_update</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
+            <span class="n">keys_to_copy</span> <span class="o">=</span> <span class="p">[</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys_to_copy</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
             <span class="n">data</span> <span class="o">=</span> <span class="p">[</span>
-                <span class="p">{</span><span class="s2">&quot;next_td_passthrough_keys&quot;</span><span class="p">:</span> <span class="n">next_td_keys</span><span class="p">}</span>
+                <span class="p">{</span><span class="s2">&quot;next_td_passthrough_keys&quot;</span><span class="p">:</span> <span class="n">keys_to_update</span><span class="p">}</span>
                 <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span><span class="p">)</span>
             <span class="p">]</span>
-            <span class="n">shared_tensordict_parent</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;next&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">update_</span><span class="p">(</span>
-                <span class="n">next_td_passthrough</span><span class="p">,</span> <span class="n">non_blocking</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">non_blocking</span>
-            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">keys_to_update</span><span class="p">:</span>
+                <span class="n">next_shared_tensordict_parent</span><span class="o">.</span><span class="n">update_</span><span class="p">(</span>
+                    <span class="n">next_td_passthrough</span><span class="p">,</span>
+                    <span class="n">non_blocking</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">non_blocking</span><span class="p">,</span>
+                    <span class="n">keys_to_update</span><span class="o">=</span><span class="n">keys_to_update</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">if</span> <span class="n">keys_to_copy</span><span class="p">:</span>
+                <span class="n">next_td_passthrough</span> <span class="o">=</span> <span class="n">next_td_passthrough</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="o">*</span><span class="n">keys_to_copy</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">next_td_passthrough</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">else</span><span class="p">:</span>
+            <span class="n">next_td_passthrough</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="n">data</span> <span class="o">=</span> <span class="p">[{}</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span><span class="p">)]</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_non_tensor_keys</span><span class="p">:</span>
@@ -2210,6 +2236,9 @@
                 <span class="n">LazyStackedTensorDict</span><span class="p">(</span><span class="o">*</span><span class="n">non_tensor_tds</span><span class="p">),</span>
                 <span class="n">keys_to_update</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_non_tensor_keys</span><span class="p">,</span>
             <span class="p">)</span>
+        <span class="k">if</span> <span class="n">next_td_passthrough</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">next_td_passthrough</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_sync_w2m</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">partial_steps</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">result</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">new_zeros</span><span class="p">(</span><span class="n">tensordict_save</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>

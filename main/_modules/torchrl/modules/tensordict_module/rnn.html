@@ -268,7 +268,7 @@
           <div class="pytorch-left-menu-search">
             
     <div class="version">
-      <a href="../../../../../versions.html"><span style="font-size:110%">main (0.6.1+133d709) &#x25BC</span></a>
+      <a href="../../../../../versions.html"><span style="font-size:110%">main (0.6.1+ab4250e) &#x25BC</span></a>
     </div>
     
 
@@ -995,6 +995,10 @@
 <span class="sd">        inputs and outputs (recurrent states) during rollout execution. That way, the data can be shared across</span>
 <span class="sd">        processes and dealt with properly.</span>
 
+<span class="sd">        When using batched environments such as :class:`~torchrl.envs.ParallelEnv`, the transform can be used at the</span>
+<span class="sd">        single env instance level (i.e., a batch of transformed envs with tensordict primers set within) or at the</span>
+<span class="sd">        batched env instance level (i.e., a transformed batch of regular envs).</span>
+
 <span class="sd">        Not including a ``TensorDictPrimer`` in the environment may result in poorly defined behaviors, for instance</span>
 <span class="sd">        in parallel settings where a step involves copying the new recurrent state from ``&quot;next&quot;`` to the root</span>
 <span class="sd">        tensordict, which the meth:`~torchrl.EnvBase.step_mdp` method will not be able to do as the recurrent states</span>
@@ -1052,7 +1056,8 @@
             <span class="p">{</span>
                 <span class="n">in_key1</span><span class="p">:</span> <span class="n">Unbounded</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lstm</span><span class="o">.</span><span class="n">num_layers</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lstm</span><span class="o">.</span><span class="n">hidden_size</span><span class="p">)),</span>
                 <span class="n">in_key2</span><span class="p">:</span> <span class="n">Unbounded</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lstm</span><span class="o">.</span><span class="n">num_layers</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lstm</span><span class="o">.</span><span class="n">hidden_size</span><span class="p">)),</span>
-            <span class="p">}</span>
+            <span class="p">},</span>
+            <span class="n">expand_specs</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">)</span></div>
 
     <span class="nd">@property</span>
@@ -1813,6 +1818,10 @@
 <span class="sd">        tensordict, which the meth:`~torchrl.EnvBase.step_mdp` method will not be able to do as the recurrent states</span>
 <span class="sd">        are not registered within the environment specs.</span>
 
+<span class="sd">        When using batched environments such as :class:`~torchrl.envs.ParallelEnv`, the transform can be used at the</span>
+<span class="sd">        single env instance level (i.e., a batch of transformed envs with tensordict primers set within) or at the</span>
+<span class="sd">        batched env instance level (i.e., a transformed batch of regular envs).</span>
+
 <span class="sd">        See :func:`torchrl.modules.utils.get_primers_from_module` for a method to generate all primers for a given</span>
 <span class="sd">        module.</span>
 
@@ -1862,7 +1871,8 @@
         <span class="k">return</span> <span class="n">TensorDictPrimer</span><span class="p">(</span>
             <span class="p">{</span>
                 <span class="n">in_key1</span><span class="p">:</span> <span class="n">Unbounded</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gru</span><span class="o">.</span><span class="n">num_layers</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">gru</span><span class="o">.</span><span class="n">hidden_size</span><span class="p">)),</span>
-            <span class="p">}</span>
+            <span class="p">},</span>
+            <span class="n">expand_specs</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">)</span></div>
 
     <span class="nd">@property</span>
