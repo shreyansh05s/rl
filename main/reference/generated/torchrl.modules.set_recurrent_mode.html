@@ -271,7 +271,7 @@
           <div class="pytorch-left-menu-search">
             
     <div class="version">
-      <a href="../../../versions.html"><span style="font-size:110%">main (0.6.1+ab4250e) &#x25BC</span></a>
+      <a href="../../../versions.html"><span style="font-size:110%">main (0.6.1+d009835) &#x25BC</span></a>
     </div>
     
 
@@ -417,8 +417,8 @@
 <dd><p>Context manager for setting RNNs recurrent mode.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>mode</strong> (<em>bool</em><em>, </em><em>&quot;recurrent&quot;</em><em> or </em><em>&quot;stateful&quot;</em>) – the recurrent mode to be used within the context manager.
-<cite>“recurrent”</cite> leads to <cite>mode=True</cite> and <cite>“stateful”</cite> leads to <cite>mode=False</cite>.
+<dd class="field-odd"><p><strong>mode</strong> (<em>bool</em><em>, </em><em>&quot;recurrent&quot;</em><em> or </em><em>&quot;sequential&quot;</em>) – the recurrent mode to be used within the context manager.
+<cite>“recurrent”</cite> leads to <cite>mode=True</cite> and <cite>“sequential”</cite> leads to <cite>mode=False</cite>.
 An RNN executed with recurrent_mode “on” assumes that the data comes in time batches, otherwise
 it is assumed that each data element in a tensordict is independent of the others.
 The default value of this context manager is <code class="docutils literal notranslate"><span class="pre">True</span></code>.
