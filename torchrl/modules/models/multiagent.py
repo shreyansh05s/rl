@@ -61,17 +61,17 @@ class MultiAgentNetBase(nn.Module):
         self.agent_dim = agent_dim
         self._vmap_randomness = vmap_randomness
 
-        agent_networks = [
+        self.agent_networks = [
             self._build_single_net(**kwargs)
             for _ in range(self.n_agents if not self.share_params else 1)
         ]
         initialized = True
-        for p in agent_networks[0].parameters():
+        for p in self.agent_networks[0].parameters():
             if isinstance(p, torch.nn.UninitializedParameter):
                 initialized = False
                 break
         self.initialized = initialized
-        self._make_params(agent_networks)
+        self._make_params(self.agent_networks)
 
         # We make sure all params and buffers are on 'meta' device
         #  To do this, we set the device keyword arg to 'meta', we also temporarily change
